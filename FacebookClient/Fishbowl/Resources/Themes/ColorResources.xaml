@@ -1,0 +1,175 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:FacebookClient="clr-namespace:FacebookClient">
+
+    <!-- Background color for main application chrome - this is the background used for MainPage, etc -->
+    <LinearGradientBrush x:Key="Background_ChromeDefault" StartPoint="0,0" EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#FF202020" Offset="0.0"/>
+                <GradientStop Color="#FF101010" Offset="1"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+
+    <!--  Background for masthead with main app title and top part of main page chrome -->
+    <LinearGradientBrush x:Key="Background_Masthead" StartPoint="0,0" EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#505050" Offset="0.0"/>
+                <GradientStop Color="#303030" Offset="0.5"/>
+                <GradientStop Color="#282828" Offset="0.5"/>
+                <GradientStop Color="#282828" Offset="0.8"/>
+                <GradientStop Color="#303030" Offset="0.99"/>
+                <GradientStop Color="#cccccc" Offset="1.0"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+
+    <!-- Main chrome navigation button path stroke -->
+    <LinearGradientBrush x:Key="Stroke_ChromeUIDefault" StartPoint="0.993379,0.0147525" EndPoint="0.993379,0.990664">
+        <GradientStop Color="#FF171717" Offset="0"/>
+        <GradientStop Color="#FF818181" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Main chrome navigation button path fill -->
+    <SolidColorBrush x:Key="Fill_ChromeUIDefault" Color="#FFDB8715" />
+
+    <!-- Main chrome navigation button path bevel stroke -->
+    <LinearGradientBrush x:Key="Stroke_ChromeUIBevel" StartPoint="0.99473,-0.0133688" EndPoint="0.99473,1.09066">
+        <GradientStop Color="#34FFFFFF" Offset="0"/>
+        <GradientStop Color="#0BFFFFFF" Offset="0.987288"/>
+    </LinearGradientBrush>
+
+    <!-- Main chrome navigation button path bevel stroke -->
+    <LinearGradientBrush x:Key="Fill_ChromeUIBevel" StartPoint="0.99473,-0.0133688" EndPoint="0.99473,1.09066">
+        <GradientStop Color="#34FFFFFF" Offset="0"/>
+        <GradientStop Color="#0BFFFFFF" Offset="0.987288"/>
+    </LinearGradientBrush>
+
+    <!-- Foreground brush for text in top chrome -->
+    <SolidColorBrush x:Key="Foreground_ChromeText" Color="#FFE5E5E5" />
+
+    <!-- Foreground brush for contrasting text in top chrome -->
+    <SolidColorBrush x:Key="Foreground_ChromeContrastText" Color="#888888" />
+
+    <!-- Default brushes for chome highlights -->
+    <SolidColorBrush x:Key="Foreground_ChromeHighlight" Color="#666666"/>
+    <SolidColorBrush x:Key="Foreground_ChromeHighlightSecondary" Color="#444444"/>
+
+    <!-- Override the default selection brush -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#99777777"/>
+
+    <!-- Foreground brush for text in the navigation controls -->
+    <SolidColorBrush x:Key="Foreground_NavigationText" Color="#FFE5E5E5" />
+
+    <!-- Default foreground brush for content elements, e.g. text -->
+    <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
+
+    <!-- Default brush for secondary UI elements -->
+    <SolidColorBrush x:Key="Foreground_ContentElementSecondary" Color="#888888"/>
+
+    <!-- Default brush for content hightlights -->
+    <SolidColorBrush x:Key="Foreground_ContentHighlight" Color="#0099ff"/>
+
+    <!-- Item outline brush -->
+    <SolidColorBrush x:Key="Border_ItemOutline" Color="#444444" />
+
+    <!-- Item outline brush thickness -->
+    <Thickness x:Key="Border_ItemOutline_Thickness">1</Thickness>
+
+  <!-- Highlight outline brush -->
+    <SolidColorBrush x:Key="Border_HighlightItemOutline" Color="#DB8715" />
+
+    <!-- Animated pop-up items -->
+    <LinearGradientBrush x:Key="Background_AnimatedItem" StartPoint="0,0" EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#6D5843" Offset="0.0"/>
+                <GradientStop Color="#90643A" Offset="0.5"/>
+                <GradientStop Color="#723C09" Offset="0.5"/>
+                <GradientStop Color="#CF6400" Offset="1.0"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Border_AnimatedItem" Color="#BE7501" />
+
+    <!-- Tooltips and other floating content -->
+    <LinearGradientBrush x:Key="Background_PopupContent" StartPoint="0,0" EndPoint="0,1">
+        <GradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#787878" Offset="0.0"/>
+                <GradientStop Color="#404040" Offset="0.5"/>
+                <GradientStop Color="#282828" Offset="0.5"/>
+                <GradientStop Color="#282828" Offset="0.8"/>
+                <GradientStop Color="#383838" Offset="1.0"/>
+            </GradientStopCollection>
+        </GradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="Border_PopupContent" Color="#999999" />
+
+    <!-- Contrast brush for UI background -->
+    <LinearGradientBrush x:Key="Background_ChromeUIContrast" EndPoint="0.55036,0.00696403" StartPoint="0.55036,1.00068">
+        <GradientStop Color="#FFE6E6E6" Offset="0.394068"/>
+        <GradientStop Color="#FFF0F0F0" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Brush resource for faking bevel effect -->
+    <LinearGradientBrush x:Key="Brush_HorizontalBevelGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#01000000" Offset="0" />
+        <GradientStop Color="#66000000" Offset=".5" />
+    </LinearGradientBrush>
+
+    <!-- Photo Viewer Colors -->
+    <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
+    <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
+    <SolidColorBrush x:Key="Background_PhotoViewerPressed" Color="#909090" />
+    <SolidColorBrush x:Key="Background_PhotoViewerChecked" Color="#555555" />
+
+    <!-- Background behind film strip -->
+    <LinearGradientBrush x:Key="FilmStripMatte" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#00444444"/>
+        <GradientStop Offset="1" Color="#FF444444"/>
+    </LinearGradientBrush>
+
+    <!-- Wizard Colors -->
+    <LinearGradientBrush x:Key="WizardBackground" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#333333" Offset="0"/>
+        <GradientStop Color="#151515" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="WizardHighlightedItem" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#C78300" Offset="0"/>
+        <GradientStop Color="#151515" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="WizardAlternateBackground" Color="Black"/>
+
+    <!-- Explorer Colors -->
+    <SolidColorBrush x:Key="Background_ExplorerNode" Color="#3b5998" />
+    <SolidColorBrush x:Key="Border_ExplorerNode" Color="#666666" />
+    <Pen x:Key="Pen_ExplorerNodes" Brush="#403b5998" Thickness="1"/>
+    <SolidColorBrush x:Key="Background_ExplorerNodeEnabled" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeEnabled" Color="#333333" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeDefault" Color="#666666" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeMouse" Color="#3b5998" />
+
+    <!-- Background brush  for main content container -->
+    <SolidColorBrush x:Key="Background_MainContentContainer" Color="#FF000000"/>
+
+    <!-- Glow for keyboard focused visuals -->
+    <OuterGlowBitmapEffect GlowSize="6" GlowColor="#ffffff" Opacity="0.75" x:Key="FocusedVisualGlow"/>
+
+    <!-- Image to use to brand the application -->
+    <Style TargetType="{x:Type Image}" x:Key="ApplicationImageStyle">
+        <Setter Property="Source" Value="pack://application:,,,/Resources/Images/FacebookClient_Dark.png"/>
+        <Setter Property="Height" Value="25"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Collapsed">
+                <Setter Property="Height" Value="20"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>
