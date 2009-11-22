@@ -395,7 +395,10 @@ namespace Contigo
                 postData = stream.GetBuffer();
             }
 
-            WebRequest request = WebRequest.Create(_FacebookApiUri);
+            var request = (HttpWebRequest)WebRequest.Create(_FacebookApiUri);
+            // Use 1.0 because a significant number of proxies don't understand 1.1 (the default)
+            request.ProtocolVersion = HttpVersion.Version10;
+
             request.ContentType = "multipart/form-data; boundary=" + boundary;
             request.Method = "POST";
 
@@ -428,7 +431,10 @@ namespace Contigo
 
             string requestData = _GenerateRequestData(requestPairs, secret);
 
-            WebRequest request = WebRequest.Create(_FacebookApiUri);
+            var request = (HttpWebRequest)WebRequest.Create(_FacebookApiUri);
+            // Use 1.0 because a significant number of proxies don't understand 1.1 (the default)
+            request.ProtocolVersion = HttpVersion.Version10;
+
             request.ContentType = "application/x-www-form-urlencoded";
             request.Method = "POST";
             using (Stream requestStream = request.GetRequestStream())
