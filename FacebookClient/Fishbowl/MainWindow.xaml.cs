@@ -121,11 +121,6 @@ namespace FacebookClient
             set { SetValue(IsInSmallModeProperty, value); }
         }
 
-        #region HwndBackgroundBrush
-
-        /// <summary>
-        /// HwndBackgroundBrush Dependency Property
-        /// </summary>
         public static readonly DependencyProperty HwndBackgroundBrushProperty = DependencyProperty.Register(
             "HwndBackgroundBrush",
             typeof(SolidColorBrush),
@@ -176,25 +171,6 @@ namespace FacebookClient
         }
 
         /// <summary>
-        /// Handles changes to the HwndBackgroundBrush property.
-        /// </summary>
-        private static void OnHwndBackgroundBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((MainWindow)d).OnHwndBackgroundBrushChanged(e);
-        }
-
-        /// <summary>
-        /// Provides derived classes an opportunity to handle changes to the HwndBackgroundBrush property.
-        /// </summary>
-        protected virtual void OnHwndBackgroundBrushChanged(DependencyPropertyChangedEventArgs e)
-        {
-        }
-
-        #endregion
-
-
-
-        /// <summary>
         /// Viewing mode for the next view.
         /// </summary>
         private ViewingMode _viewingMode = ViewingMode.NormalScreenNavigationUI;
@@ -222,11 +198,6 @@ namespace FacebookClient
             ServiceProvider.GoneOnline += (sender, e) =>
             {
                 IsOnline = true;
-                // Defer starting the update timer until the application is online.  
-                // We don't want to tell the user that we couldn't find an update when the problem is that they have no internet.
-                DeploymentManager.ApplicationUpdated += _OnApplicationUpdated;
-                DeploymentManager.ApplicationUpdateFailed += _OnApplicationUpdateFailed;
-                DeploymentManager.StartMonitor();
             };
             
             ServiceProvider.ViewManager.PropertyChanged += _OnViewManagerPropertyChanged;
@@ -245,6 +216,13 @@ namespace FacebookClient
             SourceInitialized += (sender, e) =>
             {
                 _UpdateBackgroundBrush();
+
+                // Defer starting the update timer until the Window is up, but not until the application is online.  
+                // We want to make sure that the user is able to update the app if there's a fix available for an issue that
+                // was preventing them from connecting to the service.
+                DeploymentManager.ApplicationUpdated += _OnApplicationUpdated;
+                DeploymentManager.ApplicationUpdateFailed += _OnApplicationUpdateFailed;
+                DeploymentManager.StartMonitor();
             };
 
             // When the window loses focus take it as an opportunity to trim our workingset.
@@ -961,5 +939,3 @@ namespace FacebookClient
         }
     }
 }
-
-
