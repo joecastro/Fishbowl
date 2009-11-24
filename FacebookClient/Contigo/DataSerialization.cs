@@ -1055,5 +1055,11 @@ namespace Contigo
             XDocument xdoc = SafeParseDocument(xml);
             return xdoc.Root.Value;
         }
+
+        public string DeserializeStreamPublishResponse(string xml)
+        {
+            XDocument xdoc = SafeParseDocument(xml);
+            return xdoc.Root.Value;
+        }
     }
 }

@@ -29,16 +29,43 @@ namespace Standard
             }
         }
 
-        public static IEnumerable<T> Sublist<T>(this IEnumerable<T> enumerable, int startIndex, int endIndex)
+        /// <summary>
+        /// Limit an enumeration to be constrained to a subset after a given index.
+        /// </summary>
+        /// <typeparam name="T">The type of items being enumerated.</typeparam>
+        /// <param name="enumerable">The collection to be enumerated.</param>
+        /// <param name="startIndex">The index (inclusive) of the first item to be returned.</param>
+        /// <returns></returns>
+        public static IEnumerable<T> Sublist<T>(this IEnumerable<T> enumerable, int startIndex)
+        {
+            return Sublist(enumerable, startIndex, null);
+        }
+
+        /// <summary>
+        /// Limit an enumeration to be within a set of indices.
+        /// </summary>
+        /// <typeparam name="T">The type of items being enumerated.</typeparam>
+        /// <param name="enumerable">The collection to be enumerated.</param>
+        /// <param name="startIndex">The index (inclusive) of the first item to be returned.</param>
+        /// <param name="endIndex">
+        /// The index (exclusive) of the last item to be returned.
+        /// If this is null then the full collection after startIndex is returned.
+        /// If this is greater than the count of the collection after startIndex, then the full collection after startIndex is returned.
+        /// </param>
+        /// <returns></returns>
+        public static IEnumerable<T> Sublist<T>(this IEnumerable<T> enumerable, int startIndex, int? endIndex)
         {
             Verify.IsNotNull(enumerable, "enumerable");
             Verify.BoundedInteger(0, startIndex, int.MaxValue, "startIndex");
-            Verify.BoundedInteger(startIndex, endIndex, int.MaxValue, "endIndex");
+            if (endIndex != null)
+            {
+                Verify.BoundedInteger(startIndex, endIndex.Value, int.MaxValue, "endIndex");
+            }
 
             return _Sublist(enumerable, startIndex, endIndex);
         }
 
-        private static IEnumerable<T> _Sublist<T>(this IEnumerable<T> enumerable, int startIndex, int endIndex)
+        private static IEnumerable<T> _Sublist<T>(this IEnumerable<T> enumerable, int startIndex, int? endIndex)
         {
             int currentIndex = 0;
             IEnumerator<T> enumerator = enumerable.GetEnumerator();
@@ -47,7 +74,9 @@ namespace Standard
                 ++currentIndex;
             }
 
-            while (currentIndex < endIndex && enumerator.MoveNext())
+            int trueEndIndex = endIndex ?? int.MaxValue;
+
+            while (currentIndex < trueEndIndex && enumerator.MoveNext())
             {
                 yield return enumerator.Current;
                 ++currentIndex;

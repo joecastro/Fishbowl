@@ -791,12 +791,12 @@ namespace Contigo
         {
             var statusMap = new METHOD_MAP
             {
-                { "method", "users.setStatus" },
-                { "status", newStatus },
-                { "status_includes_verb", "true" },
+                { "method", "stream.publish" },
+                { "message", newStatus },
             };
 
-            Utility.FailableFunction(() => _SendRequest(statusMap));
+            string result = Utility.FailableFunction(() => _SendRequest(statusMap));
+            string postId = _serializer.DeserializeStreamPublishResponse(result);
 
             // Return a proxy that looks close to what we expect the updated status to look like.
             // We'll replace it with the real one the next time we sync.
@@ -813,7 +813,7 @@ namespace Contigo
                 LikedCount = 0,
                 LikeUrl = null,
                 Message = newStatus,
-                PostId = "-1",
+                PostId = postId,
                 RawComments = new MergeableCollection<ActivityComment>(),
                 RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
                 TargetUserId = null,
@@ -843,8 +843,10 @@ namespace Contigo
             return _serializer.DeserializePostDataList(result, true);
         }
 
-        public void GetStream(string filterKey, out List<ActivityPost> posts, out List<FacebookContact> users)
+        public void GetStream(string filterKey, int limit, DateTime getItemsSince, out List<ActivityPost> posts, out List<FacebookContact> users)
         {
+            Assert.IsTrue(limit > 0);
+
             // Facebook changed the semantics of the default feed, so we need to explicitly 
             // request the newsfeed filter to keep things working as expected.
             // I think everyone should have a filter with this key, but this is unfortunately fragile.
@@ -853,12 +855,15 @@ namespace Contigo
                 filterKey = "nf";
             }
 
+            long startTime = DataSerialization.GetUnixTimestampFromDateTime(getItemsSince);
+            Assert.IsTrue(startTime >= 0);
+
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.get" },
                 { "viewer_id", _UserId },
-                { "start_time", "0" },
-                { "limit", "100" },
+                { "start_time", startTime.ToString("G") },
+                { "limit", limit.ToString("G") },
                 { "filter_key", filterKey },
                 { "metadata", "[albums, profiles, photo_tags]" },
             };

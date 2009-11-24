@@ -32,6 +32,11 @@
                 {
                     _defaultComparison = (left, right) =>
                     {
+                        if (object.ReferenceEquals(left, right))
+                        {
+                            return 0;
+                        }
+
                         var comparableLeft = (IComparable<T>)left;
                         if (comparableLeft == null)
                         {
@@ -47,7 +52,7 @@
 
             public Comparison<T> Comparison
             {
-                get { return _customComparison; }
+                get { return _trueComparison; }
                 set
                 {
                     Assert.IsFalse(_dontCompare);
@@ -162,8 +167,8 @@
                 {
                     var copyList = new List<T>(_items);
                     // Clear the list first so we don't bubble-sort just to reorder.
-                    _Merge(null, false);
-                    _Merge(copyList, false);
+                    _Merge(null, false, null);
+                    _Merge(copyList, false, null);
                 }
             }
         }
@@ -177,22 +182,26 @@
         /// </param>
         public void Merge(IEnumerable<T> newCollection, bool add)
         {
-            _Merge(newCollection, add);
+            _Merge(newCollection, add, null);
         }
 
-        private void _Merge(IEnumerable<T> newCollection, bool add)
+        public void Merge(IEnumerable<T> newCollection, bool add, int? maxCount)
+        {
+            _Merge(newCollection, add, maxCount);
+        }
+
+        private void _Merge(IEnumerable<T> newCollection, bool add, int? maxCount)
         {
             lock (SyncRoot)
             {
                 // Go-go partial template specialization!
-                // incrementally correctly merging collections causes memory to blow up right now...
                 if (_areItemsMergable)
                 {
-                    _RichMerge(newCollection, add);
+                    _RichMerge(newCollection, add, maxCount);
                 }
                 else
                 {
-                    _SimpleMerge(newCollection, add);
+                    _SimpleMerge(newCollection, add, maxCount);
                 }
             }
         }
@@ -296,7 +305,7 @@
             _items.Clear();
         }
 
-        private void _RichMerge(IEnumerable<T> newCollection, bool additive)
+        private void _RichMerge(IEnumerable<T> newCollection, bool additive, int? maxCount)
         {
             lock (SyncRoot)
             {
@@ -309,7 +318,7 @@
                 if (!additive)
                 {
                     int index = -1;
-                    foreach (T newItem in _itemComparer.OrderedList(newCollection))
+                    foreach (T newItem in _itemComparer.OrderedList(newCollection).Sublist(0, maxCount))
                     {
                         var mergableItem = newItem as IMergeable<T>;
 
@@ -369,6 +378,11 @@
                     }
                 }
 
+                if (maxCount != null && _items.Count > maxCount.Value)
+                {
+                    _RemoveRange(maxCount.Value);
+                }
+
                 //Assert.Implies(_areItemsComparable || _customComparison != null, () => _items.AreSorted(_customComparison));
             }
         }
@@ -382,7 +396,7 @@
             }
         }
 
-        private void _SimpleMerge(IEnumerable<T> newCollection, bool add)
+        private void _SimpleMerge(IEnumerable<T> newCollection, bool add, int? maxCount)
         {
             lock (SyncRoot)
             {
@@ -396,7 +410,7 @@
                         return;
                     }
 
-                    foreach (T item in _itemComparer.OrderedList(newCollection))
+                    foreach (T item in _itemComparer.OrderedList(newCollection).Sublist(0, maxCount))
                     {
                         _items.Add(item);
                         _SafeAddNotify(item);
@@ -420,6 +434,11 @@
                             }
                             _SafeAddNotify(item);
                         }
+                    }
+
+                    if (maxCount != null && _items.Count > maxCount.Value)
+                    {
+                        _RemoveRange(maxCount.Value);
                     }
                 }
                 //Assert.Implies(_areItemsComparable || _customComparison != null, () => _items.AreSorted(_customComparison));

@@ -23,8 +23,6 @@ namespace Contigo
     {
         #region Fields
 
-        private static readonly TimeSpan _RefreshThreshold = new TimeSpan(0, 3, 0);
-
         private readonly object _localLock = new object();
 
         private FacebookWebApi _facebookApi;
@@ -41,7 +39,14 @@ namespace Contigo
 
         private DispatcherPool _collectionUpdateDispatcher;
 
-        private DispatcherTimer _refreshTimer;
+        // Fudge the numbers a bit to avoid the timers getting hit all at the same time.
+        private static readonly TimeSpan _RefreshThresholdDynamic = TimeSpan.FromMinutes(2.9);
+        private static readonly TimeSpan _RefreshThresholdModerate = TimeSpan.FromMinutes(15.1);
+        private static readonly TimeSpan _RefreshThresholdInfrequent = TimeSpan.FromHours(1.01);
+
+        private readonly DispatcherTimer _refreshTimerDynamic;
+        private readonly DispatcherTimer _refreshTimerModerate;
+        private readonly DispatcherTimer _refreshTimerInfrequent;
 
         private ActivityFilter _newsFeedFilter;
 
@@ -63,6 +68,8 @@ namespace Contigo
         public bool IsOnline { get { return !string.IsNullOrEmpty(SessionKey); } }
 
         internal AsyncWebGetter WebGetter { get; private set; }
+
+        private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
 
         internal MergeableCollection<Notification> RawNotifications { get; private set; }
         internal MergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
@@ -135,6 +142,10 @@ namespace Contigo
             // Default sort orders
             ContactSortOrder = ContactSortOrder.AscendingByLastName;
             PhotoAlbumSortOrder = PhotoAlbumSortOrder.AscendingByFriend;
+
+            _refreshTimerDynamic = new DispatcherTimer(_RefreshThresholdDynamic, DispatcherPriority.Background, (sender2, e2) => _RefreshDynamic(), Dispatcher);
+            _refreshTimerModerate = new DispatcherTimer(_RefreshThresholdModerate, DispatcherPriority.Background, (sender2, e2) => _RefreshModerate(), Dispatcher);
+            _refreshTimerInfrequent = new DispatcherTimer(_RefreshThresholdInfrequent, DispatcherPriority.Background, (sender2, e2) => _RefreshInfrequent(), Dispatcher);
         }
 
         /// <summary>
@@ -188,8 +199,9 @@ namespace Contigo
 
             Refresh();
 
-            _refreshTimer = new DispatcherTimer(_RefreshThreshold, DispatcherPriority.Background, (sender2, e2) => Refresh(), Dispatcher);
-            _refreshTimer.Start();
+            _refreshTimerDynamic.Start();
+            _refreshTimerModerate.Start();
+            _refreshTimerInfrequent.Start();
         }
 
         /// <summary>
@@ -203,11 +215,9 @@ namespace Contigo
                 return;
             }
 
-            if (_refreshTimer != null)
-            {
-                _refreshTimer.Stop();
-                _refreshTimer = null;
-            }
+            _refreshTimerDynamic.Stop();
+            _refreshTimerModerate.Stop();
+            _refreshTimerInfrequent.Stop();
 
             Utility.SafeDispose(ref _facebookApi);
             Utility.SafeDispose(ref _userInteractionDispatcher);
@@ -252,6 +262,8 @@ namespace Contigo
                 _newsFeedFilter = value;
                 _NotifyPropertyChanged("NewsFeedFilter");
                 RawNewsFeed.Clear();
+                // We want to get all the data again.
+                _mostRecentNewsfeedItem = DateTime.MinValue;
                 _UpdateNewsFeedAsync();                
             }
         }
@@ -716,7 +728,8 @@ namespace Contigo
             }
         }
 
-        public void Refresh()
+        // Refresh data that needs to be frequently requeried.
+        private void _RefreshDynamic()
         {
             if (!IsOnline)
             {
@@ -724,12 +737,35 @@ namespace Contigo
             }
 
             _UpdateNewsFeedAsync();
+            _UpdateNotificationsAsync();
+        }
+
+        private void _RefreshModerate()
+        {
+            if (!IsOnline)
+            {
+                return;
+            }
+
             _UpdateFriendsAsync();
             _UpdatePhotoAlbumsAsync();
-            _UpdateNotificationsAsync();
-            _UpdateFiltersAsync();
+        }
 
-            //TODO: this is incomplete.
+        private void _RefreshInfrequent()
+        {
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            _UpdateFiltersAsync();
+        }
+        
+        public void Refresh()
+        {
+            _RefreshDynamic();
+            _RefreshModerate();
+            _RefreshInfrequent();
         }
 
         private void _NotifyPropertyChanged(string propertyName)
@@ -864,6 +900,8 @@ namespace Contigo
 
         private void _UpdateNewsFeedWorker(object parameter)
         {
+            const int maxStreamCount = 100;
+
             if (!IsOnline)
             {
                 return;
@@ -878,16 +916,22 @@ namespace Contigo
                 filterKey = _newsFeedFilter.Key;
             }
 
+            // Don't bother with the extra async updates if this is the first time synching,
+            // or if the filter is being changed.
+            bool isFirstSync = _mostRecentNewsfeedItem == DateTime.MinValue;
+
             try
             {
                 // This has been timing out from Facebook.
-                _facebookApi.GetStream(filterKey, out posts, out users);
+                _facebookApi.GetStream(filterKey, maxStreamCount, _mostRecentNewsfeedItem, out posts, out users);
             }
             catch
             {
                 // No update this time.
                 return;
             }
+
+            bool foundNewFriend = false;
 
             lock (_userLookup)
             {
@@ -903,6 +947,7 @@ namespace Contigo
                             streamUser.InterestLevel = interestLevel.Value;
                         }
                         _userLookup.Add(streamUser.UserId, streamUser);
+                        foundNewFriend = true;
                     }
                     else
                     {
@@ -913,25 +958,52 @@ namespace Contigo
                 }
             }
 
-            // Check that we still have the same filter applied...
-            if (_newsFeedFilter != null)
+            if (foundNewFriend && !isFirstSync)
             {
-                if (_newsFeedFilter.Key != filterKey)
-                {
-                    return;
-                }
-            }
-            else
-            {
-                if (filterKey != null)
-                {
-                    return;
-                }
+                _UpdateFriendsAsync();
             }
 
-            if (IsOnline)
+            if (posts.Count > 0)
             {
-                RawNewsFeed.Merge(posts, false);
+                bool foundNewPhotos = false;
+                foreach (var post in posts)
+                {
+                    if (post.Updated > _mostRecentNewsfeedItem)
+                    {
+                        _mostRecentNewsfeedItem = post.Updated;
+                    }
+
+                    if (post.Attachment != null && post.Attachment.Type == ActivityPostAttachmentType.Photos)
+                    {
+                        foundNewPhotos = true;
+                    }
+                }
+
+                if (foundNewPhotos && !isFirstSync)
+                {
+                    _UpdatePhotoAlbumsAsync();
+                }
+
+                // Check that we still have the same filter applied...
+                if (_newsFeedFilter != null)
+                {
+                    if (_newsFeedFilter.Key != filterKey)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    if (filterKey != null)
+                    {
+                        return;
+                    }
+                }
+
+                if (IsOnline)
+                {
+                    RawNewsFeed.Merge(posts, true, maxStreamCount);
+                }
             }
 
             if (_facebookApi != null)
@@ -1014,7 +1086,7 @@ namespace Contigo
             }
         }
 
-        private void _UpdateFriendsPhotoAlbumsWorker(object parameter)
+        private void _UpdateFriendsPhotoAlbumsWorker(object unused)
         {
             if (!IsOnline)
             {
@@ -1026,14 +1098,16 @@ namespace Contigo
             _GetPhotosForAlbumsWorker(albums);
         }
 
-        private void _UpdateInterestingPhotoAlbumsWorker(object parameter)
+        private void _UpdateInterestingPhotoAlbumsWorker(object userIdParameter)
         {
             if (!IsOnline)
             {
                 return;
             }
 
-            if (parameter == null)
+            var userId = (string)userIdParameter;
+
+            if (string.IsNullOrEmpty(userId))
             {
                 FacebookContact[] interestingCopy;
                 lock (_localLock)
@@ -1054,8 +1128,7 @@ namespace Contigo
                 }
             }
             else
-            {
-                var userId = (string)parameter;
+            {                
                 List<FacebookPhotoAlbum> albums = _facebookApi.GetUserAlbums(userId);
                 _GetPhotosForAlbumsWorker(albums);
             }
