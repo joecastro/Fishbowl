@@ -59,32 +59,32 @@ namespace FacebookClient
                 _isFirstCheck = false;
             }
 
-            bool isUpdateAvailable;
-            Exception updateEx = _CheckForAppUpdate(out isUpdateAvailable);
-            if (updateEx != null)
+            bool isUpdateAvailable = false;
+            try
             {
-                _NotifyUpdateFailure(new ApplicationUpdateFailedEventArgs { Exception = updateEx, WasUpdateDetected = false });
-                return;
-            }
-
-            if (isUpdateAvailable)
-            {
-                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-                ad.UpdateCompleted += (sender2, e2) => _NotifyUpdateSuccess();
-
-                try
+                UpdateCheckInfo info = ApplicationDeployment.CurrentDeployment.CheckForDetailedUpdate();
+                if (info != null)
                 {
+                    isUpdateAvailable = info.UpdateAvailable;
+                }
+
+                if (isUpdateAvailable)
+                {
+                    ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+                    ad.UpdateCompleted += (sender2, e2) => _NotifyUpdateSuccess();
+
                     ad.UpdateAsync();
                 }
-                catch (Exception ex)
+                else
                 {
-                    _NotifyUpdateFailure(new ApplicationUpdateFailedEventArgs { Exception = ex, WasUpdateDetected = true });
-                    return;
+                    _isUpdating = false;
                 }
             }
-            else
+            catch (Exception ex)
             {
                 _isUpdating = false;
+                _NotifyUpdateFailure(new ApplicationUpdateFailedEventArgs { Exception = ex, WasUpdateDetected = isUpdateAvailable });
+                return;
             }
 
             if (_updateTimer == null)
@@ -92,26 +92,6 @@ namespace FacebookClient
                 _updateTimer = new DispatcherTimer(_steadyUpdateInterval, DispatcherPriority.ApplicationIdle, _TimerTick, Application.Current.Dispatcher);
                 _updateTimer.Start();
             }
-        }
-
-        private static Exception _CheckForAppUpdate(out bool foundUpdate)
-        {
-            foundUpdate = false;
-
-            try
-            {
-                UpdateCheckInfo info = ApplicationDeployment.CurrentDeployment.CheckForDetailedUpdate();
-                if (info != null)
-                {
-                    foundUpdate = info.UpdateAvailable;
-                }
-            }
-            catch (Exception e)
-            {
-                return e;
-            }
-
-            return null;
         }
 
         private static void _NotifyUpdateFailure(ApplicationUpdateFailedEventArgs args)
