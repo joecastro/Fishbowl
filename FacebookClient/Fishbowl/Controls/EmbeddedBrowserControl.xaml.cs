@@ -12,6 +12,7 @@
     public partial class EmbeddedBrowserControl : UserControl
     {
         private DateTime _lastRefresh = DateTime.Now;
+        private bool _hasSuppressedScriptErrors = false;
         private WebBrowser _browser;
         public event EventHandler BrowserShown;
         public event EventHandler BrowserHidden;
@@ -23,6 +24,7 @@
             Assert.IsNull(_browser);
             Assert.IsNull(BrowserHost.Child);
 
+            _hasSuppressedScriptErrors = false;
             _browser = new WebBrowser();
             _browser.Navigated += _OnNavigated;
             _browser.LoadCompleted += _OnLoadCompleted;
@@ -135,7 +137,11 @@
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            Utility.SuppressJavaScriptErrors(_browser);
+            if (!_hasSuppressedScriptErrors)
+            {
+                Utility.SuppressJavaScriptErrors(_browser);
+                _hasSuppressedScriptErrors = true;
+            }
         }
 
         private void _OnNavigated(object sender, NavigationEventArgs e)
@@ -146,6 +152,12 @@
                 uriText = e.Uri.OriginalString;
             }
             _UpdateCaptionText(uriText);
+
+            if (!_hasSuppressedScriptErrors)
+            {
+                Utility.SuppressJavaScriptErrors(_browser);
+                _hasSuppressedScriptErrors = true;
+            }
         }
 
         private void _OnBreakout(object sender, RoutedEventArgs e)
