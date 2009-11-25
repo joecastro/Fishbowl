@@ -39,14 +39,16 @@
         public static RoutedCommand GoToFacebookCommand = new RoutedCommand("GoToFacebook", typeof(MainHeaderControl));
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(MainHeaderControl));
         public static RoutedCommand SignOutCommand = new RoutedCommand("SignOut", typeof(MainHeaderControl));
+        public static RoutedCommand RefreshCommand = new RoutedCommand("Refresh", typeof(MainHeaderControl));
 
         public MainHeaderControl()
         {
-            CommandBindings.Add(new CommandBinding(ShowUploadWizardCommand, new ExecutedRoutedEventHandler(OnShowUploadWizardCommand)));
-            CommandBindings.Add(new CommandBinding(ShowMiniModeCommand, new ExecutedRoutedEventHandler(OnShowMiniModeCommand)));
-            CommandBindings.Add(new CommandBinding(GoToFacebookCommand, new ExecutedRoutedEventHandler(OnGoToFacebookCommand)));
-            CommandBindings.Add(new CommandBinding(ShowSettingsCommand, new ExecutedRoutedEventHandler(OnShowSettingsCommand)));
-            CommandBindings.Add(new CommandBinding(SignOutCommand, new ExecutedRoutedEventHandler(OnSignOutCommand)));
+            CommandBindings.Add(new CommandBinding(ShowUploadWizardCommand, OnShowUploadWizardCommand));
+            CommandBindings.Add(new CommandBinding(ShowMiniModeCommand,     OnShowMiniModeCommand));
+            CommandBindings.Add(new CommandBinding(GoToFacebookCommand,     OnGoToFacebookCommand));
+            CommandBindings.Add(new CommandBinding(ShowSettingsCommand,     OnShowSettingsCommand));
+            CommandBindings.Add(new CommandBinding(SignOutCommand,          OnSignOutCommand));
+            CommandBindings.Add(new CommandBinding(RefreshCommand,          OnRefreshCommand));
         }
 
         public override void OnApplyTemplate()
@@ -126,5 +128,11 @@
         {
             ((MainWindow)Application.Current.MainWindow).SignOut();
         }
+
+        private void OnRefreshCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null);
+        }
+
     }
 }

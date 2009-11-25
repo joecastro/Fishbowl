@@ -62,6 +62,21 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <!-- ArcSegment logic is difficult to do by hand... This isn't quite mathematically right. -->
+  <DrawingBrush x:Key="RefreshArrowDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Children>
+          <GeometryDrawing Geometry="M80,0 A55,55 0 1 0 80,55 M80,-10 70,0 80,0Z">
+            <GeometryDrawing.Pen>
+              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="25" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <DrawingBrush x:Key="BackArrowDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
