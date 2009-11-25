@@ -105,7 +105,7 @@
 
         private void _OnTimerTick(object sender, EventArgs e)
         {
-            while (_pendingChanges.Count > 0)
+            if (_pendingChanges.Count > 0)
             {
                 CollectionChange change = _pendingChanges.Dequeue();
 

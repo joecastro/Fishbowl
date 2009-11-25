@@ -122,7 +122,7 @@
             IFacebookCollection ifb = collection as IFacebookCollection;
             if (ifb != null)
             {
-                return ((IFacebookCollection)collection).EnumerateAndAddNotify(collectionChanged);
+                return ifb.EnumerateAndAddNotify(collectionChanged);
             }
             else
             {
