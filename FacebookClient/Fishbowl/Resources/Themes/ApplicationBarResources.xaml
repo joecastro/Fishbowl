@@ -96,7 +96,7 @@
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="RotatingContentPresenter" Storyboard.TargetProperty="(RenderTransform).(RotateTransform.Angle)" From="0" To="1080" Duration="00:00:02" />
+                    <DoubleAnimation Storyboard.TargetName="RotatingContentPresenter" Storyboard.TargetProperty="(RenderTransform).(RotateTransform.Angle)" From="0" To="720" Duration="00:00:01.5" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
