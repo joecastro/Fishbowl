@@ -794,7 +794,7 @@ namespace Contigo
 
         private void _UpdateNewsFeedAsync()
         {
-            _newsFeedDispatcher.QueueRequest(_UpdateNewsFeedWorker, null);
+            _newsFeedDispatcher.QueueRequest(_UpdateNewsFeedWorker, false);
         }
 
         private void _UpdateNotificationsAsync()
@@ -898,15 +898,38 @@ namespace Contigo
             RawFilters.Merge(filters, false);
         }
 
-        private void _UpdateNewsFeedWorker(object parameter)
+        private void _UpdateNewsFeedWorker(object smallSyncBoolParameter)
         {
-            const int maxStreamCount = 100;
+            Assert.IsFalse(Dispatcher.CheckAccess());
+
+            var doSmallSync = (bool)smallSyncBoolParameter;
+
+            int maxStreamCount = 100;
 
             if (!IsOnline)
             {
                 return;
             }
 
+            // Don't bother with the extra async updates if this is the first time synching,
+            // or if the filter is being changed.
+            bool isFirstSync = _mostRecentNewsfeedItem == DateTime.MinValue;
+
+            // If this is the first sync, just pull in a smaller set of items first to improve the first run experience.
+            // Do it inline to complete the task with the full set right afterwards.
+            if (doSmallSync)
+            {
+                maxStreamCount = 10;
+            }
+            else
+            {
+                if (isFirstSync)
+                {
+                    _UpdateNewsFeedWorker(true);
+                    // Reset the last update time because we want to get the bigger set.
+                    _mostRecentNewsfeedItem = DateTime.MinValue;
+                }
+            }
             List<ActivityPost> posts;
             List<FacebookContact> users;
 
@@ -915,10 +938,6 @@ namespace Contigo
             {
                 filterKey = _newsFeedFilter.Key;
             }
-
-            // Don't bother with the extra async updates if this is the first time synching,
-            // or if the filter is being changed.
-            bool isFirstSync = _mostRecentNewsfeedItem == DateTime.MinValue;
 
             try
             {
@@ -958,7 +977,8 @@ namespace Contigo
                 }
             }
 
-            if (foundNewFriend && !isFirstSync)
+            // Don't bother with this if we're going to immediately turn around and do the full sync.
+            if (!doSmallSync && foundNewFriend && !isFirstSync)
             {
                 _UpdateFriendsAsync();
             }
@@ -979,7 +999,8 @@ namespace Contigo
                     }
                 }
 
-                if (foundNewPhotos && !isFirstSync)
+                // Same as with friends, don't bother is we're in the small sync case.
+                if (!doSmallSync && foundNewPhotos && !isFirstSync)
                 {
                     _UpdatePhotoAlbumsAsync();
                 }
