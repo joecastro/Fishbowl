@@ -62,10 +62,17 @@ namespace Standard
                 Verify.BoundedInteger(startIndex, endIndex.Value, int.MaxValue, "endIndex");
             }
 
-            return _Sublist(enumerable, startIndex, endIndex);
+            // If this supports indexing then just use that.
+            var list = enumerable as IList<T>;
+            if (list != null)
+            {
+                return _SublistList(list, startIndex, endIndex);
+            }
+
+            return _SublistEnum(enumerable, startIndex, endIndex);
         }
 
-        private static IEnumerable<T> _Sublist<T>(this IEnumerable<T> enumerable, int startIndex, int? endIndex)
+        private static IEnumerable<T> _SublistEnum<T>(this IEnumerable<T> enumerable, int startIndex, int? endIndex)
         {
             int currentIndex = 0;
             IEnumerator<T> enumerator = enumerable.GetEnumerator();
@@ -80,6 +87,15 @@ namespace Standard
             {
                 yield return enumerator.Current;
                 ++currentIndex;
+            }
+        }
+
+        private static IEnumerable<T> _SublistList<T>(this IList<T> list, int startIndex, int? endIndex)
+        {
+            int trueEndIndex = Math.Min(list.Count, endIndex ?? int.MaxValue);
+            for (int i = startIndex; i < trueEndIndex; ++i)
+            {
+                yield return list[i];
             }
         }
 

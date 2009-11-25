@@ -1136,10 +1136,24 @@ namespace Contigo
 
         private void _GetPhotosForAlbumsWorker(List<FacebookPhotoAlbum> albums)
         {
+            // Only update albums if we don't already know about it, or if it's been updated more recently than our view.
+
+            List<FacebookPhotoAlbum> batchAlbumList = new List<FacebookPhotoAlbum>();
             int batchCount = 5;
-            for (int i = 0; i < albums.Count; i += batchCount)
+            for (int i = 0; i < albums.Count;)
             {
-                var batchAlbums = (from album in albums.Sublist(i, i + batchCount) select album).ToArray();
+                batchAlbumList.Clear();
+
+                for (; batchAlbumList.Count < batchCount && i < albums.Count; ++i)
+                {
+                    // Do we already know about this album?
+                    FacebookPhotoAlbum sourceAlbum = RawPhotoAlbums.FindFKID(((IMergeable<FacebookPhotoAlbum>)albums[i]).FKID);
+                    if (sourceAlbum == null || sourceAlbum.LastModified != albums[i].LastModified)
+                    {
+                        batchAlbumList.Add(albums[i]);
+                    }
+                }
+
                 List<FacebookPhoto>[] photoCollections;
                 try
                 {
@@ -1147,7 +1161,7 @@ namespace Contigo
                     {
                         return;
                     }
-                    photoCollections = _facebookApi.GetPhotosWithTags(from album in batchAlbums select album.AlbumId);
+                    photoCollections = _facebookApi.GetPhotosWithTags(from album in batchAlbumList select album.AlbumId);
                 }
                 catch
                 {
@@ -1158,16 +1172,16 @@ namespace Contigo
                     continue;
                 }
 
-                for (int currentAlbum = 0; currentAlbum < batchAlbums.Length; ++currentAlbum)
+                for (int currentAlbum = 0; currentAlbum < batchAlbumList.Count; ++currentAlbum)
                 {
-                    batchAlbums[currentAlbum].RawPhotos = new MergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
+                    batchAlbumList[currentAlbum].RawPhotos = new MergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
                 }
 
                 if (!IsOnline)
                 {
                     return;
                 }
-                Dispatcher.Invoke((Action)(() => RawPhotoAlbums.Merge(batchAlbums, true)));
+                Dispatcher.Invoke((Action)(() => RawPhotoAlbums.Merge(batchAlbumList, true)));
             }
         }
 

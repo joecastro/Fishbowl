@@ -97,6 +97,7 @@
         private readonly bool _areItemsMergable;
         private readonly bool _areItemsNotifiable;
         private readonly ObservableCollection<T> _items;
+        private readonly Dictionary<string, T> _fkidLookup;
         private _Comparer _itemComparer = new _Comparer();
 
         public object SyncRoot { get; private set; }
@@ -142,6 +143,15 @@
                             item.PropertyChanged += _OnItemChanged;
                         }
                     }
+                }
+            }
+
+            if (_areItemsMergable)
+            {
+                _fkidLookup = new Dictionary<string,T>();
+                foreach (IMergeable<T> item in _items)
+                {
+                    _fkidLookup.Add(item.FKID, (T)item);
                 }
             }
         }
@@ -215,12 +225,12 @@
                     throw new InvalidOperationException("This can only be used on collections with Mergeable items.");
                 }
 
-                int index = _FindIndex(0, p => p.FKID == id);
-                if (index == -1)
+                T ret;
+                if (_fkidLookup.TryGetValue(id, out ret))
                 {
-                    return null;
+                    return ret;
                 }
-                return _items[index];
+                return null;
             }
         }
 
@@ -299,10 +309,15 @@
             {
                 foreach (var item in _items)
                 {
-                    _SafeRemoveNotify(item);
+                    _SafeRemoveNotifyAndLookup(item);
                 }
             }
             _items.Clear();
+
+            if (_fkidLookup != null)
+            {
+                _fkidLookup.Clear();
+            }
         }
 
         private void _RichMerge(IEnumerable<T> newCollection, bool additive, int? maxCount)
@@ -327,7 +342,7 @@
                         if (oldIndex == -1)
                         {
                             _items.Insert(index, newItem);
-                            _SafeAddNotify(newItem);
+                            _SafeAddNotifyAndLookup(newItem);
                             continue;
                         }
                         else if (oldIndex != index)
@@ -369,7 +384,7 @@
                             {
                                 _items.Insert(index, item);
                             }
-                            _SafeAddNotify(item);
+                            _SafeAddNotifyAndLookup(item);
                         }
                         else
                         {
@@ -391,7 +406,7 @@
         {
             while (index < _items.Count)
             {
-                _SafeRemoveNotify(_items[index]);
+                _SafeRemoveNotifyAndLookup(_items[index]);
                 _items.RemoveAt(index);
             }
         }
@@ -413,7 +428,7 @@
                     foreach (T item in _itemComparer.OrderedList(newCollection).Sublist(0, maxCount))
                     {
                         _items.Add(item);
-                        _SafeAddNotify(item);
+                        _SafeAddNotifyAndLookup(item);
                     }
                 }
                 else
@@ -432,7 +447,7 @@
                             {
                                 _items.Insert(index, item);
                             }
-                            _SafeAddNotify(item);
+                            _SafeAddNotifyAndLookup(item);
                         }
                     }
 
@@ -445,21 +460,31 @@
             }
         }
 
-        private void _SafeAddNotify(T item)
+        private void _SafeAddNotifyAndLookup(T item)
         {
             Assert.IsNotNull(item);
             if (_areItemsNotifiable)
             {
                 ((INotifyPropertyChanged)item).PropertyChanged += _OnItemChanged;
             }
+
+            if (_areItemsMergable)
+            {
+                _fkidLookup.Add(((IMergeable<T>)item).FKID, item);
+            }
         }
 
-        private void _SafeRemoveNotify(T item)
+        private void _SafeRemoveNotifyAndLookup(T item)
         {
             Assert.IsNotNull(item);
             if (_areItemsNotifiable)
             {
                 ((INotifyPropertyChanged)item).PropertyChanged -= _OnItemChanged;
+            }
+
+            if (_areItemsMergable)
+            {
+                _fkidLookup.Remove(((IMergeable<T>)item).FKID);
             }
         }
 
