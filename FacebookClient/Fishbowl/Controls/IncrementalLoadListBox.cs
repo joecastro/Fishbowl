@@ -10,19 +10,15 @@
     using System.Windows.Controls;
     using System.Windows.Threading;
     using Standard;
+    using Contigo;
 
-    /// <remarks>
-    /// The underlying data source should have most of its data already available before this class is constructed.
-    /// This class only incrementally updates its ItemsSource on load.
-    /// </remarks>
     public class IncrementalLoadListBox : ListBox
     {
         private const int PerItemMillisecondDelay = 10;
 
         private readonly ObservableCollection<object> _collection = new ObservableCollection<object>();
-        private DispatcherTimer _timer;
-        private bool _isLoading;
-        private List<object> _originalList;
+        private readonly Queue<CollectionChange> _pendingChanges = new Queue<CollectionChange>();
+        private readonly DispatcherTimer _timer = new DispatcherTimer();
 
         public static DependencyProperty ActualItemsSourceProperty = DependencyProperty.Register(
             "ActualItemsSource", 
@@ -44,28 +40,23 @@
 
             this.Loaded += (sender, e) =>
             {
-                _timer = new DispatcherTimer();
                 _timer.Interval = TimeSpan.FromMilliseconds(PerItemMillisecondDelay);
                 _timer.Tick += _OnTimerTick;
+                _timer.Start();
 
                 if (ActualItemsSource != null)
                 {
-                    ((INotifyCollectionChanged)ActualItemsSource).CollectionChanged += _OnActualItemsSourceCollectionChanged;
-
-                    _originalList = new List<object>(ActualItemsSource.OfType<object>());
-                    if (_originalList.Count == 0)
-                    {
-                        _originalList = null;
-                        return;
-                    }
-
-                    _isLoading = true;
-                    _timer.Start();
+                    _QueueInitialInserts();
+                    _OnTimerTick(null, null);
                 }
             };
 
             this.Unloaded += (sender, e) =>
             {
+                _pendingChanges.Clear();
+                _collection.Clear();
+
+                _timer.Stop();
                 _timer.Tick -= _OnTimerTick;
                 _timer.IsEnabled = false;
 
@@ -76,6 +67,17 @@
             };
         }
 
+        private void _QueueInitialInserts()
+        {
+            IEnumerable items = FacebookCollection<object>.EnumerateAndAddNotify(ActualItemsSource, _OnActualItemsSourceCollectionChanged);
+            int index = 0;
+
+            foreach (object item in items)
+            {
+                _pendingChanges.Enqueue(new CollectionChange(item, index, CollectionChangeType.Add));
+                index++;
+            }
+        }
 
         private void _OnActualItemsSourceChanged(DependencyPropertyChangedEventArgs e)
         {
@@ -84,13 +86,8 @@
                 return;
             }
 
+            _pendingChanges.Clear();
             _collection.Clear();
-
-            if (_isLoading)
-            {
-                _timer.Stop();
-                _isLoading = false;
-            }
 
             if (e.OldValue != null)
             {
@@ -102,133 +99,86 @@
                 return;
             }
 
-            ((INotifyCollectionChanged)ActualItemsSource).CollectionChanged += _OnActualItemsSourceCollectionChanged;
-
-            // Copy the items as they currently stand. We'll add these to the list incrementally,
-            // and worry about any intermediate changes at the end.
-            _originalList = new List<object>(ActualItemsSource.OfType<object>());
-            if (_originalList.Count == 0)
-            {
-                _originalList = null;
-                return;
-            }
-
-            _isLoading = true;
-            _timer.Start();
+            _QueueInitialInserts();
             _OnTimerTick(null, null);
         }
 
         private void _OnTimerTick(object sender, EventArgs e)
         {
-            Assert.IsTrue(_isLoading);
-            if (!_isLoading)
+            while (_pendingChanges.Count > 0)
             {
-                return;
-            }
+                CollectionChange change = _pendingChanges.Dequeue();
 
-            _collection.Add(_originalList[0]);
-            _originalList.RemoveAt(0);
-
-            if (_originalList.Count == 0)
-            {
-                _originalList = null;
-                _isLoading = false;
-                _timer.Stop();
-
-                // Now we have to account for any intermediate changes and make _collection identical to ActualItemsSource.
-                // The assumption here is that we'll have most of the data in the correct order to begin with, so this shouldn't take long.
-                // TODO: do something better than n^2.
-
-                int pos = 0;
-
-                foreach (object item in this.ActualItemsSource)
+                switch (change.Type)
                 {
-                    int idx = _collection.IndexOf(item); // does unnecessary work.
-                    if (idx == -1)
-                    {
-                        _collection.Insert(pos, item);
-                    }
-                    else if (idx != pos)
-                    {
-                        object temp = _collection[pos];
-                        _collection[pos] = item;
-                        _collection[idx] = temp;
-                    }
-
-                    pos++;
+                    case CollectionChangeType.Add:
+                        Assert.IsTrue(change.Index <= _collection.Count);
+                        _collection.Insert(change.Index, change.Item);
+                        break;
+                    case CollectionChangeType.Remove:
+                        Assert.IsTrue(change.Index < _collection.Count);
+                        _collection.RemoveAt(change.Index);
+                        break;
+                    case CollectionChangeType.Reset:
+                        _collection.Clear();
+                        break;
+                    default:
+                        Assert.Fail();
+                        break;
                 }
-
-                if (_collection.Count != pos)
-                {
-                    for (int i = _collection.Count - 1; i >= pos; i--)
-                    {
-                        _collection.RemoveAt(i);
-                    }
-                }
-
-                _VerifyCollection();
             }
-        }
-
-        private void _VerifyCollection()
-        {           
-            int idx = 0;
-
-            foreach (object item in this.ActualItemsSource)
-            {
-                Assert.IsTrue(_collection.Count > idx);
-                Assert.ReferenceEquals(_collection[idx++], item);
-            }
-
-            Assert.IsTrue(_collection.Count == idx);
         }
 
         private void _OnActualItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            base.VerifyAccess();
+            // We can't make this assertion yet.
+            //base.VerifyAccess();
 
-            if (!_isLoading)
+            switch (e.Action)
             {
-                // At this point, _collection should have been identical to ActualItemsSource before this change.
+                case NotifyCollectionChangedAction.Add:
+                    Assert.IsTrue(e.NewStartingIndex != -1);
+                    Assert.IsTrue(e.NewItems.Count == 1);
 
-                int idx;
+                    _pendingChanges.Enqueue(new CollectionChange(e.NewItems[0], e.NewStartingIndex, CollectionChangeType.Add));
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    Assert.IsTrue(e.OldItems.Count == 1);
 
-                switch (e.Action)
-                {
-                    case NotifyCollectionChangedAction.Add:
-                        idx = e.NewStartingIndex;
-                        foreach (var item in e.NewItems)
-                        {
-                            if (idx == -1)
-                            {
-                                _collection.Add(item);
-                            }
-                            else
-                            {
-                                _collection.Insert(idx++, item);
-                            }
-                        }
-
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        idx = e.OldStartingIndex;
-                        foreach (var item in e.OldItems)
-                        {
-                            _collection.RemoveAt(idx);
-                        }
-
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        _collection.Clear();
-                        break;
-                    case NotifyCollectionChangedAction.Move:
-                        Assert.Fail();
-                        break;
-                    case NotifyCollectionChangedAction.Replace:
-                        Assert.Fail();
-                        break;
-                }
+                    _pendingChanges.Enqueue(new CollectionChange(e.OldItems[0], e.OldStartingIndex, CollectionChangeType.Remove));
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    _pendingChanges.Enqueue(new CollectionChange(null, 0, CollectionChangeType.Reset));
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    Assert.Fail();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    Assert.Fail();
+                    break;
             }
+        }
+
+        private enum CollectionChangeType
+        {
+            Invalid,
+            Add,
+            Remove,
+            Reset
+        }
+
+        private class CollectionChange
+        {
+            public CollectionChange(object item, int index, CollectionChangeType type)
+            {
+                Item = item;
+                Index = index;
+                Type = type;
+            }
+
+            public object Item { get; private set; }
+            public int Index { get; private set; }
+            public CollectionChangeType Type { get; private set; }
         }
     }
 }

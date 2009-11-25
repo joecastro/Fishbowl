@@ -12,10 +12,18 @@
     using Standard;
 
     /// <summary>
+    /// Support interface for EnumerateAndAddNotify.
+    /// </summary>
+    internal interface IFacebookCollection
+    {
+        IEnumerable EnumerateAndAddNotify(NotifyCollectionChangedEventHandler collectionChanged);
+    }
+
+    /// <summary>
     /// A read-only collection of Facebook data.
     /// </summary>
     /// <remarks>This class must only be accessed on the thread on which it was created.</remarks>
-    public class FacebookCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IFacebookObject where T : class
+    public class FacebookCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IFacebookObject, IFacebookCollection where T : class
     {
         private MergeableCollection<T> _sourceCollection;
         private readonly Dispatcher _dispatcher;
@@ -108,6 +116,34 @@
                 _NotifyPropertyChanged("Count");
             });
         }
+
+        public static IEnumerable EnumerateAndAddNotify(IEnumerable collection, NotifyCollectionChangedEventHandler collectionChanged)
+        {
+            IFacebookCollection ifb = collection as IFacebookCollection;
+            if (ifb != null)
+            {
+                return ((IFacebookCollection)collection).EnumerateAndAddNotify(collectionChanged);
+            }
+            else
+            {
+                ((INotifyCollectionChanged)collection).CollectionChanged += collectionChanged;
+                return collection;
+            }
+        }
+
+        #region IFacebookCollection Members
+
+        IEnumerable IFacebookCollection.EnumerateAndAddNotify(NotifyCollectionChangedEventHandler collectionChanged)
+        {
+            lock (_sourceCollection.SyncRoot)
+            {
+                List<T> items = new List<T>(_sourceCollection);
+                _sourceCollection.CollectionChanged += collectionChanged;
+                return items;
+            }
+        }
+
+        #endregion
 
         #region IList<T> Members
 
