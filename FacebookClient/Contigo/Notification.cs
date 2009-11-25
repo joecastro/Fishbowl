@@ -232,12 +232,16 @@ namespace Contigo
 
         #region IMergeable<Notification> Members
 
-        public string FKID
+        string IMergeable<Notification>.FKID
         {
-            get { return NotificationId.ToString(); }
+            get
+            {
+                Assert.IsNeitherNullNorEmpty(NotificationId);
+                return NotificationId.ToString(); 
+            }
         }
 
-        public void Merge(Notification other)
+        void IMergeable<Notification>.Merge(Notification other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(NotificationId, other.NotificationId, "other", "This can only be merged with a Notification with the same Id.");
@@ -298,7 +302,7 @@ namespace Contigo
             Updated = DateTime.Now;
             IsHidden = false;
             IsUnread = true;
-            NotificationId = null;
+            NotificationId = "FriendRequest_" + userId;
             RecipientId = service.UserId;
             SenderId = userId;
             Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");

@@ -111,12 +111,16 @@
 
         #region IMergeable<ActivityFilter> Members
 
-        public string FKID
+        string IMergeable<ActivityFilter>.FKID
         {
-            get { return Key; }
+            get 
+            {
+                Assert.IsNeitherNullNorEmpty(Key);
+                return Key; 
+            }
         }
 
-        public void Merge(ActivityFilter other)
+        void IMergeable<ActivityFilter>.Merge(ActivityFilter other)
         {
             Verify.IsNotNull(other, "other");
             if (other.Key != this.Key)

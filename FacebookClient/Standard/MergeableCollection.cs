@@ -151,6 +151,7 @@
                 _fkidLookup = new Dictionary<string,T>();
                 foreach (IMergeable<T> item in _items)
                 {
+                    Assert.IsNeitherNullNorEmpty(item.FKID);
                     _fkidLookup.Add(item.FKID, (T)item);
                 }
             }
@@ -470,6 +471,7 @@
 
             if (_areItemsMergable)
             {
+                Assert.IsNeitherNullNorEmpty(((IMergeable<T>)item).FKID);
                 _fkidLookup.Add(((IMergeable<T>)item).FKID, item);
             }
         }
@@ -484,6 +486,7 @@
 
             if (_areItemsMergable)
             {
+                Assert.IsNeitherNullNorEmpty(((IMergeable<T>)item).FKID);
                 _fkidLookup.Remove(((IMergeable<T>)item).FKID);
             }
         }

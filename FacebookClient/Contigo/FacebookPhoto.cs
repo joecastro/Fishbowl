@@ -279,9 +279,16 @@ namespace Contigo
 
         #region IMergeable<FacebookPhoto> Members
 
-        public string FKID { get { return PhotoId; } }
+        string IMergeable<FacebookPhoto>.FKID
+        { 
+            get 
+            {
+                Assert.IsNeitherNullNorEmpty(PhotoId);
+                return PhotoId;
+            }
+        }
 
-        public void Merge(FacebookPhoto other)
+        void IMergeable<FacebookPhoto>.Merge(FacebookPhoto other)
         {
         }
 
