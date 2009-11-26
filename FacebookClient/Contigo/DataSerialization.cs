@@ -352,7 +352,7 @@ namespace Contigo
             {
                 contact.StatusMessage = new ActivityPost(_service)
                 {
-                    PostId = "",
+                    PostId = "status_" + contact.UserId,
                     ActorUserId = _SafeGetElementValue(elt, ns + "uid"),
                     Created = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,
                     Updated = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,
@@ -464,6 +464,9 @@ namespace Contigo
             return tag;
         }
 
+        // Just in case Facebook messes up and gives us a bad post.  Don't let it crash the app.
+        private int _badFacebookCounter = 1;
+
         private ActivityPost _DeserializePostData(XNamespace ns, XElement elt)
         {
             var post = new ActivityPost(_service);
@@ -507,6 +510,12 @@ namespace Contigo
             XElement commentsElement = elt.Element(ns + "comments");
 
             post.PostId = _SafeGetElementValue(elt, ns + "post_id");
+            if (string.IsNullOrEmpty(post.PostId))
+            {
+                // Massive Facebook failure.
+                Assert.Fail();
+                post.PostId = "FacebookGotItWrongCount_" + _badFacebookCounter++;
+            }
             post.ActorUserId = _SafeGetElementValue(elt, ns + "actor_id");
             post.Created = _SafeGetElementDateTime(elt, ns + "created_time") ?? _UnixEpochTime;
             post.Message = _SafeGetElementValue(elt, ns + "message");
