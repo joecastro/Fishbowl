@@ -12,8 +12,6 @@
     <SignManifests>false</SignManifests>
     <MinFrameworkVersionRequired>3.0</MinFrameworkVersionRequired>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <ManifestKeyFile>ScePhotoViewer_TemporaryKey.pfx</ManifestKeyFile>
-    <ManifestCertificateThumbprint>FEF0E759148E341B5FC622FDF1FAE8CE6BF79637</ManifestCertificateThumbprint>
     <GenerateManifests>true</GenerateManifests>
     <ApplicationExtension>.application</ApplicationExtension>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -28,7 +26,9 @@
     <SccProvider>SAK</SccProvider>
     <TargetZone>LocalIntranet</TargetZone>
     <PublishWizardCompleted>true</PublishWizardCompleted>
-    <PublishUrl>ftp://ftp.fishbowlcli.web705.discountasp.net/</PublishUrl>
+    <ManifestCertificateThumbprint>355EF39F2A89A96CB5722BFC0AA701268393AB7D</ManifestCertificateThumbprint>
+    <ManifestKeyFile>FishBowl_TemporaryKey.pfx</ManifestKeyFile>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -44,8 +44,8 @@
     <PublisherName>Fishbowl</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>120</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>192</ApplicationRevision>
+    <ApplicationVersion>1.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -304,6 +304,7 @@
     </Compile>
     <Compile Include="UIListPager.cs" />
     <None Include="app.config" />
+    <None Include="FishBowl_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
