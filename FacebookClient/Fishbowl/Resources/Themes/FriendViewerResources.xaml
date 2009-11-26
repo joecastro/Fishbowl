@@ -546,7 +546,7 @@
                 <Setter Property="IsRunning" Value="False" />
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding Path=FacebookContact.RecentActivity.Count}" Value="0">
+                  <DataTrigger Binding="{Binding ElementName=PART_WallItemsControl, Path=ItemsSource.Count}" Value="0">
                     <Setter Property="IsRunning" Value="True" />
                   </DataTrigger>
                   <DataTrigger Binding="{Binding WallDisplayIndex}" Value="0">

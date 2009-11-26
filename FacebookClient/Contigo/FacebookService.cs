@@ -261,10 +261,13 @@ namespace Contigo
             {
                 _newsFeedFilter = value;
                 _NotifyPropertyChanged("NewsFeedFilter");
-                RawNewsFeed.Clear();
-                // We want to get all the data again.
-                _mostRecentNewsfeedItem = DateTime.MinValue;
-                _UpdateNewsFeedAsync();                
+                _newsFeedDispatcher.QueueRequest((o) =>
+                {
+                    RawNewsFeed.Clear();
+                    // We want to get all the data again.
+                    _mostRecentNewsfeedItem = DateTime.MinValue;
+                    _UpdateNewsFeedAsync();                
+                }, null);
             }
         }
 

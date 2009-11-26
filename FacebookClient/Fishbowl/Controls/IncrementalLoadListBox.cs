@@ -19,6 +19,8 @@
         private readonly ObservableCollection<object> _collection = new ObservableCollection<object>();
         private readonly Queue<CollectionChange> _pendingChanges = new Queue<CollectionChange>();
         private readonly DispatcherTimer _timer = new DispatcherTimer();
+        // Guard against multi-threaded access to the Queue
+        private readonly object _lock = new object();
 
         public static DependencyProperty ActualItemsSourceProperty = DependencyProperty.Register(
             "ActualItemsSource", 
@@ -46,8 +48,11 @@
 
                 if (ActualItemsSource != null)
                 {
-                    _QueueInitialInserts();
-                    _OnTimerTick(null, null);
+                    lock (_lock)
+                    {
+                        _QueueInitialInserts();
+                        _OnTimerTick(null, null);
+                    }
                 }
             };
 
@@ -86,76 +91,91 @@
                 return;
             }
 
-            _pendingChanges.Clear();
-            _collection.Clear();
-
-            if (e.OldValue != null)
+            lock (_lock)
             {
-                ((INotifyCollectionChanged)e.OldValue).CollectionChanged -= _OnActualItemsSourceCollectionChanged;
-            }
+                if (e.OldValue != null)
+                {
+                    ((INotifyCollectionChanged)e.OldValue).CollectionChanged -= _OnActualItemsSourceCollectionChanged;
+                }
 
-            if (e.NewValue == null)
-            {
-                return;
-            }
+                _pendingChanges.Clear();
+                _collection.Clear();
 
-            _QueueInitialInserts();
+                if (e.NewValue == null)
+                {
+                    return;
+                }
+
+                _QueueInitialInserts();
+            }
             _OnTimerTick(null, null);
         }
 
         private void _OnTimerTick(object sender, EventArgs e)
         {
-            if (_pendingChanges.Count > 0)
+            lock (_lock)
             {
-                CollectionChange change = _pendingChanges.Dequeue();
-
-                switch (change.Type)
+                if (_pendingChanges.Count > 0)
                 {
-                    case CollectionChangeType.Add:
-                        Assert.IsTrue(change.Index <= _collection.Count);
-                        _collection.Insert(change.Index, change.Item);
-                        break;
-                    case CollectionChangeType.Remove:
-                        Assert.IsTrue(change.Index < _collection.Count);
-                        _collection.RemoveAt(change.Index);
-                        break;
-                    case CollectionChangeType.Reset:
-                        _collection.Clear();
-                        break;
-                    default:
-                        Assert.Fail();
-                        break;
+                    CollectionChange change = _pendingChanges.Dequeue();
+
+                    switch (change.Type)
+                    {
+                        case CollectionChangeType.Add:
+                            Assert.IsTrue(change.Index <= _collection.Count);
+                            _collection.Insert(change.Index, change.Item);
+                            break;
+                        case CollectionChangeType.Remove:
+                            Assert.IsTrue(change.Index < _collection.Count);
+                            _collection.RemoveAt(change.Index);
+                            break;
+                        case CollectionChangeType.Reset:
+                            _collection.Clear();
+                            break;
+                        default:
+                            Assert.Fail();
+                            break;
+                    }
                 }
             }
         }
 
         private void _OnActualItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            // We can't make this assertion yet.
-            //base.VerifyAccess();
+            VerifyAccess();
 
-            switch (e.Action)
+            lock (_lock)
             {
-                case NotifyCollectionChangedAction.Add:
-                    Assert.IsTrue(e.NewStartingIndex != -1);
-                    Assert.IsTrue(e.NewItems.Count == 1);
+                if (sender != ActualItemsSource)
+                {
+                    return;
+                }
 
-                    _pendingChanges.Enqueue(new CollectionChange(e.NewItems[0], e.NewStartingIndex, CollectionChangeType.Add));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Assert.IsTrue(e.OldItems.Count == 1);
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        Assert.IsTrue(e.NewStartingIndex != -1);
+                        Assert.IsTrue(e.NewItems.Count == 1);
 
-                    _pendingChanges.Enqueue(new CollectionChange(e.OldItems[0], e.OldStartingIndex, CollectionChangeType.Remove));
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    _pendingChanges.Enqueue(new CollectionChange(null, 0, CollectionChangeType.Reset));
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    Assert.Fail();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    Assert.Fail();
-                    break;
+                        _pendingChanges.Enqueue(new CollectionChange(e.NewItems[0], e.NewStartingIndex, CollectionChangeType.Add));
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        Assert.IsTrue(e.OldItems.Count == 1);
+
+                        _pendingChanges.Enqueue(new CollectionChange(e.OldItems[0], e.OldStartingIndex, CollectionChangeType.Remove));
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        // We have a lock on the collection.  If we've reset then we want the collection to immediately clear.
+                        _pendingChanges.Clear();
+                        _pendingChanges.Enqueue(new CollectionChange(null, 0, CollectionChangeType.Reset));
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        Assert.Fail();
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        Assert.Fail();
+                        break;
+                }
             }
         }
 

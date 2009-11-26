@@ -56,20 +56,10 @@
           <FacebookClient:IncrementalLoadListBox x:Name="IncrementalLoadListBox" 
               ScrollViewer.VerticalScrollBarVisibility="Disabled" 
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              ActualItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed}"
               BorderThickness="0"
               Margin="0,0,0,0" Background="Transparent"
               ItemTemplate="{StaticResource NewsFeedItemTemplate}" MaxWidth="800">
-            <FacebookClient:IncrementalLoadListBox.Style>
-              <Style TargetType="{x:Type FacebookClient:IncrementalLoadListBox}">
-                <!-- Reset the ItemsSource when the count is zero because we want the incremental load behavior whenever it goes from zero to something. -->
-                <Setter Property="ActualItemsSource" Value="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed}" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed.Count}" Value="0">
-                    <Setter Property="ActualItemsSource" Value="{x:Null}" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </FacebookClient:IncrementalLoadListBox.Style>
             <ListBox.ItemContainerStyle>
               <Style TargetType="ListBoxItem">
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />

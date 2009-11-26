@@ -138,7 +138,7 @@
             lock (_sourceCollection.SyncRoot)
             {
                 List<T> items = new List<T>(_sourceCollection);
-                _sourceCollection.CollectionChanged += collectionChanged;
+                CollectionChanged += collectionChanged;
                 return items;
             }
         }
