@@ -20,6 +20,38 @@
         // False positives are better UX than false negatives.
         private static readonly Regex _SimpleUrlRegex = new Regex(@"(http://|www\.[a-zA-Z0-9])[^ \t\r\n\v\f\(\)!,]+");
 
+        // These are characters we should change before trying to parse with XML.
+        // Do not check in changes to this file if these characters look funny.
+        // If you see strange characters at the beginning of this file then the editor is not detecting the BOM.
+        private static readonly Dictionary<string, string> _EarlyDiacriticLookup = new Dictionary<string, string>
+        {
+            { "&euro;",   "€" },
+            { "&nbsp",    new string((char)160, 1) },
+            { "&iexcl;",  "¡" },
+            { "&iquest;", "¿" },
+            { "&Aacute;", "Á" },
+            { "&Eacute;", "É" },
+            { "&Iacute;", "Í" },
+            { "&Ntilde;", "Ñ" },
+            { "&Oacute;", "Ó" },
+            { "&Uacute;", "Ú" },
+            { "&Uuml;",   "Ü" },
+            { "&aacute;", "á" },
+            { "&eacute;", "é" },
+            { "&iacute;", "í" },
+            { "&ntilde;", "ñ" },
+            { "&oacute;", "ó" },
+            { "&uacute;", "ú" },
+            { "&uuml;",   "ü" },
+        };
+
+        // These are characters we should change later.  We don't want these strings removed from within URIs.
+        private static readonly Dictionary<string, string> _LateDiacriticLookup = new Dictionary<string, string>
+        {
+            { "&quot;",    "\"" },
+            { "&amp;",     "&" },
+        };
+
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
             "Text",
             typeof(string),
@@ -52,6 +84,18 @@
             this.SetBinding(FrameworkContentElement.DataContextProperty, b);
         }
 
+        private static XDocument _SafeParseXDocument(string text)
+        {
+            if (text.Contains('&'))
+            {
+                foreach (var diacriticPair in _EarlyDiacriticLookup)
+                {
+                     text = text.Replace(diacriticPair.Key, diacriticPair.Value);
+                }
+            }
+            return XDocument.Parse("<div>" + text + "</div>", LoadOptions.PreserveWhitespace);
+        }
+
         private void _GenerateInlines()
         {
             Inlines.Clear();
@@ -60,7 +104,6 @@
             if (!string.IsNullOrEmpty(this.Text))
             {
                 string text = this.Text;
-                text = text.Replace("&nbsp;", " ");
                 bool formatted = false;
                 if (text.StartsWith("<div", StringComparison.OrdinalIgnoreCase))
                 {
@@ -97,10 +140,10 @@
             Assert.IsNeitherNullNorEmpty(text);
             // Enclose these in a redundant <div> tag pair because we're seeing multiple
             // top level elements in the text.
-            XDocument xdoc = XDocument.Parse("<div>" + text + "</div>", LoadOptions.PreserveWhitespace);
+            XDocument xdoc = _SafeParseXDocument(text);
+            bool hasData = false;
             foreach (var node in xdoc.Root.Nodes())
             {
-                bool hasData = false;
                 IEnumerable<Inline> inlines = _BuildInlinesFromFragment(node);
                 foreach (var inline in inlines)
                 {
@@ -123,6 +166,15 @@
                 {
                     text = " ";
                 }
+
+                if (text.Contains('&'))
+                {
+                    foreach (var diacriticPair in _LateDiacriticLookup)
+                    {
+                        text = text.Replace(diacriticPair.Key, diacriticPair.Value);
+                    }
+                }
+
                 yield return new Run(text);
                 yield break;
             }
@@ -146,7 +198,25 @@
                         break;
                     case "DIV":
                         yield return new LineBreak();
-                        span = new Span();
+
+                        // Facebook makes some textual distinctions based on div class names.
+                        XAttribute classAttr = element.Attribute("class");
+                        if (classAttr != null)
+                        {
+                            switch (classAttr.Value)
+                            {
+                                case "UIStoryAttachment_Title":
+                                    span = new Bold();
+                                    break;
+                                default:
+                                    span = new Span();
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            span = new Span();
+                        }
                         break;
                     case "A":
                         // hyperlinks are special because Facebook apps tend to be sloppy and nest them.
