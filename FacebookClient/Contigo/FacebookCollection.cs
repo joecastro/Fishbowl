@@ -106,15 +106,15 @@
 
         private void _OnSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _dispatcher.BeginInvoke((Action)delegate
+            var handler = _sourceCollectionChanged;
+            if (handler != null)
             {
-                var handler = _sourceCollectionChanged;
-                if (handler != null)
+                _dispatcher.BeginInvoke((Action)delegate
                 {
                     handler(this, e);
-                }
-                _NotifyPropertyChanged("Count");
-            });
+                    _NotifyPropertyChanged("Count");
+                });
+            }            
         }
 
         public static IEnumerable EnumerateAndAddNotify(IEnumerable collection, NotifyCollectionChangedEventHandler collectionChanged)
