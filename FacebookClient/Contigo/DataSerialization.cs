@@ -12,6 +12,9 @@ namespace Contigo
 
     internal class DataSerialization
     {
+        // Just in case Facebook messes up and gives us bad data for an id that's supposed to be unique.  Don't let it crash the app.
+        private static int _badFacebookCounter = 1;
+
         /// <summary>The start time for Unix based clocks.  Facebook usually returns their timestamps based on ticks from this value.</summary>
         private static readonly DateTime _UnixEpochTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -179,6 +182,11 @@ namespace Contigo
                 Assert.IsTrue(ret.IsAbsoluteUri);
             }
             return ret;
+        }
+
+        private static string _SafeGetUniqueId()
+        {
+            return "FacebookGotItWrongCount_" + _badFacebookCounter++;
         }
 
         private static bool _IsValidXmlCharacter(char c)
@@ -464,9 +472,6 @@ namespace Contigo
             return tag;
         }
 
-        // Just in case Facebook messes up and gives us a bad post.  Don't let it crash the app.
-        private int _badFacebookCounter = 1;
-
         private ActivityPost _DeserializePostData(XNamespace ns, XElement elt)
         {
             var post = new ActivityPost(_service);
@@ -514,7 +519,7 @@ namespace Contigo
             {
                 // Massive Facebook failure.
                 Assert.Fail();
-                post.PostId = "FacebookGotItWrongCount_" + _badFacebookCounter++;
+                post.PostId = _SafeGetUniqueId();
             }
             post.ActorUserId = _SafeGetElementValue(elt, ns + "actor_id");
             post.Created = _SafeGetElementDateTime(elt, ns + "created_time") ?? _UnixEpochTime;
@@ -1069,6 +1074,49 @@ namespace Contigo
         {
             XDocument xdoc = SafeParseDocument(xml);
             return xdoc.Root.Value;
+        }
+
+        public List<MessageNotification> DeserializeMessageQueryResponse(string xml)
+        {
+            var messageList = new List<MessageNotification>();
+
+            XDocument xdoc = SafeParseDocument(xml);
+            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+
+            var messageNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements(ns + "thread")
+                               select _DeserializeMessageNotificationData(ns, elt);
+            messageList.AddRange(messageNodes);
+            return messageList;
+        }
+
+        private MessageNotification _DeserializeMessageNotificationData(XNamespace ns, XElement elt)
+        {
+            var message = new MessageNotification(_service)
+            {
+                Created = _SafeGetElementDateTime(elt, ns + "updated_time") ?? _UnixEpochTime,
+                IsUnread = _SafeGetElementValue(elt, ns + "unread") == "1",
+                DescriptionText = _SafeGetElementValue(elt, ns + "snippet"),
+                IsHidden = false,
+                NotificationId = _SafeGetElementValue(elt, ns + "thread_id"),
+                // TODO: This is actually a list of recipients.
+                RecipientId = _SafeGetElementValue(elt, ns + "recipients", ns + "uid"),
+                SenderId = _SafeGetElementValue(elt, ns + "snippet_author"),
+                Title = _SafeGetElementValue(elt, ns + "subject"),
+                Updated = _SafeGetElementDateTime(elt, ns + "updated_time") ?? DateTime.Now,
+            };
+
+            if (!string.IsNullOrEmpty(message.NotificationId))
+            {
+                message.Link = new Uri(string.Format("http://www.facebook.com/inbox/#/inbox/?folder=[fb]messages&page=1&tid={0}", message.NotificationId));
+            }
+            else
+            {
+                Assert.Fail();
+                message.NotificationId = _SafeGetUniqueId();
+                message.Link = new Uri("http://www.facebook.com/inbox");
+            }
+
+            return message;
         }
     }
 }

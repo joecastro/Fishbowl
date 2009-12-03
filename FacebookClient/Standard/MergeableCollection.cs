@@ -124,8 +124,9 @@
             }
 
             // We don't really want to constrain based on the type being IMergeable or comparable
-            _areItemsMergable = typeof(T).GetInterface(typeof(IMergeable<T>).Name) != null;
-            _areItemsNotifiable = typeof(T).GetInterface(typeof(INotifyPropertyChanged).Name) != null;
+            // This is a very specific check.  We want to ensure that this type supports IMergeable<T>, not IMergeable<SomethingElse>
+            _areItemsMergable = typeof(T).GetInterfaces().Any(type => type == typeof(IMergeable<T>));
+            _areItemsNotifiable = typeof(T).GetInterfaces().Any(type => type == typeof(INotifyPropertyChanged));
 
             if (dataObjects == null)
             {

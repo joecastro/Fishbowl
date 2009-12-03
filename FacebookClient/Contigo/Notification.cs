@@ -68,30 +68,52 @@ namespace Contigo
 
         public string TitleText
         {
-            get { return _titleText.GetString(); }
+            get
+            {
+                if (_titleText == default(SmallString))
+                {
+                    return _title.GetString();
+                }
+                return _titleText.GetString();
+            }
             set
             {
                 SmallString newValue = new SmallString(value);
                 if (_titleText != newValue)
                 {
                     _titleText = newValue;
-                    // Internal property, don't raise change notifications.
-                    //_NotifyPropertyChanged("TitleText");
+                    _NotifyPropertyChanged("TitleText");
+                    if (_titleText == default(SmallString) || _title == default(SmallString))
+                    {
+                        // It didn't necessarily, but it's worth checking.
+                        _NotifyPropertyChanged("Title");
+                    }
                 }
             }
         }
 
         public string DescriptionText 
         {
-            get { return _descriptionText.GetString(); }
+            get 
+            {
+                if (_descriptionText == default(SmallString))
+                {
+                    return _description.GetString();
+                }
+                return _descriptionText.GetString(); 
+            }
             set
             {
                 SmallString newValue = new SmallString(value);
                 if (_descriptionText != newValue)
                 {
                     _descriptionText = newValue;
-                    // Internal property, don't raise change notifications.
-                    //_NotifyPropertyChanged("DescriptionText");
+                    _NotifyPropertyChanged("DescriptionText");
+                    if (_descriptionText == default(SmallString) || _title == default(SmallString))
+                    {
+                        // It didn't necessarily, but it's worth checking.
+                        _NotifyPropertyChanged("Description");
+                    }
                 }
             }
         }
@@ -150,7 +172,14 @@ namespace Contigo
 
         public string Title
         {
-            get { return _title.GetString(); }
+            get
+            {
+                if (_title == default(SmallString))
+                {
+                    return _titleText.GetString();
+                }
+                return _title.GetString();
+            }
             internal set
             {
                 var newValue = new SmallString(value);
@@ -158,13 +187,26 @@ namespace Contigo
                 {
                     _title = newValue;
                     _NotifyPropertyChanged("Title");
+                    if (_titleText == default(SmallString) || _title == default(SmallString))
+                    {
+                        // It didn't necessarily, but it's worth checking.
+                        _NotifyPropertyChanged("TitleText");
+                    }
+
                 }
             }
         }
 
         public string Description
         {
-            get { return _description.GetString(); }
+            get
+            {
+                if (_description == default(SmallString))
+                {
+                    return _descriptionText.GetString();
+                }
+                return _description.GetString();
+            }
             internal set
             {
                 var newValue = new SmallString(value);
@@ -172,6 +214,11 @@ namespace Contigo
                 {
                     _description = newValue;
                     _NotifyPropertyChanged("Description");
+                    if (_descriptionText == default(SmallString) || _title == default(SmallString))
+                    {
+                        // It didn't necessarily, but it's worth checking.
+                        _NotifyPropertyChanged("DescriptionText");
+                    }
                 }
             }
         }
@@ -343,4 +390,33 @@ namespace Contigo
 
     // public class GroupInviteRequestNotification : Notification {}
     // public class EventInviteRequestNotification : Notification {}
+
+    public class MessageNotification : Notification, IMergeable<MessageNotification>
+    {
+        internal MessageNotification(FacebookService service)
+            : base(service)
+        {}
+
+        #region IMergeable<MessageNotification> Members
+
+        string IMergeable<MessageNotification>.FKID
+        {
+            get { return ((IMergeable<Notification>)this).FKID; }
+        }
+
+        void IMergeable<MessageNotification>.Merge(MessageNotification other)
+        {
+        }
+
+        #endregion
+
+        #region IEquatable<MessageNotification> Members
+
+        public bool Equals(MessageNotification other)
+        {
+            return ((IEquatable<Notification>)this).Equals(other);
+        }
+
+        #endregion
+    }
 }

@@ -19,18 +19,22 @@ namespace Contigo
     public enum Permissions
     {
         None = 0,
-        PublishStream = 0x0001,
-        ReadStream = 0x0002,
-        Email = 0x0004,
-        OfflineAccess = 0x0008,
-        CreateEvent = 0x0010,
-        RsvpEvent = 0x0020,
-        Sms = 0x0040,
-        StatusUpdate = 0x0080,
-        PhotoUpload = 0x0100,
-        VideoUpload = 0x0200,
-        CreateNote = 0x0400,
-        ShareItem = 0x0800,
+
+        // PublishStream is a superset of status_update, photo_upload, video_upload, create_note, and share_item extended permissions.
+        PublishStream   = 0x0001,
+        
+        ReadStream      = 0x0002,
+        Email           = 0x0004,
+        ReadMailbox     = 0x0008,
+        OfflineAccess   = 0x0010,
+        CreateEvent     = 0x0020,
+        RsvpEvent       = 0x0040,
+        Sms             = 0x0080,
+        StatusUpdate    = 0x0100,
+        PhotoUpload     = 0x0200,
+        VideoUpload     = 0x0400,
+        CreateNote      = 0x0800,
+        ShareItem       = 0x1000,
     }
     
     public delegate void GetPermissionsAsyncCallback(object sender, GetImageSourceCompletedEventArgs e);

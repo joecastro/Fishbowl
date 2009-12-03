@@ -504,6 +504,14 @@ namespace ClientManager.View
             }
         }
 
+        public FacebookCollection<MessageNotification> Inbox
+        {
+            get
+            {
+                return ServiceProvider.FacebookService.InboxNotifications;
+            }
+        }
+
         public ActivityPostCollection NewsFeed
         {
             get

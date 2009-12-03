@@ -21,7 +21,7 @@ namespace Contigo
 
         private static readonly Uri _FacebookApiUri = new Uri(@"http://api.facebook.com/restserver.php");
 
-        private const string _ExtendedPermissionColumns = "create_event, create_note, email, offline_access, photo_upload, publish_stream, read_stream, rsvp_event, share_item, sms, status_update, video_upload";
+        private const string _ExtendedPermissionColumns = "create_event, create_note, email, offline_access, photo_upload, publish_stream, read_mailbox, read_stream, rsvp_event, share_item, sms, status_update, video_upload";
         // affiliations: type: [college | high school | work | region], year, name, nid, status
         // current_location: city, state, country (well defined), zip (may be zero)
         // education_history: year (4 digit, may be blank), name, concentration (list), degree
@@ -39,6 +39,7 @@ namespace Contigo
         private const string _StreamFilterColumns = "uid, filter_key, name, rank, icon_url, is_visible, type, value";
         private const string _PhotoTagColumns = "pid, subject, text, xcoord, ycoord, created";
         private const string _ProfileColumns = "id, name, url, pic, pic_square, pic_small, pic_big, type, username";
+        private const string _ThreadColumns = "thread_id, folder_id, subject, recipients, updated_time, parent_message_id, parent_thread_id, message_count, snippet, snippet_author, object_id, viewer_id, unread";
 
         private const string _SelectFriendsClause = "(SELECT uid2 FROM friend WHERE uid1={0})";
 
@@ -60,6 +61,9 @@ namespace Contigo
         private const string _GetStreamCommentsQueryString = "SELECT " + _StreamCommentColumns + " FROM comment WHERE post_id IN (SELECT post_id FROM stream WHERE filter_key in (SELECT filter_key FROM stream_filter WHERE uid={0} and type='newsfeed'))";
         private const string _GetStreamFiltersQueryString = "SELECT " + _StreamFilterColumns + " FROM stream_filter where uid={0}";
 
+        private const string _GetInboxThreadsQueryString = "SELECT " + _ThreadColumns + " FROM thread where folder_id=0";
+        private const string _GetUnreadInboxThreadsQueryString = _GetInboxThreadsQueryString + " and unread != 0";
+
         private const string _GetPhotoTagsMultiQueryString = "SELECT " + _PhotoTagColumns + " FROM photo_tag WHERE pid IN (SELECT pid FROM #{0})";
         private const string _GetProfilesMultiQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id in (SELECT uid FROM #{0}) ORDER BY id DESC";
 
@@ -76,6 +80,7 @@ namespace Contigo
             { Permissions.CreateEvent, "create_event" },
             { Permissions.CreateNote, "create_note" },
             { Permissions.Email, "email" },
+            { Permissions.ReadMailbox, "read_mailbox" },
             { Permissions.OfflineAccess, "offline_access" },
             { Permissions.PhotoUpload, "photo_upload" },
             { Permissions.PublishStream, "publish_stream" },
@@ -531,10 +536,7 @@ namespace Contigo
                                  where (pair.Key & extendedPermissions) != Permissions.None
                                  select pair)
             {
-                var permissionNode = (from XElement element in document.Root.Elements().Nodes<XElement>()
-                                      where element.Name.LocalName == pair.Value
-                                      select element)
-                    .First();
+                var permissionNode = (XElement)document.Root.Elements().Nodes<XElement>().First(node => ((XElement)node).Name.LocalName == pair.Value);
                 Assert.Implies(permissionNode.Value != "0", permissionNode.Value == "1");
                 if (permissionNode.Value == "0")
                 {
@@ -582,6 +584,20 @@ namespace Contigo
             }
 
             return contactList[0];
+        }
+
+        public List<MessageNotification> GetMailNotifications(bool includeRead)
+        {
+            _Verify(true);
+
+            string query = includeRead
+                ? _GetInboxThreadsQueryString 
+                : _GetUnreadInboxThreadsQueryString;
+
+            string result = Utility.FailableFunction(() => _SendQuery(query));
+            List<MessageNotification> notifications = _serializer.DeserializeMessageQueryResponse(result);
+
+            return notifications;
         }
 
         // This differs from Notifications.GetList in that it returns messages, pokes, shares, group and event invites, and friend requests.

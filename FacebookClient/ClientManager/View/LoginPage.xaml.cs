@@ -25,7 +25,7 @@ namespace ClientManager.View
 
             public override bool IncludeInJournal { get { return false; } }
         }
-        private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.OfflineAccess;
+        private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.ReadMailbox | Permissions.OfflineAccess;
 
         private readonly string _appId;
         private readonly bool _useCachedCredentials;

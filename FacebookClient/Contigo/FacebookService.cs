@@ -72,6 +72,7 @@ namespace Contigo
         private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
 
         internal MergeableCollection<Notification> RawNotifications { get; private set; }
+        internal MergeableCollection<MessageNotification> RawInbox { get; private set; }
         internal MergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
         internal MergeableCollection<FacebookContact> RawFriends { get; private set; }
         internal MergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
@@ -79,6 +80,7 @@ namespace Contigo
 
         public FacebookCollection<ActivityFilter> ActivityFilters { get; private set; }
         public FacebookCollection<Notification> Notifications { get; private set; }
+        public FacebookCollection<MessageNotification> InboxNotifications { get; private set; }
         public FacebookContact MeContact { get; private set; }
         public ActivityPostCollection NewsFeed { get; private set; }
         public FacebookContactCollection Friends { get; private set; }
@@ -131,12 +133,14 @@ namespace Contigo
             RawFriends = new MergeableCollection<FacebookContact>();
             RawPhotoAlbums = new MergeableCollection<FacebookPhotoAlbum>();
             RawNotifications = new MergeableCollection<Notification>();
+            RawInbox = new MergeableCollection<MessageNotification>();
             RawFilters = new MergeableCollection<ActivityFilter>();
 
             NewsFeed = new ActivityPostCollection(RawNewsFeed, this, true);
             Friends = new FacebookContactCollection(RawFriends, this);
             PhotoAlbums = new FacebookPhotoAlbumCollection(RawPhotoAlbums, this, null);
             Notifications = new FacebookCollection<Notification>(RawNotifications, this);
+            InboxNotifications = new FacebookCollection<MessageNotification>(RawInbox, this);
             ActivityFilters = new FacebookCollection<ActivityFilter>(RawFilters, this);
 
             // Default sort orders
@@ -249,6 +253,7 @@ namespace Contigo
             RawFriends.Clear();
             RawPhotoAlbums.Clear();
             RawNotifications.Clear();
+            RawInbox.Clear();
             RawFilters.Clear();
 
             _settings.Save();
@@ -715,19 +720,26 @@ namespace Contigo
             _VerifyOnline();
             Verify.IsNotNull(notification, "notification");
 
+            // Note that MessageNotifications use the same MarkNotificationsAsRead API.
+
             if (notification.IsUnread)
             {
                 notification.IsUnread = false;
-                RawNotifications.Remove(notification);
 
-                _userInteractionDispatcher.QueueRequest(
-                    delegate
-                    {
-                        if (!string.IsNullOrEmpty(notification.NotificationId))
-                        {
-                            _facebookApi.MarkNotificationsAsRead(notification.NotificationId);
-                        }
-                    }, null);
+                var message = notification as MessageNotification;
+                if (message != null)
+                {
+                    RawInbox.Remove(message);
+                }
+                else
+                {
+                    RawNotifications.Remove(notification);
+                }
+
+                if (!string.IsNullOrEmpty(notification.NotificationId))
+                {
+                    _userInteractionDispatcher.QueueRequest((obj) => _facebookApi.MarkNotificationsAsRead(notification.NotificationId), null);
+                }
             }
         }
 
@@ -1040,19 +1052,19 @@ namespace Contigo
 
         private void _UpdateNotificationsWorker(object sender)
         {
-            List<Notification> notifications = null;
             if (!IsOnline)
             {
                 return;
             }
 
+            List<Notification> notifications = null;
             try
             {
                 notifications = _facebookApi.GetNotifications(false);
             }
             catch (FacebookException)
             {
-                // Bad facebook.  No notifications for us right now.
+                // Bad facebook.  No notification changes for us right now.
                 return;
             }
 
@@ -1060,8 +1072,17 @@ namespace Contigo
             {
                 return;
             }
+
             notifications.AddRange(_facebookApi.GetRequests());
             RawNotifications.Merge(notifications, false);
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            List<MessageNotification> newMessages = _facebookApi.GetMailNotifications(false);
+            RawInbox.Merge(newMessages, false);
         }
 
         private void _UpdateFriendsWorker(object parameter)
