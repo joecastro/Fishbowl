@@ -720,6 +720,13 @@ namespace Contigo
             _VerifyOnline();
             Verify.IsNotNull(notification, "notification");
 
+            var friendRequest = notification as FriendRequestNotification;
+            if (friendRequest != null)
+            {
+                _ReadFriendRequestNotification(friendRequest);
+                return;
+            }
+
             // Note that MessageNotifications use the same MarkNotificationsAsRead API.
 
             if (notification.IsUnread)
@@ -741,6 +748,13 @@ namespace Contigo
                     _userInteractionDispatcher.QueueRequest((obj) => _facebookApi.MarkNotificationsAsRead(notification.NotificationId), null);
                 }
             }
+        }
+
+        private void _ReadFriendRequestNotification(FriendRequestNotification friendRequest)
+        {
+            friendRequest.IsUnread = false;
+            RawNotifications.Remove(friendRequest);
+            _userInteractionDispatcher.QueueRequest((obj) => _settings.MarkFriendRequestAsRead(friendRequest.SenderId), null);
         }
 
         // Refresh data that needs to be frequently requeried.
@@ -1073,7 +1087,10 @@ namespace Contigo
                 return;
             }
 
-            notifications.AddRange(_facebookApi.GetRequests());
+            List<Notification> requests = _facebookApi.GetRequests();
+
+            _settings.RemoveKnownFriendRequestsExcept((from notification in requests where notification is FriendRequestNotification select notification.SenderId).ToList());
+            notifications.AddRange(from req in requests where !_settings.IsFriendRequestKnown(req.SenderId) select req);
             RawNotifications.Merge(notifications, false);
 
             if (!IsOnline)
