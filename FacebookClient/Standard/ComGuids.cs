@@ -6,10 +6,6 @@ namespace Standard
 {
     internal static partial class IID
     {
-        /// <summary>IID_IServiceProvider</summary>
-        public const string IServiceProvider = "6d5140c1-7436-11ce-8034-00aa006009fa";
-        /// <summary>IID_IWebBrowser2</summary>
-        public const string IWebBrowser2 = "D30C1661-CDAF-11D0-8A3E-00C04FC9E26E";
         /// <summary>IID_IEnumIDList</summary>
         public const string EnumIdList = "000214F2-0000-0000-C000-000000000046";
         /// <summary>IID_IEnumObjects</summary>
@@ -34,6 +30,8 @@ namespace Standard
         public const string ObjectCollection = "5632b1a4-e38a-400a-928a-d4cd63230295";
         /// <summary>IID_IPropertyStore</summary>
         public const string PropertyStore = "886d8eeb-8cf2-4446-8d02-cdba1dbdcf99";
+        /// <summary>IID_IServiceProvider</summary>
+        public const string ServiceProvider = "6d5140c1-7436-11ce-8034-00aa006009fa";
         /// <summary>IID_IShellFolder</summary>
         public const string ShellFolder = "000214E6-0000-0000-C000-000000000046";
         /// <summary>IID_IShellLink</summary>
@@ -50,6 +48,8 @@ namespace Standard
         public const string TaskbarList2 = "602D4995-B13A-429b-A66E-1935E44F4317";
         /// <summary>IID_IUnknown</summary>
         public const string Unknown = "00000000-0000-0000-C000-000000000046";
+        /// <summary>IID_IWebBrowser2</summary>
+        public const string WebBrowser2 = "D30C1661-CDAF-11D0-8A3E-00C04FC9E26E";
 
         #region Win7 IIDs
 

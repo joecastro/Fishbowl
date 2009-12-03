@@ -1495,7 +1495,7 @@ namespace Standard
     #region Interfaces
 
     [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid(IID.IServiceProvider)]
+    [Guid(IID.ServiceProvider)]
     internal interface IServiceProvider
     {
         [return: MarshalAs(UnmanagedType.IUnknown)]

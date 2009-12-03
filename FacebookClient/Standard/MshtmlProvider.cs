@@ -72,7 +72,13 @@ namespace Standard
         object GetLocation();
     }
 
-    [ComImport, DefaultMember("Name"), Guid(IID.IWebBrowser2), InterfaceType(ComInterfaceType.InterfaceIsIDispatch), SuppressUnmanagedCodeSecurity]
+    [
+        ComImport, 
+        DefaultMember("Name"),
+        Guid(IID.WebBrowser2),
+        InterfaceType(ComInterfaceType.InterfaceIsIDispatch),
+        SuppressUnmanagedCodeSecurity,
+    ]
     interface IWebBrowser2
     {
         [DispId(100)]
@@ -158,7 +164,7 @@ namespace Standard
             {
                 var serviceProvider = (IServiceProvider)browser.Document;
                 var serviceGuid = new Guid(SID.SWebBrowserApp);
-                var iid = new Guid(IID.IWebBrowser2);
+                var iid = new Guid(IID.WebBrowser2);
                 var webBrowser2 = (IWebBrowser2)serviceProvider.QueryService(ref serviceGuid, ref iid);
                 webBrowser2.Silent = true;
             }
