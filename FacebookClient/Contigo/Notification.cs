@@ -27,6 +27,8 @@ namespace Contigo
         private DateTime _updated;
         private bool _hidden;
         private bool _unread;
+        private FacebookContact _sender;
+        private bool _isSenderUpdateInProgress;
 
         internal string NotificationId
         {
@@ -50,6 +52,28 @@ namespace Contigo
                     _NotifyPropertyChanged("SenderId");
                 }
             }
+        }
+
+        public FacebookContact Sender
+        {
+            get
+            {
+                if (_sender == null && !_isSenderUpdateInProgress)
+                {
+                    _isSenderUpdateInProgress = true;
+                    SourceService.GetUserAsync(SenderId, _OnGetSenderCompleted);
+                }
+
+                return _sender;
+            }
+            internal set { _sender = value; }
+        }
+
+        private void _OnGetSenderCompleted(object sender, AsyncCompletedEventArgs args)
+        {
+            _sender = (FacebookContact)args.UserState;
+            _NotifyPropertyChanged("Sender");
+            _isSenderUpdateInProgress = false;
         }
 
         internal string RecipientId
@@ -339,7 +363,6 @@ namespace Contigo
 
     public class FriendRequestNotification : Notification
     {
-        private FacebookContact _requester;
         private const string _friendRequestFormat = "<div><a href=\"{0}\">{1}</a> wants to be your friend!</div>";
         private const string _friendRequestTextFormat = "{0} wants to be your friend!";
 
@@ -367,18 +390,13 @@ namespace Contigo
                 return;
             }
 
-            _requester = e.UserState as FacebookContact;
-            if (!string.IsNullOrEmpty(_requester.Name))
+            Sender = e.UserState as FacebookContact;
+            if (!string.IsNullOrEmpty(Sender.Name))
             {
-                Title = string.Format(_friendRequestFormat, _requester.ProfileUri, _requester.Name);
-                TitleText = string.Format(_friendRequestTextFormat, _requester.Name);
-                Link = _requester.ProfileUri;
+                Title = string.Format(_friendRequestFormat, Sender.ProfileUri, Sender.Name);
+                TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
+                Link = Sender.ProfileUri;
             }
-        }
-
-        public FacebookContact Sender
-        {
-            get { return _requester; }
         }
 
         public override string ToString()

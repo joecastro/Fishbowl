@@ -3,12 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager" 
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
-    MinWidth="250" MaxWidth="350">
-  <UserControl.Resources>
-    <!-- Can't do this directly in the Setter because of a bug in WPF. -->
-    <TextBlock x:Key="DescriptionToolTip" Text="{Binding DescriptionText}" TextWrapping="Wrap" MaxWidth="350" />
-  </UserControl.Resources>
+    MinWidth="250">
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:MessageNotificationsControl}">
       <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray">
@@ -47,20 +44,71 @@
                               ToolTip="Mark as read"
                               FontWeight="Bold" />-->
 
-                      <TextBlock TextWrapping="Wrap">
-                        <TextBlock.Style>
-                          <Style TargetType="{x:Type TextBlock}">
-                            <!-- We want the tooltip to not be present if there's no content. -->
-                            <Setter Property="ToolTip" Value="{StaticResource DescriptionToolTip}"/>
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding DescriptionText}" Value="">
-                                <Setter Property="ToolTip" Value="{x:Null}" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style> 
-                        </TextBlock.Style>
-                        <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnMessageRequestNavigate" />
-                      </TextBlock>
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="50" />
+                          <ColumnDefinition Width="150" />
+                          <ColumnDefinition Width="300" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5" Width="50" Height="50" VerticalAlignment="Top">
+                          <Grid.RenderTransform>
+                            <TransformGroup>
+                              <RotateTransform Angle="-6" />
+                            </TransformGroup>
+                          </Grid.RenderTransform>
+
+                          <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
+                          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Sender.Image}" FacebookImageDimensions="Square">
+                            <ClientManagerControls:FacebookImageControl.Template>
+                              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                                <Border Margin="2,2,2,3">
+                                  <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
+                                </Border>
+                              </ControlTemplate>
+                            </ClientManagerControls:FacebookImageControl.Template>
+                          </ClientManagerControls:FacebookImageControl>
+                        </Grid>
+
+                        <TextBlock Grid.Column="1" TextWrapping="Wrap">
+                          <Hyperlink 
+                              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
+                              CommandParameter="{Binding Sender}">
+                            <FacebookClient:BindableRun Text="{Binding Sender.Name}" />
+                          </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock Grid.Column="2" TextWrapping="Wrap" FontWeight="Bold">
+                          <Hyperlink 
+                              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
+                              CommandParameter="{Binding Link}">
+                            <FacebookClient:BindableRun>
+                              <FacebookClient:BindableRun.Style>
+                                <Style TargetType="{x:Type FacebookClient:BindableRun}">
+                                  <Setter Property="Text" Value="{Binding Title}"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Title}" Value="">
+                                      <Setter Property="Text" Value="(No Subject)"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </FacebookClient:BindableRun.Style>
+                              <FacebookClient:BindableRun.Text>
+                                <Binding Path="Title" FallbackValue="(No Subject)"/>
+                              </FacebookClient:BindableRun.Text>
+                            </FacebookClient:BindableRun>
+                          </Hyperlink>
+                        </TextBlock>
+                        
+                        <TextBlock Grid.Column="2" Grid.Row="2" TextWrapping="Wrap">
+                          <FacebookClient:HyperlinkTextContent Text="{Binding Description}" RequestNavigate="_OnMessageRequestNavigate" />
+                        </TextBlock>
+
+                      </Grid>
                     </DockPanel>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
