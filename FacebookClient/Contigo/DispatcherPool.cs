@@ -154,6 +154,7 @@ namespace Contigo
                 }
                 catch (Exception e)
                 {
+                    ETWLogger.EventWriteUnhandledDispatcherPoolExceptionEvent(e.Message, e.StackTrace);
                     // Don't let exceptions propagate outside the dispatcher.
                     // The Actions should be blocking this from ever happening.
                     Assert.Fail(e.Message);
