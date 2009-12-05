@@ -14,7 +14,7 @@
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     Width="1000" Height="600"
-    MinWidth="540" MinHeight="280"
+    MinWidth="560" MinHeight="280"
     AllowDrop="True"
     Background="White"
     ShowsNavigationUI="False"
@@ -96,6 +96,12 @@
           HorizontalAlignment="Right" 
           IsDisplayed="{Binding ElementName=Header, Path=AreNotificationsToggled, Mode=TwoWay}"
           RequestNavigate="_OnNotificationNavigationRequested"/>
+
+      <FacebookClient:MessageNotificationsControl Grid.Row="1" 
+          VerticalAlignment="Top"
+          HorizontalAlignment="Right" 
+          IsDisplayed="{Binding ElementName=Header, Path=IsInboxToggled, Mode=TwoWay}"
+          RequestNavigate="_OnMessageNavigationRequested"/>
       
       <!-- Modeless information bar.  Collapsed by default.  -->
       <Border x:Name="GoldBarBorder" Grid.Row="1" 

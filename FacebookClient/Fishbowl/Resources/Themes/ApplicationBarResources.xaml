@@ -392,17 +392,20 @@
                     <TextBlock x:Name="NotificationsButtonText" Text="Notifications" />
                   </StackPanel>
                 </ToggleButton>
+                <ToggleButton x:Name="InboxButton" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}">
+                  <StackPanel Orientation="Vertical">
+                    <Grid>
+                      <Rectangle Fill="{StaticResource EnvelopeDrawingBrush}" Width="30" />
+                      <FacebookClient:NotificationCountControl x:Name="InboxCountControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" />
+                    </Grid>
+                    <TextBlock x:Name="InboxButtonText" Text="Inbox" />
+                  </StackPanel>
+                </ToggleButton>
                 <Image x:Name="Separator1" Style="{StaticResource NavigationSeparationStyle}" />
                 <Button x:Name="ShowUploadWizardButton" Command="{x:Static FacebookClient:MainHeaderControl.ShowUploadWizardCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Share more photos">
                   <StackPanel Orientation="Vertical">
                     <Rectangle Fill="{StaticResource AddPhotoDrawingBrush}" Width="23" />
                     <TextBlock x:Name="ShowUploadWizardButtonText" Text="Upload" />
-                  </StackPanel>
-                </Button>
-                <Button x:Name="FacebookButton" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Go to Facebook">
-                  <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{StaticResource FacebookDrawingBrush}" />
-                    <TextBlock x:Name="FacebookButtonText" Text="Facebook" />
                   </StackPanel>
                 </Button>
                 <Button x:Name="SignOutButton" Command="{x:Static FacebookClient:MainHeaderControl.SignOutCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Sign Out">
@@ -435,20 +438,29 @@
                   ToolTip="Think you're missing something? Click to refresh now.">
                 <Rectangle Width="16" Height="16" Fill="{StaticResource RefreshArrowDrawingBrush}" />
               </Button>
+              <Button x:Name="FacebookButton" Margin="0,7,0,3" 
+                  MinHeight="20"
+                  VerticalAlignment="Top" HorizontalAlignment="Right" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Style="{DynamicResource MiniModeButtonStyle}" 
+                  Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" 
+                  ToolTip="Go to Facebook">
+                <Rectangle Width="18" Height="18" Fill="{StaticResource FacebookDrawingBrush}" />
+              </Button>
               <Button Margin="0,7,0,3" 
-                VerticalAlignment="Top" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:MainHeaderControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource MiniModeButtonStyle}" ToolTip="View and change settings">
+                  VerticalAlignment="Top" HorizontalAlignment="Right" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{x:Static FacebookClient:MainHeaderControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource MiniModeButtonStyle}" ToolTip="View and change settings">
                 <Rectangle Width="20" Height="20" Fill="{StaticResource SettingsDrawingBrush}" />
               </Button>
               <Button Margin="0,7,0,3"
-                VerticalAlignment="Top" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                Style="{DynamicResource MiniModeButtonStyle}"
-                ToolTip="Switch to mini-mode window">
-              <Rectangle Width="20" Height="20" Fill="{StaticResource MiniModeIconDrawingBrush}" />
-            </Button>
+                  VerticalAlignment="Top" HorizontalAlignment="Right" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{DynamicResource MiniModeButtonStyle}"
+                  ToolTip="Switch to mini-mode window">
+                <Rectangle Width="20" Height="20" Fill="{StaticResource MiniModeIconDrawingBrush}" />
+              </Button>
             </StackPanel>    
             <!-- User Profile Image in background -->
             <ClientManagerControls:FacebookImageControl Grid.Column="0" Margin="-40,0,0,0" FacebookImage="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.Image}" FacebookImageDimensions="Big">
@@ -556,11 +568,12 @@
               <Setter TargetName="ProfileNavigationButtonText" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="PhotoAlbumsNavigationButton" Property="Height" Value="30" />
               <Setter TargetName="PhotoAlbumsNavigationButtonText" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="InboxButton" Property="Height" Value="30" />
+              <Setter TargetName="InboxButtonText" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="NotificationsButton" Property="Height" Value="30" />
               <Setter TargetName="NotificationsButtonText" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="ShowUploadWizardButton" Property="Height" Value="30" />
               <Setter TargetName="ShowUploadWizardButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="FacebookButton" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="SignOutButton" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="Separator1" Property="Visibility" Value="Collapsed" />
             </DataTrigger>

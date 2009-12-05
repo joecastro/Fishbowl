@@ -281,6 +281,14 @@ namespace FacebookClient
             e.Handled = true;
         }
 
+        private void _OnMessageNavigationRequested(object sender, RequestNavigateEventArgs e)
+        {
+            // If there's no handler then send it as a navigation command.
+            Hyperlink hyperlink = sender as Hyperlink;
+            ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(hyperlink.NavigateUri);
+            e.Handled = true;
+        }
+
         private void _OnExternalNavigationRequested(object sender, RequestNavigateEventArgs e)
         {
             if (FacebookClientApplication.OpenWebContentInExternalBrowser)

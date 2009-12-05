@@ -72,8 +72,12 @@
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="mscorlib" />
-    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="PresentationFramework.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -83,8 +87,12 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="UIAutomationProvider, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="UIAutomationProvider, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="FacebookClientApplication.xaml">
@@ -115,6 +123,9 @@
     <Compile Include="..\Standard\NativeMethods.cs">
       <Link>Standard\NativeMethods.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\NotifyingList.cs">
+      <Link>Standard\NotifyingList.cs</Link>
+    </Compile>
     <Compile Include="..\Standard\ShellProvider.cs">
       <Link>Standard\ShellProvider.cs</Link>
     </Compile>
@@ -143,6 +154,9 @@
     <Compile Include="Controls\IconNotificationButton.cs" />
     <Compile Include="Controls\IncrementalLoadListBox.cs" />
     <Compile Include="Controls\MainHeaderControl.cs" />
+    <Compile Include="Controls\MessageNotificationsControl.xaml.cs">
+      <DependentUpon>MessageNotificationsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\NotificationCountControl.cs" />
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
@@ -287,6 +301,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\FacebookPhotoTagControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MessageNotificationsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

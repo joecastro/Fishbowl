@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="FacebookClient.NotificationsControl" 
+﻿<UserControl x:Class="FacebookClient.MessageNotificationsControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:FacebookClient="clr-namespace:FacebookClient"
@@ -10,18 +10,18 @@
     <TextBlock x:Key="DescriptionToolTip" Text="{Binding DescriptionText}" TextWrapping="Wrap" MaxWidth="350" />
   </UserControl.Resources>
   <UserControl.Template>
-    <ControlTemplate TargetType="{x:Type FacebookClient:NotificationsControl}">
+    <ControlTemplate TargetType="{x:Type FacebookClient:MessageNotificationsControl}">
       <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray">
         <Grid>
           <StackPanel>
             <DockPanel>
-              <Button DockPanel.Dock="Right" Margin="5" Content="5" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:NotificationsControl.CloseCommand}" ToolTip="Hide notifications" />
-              <TextBlock Text="Notifications" Foreground="White" FontWeight="Bold" Margin="5" />
+              <Button DockPanel.Dock="Right" Margin="5" Content="5" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:MessageNotificationsControl.CloseCommand}" ToolTip="Hide messages" />
+              <TextBlock Text="Inbox" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">
-              <ItemsControl x:Name="NotificationList" Background="White" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}">
+              <ItemsControl x:Name="MessageList" Background="White" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}">
                 <ItemsControl.ItemTemplate>
-                  <DataTemplate DataType="{x:Type Facebook:Notification}">
+                  <DataTemplate DataType="{x:Type Facebook:MessageNotification}">
                     <DockPanel Margin="0,0,0,5">
                       <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center">
                         <Rectangle.Fill>
@@ -33,7 +33,8 @@
                           </LinearGradientBrush>
                         </Rectangle.Fill>
                       </Rectangle>
-
+                      
+                      <!-- Can't currently mark messages as read.
                       <Button DockPanel.Dock="Right" 
                               Content="r"
                               Foreground="{DynamicResource FacebookBlueBrush}" 
@@ -44,8 +45,8 @@
                               CommandParameter="{Binding}" 
                               Margin="10,0,2,0"
                               ToolTip="Mark as read"
-                              FontWeight="Bold" />
-                      
+                              FontWeight="Bold" />-->
+
                       <TextBlock TextWrapping="Wrap">
                         <TextBlock.Style>
                           <Style TargetType="{x:Type TextBlock}">
@@ -58,22 +59,22 @@
                             </Style.Triggers>
                           </Style> 
                         </TextBlock.Style>
-                        <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnNotificationRequestNavigate" />
+                        <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnMessageRequestNavigate" />
                       </TextBlock>
                     </DockPanel>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <Button Content="Mark all as read"
+              <!--<Button Content="Mark all as read"
                   Margin="5"
                   FontFamily="{StaticResource SerifFont}"
                   Foreground="White"
                   HorizontalAlignment="Left" 
                   Style="{StaticResource SimpleButtonStyle}" 
                   Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAllAsReadCommand}" 
-                  CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}"/>
+                  CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}"/>-->
             </StackPanel>
-            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new notifications..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
+            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new messages..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
           </StackPanel>
         </Grid>
       </Border>
@@ -81,7 +82,7 @@
         <Trigger Property="IsDisplayed" Value="False">
           <Setter Property="Visibility" Value="Collapsed" />
         </Trigger>
-        <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" Value="0">
+        <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" Value="0">
           <Setter TargetName="ItemsPanel" Property="Visibility" Value="Collapsed" />
           <Setter TargetName="NoText" Property="Visibility" Value="Visible" />
         </DataTrigger>

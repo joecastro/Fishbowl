@@ -91,6 +91,7 @@
     <Compile Include="MergeableCollection.cs" />
     <Compile Include="MshtmlProvider.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="NotifyingList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShellProvider.cs" />
     <Compile Include="SmallString.cs" />

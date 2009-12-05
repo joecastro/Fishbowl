@@ -341,6 +341,7 @@ namespace Contigo
     {
         private FacebookContact _requester;
         private const string _friendRequestFormat = "<div><a href=\"{0}\">{1}</a> wants to be your friend!</div>";
+        private const string _friendRequestTextFormat = "{0} wants to be your friend!";
 
         internal FriendRequestNotification(FacebookService service, string userId)
             : base(service)
@@ -353,6 +354,7 @@ namespace Contigo
             RecipientId = service.UserId;
             SenderId = userId;
             Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
+            TitleText = string.Format(_friendRequestTextFormat, "Someone");
             service.GetUserAsync(userId, _UpdateTitle);
             Link = new Uri("http://facebook.com/profile.php?id=" + userId);
             //this.Description = "";
@@ -369,6 +371,7 @@ namespace Contigo
             if (!string.IsNullOrEmpty(_requester.Name))
             {
                 Title = string.Format(_friendRequestFormat, _requester.ProfileUri, _requester.Name);
+                TitleText = string.Format(_friendRequestTextFormat, _requester.Name);
                 Link = _requester.ProfileUri;
             }
         }

@@ -1,6 +1,8 @@
 ﻿namespace ClientManager.View
 {
     using System;
+    using System.Collections;
+    using System.Linq;
     using System.Reflection;
     using System.Windows;
     using Contigo;
@@ -276,12 +278,18 @@
 
         protected override bool CanExecuteInternal(object parameter)
         {
-            return true;
+            return parameter is IEnumerable;
         }
 
         protected override void ExecuteInternal(object parameter)
         {
-            foreach (var notification in ServiceProvider.FacebookService.Notifications)
+            var enumerable = parameter as IEnumerable;
+            if (enumerable == null)
+            {
+                return;
+            }
+
+            foreach (var notification in enumerable.OfType<Notification>())
             {
                 ServiceProvider.FacebookService.ReadNotification(notification);
             }

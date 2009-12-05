@@ -17,9 +17,9 @@
         private RadioButton _photoAlbumsNavigationButton;
         private TextBox _searchTextBox;
 
-        public static readonly DependencyProperty NotificationControlProperty = DependencyProperty.Register("NotificationControl", typeof(NotificationCountControl),
-            typeof(MainHeaderControl));
-        public static readonly DependencyProperty AreNotificationsToggledProperty = DependencyProperty.Register("AreNotificationsToggled", typeof(bool),
+        public static readonly DependencyProperty NotificationControlProperty = DependencyProperty.Register(
+            "NotificationControl",
+            typeof(NotificationCountControl),
             typeof(MainHeaderControl));
 
         public NotificationCountControl NotificationControl
@@ -28,10 +28,67 @@
             set { SetValue(NotificationControlProperty, value); }
         }
 
+        public static readonly DependencyProperty AreNotificationsToggledProperty = DependencyProperty.Register(
+            "AreNotificationsToggled",
+            typeof(bool),
+            typeof(MainHeaderControl),
+            new PropertyMetadata(
+                false,
+                (d,e) => ((MainHeaderControl)d)._OnAreNotificationsToggledChanged()));
+
         public bool AreNotificationsToggled
         {
             get { return (bool)GetValue(AreNotificationsToggledProperty); }
             set { SetValue(AreNotificationsToggledProperty, value); }
+        }
+
+        private void _OnAreNotificationsToggledChanged()
+        {
+            // Can't have both of these on at the same time.
+            if (AreNotificationsToggled)
+            {
+                IsInboxToggled = false;
+            }
+        }
+        
+        /// <summary>
+        /// InboxCountControl Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty InboxCountControlProperty = DependencyProperty.Register(
+            "InboxCountControl",
+            typeof(NotificationCountControl),
+            typeof(MainHeaderControl));
+
+        public NotificationCountControl InboxCountControl
+        {
+            get { return (NotificationCountControl)GetValue(InboxCountControlProperty); }
+            set { SetValue(InboxCountControlProperty, value); }
+        }
+
+        /// <summary>
+        /// IsInboxToggled Dependency Property
+        /// </summary>
+        public static readonly DependencyProperty IsInboxToggledProperty = DependencyProperty.Register(
+            "IsInboxToggled",
+            typeof(bool),
+            typeof(MainHeaderControl),
+            new PropertyMetadata(
+                false,
+                (d, e) => ((MainHeaderControl)d)._OnIsInboxToggledChanged()));
+
+        public bool IsInboxToggled
+        {
+            get { return (bool)GetValue(IsInboxToggledProperty); }
+            set { SetValue(IsInboxToggledProperty, value); }
+        }
+
+        private void _OnIsInboxToggledChanged()
+        {
+            // Can't have both of these on at the same time.
+            if (IsInboxToggled)
+            {
+                AreNotificationsToggled = false;
+            }
         }
 
         public static RoutedCommand ShowUploadWizardCommand = new RoutedCommand("ShowUploadWizard", typeof(MainHeaderControl));
@@ -63,6 +120,7 @@
             _searchTextBox.KeyDown += new KeyEventHandler(OnSearchTextBoxKeyDown);
 
             NotificationControl = Template.FindName("NotificationControl", this) as NotificationCountControl;
+            InboxCountControl = Template.FindName("InboxCountControl", this) as NotificationCountControl;
         }
 
         public void OnRootNavigatorChanged(Navigator rootNavigator)

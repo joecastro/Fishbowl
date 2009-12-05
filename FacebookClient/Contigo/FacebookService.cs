@@ -727,21 +727,17 @@ namespace Contigo
                 return;
             }
 
-            // Note that MessageNotifications use the same MarkNotificationsAsRead API.
+            // Near as I can tell there's currently no way to mark messages as read.  Silently do nothing... :(
+            var message = notification as MessageNotification;
+            if (message != null)
+            {
+                return;
+            }
 
             if (notification.IsUnread)
             {
                 notification.IsUnread = false;
-
-                var message = notification as MessageNotification;
-                if (message != null)
-                {
-                    RawInbox.Remove(message);
-                }
-                else
-                {
-                    RawNotifications.Remove(notification);
-                }
+                RawNotifications.Remove(notification);
 
                 if (!string.IsNullOrEmpty(notification.NotificationId))
                 {

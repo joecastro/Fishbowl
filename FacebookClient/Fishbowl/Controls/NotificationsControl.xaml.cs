@@ -18,6 +18,8 @@
     /// </summary>
     public partial class NotificationsControl : UserControl
     {
+        private readonly NotifyingList<Notification> _currentNotifications;
+
         public static readonly DependencyProperty IsDisplayedProperty = DependencyProperty.Register("IsDisplayed", typeof(bool), typeof(NotificationsControl));
 
         public bool IsDisplayed
@@ -31,10 +33,18 @@
         public NotificationsControl()
         {
             InitializeComponent();
+
+            _currentNotifications = new NotifyingList<Notification>();
+            _currentNotifications.ItemPropertyChanged += (sender, e) => _OnNotificationsChanged(this, null);
+
             CommandBindings.Add(new CommandBinding(CloseCommand, new ExecutedRoutedEventHandler((sender, e) => IsDisplayed = false)));
 
             Loaded += (sender, e) => ServiceProvider.ViewManager.Notifications.CollectionChanged += _OnNotificationsChanged;
-            Unloaded += (sender, e) => ServiceProvider.ViewManager.Notifications.CollectionChanged -= _OnNotificationsChanged;
+            Unloaded += (sender, e) =>
+            {
+                ServiceProvider.ViewManager.Notifications.CollectionChanged -= _OnNotificationsChanged;
+                _currentNotifications.Clear();
+            };
         }
 
         private static string _GetFirstLine(string source)
@@ -64,9 +74,13 @@
             {
                 return;
             }
+
+            _currentNotifications.Clear();
             var notificationTaskList = new List<JumpItem>();
             foreach (Notification notification in from n in ServiceProvider.ViewManager.Notifications orderby n.Created ascending select n)
             {
+                _currentNotifications.Add(notification);
+
                 string argument = null;
 
                 // Get the default URL from the notification.
@@ -84,7 +98,7 @@
                     notificationTaskList.Add(new JumpTask
                     {
                         Arguments = argument,
-                        CustomCategory = "Notifications",
+                        CustomCategory = notification is FriendRequestNotification ? "Friend Requests" : "Notifications",
                         // Shell silently fails to accept multi-line JumpTasks so we need to trim the strings ourselves.
                         Description = _GetFirstLine(notification.DescriptionText),
                         Title = title,
@@ -96,6 +110,7 @@
 
             Assert.IsNotNull(jumpList);
             jumpList.JumpItems.RemoveAll(item => item.CustomCategory == "Notifications");
+            jumpList.JumpItems.RemoveAll(item => item.CustomCategory == "Friend Requests");
             jumpList.JumpItems.AddRange(notificationTaskList);
 
             try
@@ -128,6 +143,5 @@
         }
 
         public event RequestNavigateEventHandler RequestNavigate;
-
     }
 }
