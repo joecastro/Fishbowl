@@ -91,7 +91,6 @@
             }
         }
 
-        public static RoutedCommand ShowUploadWizardCommand = new RoutedCommand("ShowUploadWizard", typeof(MainHeaderControl));
         public static RoutedCommand ShowMiniModeCommand = new RoutedCommand("ShowMiniMode", typeof(MainHeaderControl));
         public static RoutedCommand GoToFacebookCommand = new RoutedCommand("GoToFacebook", typeof(MainHeaderControl));
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(MainHeaderControl));
@@ -100,7 +99,6 @@
 
         public MainHeaderControl()
         {
-            CommandBindings.Add(new CommandBinding(ShowUploadWizardCommand, OnShowUploadWizardCommand));
             CommandBindings.Add(new CommandBinding(ShowMiniModeCommand,     OnShowMiniModeCommand));
             CommandBindings.Add(new CommandBinding(GoToFacebookCommand,     OnGoToFacebookCommand));
             CommandBindings.Add(new CommandBinding(ShowSettingsCommand,     OnShowSettingsCommand));
@@ -160,11 +158,6 @@
             {
                 base.OnKeyDown(e);
             }
-        }
-
-        private void OnShowUploadWizardCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            ((MainWindow)Application.Current.MainWindow).ShowUploadWizard();
         }
 
         private void OnShowMiniModeCommand(object sender, ExecutedRoutedEventArgs e)

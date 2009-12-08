@@ -316,6 +316,12 @@ namespace Contigo
                 return;
             }
 
+            if (!IsOnline)
+            {
+                callback(this, new AsyncCompletedEventArgs(null, true, null));
+                return;
+            }
+
             _friendInfoDispatcher.QueueRequest((o) => 
             {
                 // Treat this case as though it was canceled.
@@ -962,6 +968,11 @@ namespace Contigo
             if (_newsFeedFilter != null)
             {
                 filterKey = _newsFeedFilter.Key;
+            }
+
+            if (!IsOnline)
+            {
+                return;
             }
 
             try

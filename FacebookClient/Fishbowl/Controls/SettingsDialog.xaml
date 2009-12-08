@@ -8,7 +8,7 @@
     <Border Background="White" BorderBrush="DarkGray" BorderThickness="4" MinWidth="400" MinHeight="300">
     <DockPanel>
       <StackPanel DockPanel.Dock="Top" Background="{DynamicResource ApplicationBarBackground}" >
-        <Image Width="207" Height="25" Margin="4,2,4,0" Source="pack://application:,,,/Resources/Images/logo.png" VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <Image Width="129" Height="19" Margin="4,6,4,0" Source="pack://application:,,,/Resources/Images/logo.png" VerticalAlignment="Center" HorizontalAlignment="Left" />
         <TextBlock Margin="6,0,10,0" Foreground="White" FontSize="12" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light">
           <Run>An experiment application by uxLabs@microsoft.</Run>
           <LineBreak />

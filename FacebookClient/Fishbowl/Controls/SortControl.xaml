@@ -96,10 +96,30 @@
   </UserControl.Resources>
   
   <Border Style="{DynamicResource SearchAndFilterBarMainBorderStyle}">
-    <StackPanel>
-      <TextBlock Foreground="#4b4b4b" FontSize="15px" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
-      <TextBlock Foreground="#4b4b4b" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
+    <DockPanel>
+      <Button x:Name="ShowMoreButton" 
+              DockPanel.Dock="Bottom" 
+              Margin="10" 
+              Height="22" 
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Top" 
+              Click="_OnUploadWizardButtonClicked">
+        <Button.Style>
+          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
+            <Setter Property="Visibility" Value="Collapsed"/>
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding SortOrderMode, ElementName=TopControl}" Value="Albums">
+                <Setter Property="Visibility" Value="Visible"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+        Add more photos
+      </Button>
+
+      <TextBlock DockPanel.Dock="Top" Foreground="#4b4b4b" FontSize="15px" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
+      <TextBlock DockPanel.Dock="Top" Foreground="#4b4b4b" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
       <TabControl x:Name="SortTabs" Margin="0,6,0,0" />
-    </StackPanel>
+    </DockPanel>
   </Border>
 </UserControl>

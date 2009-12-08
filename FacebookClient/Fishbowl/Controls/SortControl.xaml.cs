@@ -142,5 +142,11 @@ namespace FacebookClient
                 ServiceProvider.ViewManager.ActionCommands.SetSortOrderCommand.Execute(item.ContactSortOrder.Value);
             }
         }
+
+        private void _OnUploadWizardButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ((MainWindow)Application.Current.MainWindow).ShowUploadWizard();
+        }
+
     }
 }
