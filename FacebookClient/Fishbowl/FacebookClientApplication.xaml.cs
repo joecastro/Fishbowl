@@ -39,6 +39,7 @@ namespace FacebookClient
 
         private MainWindow _mainWindow;
         private MiniModeWindow _minimodeWindow;
+        private ChatWindow _chatWindow;
         private bool _isInMiniMode = false;
 
         public static IEnumerable<string> AvailableThemes { get { return _ThemeNames.AsReadOnly(); } }
@@ -285,6 +286,19 @@ namespace FacebookClient
             currentJumpList.JumpItems.AddRange(mainJumpList.JumpItems);
 
             currentJumpList.Apply();
+        }
+
+        internal void ShowChatWindow()
+        {
+            if (_chatWindow != null)
+            {
+                _chatWindow.Activate();
+                return;
+            }
+
+            _chatWindow = new ChatWindow();
+            _chatWindow.Closed += (sender, e) => _chatWindow = null;
+            _chatWindow.Show();
         }
     }
 }

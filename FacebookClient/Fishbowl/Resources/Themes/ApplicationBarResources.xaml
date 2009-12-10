@@ -410,16 +410,16 @@
             <!-- Search Panel -->
             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Margin="10,2,5,-2">
               <FacebookClient:CommandTextBox x:Name="SearchTextBox"
-                                           Width="150" 
-                                           HorizontalAlignment="Right" 
-                                           Margin="5,0" 
-                                           VerticalAlignment="Center" 
-                                           CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" 
-                                           CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" 
-                                           IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
-                                           Style="{StaticResource SearchTextBoxStyle}" 
-                                           Tag="Search" 
-                                           BannerText="Search" />
+                  Width="150" 
+                  HorizontalAlignment="Right" 
+                  Margin="5,0" 
+                  VerticalAlignment="Center" 
+                  CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" 
+                  CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" 
+                  IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
+                  Style="{StaticResource SearchTextBoxStyle}" 
+                  Tag="Search" 
+                  BannerText="Search" />
               <Button Margin="0,3" 
                   MinHeight="20"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
@@ -429,13 +429,13 @@
                   ToolTip="Think you're missing something? Click to refresh now.">
                 <Rectangle Width="16" Height="16" Fill="{StaticResource RefreshArrowDrawingBrush}" />
               </Button>
-              <Button Margin="0,3" 
+              <Button Margin="0,3"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                  Command="{x:Static FacebookClient:MainHeaderControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
-                  Style="{DynamicResource MiniModeButtonStyle}" 
-                  ToolTip="View and change settings">
-                <Rectangle Margin="2" Width="18" Height="18" Fill="{StaticResource SettingsDrawingBrush}" />
+                  Command="{x:Static FacebookClient:MainHeaderControl.ShowChatWindowCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{DynamicResource MiniModeButtonStyle}"
+                  ToolTip="Chat!">
+                <Rectangle Margin="0" Width="26" Height="22" Fill="{StaticResource ChatDrawingBrush}" />
               </Button>
               <Button Margin="0,3"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
@@ -444,6 +444,14 @@
                   Style="{DynamicResource MiniModeButtonStyle}"
                   ToolTip="Switch to mini-mode window">
                 <Rectangle Margin="2" Width="18" Height="18" Fill="{StaticResource MiniModeIconDrawingBrush}" />
+              </Button>
+              <Button Margin="0,3" 
+                  VerticalAlignment="Center" HorizontalAlignment="Center" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{x:Static FacebookClient:MainHeaderControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
+                  Style="{DynamicResource MiniModeButtonStyle}" 
+                  ToolTip="View and change settings">
+                <Rectangle Margin="2" Width="18" Height="18" Fill="{StaticResource SettingsDrawingBrush}" />
               </Button>
               <Button x:Name="SignOutButton" Margin="0,3"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
@@ -508,7 +516,7 @@
                 <ToggleButton x:Name="NotificationsButton" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Show Notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}">
                   <StackPanel Orientation="Vertical">
                     <Grid>
-                      <Rectangle Fill="{StaticResource NotificationsDrawingBrush}" Width="42" />
+                      <Rectangle Fill="{StaticResource NotificationsPostDrawingBrush}" Width="42" />
                       <FacebookClient:NotificationCountControl x:Name="NotificationControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" />
                     </Grid>
                     <TextBlock x:Name="NotificationsButtonText" Text="Notifications" />

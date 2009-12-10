@@ -3,10 +3,104 @@
 namespace Standard
 {
     using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
+    using System.Runtime.InteropServices.ComTypes;
     using System.Security;
     using System.Windows.Controls;
+
+    [
+        ComImport, 
+        Guid(IID.WebBrowserEvents2), 
+        InterfaceType(ComInterfaceType.InterfaceIsIDispatch),
+        TypeLibType(TypeLibTypeFlags.FHidden)
+    ]
+    internal interface DWebBrowserEvents2
+    {
+        [DispId(102)]
+        void StatusTextChange([In] string text);
+        [DispId(104)]
+        void DownloadComplete();
+        [DispId(105)]
+        void CommandStateChange([In] long command, [In] bool enable);
+        [DispId(106)]
+        void DownloadBegin();
+        [DispId(108)]
+        void ProgressChange([In] int progress, [In] int progressMax);
+        [DispId(112)]
+        void PropertyChange([In] string szProperty);
+        [DispId(113)]
+        void TitleChange([In] string text);
+        [DispId(225)]
+        void PrintTemplateInstantiation([In, MarshalAs(UnmanagedType.IDispatch)] object pDisp);
+        [DispId(226)]
+        void PrintTemplateTeardown([In, MarshalAs(UnmanagedType.IDispatch)] object pDisp);
+        [DispId(227)]
+        void UpdatePageStatus([In, MarshalAs(UnmanagedType.IDispatch)] object pDisp, [In] ref object nPage, [In] ref object fDone);
+        [DispId(250)]
+        void BeforeNavigate2(
+            [In, MarshalAs(UnmanagedType.IDispatch)] object pDisp,
+            [In] ref object URL,
+            [In] ref object flags,
+            [In] ref object targetFrameName, 
+            [In] ref object postData,
+            [In] ref object headers,
+            [In, Out] ref bool cancel);
+        [DispId(251)]
+        void NewWindow2([In, Out, MarshalAs(UnmanagedType.IDispatch)] ref object pDisp, [In, Out] ref bool cancel);
+        [DispId(252)]
+        void NavigateComplete2([In, MarshalAs(UnmanagedType.IDispatch)] object pDisp, [In] ref object URL);
+        [DispId(253)]
+        void OnQuit();
+        [DispId(254)]
+        void OnVisible([In] bool visible);
+        [DispId(255)]
+        void OnToolBar([In] bool toolBar);
+        [DispId(256)]
+        void OnMenuBar([In] bool menuBar);
+        [DispId(257)]
+        void OnStatusBar([In] bool statusBar);
+        [DispId(258)]
+        void OnFullScreen([In] bool fullScreen);
+        [DispId(259)]
+        void DocumentComplete([In, MarshalAs(UnmanagedType.IDispatch)] object pDisp, [In] ref object URL);
+        [DispId(260)]
+        void OnTheaterMode([In] bool theaterMode);
+        [DispId(262)]
+        void WindowSetResizable([In] bool resizable);
+        [DispId(263)]
+        void WindowClosing([In] bool isChildWindow, [In, Out] ref bool cancel);
+        [DispId(264)]
+        void WindowSetLeft([In] int left);
+        [DispId(265)]
+        void WindowSetTop([In] int top);
+        [DispId(266)]
+        void WindowSetWidth([In] int width);
+        [DispId(267)]
+        void WindowSetHeight([In] int height);
+        [DispId(268)]
+        void ClientToHostWindow([In, Out] ref long cx, [In, Out] ref long cy);
+        [DispId(269)]
+        void SetSecureLockIcon([In] int secureLockIcon);
+        [DispId(270)]
+        void FileDownload([In, Out] ref bool activeDocument, [In, Out] ref bool cancel);
+        [DispId(271)]
+        void NavigateError(
+            [In, MarshalAs(UnmanagedType.IDispatch)] object pDisp,
+            [In] ref object URL, 
+            [In] ref object frame, 
+            [In] ref object statusCode, 
+            [In, Out] ref bool cancel);
+        [DispId(272)]
+        void PrivacyImpactedStateChange([In] bool bImpacted);
+        [DispId(282)] // IE 7+
+        void SetPhishingFilterStatus(uint phishingFilterStatus);
+        [DispId(283)] // IE 7+
+        void WindowStateChanged(uint dwFlags, uint dwValidFlagsMask);
+    }
 
     [
         ComImport,
@@ -144,6 +238,135 @@ namespace Standard
         string Type { [return: MarshalAs(UnmanagedType.BStr)] [DispId(0xcd)] get; }
         bool Visible { [return: MarshalAs(UnmanagedType.VariantBool)] [DispId(0x192)] get; [DispId(0x192)] set; }
         int Width { [DispId(0xd0)] get; [DispId(0xd0)] set; }
+    }
+
+    internal class WebBrowserEvents : IDisposable
+    {
+        private readonly _EventSink _sink;
+        private SafeConnectionPointCookie _cookie;
+
+        public WebBrowserEvents(WebBrowser browser)
+        {
+            if (browser.Document == null)
+            {
+                throw new InvalidOperationException("Can't add an event sink until the browser's document is non-null");
+            }
+
+            var serviceProvider = (IServiceProvider)browser.Document;
+            var serviceGuid = new Guid(SID.SWebBrowserApp);
+            var iid = new Guid(IID.ConnectionPointContainer);
+            var cpc = (IConnectionPointContainer)serviceProvider.QueryService(ref serviceGuid, ref iid);
+
+            _sink = new _EventSink(this);
+            _cookie = new SafeConnectionPointCookie(cpc, _sink, new Guid(IID.WebBrowserEvents2));
+        }
+
+        // Because the DWebBrowserEvents2 interface is internal, provide our own IDispatch front-end for interop.
+        private class _EventSink : DWebBrowserEvents2, IReflect
+        {
+            private readonly WebBrowserEvents _target;
+            private static readonly Dictionary<int, MethodInfo> _dispIdMethodMap = typeof(DWebBrowserEvents2).GetMethods()
+                .ToDictionary(mi => ((DispIdAttribute[])mi.GetCustomAttributes(typeof(DispIdAttribute), false))[0].Value);
+
+            internal _EventSink(WebBrowserEvents target)
+            {
+                Assert.IsNotNull(target);
+                _target = target;
+            }
+
+            #region DWebBrowserEvents2 Members
+
+            public void StatusTextChange(string text) {}
+            public void DownloadComplete() {}
+            public void CommandStateChange(long command, bool enable) {}
+            public void DownloadBegin() {}
+            public void ProgressChange(int progress, int progressMax) {}
+            public void PropertyChange(string szProperty) {}
+            public void TitleChange(string text) {}
+            public void PrintTemplateInstantiation(object pDisp) {}
+            public void PrintTemplateTeardown(object pDisp) {}
+            public void UpdatePageStatus(object pDisp, ref object nPage, ref object fDone) {}
+            public void BeforeNavigate2(object pDisp, ref object URL, ref object flags, ref object targetFrameName, ref object postData, ref object headers, ref bool cancel) {}
+            public void NewWindow2(ref object pDisp, ref bool cancel) {}
+            public void NavigateComplete2(object pDisp, ref object URL) {}
+            public void OnQuit() {}
+            public void OnVisible(bool visible) {}
+            public void OnToolBar(bool toolBar) {}
+            public void OnMenuBar(bool menuBar) {}
+            public void OnStatusBar(bool statusBar) {}
+            public void OnFullScreen(bool fullScreen) {}
+            public void DocumentComplete(object pDisp, ref object URL) {}
+            public void OnTheaterMode(bool theaterMode) {}
+            public void WindowSetResizable(bool resizable) {}
+            public void WindowClosing(bool isChildWindow, ref bool cancel)
+            {
+                _target._NotifyWindowClosing();
+            }
+            public void WindowSetLeft(int left) {}
+            public void WindowSetTop(int top) {}
+            public void WindowSetWidth(int width) {}
+            public void WindowSetHeight(int height) {}
+            public void ClientToHostWindow(ref long cx, ref long cy) {}
+            public void SetSecureLockIcon(int secureLockIcon) {}
+            public void FileDownload(ref bool activeDocument, ref bool cancel) {}
+            public void NavigateError(object pDisp, ref object URL, ref object frame, ref object statusCode, ref bool cancel) {}
+            public void PrivacyImpactedStateChange(bool bImpacted) {}
+            public void SetPhishingFilterStatus(uint phishingFilterStatus) {}
+            public void WindowStateChanged(uint dwFlags, uint dwValidFlagsMask) {}
+
+            #endregion
+
+            #region IReflect Members
+
+            FieldInfo IReflect.GetField(string name, BindingFlags bindingAttr) { throw new NotImplementedException(); }
+            FieldInfo[] IReflect.GetFields(BindingFlags bindingAttr) { return null; }
+            MemberInfo[] IReflect.GetMember(string name, BindingFlags bindingAttr) { throw new NotImplementedException(); }
+            MemberInfo[] IReflect.GetMembers(BindingFlags bindingAttr) { throw new NotImplementedException(); }
+            MethodInfo IReflect.GetMethod(string name, BindingFlags bindingAttr) { throw new NotImplementedException(); }
+            MethodInfo IReflect.GetMethod(string name, BindingFlags bindingAttr, Binder binder, Type[] types, ParameterModifier[] modifiers) { throw new NotImplementedException(); }
+            MethodInfo[] IReflect.GetMethods(BindingFlags bindingAttr) { return null; }
+            PropertyInfo[] IReflect.GetProperties(BindingFlags bindingAttr) { return null; }
+            PropertyInfo IReflect.GetProperty(string name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers) { throw new NotImplementedException(); }
+            PropertyInfo IReflect.GetProperty(string name, BindingFlags bindingAttr) { throw new NotImplementedException(); }
+
+            object IReflect.InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args, ParameterModifier[] modifiers, CultureInfo culture, string[] namedParameters)
+            {
+                if (name.StartsWith("[DISPID=", StringComparison.OrdinalIgnoreCase))
+                {
+                    int dispid = int.Parse(name.Substring(8, name.Length - 9), CultureInfo.InvariantCulture);
+                    MethodInfo method;
+                    if (_dispIdMethodMap.TryGetValue(dispid, out method))
+                    {
+                        return method.Invoke(this, invokeAttr, binder, args, culture);
+                    }
+                }
+                throw new MissingMethodException(GetType().Name, name);
+            }
+
+            Type IReflect.UnderlyingSystemType { get { return typeof(DWebBrowserEvents2); } }
+
+            #endregion
+        }
+
+        public event EventHandler WindowClosing;
+
+        private void _NotifyWindowClosing()
+        {
+            var handler = WindowClosing;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+        }
+
+        #region IDisposable Members
+
+        public void  Dispose()
+        {
+            Utility.SafeDispose(ref _cookie);
+        }
+
+        #endregion
     }
 
     internal static partial class Utility

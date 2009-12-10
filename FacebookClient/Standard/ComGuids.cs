@@ -6,6 +6,14 @@ namespace Standard
 {
     internal static partial class IID
     {
+        /// <summary>IID_IConnectionPoint</summary>
+        public const string ConnectionPoint = "B196B286-BAB4-101A-B69C-00AA00341D07";
+        /// <summary>IID_IConnectionPointContainer</summary>
+        public const string ConnectionPointContainer = "B196B284-BAB4-101A-B69C-00AA00341D07";
+        /// <summary>IID_IEnumConnectionPoints</summary>
+        public const string EnumConnectionPoints = "B196B285-BAB4-101A-B69C-00AA00341D07";
+        /// <summary>IID_IEnumConnections</summary>
+        public const string EnumConnections = "B196B287-BAB4-101A-B69C-00AA00341D07";
         /// <summary>IID_IEnumIDList</summary>
         public const string EnumIdList = "000214F2-0000-0000-C000-000000000046";
         /// <summary>IID_IEnumObjects</summary>
@@ -28,6 +36,8 @@ namespace Standard
         public const string ObjectArray = "92CA9DCD-5622-4bba-A805-5E9F541BD8C9";
         /// <summary>IID_IObjectCollection</summary>
         public const string ObjectCollection = "5632b1a4-e38a-400a-928a-d4cd63230295";
+        /// <summary>IID_IPropertyNotifySink</summary>
+        public const string PropertyNotifySink = "9BFBBC02-EFF1-101A-84ED-00AA00341D07";
         /// <summary>IID_IPropertyStore</summary>
         public const string PropertyStore = "886d8eeb-8cf2-4446-8d02-cdba1dbdcf99";
         /// <summary>IID_IServiceProvider</summary>
@@ -50,6 +60,10 @@ namespace Standard
         public const string Unknown = "00000000-0000-0000-C000-000000000046";
         /// <summary>IID_IWebBrowser2</summary>
         public const string WebBrowser2 = "D30C1661-CDAF-11D0-8A3E-00C04FC9E26E";
+        /// <summary>DIID_DWebBrowserEvents</summary>
+        public const string WebBrowserEvents = "EAB22AC2-30C1-11CF-A7EB-0000C05BAE0B";
+        /// <summary>IID_DWebBrowserEvents2</summary>
+        public const string WebBrowserEvents2 = "34A715A0-6587-11D0-924A-0020AFC7AC4D";
 
         #region Win7 IIDs
 

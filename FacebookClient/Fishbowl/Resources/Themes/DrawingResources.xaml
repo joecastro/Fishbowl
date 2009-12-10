@@ -62,6 +62,36 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="NotificationsPostDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Children>
+          <GeometryDrawing Geometry="M0,100 10,100 A 20,20 0 0 0, 0,92 A 20,20 0 0 1, 10,96 A 80,40 0 0 0, 8,87 M10,85 A 80,40 0 0 1, 15,97 V60 H25 V97 A 20,20 0 0 1, 35,92 A 20,20 0 0 0 27,98 A 20,20 0 0 1, 36,94 A 20,20 0 0 0, 32,98 H36 M32,100 H60">
+            <GeometryDrawing.Pen>
+              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3" MiterLimit="1" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+          <GeometryDrawing>
+            <GeometryDrawing.Geometry>
+              <RectangleGeometry Rect="0,35, 40,25"/>
+            </GeometryDrawing.Geometry>
+            <GeometryDrawing.Pen>
+              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="4" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+          <GeometryDrawing>
+            <GeometryDrawing.Geometry>
+              <RectangleGeometry Rect="15,25, 10,10" RadiusY="1" RadiusX="3"/>
+            </GeometryDrawing.Geometry>
+            <GeometryDrawing.Pen>
+              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <DrawingBrush x:Key="EnvelopeDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
@@ -294,7 +324,7 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="NotificationsDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="ChatDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>

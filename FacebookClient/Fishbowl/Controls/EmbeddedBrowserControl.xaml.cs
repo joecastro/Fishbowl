@@ -7,13 +7,13 @@
     using System.Windows.Navigation;
     using ClientManager;
     using Standard;
-    using System.ComponentModel;
 
     public partial class EmbeddedBrowserControl : UserControl
     {
         private DateTime _lastRefresh = DateTime.Now;
-        private bool _hasSuppressedScriptErrors = false;
+        private bool _hasHookedIWebBrowser = false;
         private WebBrowser _browser;
+        private WebBrowserEvents _browserEvents;
         public event EventHandler BrowserShown;
         public event EventHandler BrowserHidden;
 
@@ -22,9 +22,10 @@
             VerifyAccess();
 
             Assert.IsNull(_browser);
+            Assert.IsNull(_browserEvents);
             Assert.IsNull(BrowserHost.Child);
 
-            _hasSuppressedScriptErrors = false;
+            _hasHookedIWebBrowser = false;
             _browser = new WebBrowser();
             _browser.Navigated += _OnNavigated;
             _browser.LoadCompleted += _OnLoadCompleted;
@@ -44,6 +45,7 @@
             Assert.AreEqual(BrowserHost.Child, _browser);
 
             BrowserHost.Child = null;
+            Utility.SafeDispose(ref _browserEvents);
             Utility.SafeDispose(ref _browser);
         }
 
@@ -137,10 +139,18 @@
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
-            if (!_hasSuppressedScriptErrors)
+            _HookNativeBrowserWindow();
+        }
+
+        private void _HookNativeBrowserWindow()
+        {
+            if (!_hasHookedIWebBrowser)
             {
+                Assert.IsNotNull(_browser.Document);
                 Utility.SuppressJavaScriptErrors(_browser);
-                _hasSuppressedScriptErrors = true;
+                _browserEvents = new WebBrowserEvents(_browser);
+                _browserEvents.WindowClosing += _OnBrowserWindowClosing;
+                _hasHookedIWebBrowser = true;
             }
         }
 
@@ -153,11 +163,7 @@
             }
             _UpdateCaptionText(uriText);
 
-            if (!_hasSuppressedScriptErrors)
-            {
-                Utility.SuppressJavaScriptErrors(_browser);
-                _hasSuppressedScriptErrors = true;
-            }
+            _HookNativeBrowserWindow();
         }
 
         private void _OnBreakout(object sender, RoutedEventArgs e)
@@ -174,6 +180,11 @@
             }
             Process.Start(newSource);
             Source = null;
+        }
+
+        private void _OnBrowserWindowClosing(object sender, EventArgs e)
+        {
+            _OnClose(this, null);
         }
 
         private void _OnRefresh(object sender, RoutedEventArgs e)

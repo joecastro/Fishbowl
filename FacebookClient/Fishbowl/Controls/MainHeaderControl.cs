@@ -91,6 +91,7 @@
             }
         }
 
+        public static RoutedCommand ShowChatWindowCommand = new RoutedCommand("ShowChatWindow", typeof(MainHeaderControl));
         public static RoutedCommand ShowMiniModeCommand = new RoutedCommand("ShowMiniMode", typeof(MainHeaderControl));
         public static RoutedCommand GoToFacebookCommand = new RoutedCommand("GoToFacebook", typeof(MainHeaderControl));
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(MainHeaderControl));
@@ -99,6 +100,7 @@
 
         public MainHeaderControl()
         {
+            CommandBindings.Add(new CommandBinding(ShowChatWindowCommand,   OnShowChatWindowCommand));
             CommandBindings.Add(new CommandBinding(ShowMiniModeCommand,     OnShowMiniModeCommand));
             CommandBindings.Add(new CommandBinding(GoToFacebookCommand,     OnGoToFacebookCommand));
             CommandBindings.Add(new CommandBinding(ShowSettingsCommand,     OnShowSettingsCommand));
@@ -163,6 +165,11 @@
         private void OnShowMiniModeCommand(object sender, ExecutedRoutedEventArgs e)
         {
             ((MainWindow)Application.Current.MainWindow).ApplicationCommands.SwitchToMiniModeCommand.Execute(Application.Current.MainWindow);
+        }
+
+        private void OnShowChatWindowCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowChatWindowCommand.Execute(Application.Current.MainWindow);
         }
 
         private void OnGoToFacebookCommand(object sender, ExecutedRoutedEventArgs e)

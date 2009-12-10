@@ -390,7 +390,7 @@ namespace Standard
         XBUTTONUP = 0x020C,
         XBUTTONDBLCLK = 0x020D,
         MOUSEHWHEEL = 0x020E,
-
+        PARENTNOTIFY = 0x0210,
 
         CAPTURECHANGED = 0x0215,
 
@@ -953,6 +953,77 @@ namespace Standard
         }
     }
 
+    internal sealed class SafeConnectionPointCookie : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private IConnectionPoint _cp;
+        // handle holds the cookie value.
+
+        public SafeConnectionPointCookie(IConnectionPointContainer target, object sink, Guid eventId)
+            : base(true)
+        {
+            Verify.IsNotNull(target, "target");
+            Verify.IsNotNull(sink, "sink");
+            Verify.IsNotDefault(eventId, "eventId");
+
+            handle = IntPtr.Zero;
+
+            IConnectionPoint cp = null;
+            try
+            {
+                int dwCookie;
+                target.FindConnectionPoint(ref eventId, out cp);
+                cp.Advise(sink, out dwCookie);
+                if (dwCookie == 0)
+                {
+                    throw new InvalidOperationException("IConnectionPoint::Advise returned an invalid cookie.");
+                }
+                handle = new IntPtr(dwCookie);
+                _cp = cp;
+                cp = null;
+            }
+            finally
+            {
+                Utility.SafeRelease(ref cp);
+            }
+        }
+
+        public void Disconnect()
+        {
+            ReleaseHandle();
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        protected override bool ReleaseHandle()
+        {
+            try
+            {
+                if (!this.IsInvalid)
+                {
+                    int dwCookie = handle.ToInt32();
+                    handle = IntPtr.Zero;
+
+                    Assert.IsNotNull(_cp);
+                    try
+                    {
+                        _cp.Unadvise(dwCookie);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref _cp);
+                    }
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
+    #endregion
+
+    #region Interop Types
 
     #endregion
 

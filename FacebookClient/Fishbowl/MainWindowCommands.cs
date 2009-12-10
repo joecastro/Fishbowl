@@ -25,6 +25,7 @@ namespace FacebookClient
         public SwitchThemeCommand SwitchThemeCommand { get; private set; }
         public InitiateRestartCommand InitiateRestartCommand { get; private set; }
         public SwitchToMiniModeCommand SwitchToMiniModeCommand { get; private set; }
+        public ShowChatWindowCommand ShowChatWindowCommand { get; private set; }
     }
 
     /// <summary>
@@ -99,5 +100,15 @@ namespace FacebookClient
         }
     }
 
+    internal sealed class ShowChatWindowCommand : ViewCommand
+    {
+        public ShowChatWindowCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
 
+        protected override void ExecuteInternal(object parameter)
+        {
+            ((FacebookClientApplication)Application.Current).ShowChatWindow();
+        }
+    }
 }
