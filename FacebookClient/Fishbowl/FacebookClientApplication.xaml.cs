@@ -33,6 +33,11 @@ namespace FacebookClient
             { "Blue",     new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
             { "Dark",     new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
             { "Facebook", new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
+#if DEBUG
+            // Not a production quality theme.
+            // This can be used to find resources that aren't properly styled.
+            { "Red",      new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) },
+#endif
         };
         private static readonly List<string> _ThemeNames = new List<string>(_ThemeLookup.Keys);
         private const string _DefaultThemeName = "Facebook";
