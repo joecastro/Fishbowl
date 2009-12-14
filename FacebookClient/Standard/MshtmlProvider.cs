@@ -359,9 +359,21 @@ namespace Standard
             }
         }
 
-        #region IDisposable Members
+        #region IDisposable Pattern
 
-        public void  Dispose()
+        ~WebBrowserEvents()
+        {
+            Assert.Fail();
+            _Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            _Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void _Dispose(bool disposing)
         {
             Utility.SafeDispose(ref _cookie);
         }

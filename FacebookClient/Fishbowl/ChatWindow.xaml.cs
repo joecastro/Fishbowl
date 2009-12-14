@@ -26,8 +26,8 @@ namespace FacebookClient
             Assert.IsNotNull(Browser.Document);
 
             Utility.SuppressJavaScriptErrors(Browser);
-            var eventHook = new WebBrowserEvents(Browser);
-            eventHook.WindowClosing += (sender2, e2) => Close();
+            _eventHook = new WebBrowserEvents(Browser);
+            _eventHook.WindowClosing += (sender2, e2) => Close();
         }
     }
 }
