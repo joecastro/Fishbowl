@@ -15,7 +15,7 @@
         <Grid>
           <StackPanel>
             <DockPanel>
-              <Button DockPanel.Dock="Right" Margin="5" Content="5" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:NotificationsControl.CloseCommand}" ToolTip="Hide notifications" />
+              <Button DockPanel.Dock="Right" Margin="5" Content="0" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:NotificationsControl.CloseCommand}" ToolTip="Hide notifications" />
               <TextBlock Text="Notifications" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">

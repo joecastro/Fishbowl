@@ -29,10 +29,17 @@
     <SolidColorBrush x:Key="HeaderStatusForegroundBrush"
                      Color="White" />
 
-    <SolidColorBrush x:Key="ButtonHoverBrush"
-                     Color="#FFF0E6E3" />
+    <SolidColorBrush x:Key="ButtonHoverBrush" Color="Yellow" />
 
-    <SolidColorBrush x:Key="UpdateStatusControlBrush"
+  <LinearGradientBrush x:Key="ButtonHoverBorderBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#AF4E6AA2" Offset="0"/>
+    <GradientStop Color="#804E6AA2" Offset=".5"/>
+    <GradientStop Color="#004E6AA2" Offset=".6"/>
+    <GradientStop Color="#00698FDD" Offset="1"/>
+  </LinearGradientBrush>
+
+
+  <SolidColorBrush x:Key="UpdateStatusControlBrush"
                      Color="DarkRed" Opacity="0" />
     
     <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush"

@@ -12,7 +12,7 @@
         <Grid>
           <StackPanel>
             <DockPanel>
-              <Button DockPanel.Dock="Right" Margin="5" Content="5" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:MessageNotificationsControl.CloseCommand}" ToolTip="Hide messages" />
+              <Button DockPanel.Dock="Right" Margin="5" Content="0" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:MessageNotificationsControl.CloseCommand}" ToolTip="Hide messages" />
               <TextBlock Text="Inbox" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">

@@ -59,17 +59,16 @@
     </LinearGradientBrush>
 
   <ControlTemplate x:Key="NotificationCountControlTemplate" TargetType="{x:Type FacebookClient:NotificationCountControl}">
-    <Border Width="20" Height="20" BorderBrush="White" BorderThickness="2" CornerRadius="8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Visibility="{TemplateBinding Visibility}">
-      <Border.Background>
-        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-          <GradientStop Offset="1" Color="#FFF40A0A" />
-          <GradientStop Color="#FFFFF9F9" />
-          <GradientStop Offset="0.618" Color="#FFF65252" />
-          <GradientStop Offset="0.618" Color="#FFF65252" />
-          <GradientStop Offset="0.524" Color="#FFDE4444" />
-          <GradientStop Offset="0.524" Color="#FFE85050" />
-        </LinearGradientBrush>
-      </Border.Background>
+    <Border 
+        Width="20" 
+        Height="20" 
+        BorderBrush="White" 
+        BorderThickness="2" 
+        CornerRadius="8" 
+        HorizontalAlignment="Right" 
+        VerticalAlignment="Bottom" 
+        Visibility="{TemplateBinding Visibility}"
+        Background="{TemplateBinding Background}">
       <Viewbox>
         <TextBlock HorizontalAlignment="Center" Margin="1" VerticalAlignment="Center" Foreground="#FFF7F0F0" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisplayCount}" TextAlignment="Center" TextWrapping="NoWrap" FontWeight="Bold"  />
       </Viewbox>

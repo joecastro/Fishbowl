@@ -6,6 +6,30 @@
   F1M2,9C2.01200008392334,9 2.13299989700317,9 3,9 4.10400009155273,9 5,9 5,9 5,9 5,16 5,16 5,16.867000579834 5,16.988000869751 5,17 4.89499998092651,17 3,17 3,17 3,17 2,9 2,9z M12,2C13.1040000915527,2 13.5520000457764,4.04300022125244 13,5 13,5 11.2849998474121,8 11.2849998474121,8 11.2849998474121,8 15,8 15,8 16.6569995880127,8 17,9.3430004119873 17,11 17,11 16,15 16,15 16,16.6569995880127 13,18 13,18 13,18 8,17 8,17 6.34299993515015,17 6,15.6569995880127 6,14 6,14 6,11 6,11 6,10.6929998397827 6.05900001525879,10.4020004272461 6.14499998092651,10.1230001449585 6.08500003814697,9.89900016784668 6.04899978637695,9.55099964141846 6.04899978637695,9 6.04899978637695,9 10.423999786377,4.06300020217896 10.423999786377,4.06300020217896 10.9759998321533,3.10599994659424 11,2 12,2z"
   -->
 
+  <GeometryGroup x:Key="BuddyGeometry">
+    <EllipseGeometry Center="50,20" RadiusX="25" RadiusY="25" />
+    <CombinedGeometry GeometryCombineMode="Exclude">
+      <CombinedGeometry.Geometry1>
+        <PathGeometry>
+          <PathFigure StartPoint="0, 100" IsClosed="True">
+            <ArcSegment Point="100,100" SweepDirection="Clockwise" IsLargeArc="False" Size="55,90" IsSmoothJoin="True" />
+            <LineSegment IsSmoothJoin="True" Point="0,100"/>
+          </PathFigure>
+        </PathGeometry>
+      </CombinedGeometry.Geometry1>
+      <CombinedGeometry.Geometry2>
+        <CombinedGeometry>
+          <CombinedGeometry.Geometry1>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="15,70,15,40"/>
+          </CombinedGeometry.Geometry1>
+          <CombinedGeometry.Geometry2>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="65,70,15,40"/>
+          </CombinedGeometry.Geometry2>
+        </CombinedGeometry>
+      </CombinedGeometry.Geometry2>
+    </CombinedGeometry>
+  </GeometryGroup>
+
   <CombinedGeometry x:Key="SlideshowGeometry">
     <CombinedGeometry.Geometry1>
       <CombinedGeometry GeometryCombineMode="Exclude">
@@ -71,13 +95,10 @@
               <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3" MiterLimit="1" />
             </GeometryDrawing.Pen>
           </GeometryDrawing>
-          <GeometryDrawing>
+          <GeometryDrawing Brush="{StaticResource IconForegroundBrush}">
             <GeometryDrawing.Geometry>
-              <RectangleGeometry Rect="0,35, 40,25"/>
+              <RectangleGeometry Rect="-1,33, 44,29"/>
             </GeometryDrawing.Geometry>
-            <GeometryDrawing.Pen>
-              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="4" />
-            </GeometryDrawing.Pen>
           </GeometryDrawing>
           <GeometryDrawing>
             <GeometryDrawing.Geometry>
@@ -96,17 +117,14 @@
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
-          <GeometryDrawing>
-            <GeometryDrawing.Pen>
-              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="2" />
-            </GeometryDrawing.Pen>
+          <GeometryDrawing Brush="{StaticResource IconForegroundBrush}">
             <GeometryDrawing.Geometry>
               <RectangleGeometry RadiusX="3" RadiusY="1" Rect="0,0,60,35"/>
             </GeometryDrawing.Geometry>
           </GeometryDrawing>
           <GeometryDrawing Geometry="M2,2 4,6 30,20 56,6 58,2 M2,33 17,20 M58,33 43,20">
             <GeometryDrawing.Pen>
-              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="2" />
+              <Pen Brush="{StaticResource IconBackgroundBrush}" Thickness="3" />
             </GeometryDrawing.Pen>
           </GeometryDrawing>
         </DrawingGroup.Children>
@@ -261,12 +279,51 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="Home3DrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Children>
+          <GeometryDrawing Geometry="F1 M20,103 20,53, 5,53 55,3, 105,53, 90,53 90,103 65,103 65,58, 45,58, 45,103 20,103Z" Brush="{StaticResource IconBackgroundBrush}">
+          </GeometryDrawing>
+          <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="F1 M15,100 15,50, 0,50 50,0, 100,50, 85,50 85,100 60,100 60,55, 40,55, 40,100 15,100Z">
+          </GeometryDrawing>
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <DrawingBrush x:Key="SingleBuddyDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
           <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="F1 M 393.104,407.202C 400.532,407.201 405.41,413.292 407.58,422.479L 402.504,422.479L 402.504,416.446C 402.504,416.043 402.18,415.719 401.778,415.719C 401.375,415.719 401.05,416.043 401.05,416.446L 401.05,422.479L 385.638,422.479L 385.638,416.446C 385.638,416.043 385.313,415.719 384.912,415.719C 384.51,415.719 384.185,416.043 384.185,416.446L 384.185,422.479L 378.529,422.479C 380.703,413.293 385.576,407.202 393.056,407.202M 393.053,404.191C 388.798,404.184 385.355,400.743 385.35,396.488C 385.355,392.232 388.798,388.788 393.053,388.781C 397.311,388.788 400.754,392.232 400.759,396.488C 400.754,400.743 397.311,404.184 393.053,404.191M 393.053,386.082C 387.306,386.082 382.654,390.739 382.649,396.488C 382.654,400.223 384.634,403.47 387.591,405.303C 380.928,407.875 376.86,415.123 375.301,423.665C 375.218,424.089 375.337,424.527 375.609,424.861C 375.887,425.194 376.301,425.388 376.729,425.388L 409.38,425.388C 409.809,425.388 410.223,425.194 410.495,424.861C 410.774,424.527 410.887,424.087 410.808,423.665C 409.248,415.123 405.176,407.875 398.518,405.303C 401.473,403.47 403.455,400.223 403.46,396.488C 403.455,390.739 398.803,386.082 393.053,386.082" />
           <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="F1 M 396.518,403.531C 399.473,401.697 401.455,398.45 401.46,394.715C 401.455,388.966 396.803,384.309 391.053,384.309C 385.306,384.309 380.654,388.966 380.649,394.715C 380.654,398.45 382.634,401.697 385.591,403.531C 378.928,406.102 374.86,413.35 373.301,421.892C 373.218,422.316 373.337,422.755 373.609,423.088C 373.887,423.421 374.301,423.615 374.729,423.615L 407.38,423.615C 407.809,423.615 408.223,423.421 408.495,423.088C 408.774,422.755 408.887,422.314 408.808,421.892C 407.248,413.35 403.176,406.102 396.518,403.531 Z M 383.35,394.715C 383.355,390.459 386.798,387.015 391.053,387.008C 395.311,387.015 398.754,390.459 398.759,394.715C 398.754,398.97 395.311,402.411 391.053,402.419C 386.798,402.411 383.355,398.97 383.35,394.715 Z M 400.504,420.706L 400.504,414.673C 400.504,414.27 400.18,413.947 399.778,413.947C 399.375,413.947 399.05,414.27 399.05,414.673L 399.05,420.706L 383.638,420.706L 383.638,414.673C 383.638,414.27 383.313,413.947 382.912,413.947C 382.51,413.947 382.185,414.27 382.185,414.673L 382.185,420.706L 376.529,420.706C 378.708,411.5 383.597,405.402 391.056,405.429C 398.509,405.402 403.406,411.5 405.58,420.706L 400.504,420.706 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="SingleBuddy2DrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Children>
+          <DrawingGroup>
+            <DrawingGroup.Transform>
+              <TranslateTransform X="6" Y="6"/>
+            </DrawingGroup.Transform>
+            <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="{StaticResource BuddyGeometry}">
+              <GeometryDrawing.Pen>
+                <Pen Brush="{StaticResource IconBackgroundBrush}" Thickness="10" />
+              </GeometryDrawing.Pen>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup>
+            <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource BuddyGeometry}">
+              <GeometryDrawing.Pen>
+                <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="10" />
+              </GeometryDrawing.Pen>
+            </GeometryDrawing>
+          </DrawingGroup>
         </DrawingGroup.Children>
       </DrawingGroup>
     </DrawingBrush.Drawing>
@@ -285,6 +342,44 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="StackedBuddies2DrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Children>
+          <DrawingGroup>
+            <DrawingGroup.Transform>
+              <TranslateTransform X="30" Y="-20"/>
+            </DrawingGroup.Transform>
+            <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource BuddyGeometry}">
+              <GeometryDrawing.Pen>
+                <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="10" />
+              </GeometryDrawing.Pen>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup>
+            <DrawingGroup.Transform>
+              <TransformGroup>
+                <TranslateTransform X="10" Y="-5"/>
+              </TransformGroup>
+            </DrawingGroup.Transform>
+            <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="{StaticResource BuddyGeometry}">
+              <GeometryDrawing.Pen>
+                <Pen Brush="{StaticResource IconBackgroundBrush}" Thickness="10" />
+              </GeometryDrawing.Pen>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup>
+            <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource BuddyGeometry}">
+              <GeometryDrawing.Pen>
+                <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="10" />
+              </GeometryDrawing.Pen>
+            </GeometryDrawing>
+          </DrawingGroup>
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  
   <DrawingBrush x:Key="PhotosDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>

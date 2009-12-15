@@ -14,7 +14,7 @@
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     Width="1000" Height="600"
-    MinWidth="560" MinHeight="280"
+    MinWidth="600" MinHeight="280"
     AllowDrop="True"
     Background="White"
     ShowsNavigationUI="False"
@@ -36,22 +36,22 @@
   <TaskbarItemInfo.TaskbarItemInfo>
     <TaskbarItemInfo
         ThumbnailClipMargin="0,85,0,0"
-        Overlay="{Binding ElementName=Header, Path=NotificationControl.ImageSource}">
+        Overlay="{Binding ElementName=Footer, Path=NotificationControl.ImageSource}">
       <TaskbarItemInfo.ThumbButtonInfos>
         <ThumbButtonInfoCollection>
           <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See what's new with your friends">
             <ThumbButtonInfo.ImageSource>
-              <DrawingImage Drawing="{Binding Source={StaticResource Home2DrawingBrush}, Path=Drawing}"/>
+              <DrawingImage Drawing="{Binding Source={StaticResource Home3DrawingBrush}, Path=Drawing}"/>
             </ThumbButtonInfo.ImageSource>
           </ThumbButtonInfo>
           <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on your friends">
             <ThumbButtonInfo.ImageSource>
-              <DrawingImage Drawing="{Binding Source={StaticResource StackedBuddiesDrawingBrush}, Path=Drawing}"/>
+              <DrawingImage Drawing="{Binding Source={StaticResource StackedBuddies2DrawingBrush}, Path=Drawing}"/>
             </ThumbButtonInfo.ImageSource>
           </ThumbButtonInfo>
           <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on yourself">
             <ThumbButtonInfo.ImageSource>
-              <DrawingImage Drawing="{Binding Source={StaticResource SingleBuddyDrawingBrush}, Path=Drawing}"/>
+              <DrawingImage Drawing="{Binding Source={StaticResource SingleBuddy2DrawingBrush}, Path=Drawing}"/>
             </ThumbButtonInfo.ImageSource>
           </ThumbButtonInfo>
           <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See everyone's photos">
@@ -75,6 +75,7 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto"/>
         <RowDefinition Height="*"/>
+        <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
 
       <ClientManagerControls:MainContentContainer x:Name="ContentPane" Grid.Row="1"
@@ -88,19 +89,34 @@
         Source="Resources/Images/main_header_shadow.png"
         Stretch="Fill"
         Visibility="{Binding NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
-      
+
+      <Image x:Name="FooterShadow"
+        Height="4"
+        Grid.Row="1"
+        VerticalAlignment="Bottom"
+        Source="Resources/Images/main_header_shadow.png"
+        Stretch="Fill"
+        RenderTransformOrigin=".5,.5"
+        Visibility="{Binding NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
+        <Image.RenderTransform>
+          <ScaleTransform ScaleY="-1"/>
+        </Image.RenderTransform>
+      </Image>
+
       <FacebookClient:MainHeaderControl Grid.Row="0" x:Name="Header"/>
+      
+      <FacebookClient:FooterControl Grid.Row="2" x:Name="Footer"/>
 
       <FacebookClient:NotificationsControl Grid.Row="1" 
-          VerticalAlignment="Top"
+          VerticalAlignment="Bottom"
           HorizontalAlignment="Right" 
-          IsDisplayed="{Binding ElementName=Header, Path=AreNotificationsToggled, Mode=TwoWay}"
+          IsDisplayed="{Binding ElementName=Footer, Path=AreNotificationsToggled, Mode=TwoWay}"
           RequestNavigate="_OnNotificationNavigationRequested"/>
 
       <FacebookClient:MessageNotificationsControl Grid.Row="1" 
-          VerticalAlignment="Top"
+          VerticalAlignment="Bottom"
           HorizontalAlignment="Right" 
-          IsDisplayed="{Binding ElementName=Header, Path=IsInboxToggled, Mode=TwoWay}"
+          IsDisplayed="{Binding ElementName=Footer, Path=IsInboxToggled, Mode=TwoWay}"
           RequestNavigate="_OnMessageNavigationRequested"/>
       
       <!-- Modeless information bar.  Collapsed by default.  -->
@@ -131,7 +147,7 @@
         </DockPanel>
       </Border>
 
-      <ContentControl Grid.Row="0" Grid.RowSpan="2" Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Dialog}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FocusManager.IsFocusScope="True" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Contained" Background="#CC000000">
+      <ContentControl Grid.Row="0" Grid.RowSpan="3" Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Dialog}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FocusManager.IsFocusScope="True" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.ControlTabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Contained" Background="#CC000000">
         <ContentControl.Style>
           <Style TargetType="{x:Type ContentControl}">
             <Setter Property="Template">

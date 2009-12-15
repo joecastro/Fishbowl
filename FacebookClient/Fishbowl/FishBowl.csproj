@@ -152,6 +152,7 @@
     <Compile Include="Controls\FacebookPhotoTagControl.xaml.cs">
       <DependentUpon>FacebookPhotoTagControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FooterControl.cs" />
     <Compile Include="Controls\FriendButton.cs" />
     <Compile Include="Controls\FriendSummaryControl.cs" />
     <Compile Include="Controls\IconNotificationButton.cs" />
