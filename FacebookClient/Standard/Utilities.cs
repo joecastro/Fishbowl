@@ -519,6 +519,15 @@ namespace Standard
             return 0 != (value & mask);
         }
 
+        public static bool IsInterfaceImplemented(Type objectType, Type interfaceType)
+        {
+            Assert.IsNotNull(objectType);
+            Assert.IsNotNull(interfaceType);
+            Assert.IsTrue(interfaceType.IsInterface);
+
+            return objectType.GetInterfaces().Any(type => type == interfaceType);
+        }
+
         public static bool IsOSVistaOrNewer
         {
             get { return _osVersion >= new Version(6, 0); }

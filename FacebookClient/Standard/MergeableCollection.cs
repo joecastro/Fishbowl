@@ -28,7 +28,7 @@
 
             public _Comparer()
             {
-                if (typeof(T).GetInterface(typeof(IComparable<T>).Name) != null)
+                if (Utility.IsInterfaceImplemented(typeof(T), typeof(IComparable<T>)))
                 {
                     _defaultComparison = (left, right) =>
                     {
@@ -125,8 +125,8 @@
 
             // We don't really want to constrain based on the type being IMergeable or comparable
             // This is a very specific check.  We want to ensure that this type supports IMergeable<T>, not IMergeable<SomethingElse>
-            _areItemsMergable = typeof(T).GetInterfaces().Any(type => type == typeof(IMergeable<T>));
-            _areItemsNotifiable = typeof(T).GetInterfaces().Any(type => type == typeof(INotifyPropertyChanged));
+            _areItemsMergable = Utility.IsInterfaceImplemented(typeof(T), typeof(IMergeable<T>));
+            _areItemsNotifiable = Utility.IsInterfaceImplemented(typeof(T), typeof(INotifyPropertyChanged));
 
             if (dataObjects == null)
             {

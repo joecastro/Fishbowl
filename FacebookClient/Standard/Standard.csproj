@@ -83,6 +83,7 @@
     <Compile Include="CornerRadiusAnimation.cs" />
     <Compile Include="CornerRadiusAnimationBase.cs" />
     <Compile Include="Debug.cs" />
+    <Compile Include="DoubleUtil.cs" />
     <Compile Include="DpiHelper.cs" />
     <Compile Include="Enumerable2.cs" />
     <Compile Include="ErrorCodes.cs" />

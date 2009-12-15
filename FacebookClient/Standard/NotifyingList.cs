@@ -1,14 +1,15 @@
 ﻿
 namespace Standard
 {
-    using System.ComponentModel;
-    using System.Collections.Generic;
     using System.Collections;
-using System.Diagnostics;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.ComponentModel;
 
-    internal class NotifyingList<T> : IList<T> where T : INotifyPropertyChanged
+    internal class NotifyingList<T> : IList<T>, INotifyCollectionChanged where T : INotifyPropertyChanged
     {
-        private readonly List<T> _list;
+        private readonly ObservableCollection<T> _list;
 
         public event PropertyChangedEventHandler ItemPropertyChanged;
 
@@ -30,17 +31,12 @@ using System.Diagnostics;
 
         public NotifyingList()
         {
-            _list = new List<T>();
-        }
-
-        public NotifyingList(int capacity)
-        {
-            _list = new List<T>(capacity);
+            _list = new ObservableCollection<T>();
         }
 
         public NotifyingList(IEnumerable<T> collection)
         {
-            _list = new List<T>(collection);
+            _list = new ObservableCollection<T>(collection);
             foreach (T item in collection)
             {
                 _SafeAddPropertyListener(item);
@@ -94,7 +90,8 @@ using System.Diagnostics;
 
         public void Clear()
         {
-            T[] items = _list.ToArray();
+            T[] items = new T[_list.Count];
+            _list.CopyTo(items, 0);
             _list.Clear();
             foreach (T item in items)
             {
@@ -148,6 +145,41 @@ using System.Diagnostics;
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
+        }
+
+        #endregion
+
+        #region INotifyCollectionChanged Members
+
+        private event NotifyCollectionChangedEventHandler _sourceCollectionChanged;
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add
+            {
+                if (_sourceCollectionChanged == null)
+                {
+                    _list.CollectionChanged += _OnSourceCollectionChanged;
+                }
+                _sourceCollectionChanged += value;
+            }
+            remove
+            {
+                _sourceCollectionChanged -= value;
+                if (_sourceCollectionChanged == null)
+                {
+                    _list.CollectionChanged -= _OnSourceCollectionChanged;
+                }
+            }
+        }
+
+        private void _OnSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var handler = _sourceCollectionChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
         #endregion

@@ -12,6 +12,7 @@ namespace Standard
     using System;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
     using System.IO;
     using System.Threading;
 
@@ -288,6 +289,18 @@ namespace Standard
             if (!File.Exists(filePath))
             {
                 throw new ArgumentException(string.Format("No file exists at \"{0}\""), parameterName);
+            }
+        }
+
+        internal static void ImplementsInterface(object parameter, Type interfaceType, string parameterName)
+        {
+            Assert.IsNotNull(parameter);
+            Assert.IsNotNull(interfaceType);
+            Assert.IsTrue(interfaceType.IsInterface);
+
+            if (!parameter.GetType().GetInterfaces().Any(type => type == interfaceType))
+            {
+                throw new ArgumentException(string.Format("The parameter must implement interface {0}.", interfaceType.ToString()), parameterName);
             }
         }
     }
