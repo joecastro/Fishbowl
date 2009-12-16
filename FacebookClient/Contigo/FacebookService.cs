@@ -1,4 +1,5 @@
-﻿
+﻿//#define FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
+
 namespace Contigo
 {
     using System;
@@ -72,7 +73,7 @@ namespace Contigo
         private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
 
         internal MergeableCollection<Notification> RawNotifications { get; private set; }
-        internal MergeableCollection<MessageNotification> RawInbox { get; private set; }
+
         internal MergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
         internal MergeableCollection<FacebookContact> RawFriends { get; private set; }
         internal MergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
@@ -80,7 +81,6 @@ namespace Contigo
 
         public FacebookCollection<ActivityFilter> ActivityFilters { get; private set; }
         public FacebookCollection<Notification> Notifications { get; private set; }
-        public FacebookCollection<MessageNotification> InboxNotifications { get; private set; }
         public FacebookContact MeContact { get; private set; }
         public ActivityPostCollection NewsFeed { get; private set; }
         public FacebookContactCollection Friends { get; private set; }
@@ -88,6 +88,25 @@ namespace Contigo
         public FacebookPhotoAlbumCollection PhotoAlbums { get; private set; }
 
         public SearchIndex SearchIndex { get; private set; }
+
+#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
+        public FacebookCollection<MessageNotification> InboxNotifications { get; private set; }
+        internal MergeableCollection<MessageNotification> RawInbox { get; private set; }
+#else
+        private int _unreadMessageCount;
+        public int UnreadMessageCount
+        {
+            get { return _unreadMessageCount; }
+            set
+            {
+                if (value != _unreadMessageCount)
+                {
+                    _unreadMessageCount = value;
+                    _NotifyPropertyChanged("UnreadMessageCount");
+                }
+            }
+        }
+#endif
 
         /// <summary>Utility for methods that require a valid session key.</summary>
         private void _VerifyOnline()
@@ -134,7 +153,6 @@ namespace Contigo
             RawFriends = new MergeableCollection<FacebookContact>();
             RawPhotoAlbums = new MergeableCollection<FacebookPhotoAlbum>();
             RawNotifications = new MergeableCollection<Notification>();
-            RawInbox = new MergeableCollection<MessageNotification>();
             RawFilters = new MergeableCollection<ActivityFilter>();
 
             NewsFeed = new ActivityPostCollection(RawNewsFeed, this, true);
@@ -142,7 +160,10 @@ namespace Contigo
             OnlineFriends = new FacebookContactCollection(RawFriends, this, true);
             PhotoAlbums = new FacebookPhotoAlbumCollection(RawPhotoAlbums, this, null);
             Notifications = new FacebookCollection<Notification>(RawNotifications, this);
+#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
+            RawInbox = new MergeableCollection<MessageNotification>();
             InboxNotifications = new FacebookCollection<MessageNotification>(RawInbox, this);
+#endif
             ActivityFilters = new FacebookCollection<ActivityFilter>(RawFilters, this);
 
             // Default sort orders
@@ -255,7 +276,9 @@ namespace Contigo
             RawFriends.Clear();
             RawPhotoAlbums.Clear();
             RawNotifications.Clear();
+#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
             RawInbox.Clear();
+#endif
             RawFilters.Clear();
 
             _settings.Save();
@@ -1101,19 +1124,25 @@ namespace Contigo
                 return;
             }
 
-            List<Notification> requests = _facebookApi.GetRequests();
+            List<Notification> requests;
+            int unreadMailMessages;
+            _facebookApi.GetRequests(out requests, out unreadMailMessages);
 
             _settings.RemoveKnownFriendRequestsExcept((from notification in requests where notification is FriendRequestNotification select notification.SenderId).ToList());
             notifications.AddRange(from req in requests where !_settings.IsFriendRequestKnown(req.SenderId) select req);
             RawNotifications.Merge(notifications, false);
+
+            UnreadMessageCount = unreadMailMessages;
 
             if (!IsOnline)
             {
                 return;
             }
 
+#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
             List<MessageNotification> newMessages = _facebookApi.GetMailNotifications(false);
             RawInbox.Merge(newMessages, false);
+#endif
         }
 
         private void _UpdateFriendsWorker(object parameter)

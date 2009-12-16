@@ -602,7 +602,7 @@ namespace Contigo
         }
 
         // This differs from Notifications.GetList in that it returns messages, pokes, shares, group and event invites, and friend requests.
-        public List<Notification> GetRequests()
+        public void GetRequests(out List<Notification> friendRequests, out int unreadMessagesCount)
         {
             _Verify(true);
 
@@ -612,10 +612,7 @@ namespace Contigo
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(notificationMap));
-
-            List<Notification> notifications = _serializer.DeserializeNotificationsGetResponse(result);
-
-            return notifications;
+            _serializer.DeserializeNotificationsGetResponse(result, out friendRequests, out unreadMessagesCount);
         }
 
         public List<Notification> GetNotifications(bool includeRead)

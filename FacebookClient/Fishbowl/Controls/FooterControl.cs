@@ -71,6 +71,7 @@
             }
         }
 
+
         public static readonly DependencyProperty IsInboxToggledProperty = DependencyProperty.Register(
             "IsInboxToggled",
             typeof(bool),
@@ -87,23 +88,31 @@
 
         private void _OnIsInboxToggledChanged()
         {
+#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
             // Can't have both of these on at the same time.
             if (IsInboxToggled)
             {
                 AreNotificationsToggled = false;
                 IsBuddyListToggled = false;
             }
+#else
+            if (IsInboxToggled)
+            {
+                // Facebook isn't letting us display the inbox...
+                IsInboxToggled = false;
+                ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowInboxCommand.Execute(Application.Current.MainWindow);
+            }
+#endif
+
         }
 
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(FooterControl));
         public static RoutedCommand SignOutCommand = new RoutedCommand("SignOut", typeof(FooterControl));
-        public static RoutedCommand RefreshCommand = new RoutedCommand("Refresh", typeof(FooterControl));
 
         public FooterControl()
         {
             CommandBindings.Add(new CommandBinding(ShowSettingsCommand, OnShowSettingsCommand));
             CommandBindings.Add(new CommandBinding(SignOutCommand, OnSignOutCommand));
-            CommandBindings.Add(new CommandBinding(RefreshCommand, OnRefreshCommand));
         }
 
         public override void OnApplyTemplate()
@@ -122,11 +131,5 @@
         {
             ((MainWindow)Application.Current.MainWindow).SignOut();
         }
-
-        private void OnRefreshCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null);
-        }
-
     }
 }

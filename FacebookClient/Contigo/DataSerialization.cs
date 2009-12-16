@@ -977,7 +977,7 @@ namespace Contigo
             return null;
         }
 
-        public List<Notification> DeserializeNotificationsGetResponse(string xml)
+        public void DeserializeNotificationsGetResponse(string xml, out List<Notification> friendRequests, out int unreadMessageCount)
         {
             var notificationList = new List<Notification>();
 
@@ -991,7 +991,8 @@ namespace Contigo
                 where !string.IsNullOrEmpty(uid)
                 select (Notification)new FriendRequestNotification(_service, uid));
 
-            return notificationList;
+            unreadMessageCount = _SafeGetElementInt32((XElement)xdoc.FirstNode, ns + "messages", ns + "unread") ?? 0;
+            friendRequests = notificationList;
         }
 
         public List<Notification> DeserializeNotificationsListResponse(string xml)

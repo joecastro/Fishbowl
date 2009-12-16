@@ -26,6 +26,7 @@ namespace FacebookClient
         public InitiateRestartCommand InitiateRestartCommand { get; private set; }
         public SwitchToMiniModeCommand SwitchToMiniModeCommand { get; private set; }
         public ShowChatWindowCommand ShowChatWindowCommand { get; private set; }
+        public ShowInboxCommand ShowInboxCommand { get; private set; }
     }
 
     /// <summary>
@@ -68,6 +69,29 @@ namespace FacebookClient
             FacebookLoginService.ClearCachedCredentials(ViewManager.FacebookAppId);
             System.Windows.Forms.Application.Restart();
             System.Windows.Application.Current.Shutdown();
+        }
+    }
+
+    internal sealed class ShowInboxCommand : ViewCommand
+    {
+        public ShowInboxCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return parameter is MainWindow;
+        }
+
+        protected override void ExecuteInternal(object parameter)
+        {
+            var w = parameter as MainWindow;
+            if (w == null || !w.IsVisible)
+            {
+                return;
+            }
+
+            w.ShowInbox();
         }
     }
 

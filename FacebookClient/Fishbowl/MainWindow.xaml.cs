@@ -945,5 +945,10 @@ namespace FacebookClient
 
             return ret;
         }
+
+        internal void ShowInbox()
+        {
+            _OnExternalNavigationRequested(this, new RequestNavigateEventArgs(new Uri("http://www.facebook.com/inbox"), null));
+        }
     }
 }
