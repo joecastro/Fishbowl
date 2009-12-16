@@ -20,10 +20,10 @@
       <CombinedGeometry.Geometry2>
         <CombinedGeometry>
           <CombinedGeometry.Geometry1>
-            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="15,70,15,40"/>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="15,80,25,40"/>
           </CombinedGeometry.Geometry1>
           <CombinedGeometry.Geometry2>
-            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="65,70,15,40"/>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="65,80,25,40"/>
           </CombinedGeometry.Geometry2>
         </CombinedGeometry>
       </CombinedGeometry.Geometry2>
@@ -90,19 +90,19 @@
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
-          <GeometryDrawing Geometry="M0,100 10,100 A 20,20 0 0 0, 0,92 A 20,20 0 0 1, 10,96 A 80,40 0 0 0, 8,87 M10,85 A 80,40 0 0 1, 15,97 V60 H25 V97 A 20,20 0 0 1, 35,92 A 20,20 0 0 0 27,98 A 20,20 0 0 1, 36,94 A 20,20 0 0 0, 32,98 H36 M32,100 H60">
+          <GeometryDrawing Geometry="M20,100 H40 V60 H60 V100 H80">
             <GeometryDrawing.Pen>
-              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3" MiterLimit="1" />
+              <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3"/>
             </GeometryDrawing.Pen>
           </GeometryDrawing>
           <GeometryDrawing Brush="{StaticResource IconForegroundBrush}">
             <GeometryDrawing.Geometry>
-              <RectangleGeometry Rect="-1,33, 44,29"/>
+              <RectangleGeometry Rect="10,20, 80,50"/>
             </GeometryDrawing.Geometry>
           </GeometryDrawing>
           <GeometryDrawing>
             <GeometryDrawing.Geometry>
-              <RectangleGeometry Rect="15,25, 10,10" RadiusY="1" RadiusX="3"/>
+              <RectangleGeometry Rect="40,15, 20,10" RadiusY="1" RadiusX="3"/>
             </GeometryDrawing.Geometry>
             <GeometryDrawing.Pen>
               <Pen Brush="{StaticResource IconForegroundBrush}" Thickness="3" />
