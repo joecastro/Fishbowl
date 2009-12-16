@@ -97,9 +97,6 @@
                                   </Style.Triggers>
                                 </Style>
                               </FacebookClient:BindableRun.Style>
-                              <FacebookClient:BindableRun.Text>
-                                <Binding Path="Title" FallbackValue="(No Subject)"/>
-                              </FacebookClient:BindableRun.Text>
                             </FacebookClient:BindableRun>
                           </Hyperlink>
                         </TextBlock>
