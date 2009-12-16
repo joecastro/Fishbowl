@@ -44,7 +44,8 @@ namespace Contigo
         private const string _SelectFriendsClause = "(SELECT uid2 FROM friend WHERE uid1={0})";
 
         private const string _GetPermissionsQueryString = "SELECT " + _ExtendedPermissionColumns + " FROM permissions WHERE uid={0}";
-        private const string _GetFriendQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause + " ORDER BY uid DESC";
+        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause;
+        private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
         private const string _GetSingleUserAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner={0} ORDER BY modified DESC";
@@ -960,7 +961,7 @@ namespace Contigo
             string multiqueryResult = Utility.FailableFunction(() =>
                 _SendMultiQuery(
                     new[] { "friends", "profiles" },
-                    new[] { string.Format(_GetFriendQueryString, _UserId), string.Format(_GetProfilesMultiQueryString, "friends") }));
+                    new[] { string.Format(_GetFriendsQueryString, _UserId), string.Format(_GetProfilesMultiQueryString, "friends") }));
 
             XDocument xdoc = DataSerialization.SafeParseDocument(multiqueryResult);
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
@@ -980,6 +981,12 @@ namespace Contigo
             List<FacebookContact> friendsList = _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
 
             return friendsList;
+        }
+
+        public Dictionary<string, OnlinePresence> GetFriendsOnlineStatus()
+        {
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId)));
+            return _serializer.DeserializeUserPresenceList(result);
         }
 
         public List<FacebookPhotoAlbum> GetFriendsPhotoAlbums()

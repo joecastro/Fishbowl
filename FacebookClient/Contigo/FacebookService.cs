@@ -770,6 +770,7 @@ namespace Contigo
             }
 
             _UpdateNewsFeedAsync();
+            _UpdateFriendsOnlineStatusAsync();
             _UpdateNotificationsAsync();
         }
 
@@ -835,10 +836,14 @@ namespace Contigo
             _newsFeedDispatcher.QueueRequest(_UpdateNotificationsWorker, null);
         }
 
-
         private void _UpdateFriendsAsync()
         {
             _friendInfoDispatcher.QueueRequest(_UpdateFriendsWorker, null);
+        }
+
+        private void _UpdateFriendsOnlineStatusAsync()
+        {
+            _friendInfoDispatcher.QueueRequest(_UpdateFriendsOnlineStatusWorker, null);
         }
 
         private void _UpdatePhotoAlbumsAsync()
@@ -1154,6 +1159,46 @@ namespace Contigo
                         }
                     }
                 }
+            }
+        }
+
+        private void _UpdateFriendsOnlineStatusWorker(object parameter)
+        {
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            Dictionary<string, OnlinePresence> statusMap = _facebookApi.GetFriendsOnlineStatus();
+
+            // If the friend list has obviously changed then just do a full refresh.
+            bool updatedSuccessfully = false;
+            lock (_userLookup)
+            {
+                if (RawFriends.Count == statusMap.Count)
+                {
+                    if (IsOnline)
+                    {
+                        updatedSuccessfully = true;
+                        foreach (var friend in RawFriends)
+                        {
+                            OnlinePresence presence;
+                            if (!statusMap.TryGetValue(friend.UserId, out presence))
+                            {
+                                // Why don't we have data for this friend?
+                                // Refresh the list.
+                                updatedSuccessfully = false;
+                                break;
+                            }
+                            friend.OnlinePresence = presence;
+                        }
+                    }
+                }
+            }
+
+            if (!updatedSuccessfully)
+            {
+                _UpdateFriendsAsync();
             }
         }
 

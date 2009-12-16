@@ -354,6 +354,7 @@ namespace Contigo
                 ProfileUri = _SafeGetElementUri(elt, ns + "profile_url"),
                 UserId = _SafeGetElementValue(elt, ns + "uid"),
                 ProfileUpdateTime = _SafeGetElementDateTime(elt, ns + "profile_update_time") ?? _UnixEpochTime,
+                OnlinePresence = _DeserializePresenceNode(ns, elt),
             };
 
             if (!string.IsNullOrEmpty(_SafeGetElementValue(elt, ns + "status", ns + "message")))
@@ -375,17 +376,20 @@ namespace Contigo
                 };
             }
 
+            return contact;
+        }
+
+        private static OnlinePresence _DeserializePresenceNode(XNamespace ns, XElement elt)
+        {
             string presence = _SafeGetElementValue(elt, ns + "online_presence");
             switch (presence)
             {
-                case "active": contact.OnlinePresence = OnlinePresence.Active; break;
-                case "idle": contact.OnlinePresence = OnlinePresence.Idle; break;
-                case "offline": contact.OnlinePresence = OnlinePresence.Offline; break;
-                default: contact.OnlinePresence = OnlinePresence.Unknown; break;
+                case "active":  return OnlinePresence.Active;
+                case "idle":    return OnlinePresence.Idle;
+                case "offline": return OnlinePresence.Offline;
+                case "error":   return OnlinePresence.Unknown;
             }
-
-
-            return contact;
+            return OnlinePresence.Unknown;
         }
 
         private WorkInfo _DeserializeWorkInfo(XNamespace ns, XElement elt)
@@ -697,6 +701,18 @@ namespace Contigo
             return new List<FacebookContact>(contacts);
         }
 
+        public Dictionary<string, OnlinePresence> DeserializeUserPresenceList(string xml)
+        {
+            XDocument xdoc = SafeParseDocument(xml);
+            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+
+            var items = from userNode in xdoc.Root.Elements(ns + "user")
+                        let uid = _SafeGetElementValue(userNode, ns + "uid")
+                        let presence = _DeserializePresenceNode(ns, userNode)
+                        select new { UserId = uid, Presence = presence };
+            return items.ToDictionary(item => item.UserId, item => item.Presence);
+        }
+        
         public List<FacebookContact> DeserializeProfileList(string xml)
         {
             XDocument xdoc = SafeParseDocument(xml);
