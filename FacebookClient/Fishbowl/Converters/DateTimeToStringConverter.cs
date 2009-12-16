@@ -11,7 +11,9 @@ namespace FacebookClient
 {
     using System;
     using System.Globalization;
+    using System.Text;
     using System.Windows.Data;
+    using Standard;
 
     /// <summary>
     /// Converts a Date and Time into a string for display.
@@ -20,52 +22,34 @@ namespace FacebookClient
     {
         #region IValueConverter Members
 
-        /// <summary>
-        /// Converts a DateTime into a string.
-        /// </summary>
-        /// <param name="value">The DateTime to convert.</param>
-        /// <param name="targetType">The target type of the conversion.</param>
-        /// <param name="parameter">The conversion parameter.</param>
-        /// <param name="culture">The conversion culture.</param>
-        /// <returns>A string representation of the provided date and time.</returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string dateTimeString = string.Empty;
-            var now = DateTime.Now;
-            DateTime inputDateTime = DateTime.MinValue;
+            Assert.IsNotNull(culture);
+            Assert.IsNotNull(value);
 
-            if (value != null)
+            var dateBuilder = new StringBuilder();
+            var dtValue = (DateTime)value;
+
+            DateTime now = DateTime.Now;
+            bool isToday = now.Date == dtValue.Date;
+            bool wasYesterday = now.Subtract(TimeSpan.FromDays(1)).Date == dtValue.Date;
+
+            if (isToday || wasYesterday)
             {
-                if (DateTime.TryParse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out inputDateTime))
+                dateBuilder.Append(dtValue.ToString("t", culture));
+                if (wasYesterday)
                 {
-                    if (inputDateTime.Day != now.Day)
-                    {
-                        if (inputDateTime.Day == now.Subtract(TimeSpan.FromDays(1)).Day)
-                        {
-                            dateTimeString = "yesterday ";
-                        }
-                        else
-                        {
-                            dateTimeString = inputDateTime.ToString("M/d/yy") + " ";
-                        }
-                    }
-
-                    dateTimeString += inputDateTime.ToString("h:mm");
-                    dateTimeString += " " + inputDateTime.ToString("tt").ToLower();
+                    dateBuilder.Append(" yesterday");
                 }
             }
+            else
+            {
+                dateBuilder.Append(dtValue.ToString("g"));
+            }
 
-            return dateTimeString;
+            return dateBuilder.ToString();
         }
 
-        /// <summary>
-        /// Converts a date and time string into a DateTime object.  Not implemented.
-        /// </summary>
-        /// <param name="value">The string to convert.</param>
-        /// <param name="targetType">The target type of the conversion.</param>
-        /// <param name="parameter">The conversion parameter.</param>
-        /// <param name="culture">The conversion culture.</param>
-        /// <returns>A DateTime object of the provided string.  Not implemented.</returns>
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
