@@ -118,7 +118,6 @@ namespace FacebookClient.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0,0")]
         public global::System.Windows.Point MiniModeWindowStartupLocation {
             get {
                 return ((global::System.Windows.Point)(this["MiniModeWindowStartupLocation"]));
@@ -161,6 +160,18 @@ namespace FacebookClient.Properties {
             }
             set {
                 this["ShowMoreNewsfeedFilters"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Empty")]
+        public global::System.Windows.Rect ChatWindowBounds {
+            get {
+                return ((global::System.Windows.Rect)(this["ChatWindowBounds"]));
+            }
+            set {
+                this["ChatWindowBounds"] = value;
             }
         }
     }

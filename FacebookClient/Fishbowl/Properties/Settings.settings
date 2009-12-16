@@ -27,7 +27,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="MiniModeWindowStartupLocation" Type="System.Windows.Point" Scope="User">
-      <Value Profile="(Default)">0,0</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="KeepMiniModeWindowOnTop" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -37,6 +37,9 @@
     </Setting>
     <Setting Name="ShowMoreNewsfeedFilters" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ChatWindowBounds" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">Empty</Value>
     </Setting>
   </Settings>
 </SettingsFile>
