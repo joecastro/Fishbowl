@@ -376,6 +376,17 @@
                   Style="{StaticResource SearchTextBoxStyle}" 
                   Tag="Search" 
                   BannerText="Search" />
+              <Button Margin="0,3" 
+                MinHeight="20"
+                VerticalAlignment="Center" HorizontalAlignment="Right" 
+                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                Style="{DynamicResource RefreshButtonStyle}"
+                ToolTipService.Placement="Top"
+                ToolTip="Think you're missing something? Click to refresh now.">
+                <Rectangle Width="16" Height="16" Fill="{StaticResource RefreshArrowDrawingBrush}" />
+              </Button>
+
               <Button Margin="0,3"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
@@ -581,18 +592,6 @@
                 ToolTip="View and change settings">
               <Rectangle Margin="0" Width="16" Height="16" Fill="{StaticResource SettingsDrawingBrush}" />
             </Button>
-            <Button Margin="3,1" 
-                MinHeight="20"
-                DockPanel.Dock="Right"
-                VerticalAlignment="Center" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                Style="{DynamicResource RefreshButtonStyle}"
-                ToolTipService.Placement="Top"
-                ToolTip="Think you're missing something? Click to refresh now.">
-              <Rectangle Width="16" Height="16" Fill="{StaticResource RefreshArrowDrawingBrush}" />
-            </Button>
-
           </DockPanel>
         </ControlTemplate>
       </Setter.Value>
