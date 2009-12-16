@@ -4,6 +4,7 @@
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager" 
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
     MinWidth="250" MaxWidth="350">
   <UserControl.Resources>
     <!-- Can't do this directly in the Setter because of a bug in WPF. -->
@@ -59,6 +60,18 @@
                           </Style> 
                         </TextBlock.Style>
                         <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnNotificationRequestNavigate" />
+                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}">
+                          <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CreatedTextBlockStyle}">
+                              <Setter Property="Visibility" Value="Visible"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Updated}" Value="{x:Static sys:DateTime.MinValue}">
+                                  <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
+                        </TextBlock>
                       </TextBlock>
                     </DockPanel>
                   </DataTemplate>

@@ -82,6 +82,8 @@
                           </Hyperlink>
                         </TextBlock>
 
+                        <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}"/>
+                        
                         <TextBlock Grid.Column="2" TextWrapping="Wrap" FontWeight="Bold">
                           <Hyperlink 
                               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 

@@ -369,8 +369,8 @@ namespace Contigo
         internal FriendRequestNotification(FacebookService service, string userId)
             : base(service)
         {
-            Created = DateTime.Now;
-            Updated = DateTime.Now;
+            Created = default(DateTime);
+            Updated = default(DateTime);
             IsHidden = false;
             IsUnread = true;
             NotificationId = "FriendRequest_" + userId;
