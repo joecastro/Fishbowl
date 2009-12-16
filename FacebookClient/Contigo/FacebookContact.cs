@@ -184,6 +184,9 @@
     {
         #region Sort Delegates
 
+        private static readonly OnlinePresence[] _PresenceSortOrder = new OnlinePresence[] { OnlinePresence.Active, OnlinePresence.Idle, OnlinePresence.Offline, OnlinePresence.Unknown };
+        private static readonly OnlinePresence[] _ReversePresenceSortOrder = new OnlinePresence[] { OnlinePresence.Offline, OnlinePresence.Idle, OnlinePresence.Active, OnlinePresence.Unknown };
+
         private static readonly Comparison<FacebookContact> _defaultComparison = (contact1, contact2) => contact1.CompareTo(contact2);
         private static readonly Comparison<FacebookContact> _ascendingByDisplayNameComparison = (contact1, contact2) => contact1._lowerNameSmallString.CompareTo(contact2._lowerNameSmallString);
         private static readonly Comparison<FacebookContact> _ascendingByLastNameComparison = _defaultComparison;
@@ -238,6 +241,31 @@
                 ret = _defaultComparison(contact1, contact2);
             }
             return ret;
+        };
+        private static readonly Comparison<FacebookContact> _ascendingByOnlinePresenceComparison = (contact1, contact2) =>
+        {
+            if (contact1.OnlinePresence == contact2.OnlinePresence)
+            {
+                return _defaultComparison(contact1, contact2);
+            }
+
+            Assert.AreEqual(Enum.GetValues(typeof(OnlinePresence)).Length, _PresenceSortOrder.Length);
+            foreach (var presenceValue in _PresenceSortOrder)
+            {
+                if (presenceValue == contact1.OnlinePresence)
+                {
+                    return -1;
+                }
+
+                if (presenceValue == contact2.OnlinePresence)
+                {
+                    return 1;
+                }
+            }
+
+            // Bad online presence?
+            Assert.Fail();
+            return 0;
         };
 
         private static readonly Comparison<FacebookContact> _descendingByDisplayNameComparison = (contact1, contact2) => contact2._lowerNameSmallString.CompareTo(contact1._lowerNameSmallString);
@@ -296,6 +324,32 @@
             }
             return ret;
         };
+        private static readonly Comparison<FacebookContact> _descendingByOnlinePresenceComparison = (contact1, contact2) =>
+        {
+            if (contact1.OnlinePresence == contact2.OnlinePresence)
+            {
+                return _defaultComparison(contact1, contact2);
+            }
+
+            Assert.AreEqual(Enum.GetValues(typeof(OnlinePresence)).Length, _ReversePresenceSortOrder.Length);
+            foreach (var presenceValue in _PresenceSortOrder)
+            {
+                if (presenceValue == contact1.OnlinePresence)
+                {
+                    return -1;
+                }
+
+                if (presenceValue == contact2.OnlinePresence)
+                {
+                    return 1;
+                }
+            }
+
+            // Bad online presence?
+            Assert.Fail();
+            return 0;
+        };
+
 
         internal static Comparison<FacebookContact> GetComparison(ContactSortOrder value)
         {
@@ -305,11 +359,13 @@
                 case ContactSortOrder.AscendingByDisplayName: return _ascendingByDisplayNameComparison;
                 case ContactSortOrder.AscendingByInterestLevel: return _ascendingByInterestLevelComparison;
                 case ContactSortOrder.AscendingByLastName: return _ascendingByLastNameComparison;
+                case ContactSortOrder.AscendingByOnlinePresence: return _ascendingByOnlinePresenceComparison;
                 case ContactSortOrder.AscendingByRecentActivity: return _ascendingByRecentActivityComparison;
                 case ContactSortOrder.DescendingByBirthday: return _descendingByBirthdayComparison;
                 case ContactSortOrder.DescendingByDisplayName: return _descendingByDisplayNameComparison;
                 case ContactSortOrder.DescendingByInterestLevel: return _descendingByInterestLevelComparison;
                 case ContactSortOrder.DescendingByLastName: return _descendingByLastNameComparison;
+                case ContactSortOrder.DescendingByOnlinePresence: return _descendingByOnlinePresenceComparison;
                 case ContactSortOrder.DescendingByRecentActivity: return _descendingByRecentActivityComparison;
                 default: Assert.Fail(); return _defaultComparison;
             }

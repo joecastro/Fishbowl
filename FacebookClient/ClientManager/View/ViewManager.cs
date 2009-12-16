@@ -488,6 +488,14 @@ namespace ClientManager.View
             }
         }
 
+        public FacebookContactCollection OnlineFriends
+        {
+            get
+            {
+                return ServiceProvider.FacebookService.OnlineFriends;
+            }
+        }
+
         public FacebookContact MeContact
         {
             get

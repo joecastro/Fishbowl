@@ -165,7 +165,7 @@
                 if (_likers == null)
                 {
                     _mergeableLikers = new MergeableCollection<FacebookContact>();
-                    _likers = new FacebookContactCollection(_mergeableLikers, SourceService);
+                    _likers = new FacebookContactCollection(_mergeableLikers, SourceService, false);
                     _likers.CollectionChanged += (sender, e) => _NotifyPropertyChanged("PeopleWhoLikeThis");
                     foreach (string uid in RawPeopleWhoLikeThisIds)
                     {

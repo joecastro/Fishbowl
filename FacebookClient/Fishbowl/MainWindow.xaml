@@ -107,6 +107,12 @@
       
       <FacebookClient:FooterControl Grid.Row="2" x:Name="Footer"/>
 
+      <FacebookClient:BuddyListControl Grid.Row="1" 
+          VerticalAlignment="Bottom"
+          HorizontalAlignment="Right" 
+          IsDisplayed="{Binding ElementName=Footer, Path=IsBuddyListToggled, Mode=TwoWay}"
+          RequestNavigate="_OnNotificationNavigationRequested"/>
+
       <FacebookClient:NotificationsControl Grid.Row="1" 
           VerticalAlignment="Bottom"
           HorizontalAlignment="Right" 

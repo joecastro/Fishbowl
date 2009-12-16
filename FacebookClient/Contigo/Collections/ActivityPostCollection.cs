@@ -1,12 +1,10 @@
 ﻿namespace Contigo
 {
-    using System;
-    using System.Linq;
-
-    using Standard;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
-using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
+    using Standard;
 
     public class ActivityPostCollection : FacebookCollection<ActivityPost>
     {

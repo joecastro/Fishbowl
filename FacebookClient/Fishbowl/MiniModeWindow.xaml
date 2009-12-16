@@ -292,7 +292,14 @@
                       HorizontalAlignment="Center" 
                       ToolTip="Show Notifications"
                       Style="{DynamicResource MiniNotificationsToggleButtonStyle}">
-          <FacebookClient:NotificationCountControl x:Name="NotificationCountControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" />
+          <FacebookClient:NotificationCountControl x:Name="NotificationCountControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
+            <FacebookClient:NotificationCountControl.Background>
+              <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                <GradientStop Offset="0.000" Color="#FFF9F9" />
+                <GradientStop Offset="0.524" Color="Firebrick" />
+              </LinearGradientBrush>
+            </FacebookClient:NotificationCountControl.Background>
+          </FacebookClient:NotificationCountControl>
         </ToggleButton>
 
         <Popup DockPanel.Dock="Right" Margin="1" x:Name="PART_PopupNotification" AllowsTransparency="True" IsOpen="{Binding ElementName=MiniNotificationsButton,Path=IsChecked}" PlacementTarget="{Binding ElementName=MainWindow}" Placement="Bottom">

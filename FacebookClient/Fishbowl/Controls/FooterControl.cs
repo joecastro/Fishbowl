@@ -22,6 +22,7 @@
             set { SetValue(NotificationControlProperty, value); }
         }
 
+
         public static readonly DependencyProperty AreNotificationsToggledProperty = DependencyProperty.Register(
             "AreNotificationsToggled",
             typeof(bool),
@@ -42,26 +43,34 @@
             if (AreNotificationsToggled)
             {
                 IsInboxToggled = false;
+                IsBuddyListToggled = false;
             }
         }
 
-        /// <summary>
-        /// InboxCountControl Dependency Property
-        /// </summary>
-        public static readonly DependencyProperty InboxCountControlProperty = DependencyProperty.Register(
-            "InboxCountControl",
-            typeof(NotificationCountControl),
-            typeof(FooterControl));
+        public static readonly DependencyProperty IsBuddyListToggledProperty = DependencyProperty.Register(
+            "IsBuddyListToggled",
+            typeof(bool),
+            typeof(FooterControl),
+            new PropertyMetadata(
+                false,
+                (d, e) => ((FooterControl)d)._OnIsBuddyListToggledChanged()));
 
-        public NotificationCountControl InboxCountControl
+        public bool IsBuddyListToggled
         {
-            get { return (NotificationCountControl)GetValue(InboxCountControlProperty); }
-            set { SetValue(InboxCountControlProperty, value); }
+            get { return (bool)GetValue(IsBuddyListToggledProperty); }
+            set { SetValue(IsBuddyListToggledProperty, value); }
         }
 
-        /// <summary>
-        /// IsInboxToggled Dependency Property
-        /// </summary>
+        private void _OnIsBuddyListToggledChanged()
+        {
+            // Can't have both of these on at the same time.
+            if (IsBuddyListToggled)
+            {
+                IsInboxToggled = false;
+                AreNotificationsToggled = false;
+            }
+        }
+
         public static readonly DependencyProperty IsInboxToggledProperty = DependencyProperty.Register(
             "IsInboxToggled",
             typeof(bool),
@@ -82,17 +91,16 @@
             if (IsInboxToggled)
             {
                 AreNotificationsToggled = false;
+                IsBuddyListToggled = false;
             }
         }
 
-        public static RoutedCommand ShowChatWindowCommand = new RoutedCommand("ShowChatWindow", typeof(FooterControl));
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(FooterControl));
         public static RoutedCommand SignOutCommand = new RoutedCommand("SignOut", typeof(FooterControl));
         public static RoutedCommand RefreshCommand = new RoutedCommand("Refresh", typeof(FooterControl));
 
         public FooterControl()
         {
-            CommandBindings.Add(new CommandBinding(ShowChatWindowCommand, OnShowChatWindowCommand));
             CommandBindings.Add(new CommandBinding(ShowSettingsCommand, OnShowSettingsCommand));
             CommandBindings.Add(new CommandBinding(SignOutCommand, OnSignOutCommand));
             CommandBindings.Add(new CommandBinding(RefreshCommand, OnRefreshCommand));
@@ -103,12 +111,6 @@
             base.OnApplyTemplate();
 
             NotificationControl = Template.FindName("NotificationControl", this) as NotificationCountControl;
-            InboxCountControl = Template.FindName("InboxCountControl", this) as NotificationCountControl;
-        }
-
-        private void OnShowChatWindowCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowChatWindowCommand.Execute(Application.Current.MainWindow);
         }
 
         private void OnShowSettingsCommand(object sender, ExecutedRoutedEventArgs e)

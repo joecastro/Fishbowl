@@ -142,6 +142,9 @@
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\AnimationHelper.cs" />
+    <Compile Include="Controls\BuddyListControl.xaml.cs">
+      <DependentUpon>BuddyListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Common\ActionICommand.cs" />
     <Compile Include="Controls\Common\CompositionTargetRenderingListening.cs" />
     <Compile Include="Controls\Common\WpfUtil.cs" />
@@ -301,6 +304,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ChatWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BuddyListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

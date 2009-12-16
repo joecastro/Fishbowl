@@ -176,5 +176,37 @@ namespace Standard
             return true;
         }
 
+        public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
+        {
+            Verify.IsNotNull(collection, "collection");
+            _AddRange(collection, items);
+        }
+
+        private static void _AddRange<T>(ICollection<T> collection, IEnumerable<T> items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                collection.Add(item);
+            }
+        }
+
+        public static IEnumerable<T> Reverse<T>(this IList<T> list)
+        {
+            Verify.IsNotNull(list, "list");
+            return _Reverse(list);
+        }
+
+        private static IEnumerable<T> _Reverse<T>(IList<T> list)
+        {
+            for (int i = list.Count - 1; i >= 0; --i)
+            {
+                yield return list[i];
+            }
+        }
     }
 }

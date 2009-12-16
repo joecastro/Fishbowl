@@ -84,6 +84,7 @@ namespace Contigo
         public FacebookContact MeContact { get; private set; }
         public ActivityPostCollection NewsFeed { get; private set; }
         public FacebookContactCollection Friends { get; private set; }
+        public FacebookContactCollection OnlineFriends { get; private set; }
         public FacebookPhotoAlbumCollection PhotoAlbums { get; private set; }
 
         public SearchIndex SearchIndex { get; private set; }
@@ -137,7 +138,8 @@ namespace Contigo
             RawFilters = new MergeableCollection<ActivityFilter>();
 
             NewsFeed = new ActivityPostCollection(RawNewsFeed, this, true);
-            Friends = new FacebookContactCollection(RawFriends, this);
+            Friends = new FacebookContactCollection(RawFriends, this, false);
+            OnlineFriends = new FacebookContactCollection(RawFriends, this, true);
             PhotoAlbums = new FacebookPhotoAlbumCollection(RawPhotoAlbums, this, null);
             Notifications = new FacebookCollection<Notification>(RawNotifications, this);
             InboxNotifications = new FacebookCollection<MessageNotification>(RawInbox, this);

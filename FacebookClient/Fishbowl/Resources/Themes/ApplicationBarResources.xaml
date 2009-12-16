@@ -479,6 +479,32 @@
               </Style>
             </DockPanel.Resources>
 
+            <ToggleButton x:Name="ChatButton"
+                DockPanel.Dock="Right"
+                HorizontalAlignment="Right" 
+                Style="{DynamicResource FooterToggleButtonStyle}"
+                ToolTipService.Placement="Top"
+                ToolTip="See who else is around"
+                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Grid Width="38">
+                  <Rectangle Width="26" Height="22" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{StaticResource ChatDrawingBrush}" />
+                  <FacebookClient:NotificationCountControl 
+                      x:Name="ActiveFriendsCountControl" 
+                      HorizontalAlignment="Right" VerticalAlignment="Center"
+                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" >
+                    <FacebookClient:NotificationCountControl.Background>
+                      <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Offset="0.000" Color="#FFF9F9" />
+                        <GradientStop Offset="0.524" Color="#67A932" />
+                      </LinearGradientBrush>
+                    </FacebookClient:NotificationCountControl.Background>
+                  </FacebookClient:NotificationCountControl>
+                </Grid>
+                <TextBlock x:Name="ChatButtonText" Text="Who's Online" />
+              </StackPanel>
+            </ToggleButton>
+
             <ToggleButton x:Name="NotificationsButton"
                 DockPanel.Dock="Right" 
                 Style="{StaticResource FooterToggleButtonStyle}" 
@@ -529,20 +555,6 @@
                 <TextBlock x:Name="InboxButtonText" Text="Inbox" />
               </StackPanel>
             </ToggleButton>
-
-            <Button Margin="3,0"
-                    DockPanel.Dock="Right"
-                VerticalAlignment="Center" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:FooterControl.ShowChatWindowCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                Style="{DynamicResource MiniModeButtonStyle}"
-                ToolTipService.Placement="Top"
-                ToolTip="Chat!">
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Rectangle Margin="0" Width="26" Height="22" Fill="{StaticResource ChatDrawingBrush}" />
-                <TextBlock x:Name="ChatButtonText" Text="Who's Online" />
-              </StackPanel>
-            </Button>
 
             <Image x:Name="Separator1" Margin="8,0" DockPanel.Dock="Right" Style="{StaticResource NavigationSeparationStyle}" />
 
