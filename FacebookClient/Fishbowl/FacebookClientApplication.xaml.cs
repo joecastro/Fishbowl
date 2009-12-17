@@ -40,7 +40,7 @@ namespace FacebookClient
 #endif
         };
         private static readonly List<string> _ThemeNames = new List<string>(_ThemeLookup.Keys);
-        private const string _DefaultThemeName = "Facebook";
+        private const string _DefaultThemeName = "Dark";
 
         private MainWindow _mainWindow;
         private MiniModeWindow _minimodeWindow;
