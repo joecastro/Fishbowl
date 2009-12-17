@@ -26,8 +26,8 @@
     <Setting Name="OpenWebContentExternally" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="MiniModeWindowStartupLocation" Type="System.Windows.Point" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="MiniModeWindowBounds" Type="System.Windows.Rect" Scope="User">
+      <Value Profile="(Default)">Empty</Value>
     </Setting>
     <Setting Name="KeepMiniModeWindowOnTop" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

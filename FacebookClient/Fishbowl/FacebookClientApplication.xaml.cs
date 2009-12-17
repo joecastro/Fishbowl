@@ -171,8 +171,8 @@ namespace FacebookClient
             _mainWindow = new MainWindow();
             _minimodeWindow = new MiniModeWindow();
 
-            Point minimodeStartupLocation = FacebookClient.Properties.Settings.Default.MiniModeWindowStartupLocation;
-            if (minimodeStartupLocation == default(Point))
+            Point minimodeStartupLocation = FacebookClient.Properties.Settings.Default.MiniModeWindowBounds.TopLeft;
+            if (minimodeStartupLocation == default(Point) || !DoubleUtilities.IsFinite(minimodeStartupLocation.X) || !DoubleUtilities.IsFinite(minimodeStartupLocation.Y))
             {
                 _minimodeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
@@ -202,7 +202,7 @@ namespace FacebookClient
         protected override void OnExit(ExitEventArgs e)
         {
             // Persist the minimode window's location here, since it never lets itself close on its own.
-            FacebookClient.Properties.Settings.Default.MiniModeWindowStartupLocation = new Point(_minimodeWindow.Left, _minimodeWindow.Top);
+            FacebookClient.Properties.Settings.Default.MiniModeWindowBounds = new Rect(_minimodeWindow.Left, _minimodeWindow.Top, _minimodeWindow.Width, _minimodeWindow.Height);
 
             FacebookClient.Properties.Settings.Default.Save();
             

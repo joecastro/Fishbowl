@@ -118,12 +118,13 @@ namespace FacebookClient.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Windows.Point MiniModeWindowStartupLocation {
+        [global::System.Configuration.DefaultSettingValueAttribute("Empty")]
+        public global::System.Windows.Rect MiniModeWindowBounds {
             get {
-                return ((global::System.Windows.Point)(this["MiniModeWindowStartupLocation"]));
+                return ((global::System.Windows.Rect)(this["MiniModeWindowBounds"]));
             }
             set {
-                this["MiniModeWindowStartupLocation"] = value;
+                this["MiniModeWindowBounds"] = value;
             }
         }
         
