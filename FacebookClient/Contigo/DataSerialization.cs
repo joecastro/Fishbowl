@@ -694,6 +694,10 @@ namespace Contigo
                 profilesElement.Elements(ns + "profile"),
                 (userElt, profileElt) =>
                 {
+                    Assert.AreEqual(
+                        _SafeGetElementValue(userElt, ns + "uid"),
+                        _SafeGetElementValue(profileElt, ns + "id"));
+
                     var c = _DeserializeUser(ns, userElt);
                     c.MergeImage(_DeserializeProfile(ns, profileElt).Image);
                     return c;

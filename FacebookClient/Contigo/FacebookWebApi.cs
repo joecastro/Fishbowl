@@ -44,7 +44,9 @@ namespace Contigo
         private const string _SelectFriendsClause = "(SELECT uid2 FROM friend WHERE uid1={0})";
 
         private const string _GetPermissionsQueryString = "SELECT " + _ExtendedPermissionColumns + " FROM permissions WHERE uid={0}";
-        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause;
+
+        // Use the orderby clause to ensure consistent ordering with _GetPr9ofilesMultiQueryString.
+        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause + " ORDER BY uid DESC";
         private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
