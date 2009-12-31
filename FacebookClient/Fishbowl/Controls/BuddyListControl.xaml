@@ -26,9 +26,29 @@
           </Button>
 
           <ScrollViewer Background="White" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
-            <ItemsControl x:Name="FriendList" MinHeight="40" Background="White" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends}">
+            <FacebookClient:IncrementalLoadListBox x:Name="FriendList" 
+                ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                MinHeight="40" 
+                Padding="5" 
+                ActualItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends}"
+                BorderThickness="0">
+              <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                  <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter />
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                </Style>
+              </ListBox.ItemContainerStyle>
+              
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type Facebook:FacebookContact}">
+                  
                   <DockPanel Margin="0,0,0,5">
                     <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center">
                       <Rectangle.Fill>
@@ -105,7 +125,7 @@
 
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            </FacebookClient:IncrementalLoadListBox>
           </ScrollViewer>
         </DockPanel>
       </Border>
