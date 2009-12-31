@@ -5,20 +5,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7B4CFB3D-C325-4386-8F35-22A533A2F50B}</ProjectGuid>
+    <ProjectGuid>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClientManager</RootNamespace>
-    <AssemblyName>ClientManager</AssemblyName>
+    <RootNamespace>Microsoft.Bing</RootNamespace>
+    <AssemblyName>Microsoft.Bing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +25,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +33,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +43,6 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -59,7 +53,6 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -72,18 +65,20 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq">
+    <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -95,14 +90,11 @@
     <Compile Include="..\Standard\Debug.cs">
       <Link>Standard\Debug.cs</Link>
     </Compile>
-    <Compile Include="..\Standard\DoubleUtil.cs">
-      <Link>Standard\DoubleUtil.cs</Link>
+    <Compile Include="..\Standard\Enumerable2.cs">
+      <Link>Standard\Enumerable2.cs</Link>
     </Compile>
     <Compile Include="..\Standard\ErrorCodes.cs">
       <Link>Standard\ErrorCodes.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\MshtmlProvider.cs">
-      <Link>Standard\MshtmlProvider.cs</Link>
     </Compile>
     <Compile Include="..\Standard\NativeMethods.cs">
       <Link>Standard\NativeMethods.cs</Link>
@@ -119,81 +111,37 @@
     <Compile Include="..\Standard\Verify.cs">
       <Link>Standard\Verify.cs</Link>
     </Compile>
-    <Compile Include="Controls\AnimatedSwooshes.xaml.cs">
-      <DependentUpon>AnimatedSwooshes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DragContainer.cs" />
-    <Compile Include="Controls\FacebookImageControl.cs" />
-    <Compile Include="Controls\ImageThumbnailControl.cs" />
-    <Compile Include="Controls\LargePhotoThumbnailControl.cs" />
-    <Compile Include="Controls\MainContentContainer.cs" />
-    <Compile Include="Controls\NewsFeedItemOverlay.cs" />
-    <Compile Include="Controls\PhotoBaseControl.cs" />
-    <Compile Include="Controls\PhotoExplorerAlbumNode.cs" />
-    <Compile Include="Controls\PhotoExplorerBaseNode.cs" />
-    <Compile Include="Controls\PhotoExplorerCommentNode.cs" />
-    <Compile Include="Controls\PhotoExplorerContactNode.cs" />
-    <Compile Include="Controls\PhotoExplorerControl.cs" />
-    <Compile Include="Controls\PhotoExplorerPhotoNode.cs" />
-    <Compile Include="Controls\PhotoExplorerPostNode.cs" />
-    <Compile Include="Controls\PhotoExplorerTagNode.cs" />
-    <Compile Include="Controls\SizeTemplateControl.cs" />
-    <Compile Include="Controls\Spinner.xaml.cs">
-      <DependentUpon>Spinner.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DragDropLib.cs" />
-    <Compile Include="View\ActionCommands.cs" />
-    <Compile Include="View\EventResourceDictionary.cs" />
-    <Compile Include="View\HomePage.cs" />
-    <Compile Include="Data\MissingItemError.cs" />
-    <Compile Include="View\LoadingPage.xaml.cs">
-      <DependentUpon>LoadingPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\SlideShow.cs" />
+    <Compile Include="TranslationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceProvider.cs" />
-    <Compile Include="View\MasterNavigator.cs" />
-    <Compile Include="View\NavigationCommands.cs" />
-    <Compile Include="View\Navigator.cs" />
-    <Compile Include="View\ViewCommand.cs" />
-    <Compile Include="View\ViewManager.cs" />
+    <Compile Include="Service References\MicrosoftTranslator\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contigo\Contigo.csproj">
-      <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
-      <Name>Contigo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
-      <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
-      <Name>Microsoft.Bing</Name>
-    </ProjectReference>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\AnimatedSwooshes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Spinner.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\LoadingPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <None Include="Service References\MicrosoftTranslator\Soap.wsdl" />
+    <None Include="Service References\MicrosoftTranslator\Soap.xsd" />
+    <None Include="Service References\MicrosoftTranslator\Soap1.xsd" />
+    <None Include="Service References\MicrosoftTranslator\Soap2.xsd" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\preloader.png" />
+    <WCFMetadataStorage Include="Service References\MicrosoftTranslator\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\swoosh1.png" />
+    <None Include="Service References\MicrosoftTranslator\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MicrosoftTranslator\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\MicrosoftTranslator\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

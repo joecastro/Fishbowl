@@ -24,13 +24,13 @@
         public Navigator FriendsNavigator { get; private set; }
         public Navigator PhotoAlbumsNavigator { get; private set; } 
 
-        public MasterNavigator(ViewManager viewManager, FacebookService facebookService, ViewPage startupPage, Dispatcher dispatcher)
+        public MasterNavigator(ViewManager viewManager, FacebookService facebookService, ViewPage startupPage)
         {
             Verify.IsNotNull(viewManager, "viewManager");
             Verify.IsNotNull(facebookService, "facebookService");
             _viewManager = viewManager;
             
-            HomeNavigator = new HomePage().GetNavigator(null, dispatcher);
+            HomeNavigator = new HomePage().GetNavigator(null, facebookService.Dispatcher);
             PhotoAlbumsNavigator = new PhotoAlbumCollectionNavigator(facebookService.PhotoAlbums, "Photo Albums", null);
             FriendsNavigator = new ContactCollectionNavigator(facebookService.Friends, "Friends", null);
             ProfileNavigator = new ContactNavigator(facebookService.MeContact, "Me", null);

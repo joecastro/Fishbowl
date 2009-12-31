@@ -9,6 +9,8 @@
 
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
+  <FacebookClient:TranslateConverter x:Key="TranslateConverter"/>
+  
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />

@@ -21,6 +21,7 @@ namespace FacebookClient
     using ClientManager.View;
     using Standard;
     using Contigo;
+    using Microsoft.Bing;
 
     /// <summary>
     /// The ScePhoto view mode; regular or full-screen with options.
@@ -194,7 +195,7 @@ namespace FacebookClient
 
         public MainWindow()
         {
-            ServiceProvider.Initialize(FacebookClientApplication.ApiKey, Environment.GetCommandLineArgs(), Dispatcher);
+            ServiceProvider.Initialize(FacebookClientApplication.FacebookApiKey, FacebookClientApplication.BingApiKey, Environment.GetCommandLineArgs(), Dispatcher);
             ServiceProvider.GoneOnline += (sender, e) =>
             {
                 IsOnline = true;
@@ -867,7 +868,7 @@ namespace FacebookClient
         public void SignOut()
         {
             // we need to delete the cookie if it exists; otherwise we'll log right back into the other user.
-            FacebookLoginService.ClearCachedCredentials(FacebookClientApplication.ApiKey);
+            FacebookLoginService.ClearCachedCredentials(FacebookClientApplication.FacebookApiKey);
 
             ApplicationCommands.InitiateRestartCommand.Execute(this);
         }

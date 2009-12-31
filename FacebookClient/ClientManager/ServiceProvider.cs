@@ -11,11 +11,11 @@
 namespace ClientManager
 {
     using System;
-    using ClientManager.Data;
+    using System.Windows.Threading;
     using ClientManager.View;
     using Contigo;
     using Standard;
-    using System.Windows.Threading;
+    using Microsoft.Bing;
 
     /// <summary>
     /// Hosts and provides access to all ClientManager services.
@@ -29,6 +29,8 @@ namespace ClientManager
         /// </summary>
         public static ViewManager ViewManager { get; private set; }
 
+        public static TranslationService TranslationService { get; private set; }
+
         /// <summary>
         /// Shuts down the service provider.
         /// </summary>
@@ -40,15 +42,19 @@ namespace ClientManager
                 FacebookService = null;
             }
             ViewManager = null;
+            TranslationService = null;
         }
 
-        public static void Initialize(string appId, string[] parameters, Dispatcher dispatcher)
+        public static void Initialize(string facebookAppId, string bingAppId, string[] parameters, Dispatcher dispatcher)
         {
             try
             {
-                var facebook = new FacebookService(appId, dispatcher);
-                var view = new ViewManager(facebook, parameters, dispatcher);
+                var facebook = new FacebookService(facebookAppId, dispatcher);
+                var bing = new TranslationService(bingAppId);
 
+                var view = new ViewManager(facebook, parameters);
+
+                TranslationService = bing;
                 FacebookService = facebook;
                 ViewManager = view;
             }

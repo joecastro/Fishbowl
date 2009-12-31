@@ -84,6 +84,12 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -201,6 +207,7 @@
     <Compile Include="Converters\FilterToImageConverter.cs" />
     <Compile Include="Converters\SexPronounConverter.cs" />
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
+    <Compile Include="Converters\TranslateConverter.cs" />
     <Compile Include="DeploymentManager.cs" />
     <Compile Include="HyperlinkTextContent.cs" />
     <Compile Include="Controls\AnimatingTilePanel.cs" />
@@ -573,6 +580,10 @@
     <ProjectReference Include="..\EffectLibrary\EffectLibrary.csproj">
       <Project>{66271E3C-0725-4B49-B62B-910562AF4954}</Project>
       <Name>EffectLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
+      <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
+      <Name>Microsoft.Bing</Name>
     </ProjectReference>
     <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
       <Project>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</Project>

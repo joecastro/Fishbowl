@@ -385,7 +385,7 @@ namespace ClientManager.View
             remove { NavigationCommands.NavigateToContentCommand.ExternalNavigationRequested -= value; }
         }
 
-        public ViewManager(FacebookService facebookService, string[] parameters, Dispatcher dispatcher)
+        public ViewManager(FacebookService facebookService, string[] parameters)
         {
             Verify.IsNotNull(facebookService, "facebookService");
 
@@ -394,7 +394,7 @@ namespace ClientManager.View
             NavigationCommands = new NavigationCommands(this);
             ActionCommands = new ActionCommands(this);
             // _startPage may get set by processCommandLineArgs
-            MasterNavigator = new MasterNavigator(this, facebookService, _startPage, dispatcher);
+            MasterNavigator = new MasterNavigator(this, facebookService, _startPage);
             FacebookAppId = facebookService.ApplicationId;
             
             facebookService.PropertyChanged += facebookService_PropertyChanged;

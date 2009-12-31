@@ -17,13 +17,15 @@ namespace FacebookClient
     using FacebookClient.Properties;
     using Microsoft.Windows.Shell;
     using Standard;
+    using Microsoft.Bing;
 
     /// <summary>
     /// Code behind file for the FacebookClient Application XAML.
     /// </summary>
     public partial class FacebookClientApplication : Application
     {
-        internal const string ApiKey = "f6310ebf42d462b20050f62bea75d7d2";
+        internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
+        internal const string BingApiKey = "63F02036684DE7BEA0FDE713C0D1653056727276";
 
         private static readonly Uri _SupportUri = new Uri("http://www.fishbowlclient.com");
         private static readonly Uri _PrivacyUri = new Uri("http://go.microsoft.com/fwlink/?LinkId=167928");
