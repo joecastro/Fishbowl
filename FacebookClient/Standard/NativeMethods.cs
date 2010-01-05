@@ -712,6 +712,29 @@ namespace Standard
         LEFTUP = 4
     }
 
+    /// <summary>
+    /// MSGFLT_*.  New in Vista.  Realiased in Windows 7.
+    /// </summary>
+    internal enum MSGFLT
+    {
+        // Win7 versions of this enum:
+        RESET = 0,
+        ALLOW = 1,
+        DISALLOW = 2,
+
+        // Vista versions of this enum:
+        // ADD = 1,
+        // REMOVE = 2,
+    }
+
+    internal enum MSGFLTINFO
+    {
+        NONE = 0,
+        ALREADYALLOWED_FORWND = 1,
+        ALREADYDISALLOWED_FORWND = 2,
+        ALLOWED_HIGHER = 3,
+    }
+
     internal enum INPUT_TYPE : uint
     {
         MOUSE = 0,
@@ -1023,11 +1046,15 @@ namespace Standard
 
     #endregion
 
-    #region Interop Types
-
-    #endregion
-
     #region Native Types
+
+    // Win7 only.
+    [StructLayout(LayoutKind.Sequential)]
+    struct CHANGEFILTERSTRUCT
+    {
+        public uint cbSize;
+        public MSGFLTINFO ExtStatus;
+    }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
     struct SHFILEOPSTRUCT
@@ -1583,6 +1610,51 @@ namespace Standard
         /// Delegate declaration that matches WndProc signatures.
         /// </summary>
         public delegate IntPtr MessageHandler(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled);
+
+        [DllImport("user32.dll", EntryPoint="ChangeWindowMessageFilter", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _ChangeWindowMessageFilter(WM message, MSGFLT dwFlag);
+
+        [DllImport("user32.dll", EntryPoint = "ChangeWindowMessageFilterEx", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _ChangeWindowMessageFilterEx(IntPtr hwnd, WM message, MSGFLT action, [In, Out, Optional] ref CHANGEFILTERSTRUCT pChangeFilterStruct);
+
+        // Note that processes at or below SECURITY_MANDATORY_LOW_RID are not allowed to change the message filter.
+        // If those processes call this function, it will fail and generate the extended error code, ERROR_ACCESS_DENIED.
+        public static MSGFLTINFO ChangeWindowMessageFilterEx(IntPtr hwnd, WM message, MSGFLT action)
+        {
+            bool ret;
+
+            // This origins of this API were added for Vista.  The Ex version was added for Windows 7.
+            // If we're not on either, then this message filter isolation doesn't exist.
+            if (!Utility.IsOSVistaOrNewer)
+            {
+                return MSGFLTINFO.NONE;
+            }
+
+            // If we're on Vista rather than Win7 then we can't use the Ex version of this function.
+            // The Ex version is preferred if possible because this results in process-wide modifications of the filter
+            // and is deprecated as of Win7.
+            if (!Utility.IsOSWindows7OrNewer)
+            {
+                // Note that the Win7 MSGFLT_ALLOW/DISALLOW enum values map to the Vista MSGFLT_ADD/REMOVE
+                ret = _ChangeWindowMessageFilter(message, action);
+                if (!ret)
+                {
+                    HRESULT.ThrowLastError();
+                }
+                return MSGFLTINFO.NONE;
+            }
+
+            var filterstruct = new CHANGEFILTERSTRUCT { cbSize = (uint)Marshal.SizeOf(typeof(CHANGEFILTERSTRUCT)) };
+            ret = _ChangeWindowMessageFilterEx(hwnd, message, action, ref filterstruct);
+            if (!ret)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return filterstruct.ExtStatus;
+        }
 
         [DllImport("shell32.dll", EntryPoint = "CommandLineToArgvW", CharSet = CharSet.Unicode)]
         private static extern IntPtr _CommandLineToArgvW([MarshalAs(UnmanagedType.LPWStr)] string cmdLine, out int numArgs);

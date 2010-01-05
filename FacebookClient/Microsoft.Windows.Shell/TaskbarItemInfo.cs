@@ -489,10 +489,25 @@
             // it to keep indirect references to this object.
             _window.SourceInitialized -= _OnWindowSourceInitialized;
 
-            _hwndSource = HwndSource.FromHwnd(new WindowInteropHelper(_window).Handle);
+            IntPtr hwnd = new WindowInteropHelper(_window).Handle;
+            _hwndSource = HwndSource.FromHwnd(hwnd);
             // This should be early enough that the Taskbar button hasn't yet been created,
             // so we can still handle the creation message.
             _hwndSource.AddHook(_WndProc);
+
+            // In case the application is run elevated, allow the
+            // TaskbarButtonCreated and WM_COMMAND messages through.
+            // In case the application is run with severe security restrictions,
+            // don't propagate exceptions for a lack of being able to do this.
+            try
+            {
+                NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM_TASKBARBUTTONCREATED, MSGFLT.ALLOW);
+                NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM.COMMAND, MSGFLT.ALLOW);
+            }
+            catch (Exception)
+            {
+                // Native method call returned an error code.  Not the end of the world.
+            }
         }
 
         private IntPtr _WndProc(IntPtr hwnd, int uMsg, IntPtr wParam, IntPtr lParam, ref bool handled)
