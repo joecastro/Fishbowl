@@ -522,7 +522,8 @@ namespace Contigo
             if (string.IsNullOrEmpty(post.PostId))
             {
                 // Massive Facebook failure.
-                Assert.Fail();
+                // This happens too frequently for the assert to be useful.
+                // Assert.Fail();
                 post.PostId = _SafeGetUniqueId();
             }
             post.ActorUserId = _SafeGetElementValue(elt, ns + "actor_id");

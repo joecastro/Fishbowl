@@ -122,55 +122,6 @@ namespace FacebookClient
             set { SetValue(IsInSmallModeProperty, value); }
         }
 
-        public static readonly DependencyProperty HwndBackgroundBrushProperty = DependencyProperty.Register(
-            "HwndBackgroundBrush",
-            typeof(SolidColorBrush),
-            typeof(MainWindow),
-            new PropertyMetadata(
-                Brushes.Pink, // Zune inspired.
-                (d, e) => ((MainWindow)d)._UpdateBackgroundBrush()));
-        
-        private void _UpdateBackgroundBrush()
-        {
-            var bgBrush = HwndBackgroundBrush as SolidColorBrush;
-            if (bgBrush == null)
-            {
-                return;
-            }
-
-            IntPtr hwnd = new WindowInteropHelper(this).Handle;
-            if (hwnd == IntPtr.Zero)
-            {
-                return;
-            }
-
-            Color bgColor = bgBrush.Color;
-
-            // Not really handling errors here, but they shouldn't matter... Might leak an HBRUSH.
-
-            IntPtr hBrush = NativeMethods.CreateSolidBrush(Utility.RGB(bgColor));
-
-            // Note that setting this doesn't necessarily repaint the window right away.
-            // Since the WPF content should cover the HWND background this doesn't matter.
-            // The new background will get repainted when the window is resized.
-            IntPtr hBrushOld = NativeMethods.SetClassLongPtr(hwnd, GCLP.HBRBACKGROUND, hBrush);
-
-            if (IntPtr.Zero != hBrushOld)
-            {
-                NativeMethods.DeleteObject(hBrushOld);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the HwndBackgroundBrush property.  This dependency property 
-        /// indicates ....
-        /// </summary>
-        public SolidColorBrush HwndBackgroundBrush
-        {
-            get { return (SolidColorBrush)GetValue(HwndBackgroundBrushProperty); }
-            set { SetValue(HwndBackgroundBrushProperty, value); }
-        }
-
         /// <summary>
         /// Viewing mode for the next view.
         /// </summary>
@@ -216,8 +167,6 @@ namespace FacebookClient
 
             SourceInitialized += (sender, e) =>
             {
-                _UpdateBackgroundBrush();
-
                 // Defer starting the update timer until the Window is up, but not until the application is online.  
                 // We want to make sure that the user is able to update the app if there's a fix available for an issue that
                 // was preventing them from connecting to the service.
@@ -256,8 +205,6 @@ namespace FacebookClient
 
             CommandBindings.Add(new CommandBinding(System.Windows.Input.NavigationCommands.BrowseBack, (sender, e) => _SafeBrowseBack(), (sender, e) => e.CanExecute = CanGoBack));
             CommandBindings.Add(new CommandBinding(System.Windows.Input.NavigationCommands.Refresh, (sender, e) => ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null)));
-            CommandBindings.Add(new CommandBinding(MediaCommands.TogglePlayPause, OnPlayCommandExecuted));
-            CommandBindings.Add(new CommandBinding(MediaCommands.Play, OnPlayCommandExecuted));
             CommandBindings.Add(new CommandBinding(_SwitchFullScreenModeCommand, OnSwitchFullScreenCommand));
 
             RoutedCommand backNavigationKeyOverrideCommand = new RoutedCommand();
@@ -544,50 +491,6 @@ namespace FacebookClient
         }
 
         #region Private Methods
-
-        /// <summary>
-        /// Can execute handler for play command
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnPlayCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-#if ENABLE_SLIDESHOW
-            if (!e.Handled)
-            {
-                if (!(ServiceProvider.ViewManager.CurrentNavigator is PhotoSlideShowNavigator))
-                {
-                    e.CanExecute = true;
-                }
-
-                e.Handled = true;
-            }
-#endif
-        }
-
-        /// <summary>
-        /// Executed event handler for play command
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnPlayCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (!e.Handled)
-            {
-#if ENABLE_SLIDESHOW
-                if (!(ServiceProvider.ViewManager.CurrentNavigator is PhotoSlideShowNavigator))
-                {
-                    if (ServiceProvider.ViewManager.NavigationCommands.NavigateToSlideShowCommand.CanExecute(null))
-                    {
-                        ServiceProvider.ViewManager.NavigationCommands.NavigateToSlideShowCommand.Execute(null);
-                    }
-                }
-
-                e.Handled = true;
-#endif
-            }
-        }
-
 
         /// <summary>
         /// Turn off full screen, make navigation UI visible.

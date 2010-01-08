@@ -101,6 +101,7 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="UTVerify.cs" />
     <Compile Include="Verify.cs" />
+    <Compile Include="WindowExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

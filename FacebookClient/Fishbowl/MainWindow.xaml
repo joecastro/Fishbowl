@@ -9,6 +9,7 @@
     xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
     xmlns:Properties="clr-namespace:FacebookClient.Properties"
     xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+    xmlns:std="clr-namespace:Standard"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -23,11 +24,11 @@
     diag:PresentationTraceSources.TraceLevel="High">
   
   <NavigationWindow.Style>
-    <Style TargetType="{x:Type FacebookClient:MainWindow}" >
-      <Setter Property="HwndBackgroundBrush" Value="Black" />
+    <Style>
+      <Setter Property="std:WindowExtensions.HwndBackgroundBrush" Value="Black" />
       <Style.Triggers>
         <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Dialog}" Value="{x:Null}">
-          <Setter Property="HwndBackgroundBrush" Value="White" />
+          <Setter Property="std:WindowExtensions.HwndBackgroundBrush" Value="White" />
         </DataTrigger>
       </Style.Triggers>
     </Style>

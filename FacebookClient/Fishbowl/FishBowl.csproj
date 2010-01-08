@@ -144,6 +144,9 @@
     <Compile Include="..\Standard\Verify.cs">
       <Link>Standard\Verify.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\WindowExtensions.cs">
+      <Link>Standard\WindowExtensions.cs</Link>
+    </Compile>
     <Compile Include="ChatWindow.xaml.cs">
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
