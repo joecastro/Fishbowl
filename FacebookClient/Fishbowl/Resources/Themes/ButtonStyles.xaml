@@ -148,7 +148,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="SlideshowButtonStyle"
+    <Style x:Key="SlideShowButtonStyle"
            TargetType="{x:Type Button}">
         <Setter Property="BorderThickness"
                 Value="1" />

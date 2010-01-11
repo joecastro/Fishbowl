@@ -221,9 +221,9 @@
                                 <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" 
                                            FontFamily="../Fonts/#Gotham" Margin="10,6,0,0" TextWrapping="Wrap">
     							<InlineUIContainer><Image Source="../Images/photo_slideshow.png" Width="18" VerticalAlignment="Bottom" /></InlineUIContainer>
-                                 <Hyperlink Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}"               
-                                    ToolTip="Play Slideshow"   FontFamily="../Fonts/#Gotham" FontSize="14">
-                                     <Run xml:space="preserve" BaselineAlignment="Center"> Play Slideshow</Run></Hyperlink>
+                                 <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}"
+                                    FontFamily="../Fonts/#Gotham" FontSize="14">
+                                     <Run xml:space="preserve" BaselineAlignment="Center"> Play Slide Show</Run></Hyperlink>
 						        </TextBlock>
                                 
                             </StackPanel>
@@ -362,8 +362,7 @@
               </TextBlock>
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="Segoe UI" TextWrapping="Wrap" Text="{Binding Path=Title}">
                 <TextBlock Text="{Binding Path=Photos.Count}"/> Photos | 
-                <Hyperlink Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}"               
-                           ToolTip="Slide Show" Foreground="#DDDDDD"  FontSize="14">Slideshow</Hyperlink>
+                <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}" Foreground="#DDDDDD"  FontSize="14">Slide Show</Hyperlink>
 							
 						</TextBlock>
                     </StackPanel>
@@ -408,8 +407,8 @@
 						</TextBlock>
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="Segoe UI" TextWrapping="Wrap" Text="{Binding Path=Title}">
 							<TextBlock Text="{Binding Path=Photos.Count}"/> Photos |
-							<Hyperlink Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}"               
-                           ToolTip="Slide Show" Foreground="#DDDDDD"  FontSize="14">Slideshow</Hyperlink>
+							<Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}"
+                         Foreground="#DDDDDD" FontSize="14">Slide Show</Hyperlink>
 							
 						</TextBlock>
                     </StackPanel>

@@ -131,10 +131,8 @@ namespace FacebookClient
 
         private readonly RoutedCommand _SwitchFullScreenModeCommand;
 
-        /// <summary>
-        /// Saved window style if window style was changed to None for full screen mode.
-        /// </summary>
-        private WindowStyle _windowStyle = WindowStyle.None;  
+        private WindowStyle _windowStyle = WindowStyle.None;
+        private WindowState _windowState = WindowState.Normal;
 
         /// <summary>
         /// Saved state for resize mode.
@@ -382,19 +380,6 @@ namespace FacebookClient
             base.OnClosed(args);
         }
 
-        public void SetSlideshowViewingMode(bool active)
-        {
-            if (active)
-            {
-                SwitchNavigationUIVisibility(false);
-                _SwitchFullScreenMode(true);
-            }
-            else
-            {
-                RestoreViewingMode();
-            }
-        }
-
         public void ShowUploadWizard()
         {
             _photoUploadWizard.Show();
@@ -540,25 +525,49 @@ namespace FacebookClient
             // If viewing mode is already in a full screen state, not changes are necessary
             if (fullScreen && !FullScreenMode)
             {
-                // Window.ResizeMode must be set before other window properties or else the window
-                // will be positioned slightly off screen when maximized. 
-                _resizeMode = Application.Current.MainWindow.ResizeMode;
-                Application.Current.MainWindow.ResizeMode = ResizeMode.NoResize;
+                // Hide the window while we make these changes.
+                this.Hide();
 
-                _windowStyle = Application.Current.MainWindow.WindowStyle;
-                Application.Current.MainWindow.WindowStyle = WindowStyle.None;
-                Application.Current.MainWindow.Topmost = true;
-                Application.Current.MainWindow.WindowState = WindowState.Maximized;
+                _resizeMode = ResizeMode;
+                ResizeMode = ResizeMode.NoResize;
+
+                _windowStyle = WindowStyle;
+                WindowStyle = WindowStyle.None;
+
+                // Be consistent with IE, don't set Topmost.
+                // It also has weird interactions with WebOC popup windows.
+
+                _windowState = WindowState;
+
+                // If the window was already maximized, restore it before making this switch
+                // or else the window will slightly extend the workarea of the monitor.
+                if (_windowStyle != WindowStyle.None && WindowState == WindowState.Maximized)
+                {
+                    WindowState = WindowState.Normal;
+                }
+
+                WindowState = WindowState.Maximized;
+
                 FullScreenMode = true;
+
+                this.Show();
             }
             else if (!fullScreen && FullScreenMode)
             {
-                Application.Current.MainWindow.Topmost = false;
-                Application.Current.MainWindow.WindowState = WindowState.Normal;
-                Application.Current.MainWindow.WindowStyle = _windowStyle;
-                Application.Current.MainWindow.ResizeMode = _resizeMode;
+                Assert.AreEqual(WindowState, WindowState.Maximized);
+
+                WindowStyle = _windowStyle;
+                ResizeMode = _resizeMode;
+
+                if (_windowState == WindowState.Normal)
+                {
+                    WindowState = WindowState.Normal;
+                }
+
                 FullScreenMode = false;
             }
+
+            this.Focus();
         }
 
         /// <summary>

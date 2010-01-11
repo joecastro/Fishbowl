@@ -15,29 +15,24 @@ namespace FacebookClient
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
-    using System.Windows.Media.Animation;
     using ClientManager;
     using ClientManager.Controls;
     using Contigo;
-    using EffectLibrary;
     using FacebookClient.Controls;
     using Standard;
 
-    /// <summary>
-    /// Control used to display a full photo.
-    /// </summary>
-    [TemplatePart(Name = "PART_PhotoDisplay", Type = typeof(PhotoDisplayControl)),
-     TemplatePart(Name = "PART_PhotoScrollViewer", Type = typeof(ScrollViewer)),
-     TemplatePart(Name = "PART_FilmStrip", Type = typeof(FilmStripControl)),
-     TemplatePart(Name = "PART_TagTargetElement", Type = typeof(TagTarget)),
-     TemplatePart(Name = "PART_PhotoTaggerControl", Type = typeof(PhotoTaggerControl)),
-     TemplatePart(Name = "PART_CommentsBorder", Type = typeof(FrameworkElement))]
+    [
+        TemplatePart(Name = "PART_PhotoDisplay", Type = typeof(PhotoDisplayControl)),
+        TemplatePart(Name = "PART_PhotoScrollViewer", Type = typeof(ScrollViewer)),
+        TemplatePart(Name = "PART_TagTargetElement", Type = typeof(TagTarget)),
+        TemplatePart(Name = "PART_PhotoTaggerControl", Type = typeof(PhotoTaggerControl)),
+    ]
     public class PhotoViewerControl : SizeTemplateControl
     {
-        #region Fields
-
-        public static readonly DependencyProperty FacebookPhotoProperty =
-            DependencyProperty.Register("FacebookPhoto", typeof(FacebookPhoto), typeof(PhotoViewerControl));
+        public static readonly DependencyProperty FacebookPhotoProperty = DependencyProperty.Register(
+            "FacebookPhoto", 
+            typeof(FacebookPhoto), 
+            typeof(PhotoViewerControl));
 
         public FacebookPhoto FacebookPhoto
         {
@@ -45,238 +40,78 @@ namespace FacebookClient
             set { SetValue(FacebookPhotoProperty, value); }
         }
 
-        /// <summary>
-        /// Dependency Property backing store for PhotoDescriptionVisibility.
-        /// </summary>
-        public static readonly DependencyProperty PhotoDescriptionVisibilityProperty =
-            DependencyProperty.Register("PhotoDescriptionVisibility", typeof(Visibility), typeof(PhotoViewerControl), new UIPropertyMetadata(Visibility.Visible, new PropertyChangedCallback(OnPhotoDescriptionVisibilityChanged)));
+        public static readonly DependencyProperty TaggingPhotoProperty = DependencyProperty.Register(
+            "TaggingPhoto", 
+            typeof(bool), 
+            typeof(PhotoViewerControl), 
+            new UIPropertyMetadata(
+                false, 
+                OnTaggingPhotoChanged));
 
-        /// <summary>
-        /// Dependency Property backing store for PhotoDescriptionVisibility.
-        /// </summary>
-        public static readonly DependencyProperty IsPhotoDescriptionVisibleProperty =
-            DependencyProperty.Register("IsPhotoDescriptionVisible", typeof(bool), typeof(PhotoViewerControl), new UIPropertyMetadata(true, new PropertyChangedCallback(OnIsPhotoDescriptionVisibleChanged)));
-
-        /// <summary>
-        /// DependencyProperty backing store for DisplayPhotoAnimation.
-        /// </summary>
-        public static readonly DependencyProperty CommentsVisibleProperty =
-            DependencyProperty.Register("CommentsVisible", typeof(bool), typeof(PhotoViewerControl), new UIPropertyMetadata(false, new PropertyChangedCallback(OnCommentsVisibleChanged)));
-
-        /// <summary>
-        /// DependencyProperty backing store for DisplayPhotoAnimation.
-        /// </summary>
-        public static readonly DependencyProperty TaggingPhotoProperty =
-            DependencyProperty.Register("TaggingPhoto", typeof(bool), typeof(PhotoViewerControl), new UIPropertyMetadata(false, new PropertyChangedCallback(OnTaggingPhotoChanged)));
-
-        /// <summary>
-        /// RoutedCommand to toggle the display of the photo's description.
-        /// </summary>
-        private static RoutedCommand displayPhotoDescriptionCommand = new RoutedCommand("DisplayPhotoDescription", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// RoutedCommand to toggle the display of the photo's flow description.
-        /// </summary>
-        private static RoutedCommand displayPhotoFlowDescriptionCommand = new RoutedCommand("DisplayPhotoFlowDescription", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// RoutedCommand to apply an effect.
-        /// </summary>
-        private static RoutedCommand toggleEffectCommand = new RoutedCommand("ToggleEffect", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// RoutedCommand to explore a tag with the tag explorer.
-        /// </summary>
-        private static RoutedCommand exploreTagCommand = new RoutedCommand("ExploreTag", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// RoutedCommand to set the current photo as the desktop background.
-        /// </summary>
-        private static RoutedCommand setAsDesktopBackgroundCommand = new RoutedCommand("SetAsDesktopBackground", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// RoutedCommand to hide the tag target, or show it and position it accordingly.
-        /// </summary>
-        public static readonly RoutedCommand IsMouseOverTagCommand = new RoutedCommand("IsMouseOverTag", typeof(PhotoViewerControl));
-
-        /// <summary>
-        /// The PhotoDisplayControl which will display the photo image.
-        /// </summary>
-        private PhotoDisplayControl photoDisplay;
-
-        /// <summary>
-        /// The ScrollViewer that hosts the photo display.
-        /// </summary>
-        private ScrollViewer photoScrollViewer;
-
-        /// <summary>
-        /// The FilmStripControl that displays the thumbnails.
-        /// </summary>
-        private FilmStripControl filmStripControl;
-
-        /// <summary>
-        /// A reference to the tag element that highlights the tagged area.
-        /// </summary>
-        private TagTarget tagTarget;
-
-        /// <summary>
-        /// A reference to the photo tagger panel.
-        /// </summary>
-        private PhotoTaggerControl photoTagger;
-
-        /// <summary>
-        /// A reference to the element the has the photo comments control.
-        /// </summary>
-        private FrameworkElement commentsBorder;
-
-        #endregion
-
-        static PhotoViewerControl()
-        {
-            SaveAlbumCommand = new RoutedCommand("SaveAlbum", typeof(PhotoViewerControl));
-            SavePhotoAsCommand = new RoutedCommand("SavePhotoAs", typeof(PhotoViewerControl));
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the PhotoViewerControl class.
-        /// </summary>
-        public PhotoViewerControl()
-        {
-            // Set the key commands for the photo viewer control.
-            this.CommandBindings.Add(new CommandBinding(displayPhotoDescriptionCommand, new ExecutedRoutedEventHandler(OnDisplayPhotoDescriptionCommand)));
-            this.CommandBindings.Add(new CommandBinding(exploreTagCommand, new ExecutedRoutedEventHandler(OnExploreTagCommand)));
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, new ExecutedRoutedEventHandler(OnPrintCommand)));
-            this.CommandBindings.Add(new CommandBinding(setAsDesktopBackgroundCommand, new ExecutedRoutedEventHandler(OnSetAsDesktopBackgroundCommand)));
-            this.CommandBindings.Add(new CommandBinding(SavePhotoAsCommand, (sender, e) => ((PhotoViewerControl)sender)._OnSavePhotoCommand(e)));
-            this.CommandBindings.Add(new CommandBinding(SaveAlbumCommand, new ExecutedRoutedEventHandler(OnSaveAlbumCommand)));
-
-            this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.TogglePlayPause, new ExecutedRoutedEventHandler(OnPlayCommandExecuted), new CanExecuteRoutedEventHandler(OnPlayCommandCanExecute)));
-            this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.Play, new ExecutedRoutedEventHandler(OnPlayCommandExecuted), new CanExecuteRoutedEventHandler(OnPlayCommandCanExecute)));
-
-            this.CommandBindings.Add(new CommandBinding(IsMouseOverTagCommand, new ExecutedRoutedEventHandler(OnIsMouseOverTagCommand)));
-
-            this.MouseLeftButtonDown += new MouseButtonEventHandler(PhotoViewerControl_MouseLeftButtonDown);
-            this.MouseLeftButtonUp += new MouseButtonEventHandler(PhotoViewerControl_MouseLeftButtonUp);
-
-            this.KeyDown += new KeyEventHandler(OnKeyDown);
-        }
-
-        #region Properties
-        /// <summary>
-        /// Gets the RoutedCommand to toggle and Effect.
-        /// </summary>
-        public static RoutedCommand ToggleEffectCommand
-        {
-            get { return PhotoViewerControl.toggleEffectCommand; }
-        }
-
-        /// <summary>
-        /// Gets the RoutedCommand to toggle the display of the photo's description.
-        /// </summary>
-        public static RoutedCommand DisplayPhotoDescriptionCommand
-        {
-            get { return PhotoViewerControl.displayPhotoDescriptionCommand; }
-        }
-
-        /// <summary>
-        /// Gets the RoutedCommand to toggle the display of the photo's flow description.
-        /// </summary>
-        public static RoutedCommand DisplayPhotoFlowDescriptionCommand
-        {
-            get { return PhotoViewerControl.displayPhotoFlowDescriptionCommand; }
-        }
-
-        /// <summary>
-        /// Gets the RoutedCommand to explore a tag with the photo explorer.
-        /// </summary>
-        public static RoutedCommand ExploreTagCommand
-        {
-            get { return PhotoViewerControl.exploreTagCommand; }
-        }
-
-        /// <summary>
-        /// Gets the RoutedCommand to set the current photo as the desktop background.
-        /// </summary>
-        public static RoutedCommand SetAsDesktopBackgroundCommand
-        {
-            get { return PhotoViewerControl.setAsDesktopBackgroundCommand; }
-        }
-
-        public static RoutedCommand SavePhotoAsCommand { get; private set; }
-
-        public static RoutedCommand SaveAlbumCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the RoutedCommand to hide/show tag target in appropriate position over image.
-        /// </summary>
-        public static RoutedCommand IsMouseOverTagCommandCommand
-        {
-            get { return PhotoViewerControl.IsMouseOverTagCommand; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the photo description is displayed or hidden/collapsed.
-        /// </summary>
-        public Visibility PhotoDescriptionVisibility
-        {
-            get { return (Visibility)GetValue(PhotoDescriptionVisibilityProperty); }
-            protected set { SetValue(PhotoDescriptionVisibilityProperty, value); }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the photo description is displayed or hidden/collapsed.
-        /// </summary>
-        public bool IsPhotoDescriptionVisible
-        {
-            get { return (bool)GetValue(IsPhotoDescriptionVisibleProperty); }
-            protected set { SetValue(IsPhotoDescriptionVisibleProperty, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets animation used when initially displaying a photo.
-        /// </summary>
-        public bool CommentsVisible
-        {
-            get { return (bool)GetValue(CommentsVisibleProperty); }
-            set { SetValue(CommentsVisibleProperty, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets state for tagging photo.
-        /// </summary>
         public bool TaggingPhoto
         {
             get { return (bool)GetValue(TaggingPhotoProperty); }
             set { SetValue(TaggingPhotoProperty, value); }
         }
 
-        #endregion
+        public static RoutedCommand ExploreTagCommand { get; private set; }
+        public static RoutedCommand SetAsDesktopBackgroundCommand { get; private set; }
+        public static RoutedCommand IsMouseOverTagCommand { get; private set; }
+        public static RoutedCommand SavePhotoAsCommand { get; private set; }
+        public static RoutedCommand SaveAlbumCommand { get; private set; }
+        public static RoutedCommand StartSlideShowCommand { get; private set; }
 
-        #region Public Methods
-        /// <summary>
-        /// Sets up the rotation animations once the control template has been applied.
-        /// </summary>
+        private PhotoDisplayControl _photoDisplay;
+        private ScrollViewer _photoScrollViewer;
+        private TagTarget _tagTarget;
+        private PhotoTaggerControl _photoTagger;
+
+        static PhotoViewerControl()
+        {
+            ExploreTagCommand = new RoutedCommand("ExploreTag", typeof(PhotoViewerControl));
+            SetAsDesktopBackgroundCommand = new RoutedCommand("SetAsDesktopBackground", typeof(PhotoViewerControl));
+            IsMouseOverTagCommand = new RoutedCommand("IsMouseOverTag", typeof(PhotoViewerControl));
+            SaveAlbumCommand = new RoutedCommand("SaveAlbum", typeof(PhotoViewerControl));
+            SavePhotoAsCommand = new RoutedCommand("SavePhotoAs", typeof(PhotoViewerControl));
+            StartSlideShowCommand = new RoutedCommand("StartSlideShow", typeof(PhotoViewerControl));
+        }
+      
+        public PhotoViewerControl()
+        {
+            // Set the key commands for the photo viewer control.
+            CommandBindings.Add(new CommandBinding(ExploreTagCommand, new ExecutedRoutedEventHandler(OnExploreTagCommand)));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, new ExecutedRoutedEventHandler(OnPrintCommand)));
+            CommandBindings.Add(new CommandBinding(SetAsDesktopBackgroundCommand, new ExecutedRoutedEventHandler(OnSetAsDesktopBackgroundCommand)));
+            CommandBindings.Add(new CommandBinding(SavePhotoAsCommand, (sender, e) => ((PhotoViewerControl)sender)._OnSavePhotoCommand(e)));
+            CommandBindings.Add(new CommandBinding(SaveAlbumCommand, new ExecutedRoutedEventHandler(OnSaveAlbumCommand)));
+            CommandBindings.Add(new CommandBinding(IsMouseOverTagCommand, new ExecutedRoutedEventHandler(OnIsMouseOverTagCommand)));
+            CommandBindings.Add(new CommandBinding(StartSlideShowCommand, (sender, e) => ((PhotoViewerControl)sender)._StartSlideShow()));
+
+            MouseLeftButtonDown += new MouseButtonEventHandler(PhotoViewerControl_MouseLeftButtonDown);
+            MouseLeftButtonUp += new MouseButtonEventHandler(PhotoViewerControl_MouseLeftButtonUp);
+
+            KeyDown += new KeyEventHandler(OnKeyDown);
+        }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
-            this.photoDisplay = this.Template.FindName("PART_PhotoDisplay", this) as PhotoDisplayControl;
-            this.photoScrollViewer = this.Template.FindName("PART_PhotoScrollViewer", this) as ScrollViewer;
-            this.filmStripControl = this.Template.FindName("PART_FilmStrip", this) as FilmStripControl;
+            _photoDisplay = this.Template.FindName("PART_PhotoDisplay", this) as PhotoDisplayControl;
+            _photoScrollViewer = this.Template.FindName("PART_PhotoScrollViewer", this) as ScrollViewer;
+            _tagTarget = this.Template.FindName("PART_TagTargetElement", this) as TagTarget;
+            _photoTagger = this.Template.FindName("PART_PhotoTaggerControl", this) as PhotoTaggerControl;
 
-            this.tagTarget = this.Template.FindName("PART_TagTargetElement", this) as TagTarget;
-            this.photoTagger = this.Template.FindName("PART_PhotoTaggerControl", this) as PhotoTaggerControl;
-            this.commentsBorder = this.Template.FindName("PART_CommentsBorder", this) as FrameworkElement;
-
-            this.photoScrollViewer.PreviewMouseWheel += new MouseWheelEventHandler(OnPhotoScrollViewerPreviewMouseWheel);
-            this.photoTagger.TagsCanceledEvent += new TagsCanceledEventHandler(PhotoTagger_TagsCanceledEvent);
-            this.photoTagger.TagsUpdatedEvent += new TagsUpdatedEventHandler(PhotoTagger_TagsUpdatedEvent);
-            this.photoDisplay.PhotoStateChanged += new PhotoStateChangedEventHandler(PhotoDisplay_PhotoStateChanged);
+            _photoScrollViewer.PreviewMouseWheel += new MouseWheelEventHandler(OnPhotoScrollViewerPreviewMouseWheel);
+            _photoTagger.TagsCanceledEvent += new TagsCanceledEventHandler(PhotoTagger_TagsCanceledEvent);
+            _photoTagger.TagsUpdatedEvent += new TagsUpdatedEventHandler(PhotoTagger_TagsUpdatedEvent);
+            _photoDisplay.PhotoStateChanged += new PhotoStateChangedEventHandler(PhotoDisplay_PhotoStateChanged);
 
             // Focus the control so that we can grab keyboard events.
             this.Focus();
         }
 
+        // Weird that this is public.  It's used as a generic handler for mouse scrolling from the filmstrip panel...
         public static void HandleScrollViewerMouseWheel(ScrollViewer scrollViewer, bool checkExtent, MouseWheelEventArgs e)
         {
             // This ScrollViewer will swallow mousewheel events even when it can't be scrolled down any more.
@@ -304,24 +139,6 @@ namespace FacebookClient
             HandleScrollViewerMouseWheel((ScrollViewer)sender, true, e);
         }
 
-        #endregion
-
-        #region Protected Methods
-        /// <summary>
-        /// Toggles the visibility of the photo's description.
-        /// </summary>
-        protected void TogglePhotoDescriptionVisibility()
-        {
-            if (this.IsPhotoDescriptionVisible)
-            {
-                this.IsPhotoDescriptionVisible = false;
-            }
-            else
-            {
-                this.IsPhotoDescriptionVisible = true;
-            }
-        }
-
         /// <summary>
         /// Allows the photo to be zoomed in and out using the mouse wheel.
         /// </summary>
@@ -332,11 +149,11 @@ namespace FacebookClient
             {
                 if (e.Delta > 0)
                 {
-                    PhotoDisplayControl.ZoomPhotoInCommand.Execute(e, this.photoDisplay);
+                    PhotoDisplayControl.ZoomPhotoInCommand.Execute(e, this._photoDisplay);
                 }
                 else if (e.Delta < 0)
                 {
-                    PhotoDisplayControl.ZoomPhotoOutCommand.Execute(e, this.photoDisplay);
+                    PhotoDisplayControl.ZoomPhotoOutCommand.Execute(e, this._photoDisplay);
                 }
 
                 e.Handled = true;
@@ -358,65 +175,8 @@ namespace FacebookClient
             {
                 if (e.MiddleButton == MouseButtonState.Pressed)
                 {
-                    this.photoDisplay.FittingPhotoToWindow = true;
+                    this._photoDisplay.FittingPhotoToWindow = true;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Can execute handler for play command
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnPlayCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-#if ENABLE_SLIDESHOW
-            if (!e.Handled)
-            {
-                if (!(ServiceProvider.ViewManager.CurrentNavigator is PhotoSlideShowNavigator))
-                {
-                    e.CanExecute = true;
-                }
-
-                e.Handled = true;
-            }
-#endif
-        }
-
-        /// <summary>
-        /// Executed event handler for play command
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnPlayCommandExecuted(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (!e.Handled)
-            {
-#if ENABLE_SLIDESHOW
-                if (!(ServiceProvider.ViewManager.CurrentNavigator is PhotoSlideShowNavigator))
-                {
-                    if (ServiceProvider.ViewManager.NavigationCommands.NavigateToSlideShowCommand.CanExecute(null))
-                    {
-                        ServiceProvider.ViewManager.NavigationCommands.NavigateToSlideShowCommand.Execute(null);
-                    }
-                }
-
-                e.Handled = true;
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Command to toggle the display of the photo's description.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnDisplayPhotoDescriptionCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            PhotoViewerControl photoViewer = sender as PhotoViewerControl;
-            if (photoViewer != null)
-            {
-                photoViewer.TogglePhotoDescriptionVisibility();
             }
         }
 
@@ -542,8 +302,7 @@ namespace FacebookClient
                 }
             }
         }
-
-
+        
         /// <summary>
         /// Saves every photo in the currently displayed album to a user-provided location.
         /// </summary>
@@ -581,19 +340,15 @@ namespace FacebookClient
                         switch (e.Key)
                         {
                             case Key.OemPlus:
-                                PhotoDisplayControl.ZoomPhotoInCommand.Execute(null, photoViewerControl.photoDisplay);
+                                PhotoDisplayControl.ZoomPhotoInCommand.Execute(null, photoViewerControl._photoDisplay);
                                 e.Handled = true;
                                 break;
                             case Key.OemMinus:
-                                PhotoDisplayControl.ZoomPhotoOutCommand.Execute(null, photoViewerControl.photoDisplay);
+                                PhotoDisplayControl.ZoomPhotoOutCommand.Execute(null, photoViewerControl._photoDisplay);
                                 e.Handled = true;
                                 break;
                             case Key.D0:
-                                PhotoDisplayControl.FitPhotoToWindowCommand.Execute(null, photoViewerControl.photoDisplay);
-                                e.Handled = true;
-                                break;
-                            case Key.D:
-                                photoViewerControl.TogglePhotoDescriptionVisibility();
+                                PhotoDisplayControl.FitPhotoToWindowCommand.Execute(null, photoViewerControl._photoDisplay);
                                 e.Handled = true;
                                 break;
                             default:
@@ -618,13 +373,11 @@ namespace FacebookClient
 
         private Point GetRelativeMousePosition()
         {
-            Point mousePosition = Mouse.GetPosition(this.photoDisplay.PhotoImage);
-            mousePosition.X /= this.photoDisplay.PhotoImage.ActualWidth;
-            mousePosition.Y /= this.photoDisplay.PhotoImage.ActualHeight;
+            Point mousePosition = Mouse.GetPosition(this._photoDisplay.PhotoImage);
+            mousePosition.X /= this._photoDisplay.PhotoImage.ActualWidth;
+            mousePosition.Y /= this._photoDisplay.PhotoImage.ActualHeight;
             return mousePosition;
         }
-
-        #endregion
 
         /// <summary>
         /// On mouse left button down capture mouse if user is tagging photo.
@@ -651,15 +404,15 @@ namespace FacebookClient
             {
                 if (photoViewer.TaggingPhoto)
                 {
-                    Point pt = e.GetPosition(photoViewer.photoDisplay.PhotoImage);
-                    MatrixTransform mt = (MatrixTransform)photoViewer.photoDisplay.TransformToVisual(photoViewer.photoDisplay.PhotoImage);
+                    Point pt = e.GetPosition(photoViewer._photoDisplay.PhotoImage);
+                    MatrixTransform mt = (MatrixTransform)photoViewer._photoDisplay.TransformToVisual(photoViewer._photoDisplay.PhotoImage);
 
-                    photoViewer.tagTarget.Scale = Math.Sqrt(1 / mt.Matrix.M11);
+                    photoViewer._tagTarget.Scale = Math.Sqrt(1 / mt.Matrix.M11);
 
-                    double widthByTwo = photoViewer.tagTarget.Width / 2;
-                    double heightByTwo = photoViewer.tagTarget.Height / 2;
-                    double horizontalOffset = photoViewer.photoScrollViewer.HorizontalOffset * mt.Matrix.M11;
-                    double verticalOffset = photoViewer.photoScrollViewer.VerticalOffset * mt.Matrix.M22;
+                    double widthByTwo = photoViewer._tagTarget.Width / 2;
+                    double heightByTwo = photoViewer._tagTarget.Height / 2;
+                    double horizontalOffset = photoViewer._photoScrollViewer.HorizontalOffset * mt.Matrix.M11;
+                    double verticalOffset = photoViewer._photoScrollViewer.VerticalOffset * mt.Matrix.M22;
 
                     Point transPt = new Point(widthByTwo * mt.Matrix.M11, heightByTwo * mt.Matrix.M22);
 
@@ -671,9 +424,9 @@ namespace FacebookClient
                     {
                         left = transPt.X;
                     }
-                    else if (pt.X > (photoViewer.photoDisplay.PhotoImage.ActualWidth - transPt.X))
+                    else if (pt.X > (photoViewer._photoDisplay.PhotoImage.ActualWidth - transPt.X))
                     {
-                        left = photoViewer.photoDisplay.PhotoImage.ActualWidth - transPt.X;
+                        left = photoViewer._photoDisplay.PhotoImage.ActualWidth - transPt.X;
                     }
                     else
                     {
@@ -685,9 +438,9 @@ namespace FacebookClient
                     {
                         top = transPt.Y;
                     }
-                    else if (pt.Y > (photoViewer.photoDisplay.PhotoImage.ActualHeight - transPt.Y))
+                    else if (pt.Y > (photoViewer._photoDisplay.PhotoImage.ActualHeight - transPt.Y))
                     {
-                        top = photoViewer.photoDisplay.PhotoImage.ActualHeight - transPt.Y;
+                        top = photoViewer._photoDisplay.PhotoImage.ActualHeight - transPt.Y;
                     }
                     else
                     {
@@ -695,14 +448,14 @@ namespace FacebookClient
                     }
 
                     // Set new coordinates
-                    transPt = photoViewer.photoDisplay.PhotoImage.TranslatePoint(
+                    transPt = photoViewer._photoDisplay.PhotoImage.TranslatePoint(
                         new Point(left + horizontalOffset, top + verticalOffset),
-                        photoViewer.photoScrollViewer);
-                    photoViewer.tagTarget.TransformPoint = transPt;
+                        photoViewer._photoScrollViewer);
+                    photoViewer._tagTarget.TransformPoint = transPt;
                     PhotoViewerControl.PlaceTaggerControl(photoViewer, transPt);
 
-                    photoViewer.tagTarget.Visibility = Visibility.Visible;
-                    photoViewer.photoTagger.Open();
+                    photoViewer._tagTarget.Visibility = Visibility.Visible;
+                    photoViewer._photoTagger.Open();
                 }
 
                 e.Handled = true;
@@ -716,111 +469,23 @@ namespace FacebookClient
         /// <param name="topRightCorner">Top right corner point of tagger.</param>
         private static void PlaceTaggerControl(PhotoViewerControl photoViewer, Point topRightCorner)
         {
-            double widthByTwo = photoViewer.tagTarget.Width / 2;
-            double heightByTwo = photoViewer.tagTarget.Height / 2;
+            double widthByTwo = photoViewer._tagTarget.Width / 2;
+            double heightByTwo = photoViewer._tagTarget.Height / 2;
 
-            double x = topRightCorner.X - photoViewer.photoTagger.Width - widthByTwo;
+            double x = topRightCorner.X - photoViewer._photoTagger.Width - widthByTwo;
             double y = topRightCorner.Y - heightByTwo;
 
-            if (topRightCorner.Y + photoViewer.photoTagger.Height > photoViewer.photoScrollViewer.ActualHeight)
+            if (topRightCorner.Y + photoViewer._photoTagger.Height > photoViewer._photoScrollViewer.ActualHeight)
             {
-                y = photoViewer.photoScrollViewer.ActualHeight - photoViewer.photoTagger.Height - heightByTwo;
+                y = photoViewer._photoScrollViewer.ActualHeight - photoViewer._photoTagger.Height - heightByTwo;
             }
 
-            if (topRightCorner.X - widthByTwo < photoViewer.photoTagger.Width)
+            if (topRightCorner.X - widthByTwo < photoViewer._photoTagger.Width)
             {
                 x = topRightCorner.X + widthByTwo;
             }
 
-            photoViewer.photoTagger.TransformPoint = new Point(x, y);
-        }
-
-        /// <summary>
-        /// Handler to change the control layout when FittingPhotoToWindow changes so that
-        /// fit to window does indeed cause the photo to fit to window.
-        /// </summary>
-        /// <param name="newValue">The new FittingPhotoToWindow value.</param>
-        protected static void OnCommentsVisibleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            PhotoViewerControl photoViewer = sender as PhotoViewerControl;
-
-            if (photoViewer != null)
-            {
-                photoViewer.photoDisplay.CommentsVisible = (bool)e.NewValue;
-
-                if ((bool)e.NewValue)
-                {
-                    // Fade in comments
-                    ObjectAnimationUsingKeyFrames kf = new ObjectAnimationUsingKeyFrames();
-                    kf.KeyFrames.Add(new DiscreteObjectKeyFrame(
-                        Visibility.Visible,
-                        KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(200))));
-                    kf.Duration = new Duration(TimeSpan.FromMilliseconds(200));
-
-                    photoViewer.commentsBorder.BeginAnimation(FrameworkElement.VisibilityProperty, kf, HandoffBehavior.SnapshotAndReplace);
-
-                    DoubleAnimation db = new DoubleAnimation(0, 1,
-                        new Duration(TimeSpan.FromMilliseconds(300)));
-                    db.BeginTime = TimeSpan.FromMilliseconds(200);
-
-                    photoViewer.commentsBorder.BeginAnimation(FrameworkElement.OpacityProperty, db, HandoffBehavior.SnapshotAndReplace);
-
-                    photoViewer.TaggingPhoto = false;
-                }
-                else
-                {
-                    // Fade out comments
-                    ObjectAnimationUsingKeyFrames kf = new ObjectAnimationUsingKeyFrames();
-                    kf.KeyFrames.Add(new DiscreteObjectKeyFrame(
-                        Visibility.Collapsed,
-                        KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
-                    kf.Duration = new Duration(TimeSpan.FromMilliseconds(0));
-
-                    photoViewer.commentsBorder.BeginAnimation(FrameworkElement.VisibilityProperty, kf, HandoffBehavior.SnapshotAndReplace);
-
-                    DoubleAnimationUsingKeyFrames db = new DoubleAnimationUsingKeyFrames();
-                    db.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
-
-                    photoViewer.commentsBorder.BeginAnimation(FrameworkElement.OpacityProperty, db, HandoffBehavior.SnapshotAndReplace);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Handler to ensure that photo description button is consistant with model.
-        /// </summary>
-        /// <param name="sender">Event source.</param>
-        /// <param name="e">Event args.</param>
-        protected static void OnPhotoDescriptionVisibilityChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            PhotoViewerControl photoViewer = sender as PhotoViewerControl;
-
-            if (photoViewer != null)
-            {
-                photoViewer.IsPhotoDescriptionVisible = (((Visibility)e.NewValue) == Visibility.Visible);
-            }
-        }
-
-        /// <summary>
-        /// Handler to ensure that photo description button is consistant with model.
-        /// </summary>
-        /// <param name="sender">Event source.</param>
-        /// <param name="e">Event args.</param>
-        protected static void OnIsPhotoDescriptionVisibleChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            PhotoViewerControl photoViewer = sender as PhotoViewerControl;
-
-            if (photoViewer != null)
-            {
-                if ((bool)e.NewValue)
-                {
-                    photoViewer.PhotoDescriptionVisibility = Visibility.Visible;
-                }
-                else
-                {
-                    photoViewer.PhotoDescriptionVisibility = Visibility.Collapsed;
-                }
-            }
+            photoViewer._photoTagger.TransformPoint = new Point(x, y);
         }
 
         /// <summary>
@@ -836,19 +501,13 @@ namespace FacebookClient
             {
                 if ((bool)e.NewValue)
                 {
-                    photoViewer.photoDisplay.PhotoImage.Cursor = Cursors.Cross;
-
-                    // Stop commenting
-                    if (photoViewer.CommentsVisible)
-                    {
-                        photoViewer.CommentsVisible = false;
-                    }
+                    photoViewer._photoDisplay.PhotoImage.Cursor = Cursors.Cross;
                 }
                 else
                 {
-                    photoViewer.photoDisplay.PhotoImage.Cursor = Cursors.Arrow;
-                    photoViewer.tagTarget.Visibility = Visibility.Collapsed;
-                    photoViewer.photoTagger.Close();
+                    photoViewer._photoDisplay.PhotoImage.Cursor = Cursors.Arrow;
+                    photoViewer._tagTarget.Visibility = Visibility.Collapsed;
+                    photoViewer._photoTagger.Close();
                 }
             }
         }
@@ -881,19 +540,19 @@ namespace FacebookClient
 
                 if (photo != null)
                 {
-                    Point pt = this.tagTarget.TransformPoint;
+                    Point pt = this._tagTarget.TransformPoint;
 
-                    MatrixTransform mt = (MatrixTransform)this.photoDisplay.TransformToVisual(this.photoDisplay.PhotoImage);
+                    MatrixTransform mt = (MatrixTransform)this._photoDisplay.TransformToVisual(this._photoDisplay.PhotoImage);
 
                     pt = new Point(
-                        (this.photoScrollViewer.TranslatePoint(
-                            this.tagTarget.TransformPoint, this.photoDisplay.PhotoImage).X -
-                            this.photoScrollViewer.HorizontalOffset * mt.Matrix.M11) /
-                            this.photoDisplay.PhotoImage.ActualWidth,
-                        (this.photoScrollViewer.TranslatePoint(
-                            this.tagTarget.TransformPoint, this.photoDisplay.PhotoImage).Y -
-                            this.photoScrollViewer.VerticalOffset * mt.Matrix.M22) /
-                            this.photoDisplay.PhotoImage.ActualHeight
+                        (this._photoScrollViewer.TranslatePoint(
+                            this._tagTarget.TransformPoint, this._photoDisplay.PhotoImage).X -
+                            this._photoScrollViewer.HorizontalOffset * mt.Matrix.M11) /
+                            this._photoDisplay.PhotoImage.ActualWidth,
+                        (this._photoScrollViewer.TranslatePoint(
+                            this._tagTarget.TransformPoint, this._photoDisplay.PhotoImage).Y -
+                            this._photoScrollViewer.VerticalOffset * mt.Matrix.M22) /
+                            this._photoDisplay.PhotoImage.ActualHeight
                         );
 
                     // Add photo tag
@@ -917,12 +576,7 @@ namespace FacebookClient
                 this.TaggingPhoto = false;
             }
 
-            if (this.CommentsVisible)
-            {
-                this.CommentsVisible = false;
-            }
-
-            this.tagTarget.Visibility = Visibility.Collapsed;
+            this._tagTarget.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -939,7 +593,7 @@ namespace FacebookClient
                 if (e.Parameter == null)
                 {
                     // Hide tag target
-                    photoViewer.tagTarget.Visibility = Visibility.Collapsed;
+                    photoViewer._tagTarget.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
@@ -948,21 +602,21 @@ namespace FacebookClient
 
                     if (pt != null)
                     {
-                        MatrixTransform mt = (MatrixTransform)photoViewer.photoDisplay.TransformToVisual(photoViewer.photoDisplay.PhotoImage);
+                        MatrixTransform mt = (MatrixTransform)photoViewer._photoDisplay.TransformToVisual(photoViewer._photoDisplay.PhotoImage);
 
-                        photoViewer.tagTarget.Scale = Math.Sqrt(1 / mt.Matrix.M11);
+                        photoViewer._tagTarget.Scale = Math.Sqrt(1 / mt.Matrix.M11);
 
-                        double widthByTwo = photoViewer.tagTarget.Width / 2;
-                        double heightByTwo = photoViewer.tagTarget.Height / 2;
+                        double widthByTwo = photoViewer._tagTarget.Width / 2;
+                        double heightByTwo = photoViewer._tagTarget.Height / 2;
 
                         //Point transPt = mt.Transform(new Point(widthByTwo, heightByTwo));
                         Point transPt = new Point(widthByTwo * mt.Matrix.M11, heightByTwo * mt.Matrix.M22);
 
                         // Convert point from percentage to pixels
-                        pt = new Point(pt.X * photoViewer.photoDisplay.PhotoImage.ActualWidth +
-                            photoViewer.photoScrollViewer.HorizontalOffset * mt.Matrix.M11,
-                            pt.Y * photoViewer.photoDisplay.PhotoImage.ActualHeight +
-                            photoViewer.photoScrollViewer.VerticalOffset * mt.Matrix.M22);
+                        pt = new Point(pt.X * photoViewer._photoDisplay.PhotoImage.ActualWidth +
+                            photoViewer._photoScrollViewer.HorizontalOffset * mt.Matrix.M11,
+                            pt.Y * photoViewer._photoDisplay.PhotoImage.ActualHeight +
+                            photoViewer._photoScrollViewer.VerticalOffset * mt.Matrix.M22);
 
                         double left;
                         double top;
@@ -972,9 +626,9 @@ namespace FacebookClient
                         {
                             left = transPt.X;
                         }
-                        else if (pt.X > (photoViewer.photoDisplay.PhotoImage.ActualWidth - transPt.X))
+                        else if (pt.X > (photoViewer._photoDisplay.PhotoImage.ActualWidth - transPt.X))
                         {
-                            left = photoViewer.photoDisplay.PhotoImage.ActualWidth - transPt.X;
+                            left = photoViewer._photoDisplay.PhotoImage.ActualWidth - transPt.X;
                         }
                         else
                         {
@@ -986,9 +640,9 @@ namespace FacebookClient
                         {
                             top = transPt.Y;
                         }
-                        else if (pt.Y > (photoViewer.photoDisplay.PhotoImage.ActualHeight - transPt.Y))
+                        else if (pt.Y > (photoViewer._photoDisplay.PhotoImage.ActualHeight - transPt.Y))
                         {
-                            top = photoViewer.photoDisplay.PhotoImage.ActualHeight - transPt.Y;
+                            top = photoViewer._photoDisplay.PhotoImage.ActualHeight - transPt.Y;
                         }
                         else
                         {
@@ -996,13 +650,18 @@ namespace FacebookClient
                         }
 
                         // Set new coordinates
-                        transPt = photoViewer.photoDisplay.PhotoImage.TranslatePoint(new Point(left, top), photoViewer.photoScrollViewer);
-                        photoViewer.tagTarget.TransformPoint = transPt;
+                        transPt = photoViewer._photoDisplay.PhotoImage.TranslatePoint(new Point(left, top), photoViewer._photoScrollViewer);
+                        photoViewer._tagTarget.TransformPoint = transPt;
 
-                        photoViewer.tagTarget.Visibility = Visibility.Visible;
+                        photoViewer._tagTarget.Visibility = Visibility.Visible;
                     }
                 }
             }
+        }
+
+        private void _StartSlideShow()
+        {
+            ((FacebookClientApplication)Application.Current).SwitchToSlideShow(FacebookPhoto.Album.Photos, FacebookPhoto.Album.Photos.IndexOf(FacebookPhoto));
         }
     }
 }

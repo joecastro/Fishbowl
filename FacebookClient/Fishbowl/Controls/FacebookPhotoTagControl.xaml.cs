@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Contigo;
-
-namespace FacebookClient.Controls
+﻿namespace FacebookClient.Controls
 {
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using Contigo;
+
     /// <summary>
     /// Interaction logic for FacebookPhotoTag.xaml
     /// </summary>
@@ -43,7 +33,7 @@ namespace FacebookClient.Controls
 
             if (tag != null)
             {
-                FacebookClient.PhotoViewerControl.IsMouseOverTagCommandCommand.Execute(tag.Offset, (IInputElement)this);
+                FacebookClient.PhotoViewerControl.IsMouseOverTagCommand.Execute(tag.Offset, (IInputElement)this);
             }
         }
 
@@ -54,7 +44,7 @@ namespace FacebookClient.Controls
         /// <param name="e">Event args.</param>
         private void PhotoTag_MouseLeave(object sender, MouseEventArgs e)
         {
-            FacebookClient.PhotoViewerControl.IsMouseOverTagCommandCommand.Execute(null, (IInputElement)this);
+            FacebookClient.PhotoViewerControl.IsMouseOverTagCommand.Execute(null, (IInputElement)this);
         }
 
         #endregion // Private Methods

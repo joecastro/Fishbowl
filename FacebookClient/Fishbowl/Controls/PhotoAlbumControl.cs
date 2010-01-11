@@ -15,19 +15,8 @@ namespace FacebookClient
     using System.Windows.Input;
     using ClientManager;
     using ClientManager.Controls;
-    using ClientManager.Data;
     using Contigo;
-    using System.Globalization;
-    using System.IO;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using System.Windows.Media.Animation;
-    using FacebookClient.Controls;
-    using Standard;
 
-    /// <summary>
-    /// Control that displays album UI.
-    /// </summary>
     public class PhotoAlbumControl : SizeTemplateControl
     {
         public static readonly DependencyProperty PhotoAlbumProperty = DependencyProperty.Register(
@@ -41,79 +30,29 @@ namespace FacebookClient
             get { return (FacebookPhotoAlbum)GetValue(PhotoAlbumProperty); }
             set { SetValue(PhotoAlbumProperty, value); }
         }
-        
+
+        public static RoutedCommand SaveAlbumCommand { get; private set; }
+        public static RoutedCommand StartSlideShowCommand { get; private set; }
+
         static PhotoAlbumControl()
         {
             SaveAlbumCommand = new RoutedCommand("SaveAlbum", typeof(PhotoAlbumControl));
+            StartSlideShowCommand = new RoutedCommand("StartSlideShow", typeof(PhotoAlbumControl));
         }
 
         public PhotoAlbumControl()
         {
-            this.CommandBindings.Add(new CommandBinding(SaveAlbumCommand, (sender, e) => ((PhotoAlbumControl)sender)._SaveAlbum()));
+            CommandBindings.Add(new CommandBinding(SaveAlbumCommand, (sender, e) => ((PhotoAlbumControl)sender)._SaveAlbum()));
+            CommandBindings.Add(new CommandBinding(StartSlideShowCommand, (sender, e) => ((PhotoAlbumControl)sender)._StartSlideShow(), (sender, e) => ((PhotoAlbumControl)sender)._CanExecuteStartSlideShow(e)));
         }
 
-        public static RoutedCommand SaveAlbumCommand { get; private set; }
-
-        #region Protected Methods
-
-        /// <summary>
-        /// Focuses the control when initialized and sets up handlers so that the control is refocused when the album changes.
-        /// </summary>
-        /// <param name="e">Arguments describing the event.</param>
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-            this.Focus();
-            this.Loaded += new RoutedEventHandler(this.OnPhotoAlbumControlLoaded);
-            this.Unloaded += new RoutedEventHandler(this.OnPhotoAlbumControlUnloaded);   
-        }
 
-        /// <summary>
-        /// PhotoAlbumControl has special handling for directional keys since the behavior depends on the element currently in focus.
-        /// </summary>
-        /// <param name="e">Arguments describing the event.</param>
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            if (!e.Handled)
-            {
-                if (e.KeyboardDevice.Modifiers == ModifierKeys.None)
-                {
-                    switch (e.Key)
-                    {
-                        //case Key.Enter:
-                        //    this.OnEnterKeyPress(e);
-                        //    break;
-                        case Key.Escape:
-                            this.OnEscapeKeyPress(e);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-
-            if (!e.Handled)
-            {
-                base.OnKeyDown(e);
-            }
-        }
-
-        #endregion
-
-        #region Private Methods
-        /// <summary>
-        /// On Enter key, enter tab mode.
-        /// </summary>
-        /// <param name="e">EventArgs describing the event.</param>
-        private void OnEnterKeyPress(KeyEventArgs e)
-        {
-            // Move focus only if there is keyboard focus on this control, but not within it (otherwise handled as tab or traversal requests)
-            // Also, ensure that no element has mouse capture, focus should not move while the mouse is captured
-            if (this.IsKeyboardFocused && Mouse.Captured == null)
-            {
-                this.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-                e.Handled = true;
-            }
+            Focus();
+            Loaded += (sender, e2) => ServiceProvider.ViewManager.PropertyChanged += _OnViewManagerPropertyChanged;
+            Unloaded += (sender, e2) => ServiceProvider.ViewManager.PropertyChanged -= _OnViewManagerPropertyChanged;
         }
 
         /// <summary>
@@ -132,30 +71,20 @@ namespace FacebookClient
             }
         }
 
+        private bool _CanStartSlideShow { get { return PhotoAlbum != null && PhotoAlbum.Photos.Count > 0; } }
 
-        /// <summary>
-        /// If keyboard focus is within, move focus to the main control to get out of directional navigation mode.
-        /// </summary>
-        /// <param name="e">EventArgs describing the event.</param>
-        private void OnEscapeKeyPress(KeyEventArgs e)
+        private void _CanExecuteStartSlideShow(CanExecuteRoutedEventArgs e)
         {
-            // Move focus only if there is keyboard focus within 
-            // Also, ensure that no element has mouse  capture, focus should not move while the mouse is captured
-            if (!IsKeyboardFocused && IsKeyboardFocusWithin && Mouse.Captured == null)
-            {
-                this.Focus();
-                e.Handled = true;
-            }
+            e.CanExecute = _CanStartSlideShow;
+            e.Handled = true;
         }
 
-        /// <summary>
-        /// Establishes a handler for ViewManager's property changed so that it can refocus the control when the photo album changes.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Arguments describing the event.</param>
-        private void OnPhotoAlbumControlLoaded(object sender, RoutedEventArgs e)
+        private void _StartSlideShow()
         {
-            ServiceProvider.ViewManager.PropertyChanged += new PropertyChangedEventHandler(this.OnViewManagerPropertyChanged);
+            if (_CanStartSlideShow)
+            {
+                ((FacebookClientApplication)Application.Current).SwitchToSlideShow(PhotoAlbum.Photos, 0);
+            }
         }
 
         /// <summary>
@@ -163,23 +92,12 @@ namespace FacebookClient
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">Arguments describing the event.</param>
-        private void OnViewManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void _OnViewManagerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ActivePhotoAlbum")
             {
                 this.Focus();
             }
         }
-
-        /// <summary>
-        /// Removes the handler from ViewManager's property changed event when the control is unloaded.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private void OnPhotoAlbumControlUnloaded(object sender, RoutedEventArgs e)
-        {
-            ServiceProvider.ViewManager.PropertyChanged -= new PropertyChangedEventHandler(this.OnViewManagerPropertyChanged);
-        }
-        #endregion
     }
 }

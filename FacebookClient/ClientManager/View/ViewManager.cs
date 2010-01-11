@@ -15,9 +15,7 @@ namespace ClientManager.View
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using System.Windows.Media;
     using System.Windows.Navigation;
-    using System.Windows.Threading;
     using ClientManager.Data;
     using Contigo;
     using Standard;
@@ -212,7 +210,6 @@ namespace ClientManager.View
             {
                 var photoNavigator = navigator as PhotoNavigator;
                 var albumNavigator = navigator as PhotoAlbumNavigator;
-                var slideShowNavigator = navigator as SlideShowNavigator;
                 var contactNavigator = navigator as ContactNavigator;
                 if (photoNavigator != null)
                 {
@@ -237,13 +234,6 @@ namespace ClientManager.View
                     FacebookPhotoAlbum album = albumNavigator.Content as FacebookPhotoAlbum;
                     content = album;
                     this.ActivePhotoAlbum = album;
-                    this.ActivePhoto = null;
-                }
-                else if (slideShowNavigator != null)
-                {
-                    SlideShow slideShow = slideShowNavigator.Content as SlideShow;
-                    content = slideShow;
-                    this.ActivePhotoAlbum = slideShow.Album.Content as FacebookPhotoAlbum;
                     this.ActivePhoto = null;
                 }
                 else if (contactNavigator != null)

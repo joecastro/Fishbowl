@@ -685,6 +685,7 @@
   <FacebookClient:RotationAngleToSimplePositiveAngleConverter x:Key="AngleConverter"/>
   <FacebookClient:VisibilityToBooleanConverter x:Key="VisibilityConverter"/>
   <FacebookClient:NotConverter x:Key="NotConverter"/>
+  
   <!-- PhotoViewer very narrow control template -->
   <ControlTemplate x:Key="PhotoViewerTemplate_VeryNarrow" TargetType="{x:Type FacebookClient:PhotoViewerControl}">
     <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}">
@@ -814,7 +815,7 @@
               Fill="#203b5998"
               SnapsToDevicePixels="True"
               Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
-            <Button Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
+            <Button Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" CommandParameter="{Binding}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
               <Image Source="../Images/photo_slideshow.png"/>
             </Button>
           </StackPanel>
@@ -895,47 +896,23 @@
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
           <Border VerticalAlignment="Center" Background="Transparent" Padding="10">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-              </Grid.ColumnDefinitions>
-              <StackPanel Grid.Column="0">
-                <TextBlock
-                  VerticalAlignment="Top"
-                  FontFamily="../Fonts/#Gotham"
-                  FontSize="14"
-                  FontWeight="Medium"
-                  TextWrapping="Wrap">
-                  <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
-                </TextBlock>
-                <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <FacebookClientControls:FacebookPhotoTagControl/>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </StackPanel>
-              <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button
-                  x:Name="PART_FlowDescriptionViewerButton"
-                  Height="35"
-                  HorizontalAlignment="Right"
-                  Background="Black"
-                  BorderBrush="White"
-                  BorderThickness="32"
-                  Command="FacebookClient:PhotoViewerControl.DisplayPhotoFlowDescriptionCommand"
-                  CommandParameter="{Binding}"
-                  FontSize="13"
-                  FontWeight="Bold"
-                  Foreground="White"
-                  Padding="5"
-                  Visibility="Collapsed">Comment...
-                </Button>
-              </StackPanel>
-            </Grid>
+            <StackPanel>
+              <TextBlock
+                VerticalAlignment="Top"
+                FontFamily="../Fonts/#Gotham"
+                FontSize="14"
+                FontWeight="Medium"
+                TextWrapping="Wrap">
+                <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
+              </TextBlock>
+              <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <FacebookClientControls:FacebookPhotoTagControl/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
           </Border>
         </ScrollViewer>
   <!-- The actual photo -->
@@ -1288,7 +1265,7 @@
             Fill="#203b5998"
             SnapsToDevicePixels="True"
             Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
-          <Button Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
+          <Button Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" CommandParameter="{Binding}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
             <Image Source="../Images/photo_slideshow.png"/>
           </Button>
         </StackPanel>
@@ -1307,47 +1284,23 @@
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
           <Border VerticalAlignment="Center" Background="Transparent" Padding="10">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-              </Grid.ColumnDefinitions>
-              <StackPanel Grid.Column="0">
-                <TextBlock
-                  VerticalAlignment="Top"
-                  FontFamily="../Fonts/#Gotham"
-                  FontSize="14"
-                  FontWeight="Medium"
-                  TextWrapping="Wrap">
-                  <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
-                </TextBlock>
-                <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <FacebookClientControls:FacebookPhotoTagControl/>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </StackPanel>
-              <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                <Button
-                  x:Name="PART_FlowDescriptionViewerButton"
-                  Height="35"
-                  HorizontalAlignment="Right"
-                  Background="Black"
-                  BorderBrush="White"
-                  BorderThickness="32"
-                  Command="FacebookClient:PhotoViewerControl.DisplayPhotoFlowDescriptionCommand"
-                  CommandParameter="{Binding}"
-                  FontSize="13"
-                  FontWeight="Bold"
-                  Foreground="White"
-                  Padding="5"
-                  Visibility="Collapsed">Comment...
-                </Button>
-              </StackPanel>
-            </Grid>
+            <StackPanel>
+              <TextBlock
+                VerticalAlignment="Top"
+                FontFamily="../Fonts/#Gotham"
+                FontSize="14"
+                FontWeight="Medium"
+                TextWrapping="Wrap">
+                <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
+              </TextBlock>
+              <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <FacebookClientControls:FacebookPhotoTagControl/>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
           </Border>
         </ScrollViewer>
   <!-- The actual photo -->
@@ -1709,7 +1662,7 @@
               Fill="#203b5998"
               SnapsToDevicePixels="True"
               Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
-            <Button Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSlideShowCommand}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
+            <Button Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" CommandParameter="{Binding}" Style="{DynamicResource TopToolbarButton}" ToolTip="Slide Show">
               <Image Source="../Images/photo_slideshow.png"/>
             </Button>
           </StackPanel>
@@ -1728,47 +1681,23 @@
             VerticalScrollBarVisibility="Auto"
             Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
             <Border VerticalAlignment="Center" Background="Transparent" Padding="10">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="10"/>
-                  <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                  <TextBlock
-                    VerticalAlignment="Top"
-                    FontFamily="../Fonts/#Gotham"
-                    FontSize="14"
-                    FontWeight="Medium"
-                    TextWrapping="Wrap">
-                    <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
-                  </TextBlock>
-                  <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <FacebookClientControls:FacebookPhotoTagControl/>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </StackPanel>
-                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                  <Button
-                    x:Name="PART_FlowDescriptionViewerButton"
-                    Height="35"
-                    HorizontalAlignment="Right"
-                    Background="Black"
-                    BorderBrush="White"
-                    BorderThickness="32"
-                    Command="FacebookClient:PhotoViewerControl.DisplayPhotoFlowDescriptionCommand"
-                    CommandParameter="{Binding}"
-                    FontSize="13"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Padding="5"
-                    Visibility="Collapsed">Comment...
-                  </Button>
-                </StackPanel>
-              </Grid>
+              <StackPanel>
+                <TextBlock
+                  VerticalAlignment="Top"
+                  FontFamily="../Fonts/#Gotham"
+                  FontSize="14"
+                  FontWeight="Medium"
+                  TextWrapping="Wrap">
+                  <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
+                </TextBlock>
+                <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <FacebookClientControls:FacebookPhotoTagControl/>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
             </Border>
           </ScrollViewer>
   <!-- The actual photo -->

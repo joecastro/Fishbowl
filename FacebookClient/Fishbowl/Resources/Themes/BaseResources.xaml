@@ -1035,11 +1035,6 @@
         <FacebookClient:PhotoViewerControl FacebookPhoto="{Binding}" />
     </DataTemplate>
 
-    <!-- Slide Show Base Template -->
-    <DataTemplate DataType="{x:Type ClientManagerView:SlideShow}">
-        <FacebookClient:PhotoSlideShowControl SlideShow="{Binding}" />
-    </DataTemplate>
-
     <!-- Friend viewer template -->
     <DataTemplate DataType="{x:Type Facebook:FacebookContact}">
         <FacebookClient:FriendViewerControl FacebookContact="{Binding}" />

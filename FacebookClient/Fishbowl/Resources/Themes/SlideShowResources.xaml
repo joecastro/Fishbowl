@@ -54,7 +54,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type FacebookClient:SimplePhotoViewerControl}">
-                    <Grid x:Name="SlideshowGrid"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#161616">
+                    <Grid x:Name="SlideShowGrid"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#161616">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />

@@ -29,37 +29,138 @@ namespace FacebookClient
     [TemplatePart(Name = "PART_PhotoHost", Type = typeof(Decorator))]
     public class PhotoSlideShowControl : Control
     {
-        #region Fields
-        /// <summary>
-        /// Dependency property for <see cref="SlideShow"/> property.
-        /// </summary>
-        public static readonly DependencyProperty SlideShowProperty =
-            DependencyProperty.Register(
-                "SlideShow",
-                typeof(SlideShow),
-                typeof(PhotoSlideShowControl),
-                new UIPropertyMetadata(null, OnPhotoSlideSlideShowChanged));
+        public event Action Stopped;
+
+        public static readonly DependencyProperty FacebookPhotoCollectionProperty = DependencyProperty.Register(
+            "FacebookPhotoCollection",
+            typeof(FacebookPhotoCollection), 
+            typeof(PhotoSlideShowControl),
+            new PropertyMetadata(
+                null, 
+                (d, e) => ((PhotoSlideShowControl)d)._OnFacebookPhotoCollectionChanged(e)));
+
+        public FacebookPhotoCollection FacebookPhotoCollection
+        {
+            get { return (FacebookPhotoCollection)GetValue(FacebookPhotoCollectionProperty); }
+            set { SetValue(FacebookPhotoCollectionProperty, value); }
+        }
+
+        private void _OnFacebookPhotoCollectionChanged(DependencyPropertyChangedEventArgs e)
+        {
+            _photos = null;
+            currentChild.FacebookPhoto = null;
+            oldChild.FacebookPhoto = null;
+            timer.Stop();
+            SetValue(PausedPropertyKey, false);
+
+            var photoCollection = e.NewValue as FacebookPhotoCollection;
+            if (photoCollection == null || photoCollection.Count == 0)
+            {
+                return;
+            }
+
+            var photos = new FacebookPhoto[photoCollection.Count];
+            photoCollection.CopyTo(photos, 0);
+
+            _photos = photos;
+
+            CoerceValue(CurrentIndexProperty);
+            
+            currentChild.FacebookPhoto = _CurrentPhoto;
+            oldChild.FacebookPhoto = _NextPhoto;
+
+            if (photoHost != null)
+            {
+                StartTimer();
+            }
+        }
+
+        public static readonly DependencyProperty CurrentIndexProperty = DependencyProperty.Register(
+            "CurrentIndex",
+            typeof(int),
+            typeof(PhotoSlideShowControl),
+            new PropertyMetadata(
+                0,
+                (d, e) => ((PhotoSlideShowControl)d)._OnCurrentIndexChanged(e),
+                (d, value) => ((PhotoSlideShowControl)d)._CoerceCurrentIndexValue(value)));
 
         /// <summary>
-        /// DependencyPropertyKey for <see cref="Paused"/> property.
+        /// Gets or sets the CurrentIndex property.  This dependency property 
+        /// indicates ....
         /// </summary>
-        private static readonly DependencyPropertyKey PausedPropertyKey =
-                DependencyProperty.RegisterReadOnly(
-                        "Paused",
-                        typeof(bool),
-                        typeof(PhotoSlideShowControl),
-                        new FrameworkPropertyMetadata(false));
+        public int CurrentIndex
+        {
+            get { return (int)GetValue(CurrentIndexProperty); }
+            set { SetValue(CurrentIndexProperty, value); }
+        }
+
+        private void _OnCurrentIndexChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (photoHost == null)
+            {
+                currentChild.FacebookPhoto = _CurrentPhoto;
+                oldChild.FacebookPhoto = _NextPhoto;
+            }
+        }
+
+        private object _CoerceCurrentIndexValue(object value)
+        {
+            if (_photos == null)
+            {
+                return 0;
+            }
+
+            int i = (int)value;
+
+            i = Math.Min(i, _photos.Length - 1);
+            i = Math.Max(0, i);
+
+            return i;
+        }
+
+
+        private FacebookPhoto _CurrentPhoto
+        {
+            get
+            {
+                if (_photos == null)
+                {
+                    return null;
+                }
+                return _photos[CurrentIndex];
+            }
+        }
+
+        private FacebookPhoto _NextPhoto
+        {
+            get
+            {
+                if (_photos == null)
+                {
+                    return null;
+                }
+                return _photos[(CurrentIndex + 1) % _photos.Length];
+            }
+        }
+
+
+        private static readonly DependencyPropertyKey PausedPropertyKey = DependencyProperty.RegisterReadOnly(
+            "Paused",
+            typeof(bool),
+            typeof(PhotoSlideShowControl),
+            new FrameworkPropertyMetadata(false));
 
         /// <summary>
         /// DependencyProperty for <see cref="Paused"/> property.
         /// </summary>
-        public static readonly DependencyProperty PausedProperty =
-                PausedPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty PausedProperty = PausedPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Transition effect used by this control.
         /// </summary>
         private static TransitionEffect enterTransitionEffect = new FadeTransitionEffect();
+
+        private FacebookPhoto[] _photos;
 
         /// <summary>
         /// Control hosting the current slide show image.
@@ -86,12 +187,6 @@ namespace FacebookClient
         /// </summary>
         private Random rand = new Random();
 
-
-
-        #endregion
-
-        #region Constructor
-
         /// <summary>
         /// Initializes a new instance of the PhotoSlideShowControl class.
         /// </summary>
@@ -106,7 +201,6 @@ namespace FacebookClient
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
 
-
             this.InputBindings.Add(new InputBinding(MediaCommands.Stop, new KeyGesture(Key.Escape)));
             this.InputBindings.Add(new InputBinding(MediaCommands.NextTrack, new KeyGesture(Key.Right)));
             this.InputBindings.Add(new InputBinding(MediaCommands.PreviousTrack, new KeyGesture(Key.Left)));
@@ -118,18 +212,7 @@ namespace FacebookClient
             this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.Stop, new ExecutedRoutedEventHandler(OnStopCommandExecuted), new CanExecuteRoutedEventHandler(OnStopCommandCanExecute)));
         }
 
-        #endregion
-
         #region Public Properties
-
-        /// <summary>
-        /// Gets or sets SlideShow object displayed in this control.
-        /// </summary>
-        public SlideShow SlideShow
-        {
-            get { return (SlideShow)GetValue(SlideShowProperty); }
-            set { SetValue(SlideShowProperty, value); }
-        }
 
         /// <summary>
         /// Gets a value indicating whether slide show is in paused mode or not.
@@ -152,7 +235,7 @@ namespace FacebookClient
             this.photoHost = this.Template.FindName("PART_PhotoHost", this) as Decorator;
             this.photoHost.Child = this.currentChild;
 
-            if (this.photoHost != null && this.SlideShow != null)
+            if (this.photoHost != null && _photos != null)
             {
                 this.StartTimer();
                 this.Cursor = Cursors.None;
@@ -163,8 +246,6 @@ namespace FacebookClient
 
         #region Private Methods
 
-
-
         /// <summary>
         ///
         /// </summary>
@@ -173,7 +254,6 @@ namespace FacebookClient
         {
             base.OnPreviewMouseDown(e);
             this.Cursor = Cursors.Arrow;
-            
         }
 
         /// <summary>
@@ -185,36 +265,6 @@ namespace FacebookClient
             base.OnPreviewMouseMove(e);
           //  this.Cursor = Cursors.Hand;  // Mouse is "moving" even when it's not.  Gotta look into this.
 
-        }
-
-
-
-        /// <summary>
-        /// Dependency property changed handler for SlideShowProperty.
-        /// </summary>
-        /// <param name="d">Dependency object for which DP change has occurred.</param>
-        /// <param name="e">EventArgs describing property change.</param>
-        private static void OnPhotoSlideSlideShowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            PhotoSlideShowControl c = d as PhotoSlideShowControl;
-            SlideShow pss = e.NewValue as SlideShow;
-            if (pss == null || pss.CurrentPhoto == null)
-            {
-                c.currentChild.FacebookPhoto = null;
-                c.oldChild.FacebookPhoto = null;
-                c.timer.Stop();
-                c.SetValue(PausedPropertyKey, false);
-            }
-            else
-            {
-                c.currentChild.FacebookPhoto = pss.CurrentPhoto.Content as FacebookPhoto;
-                c.oldChild.FacebookPhoto = pss.NextPhoto.Content as FacebookPhoto;
-
-                if (c.photoHost != null)
-                {
-                    c.StartTimer();
-                }
-            }
         }
 
         /// <summary>
@@ -449,35 +499,26 @@ namespace FacebookClient
                     // Stop the timer, change the photo, move to the next photo and restart timer
                     slideShow.NavigateToPhoto();
                     e.Handled = true;
+
+                    var handler = slideShow.Stopped;
+                    if (handler != null)
+                    {
+                        handler();
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Loaded override, attaches listener for DataManager's GetTextDocumentCompleted event.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event args describing the event.</param>
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            // Full screen the application when viewing the slideshow
-            ((MainWindow)Application.Current.MainWindow).SetSlideshowViewingMode(true);
             this.Focus();
         }
 
-        /// <summary>
-        /// Loaded override, detaches listener for DataManager's GetTextDocumentCompleted event.
-        /// </summary>
-        /// <param name="sender">Source of the event.</param>
-        /// <param name="e">Event args describing the event.</param>
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             this.currentChild.Effect = null;
             this.timer.Stop();
             this.SetValue(PausedPropertyKey, false);
-
-            // Revert to a normal window after the slideshow completes.
-            ((MainWindow)Application.Current.MainWindow).SetSlideshowViewingMode(false);
         }
 
         /// <summary>
@@ -552,9 +593,9 @@ namespace FacebookClient
                 this.StopTimer();
             }
 
-            if (this.SlideShow != null)
+            if (_photos != null)
             {
-                this.SlideShow.MoveNext();
+                CurrentIndex = (CurrentIndex + 1) % _photos.Length;
             }
 
             this.ChangePhoto(false);    
@@ -571,9 +612,9 @@ namespace FacebookClient
                 this.StopTimer();
             }
 
-            if (this.SlideShow != null)
+            if (_photos != null)
             {
-                this.SlideShow.MovePrevious();
+                CurrentIndex = (CurrentIndex + _photos.Length - 1) % _photos.Length;
             }
 
             this.ChangePhoto(false);
@@ -586,10 +627,13 @@ namespace FacebookClient
         {
             this.timer.Stop();
             this.SetValue(PausedPropertyKey, false);
-            PhotoNavigator photo = (PhotoNavigator)this.SlideShow.CurrentPhoto;
-            if (ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.CanExecute(photo))
+            if (_photos != null)
             {
-                ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(photo);
+                FacebookPhoto photo = _photos[CurrentIndex];
+                if (ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.CanExecute(photo))
+                {
+                    ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(photo);
+                }
             }
         }
 
@@ -600,12 +644,11 @@ namespace FacebookClient
         /// <param name="e">Event args describing the event.</param>
         private void OnTimerTick(object sender, EventArgs e)
         {
-
             this.Cursor = Cursors.None;
             this.ChangePhoto(true);
-            if (this.SlideShow != null)
+            if (_photos != null)
             {
-                this.SlideShow.MoveNext();
+                CurrentIndex = (CurrentIndex + 1) % _photos.Length;
             }
         }
 
@@ -616,8 +659,7 @@ namespace FacebookClient
         /// <param name="applyTransitionEffect">If true, transition animation and effects are initiated.</param>
         private void ChangePhoto(bool applyTransitionEffect)
         {
-
-            if (this.SlideShow != null && !this.oldChild.ImageDownloadInProgress)
+            if (_photos != null && !this.oldChild.ImageDownloadInProgress)
             {
                 if (applyTransitionEffect)
                 {
@@ -628,8 +670,8 @@ namespace FacebookClient
                 {    
                     // Apply the current slide show content. 
                     // Load the old child with the next photo so it will advance to the next photo if the user resumes play.
-                    this.currentChild.FacebookPhoto = SlideShow.CurrentPhoto.Content as FacebookPhoto;
-                    this.oldChild.FacebookPhoto = SlideShow.NextPhoto.Content as FacebookPhoto;
+                    this.currentChild.FacebookPhoto = _CurrentPhoto;
+                    this.oldChild.FacebookPhoto = _NextPhoto;
                 }
             }
         }
@@ -642,9 +684,9 @@ namespace FacebookClient
         private void TransitionCompleted(object sender, EventArgs e)
         {
             this.currentChild.Effect = null;
-            if (this.SlideShow != null)
+            if (_photos != null)
             {
-                this.oldChild.FacebookPhoto = SlideShow.NextPhoto.Content as FacebookPhoto;
+                this.oldChild.FacebookPhoto = _NextPhoto;
             }
         }
 

@@ -53,7 +53,6 @@ namespace ClientManager.View
         public NavigateFriendsCommand NavigateFriendsCommand { get; private set; }
         public NavigatePhotoAlbumsCommand NavigatePhotoAlbumsCommand { get; private set; }
         public NavigateSearchCommand NavigateSearchCommand { get; private set; }
-        public NavigateSlideShowCommand NavigateSlideShowCommand { get; private set; }
     }
 
     public abstract class NavigationCommand : ViewCommand
@@ -620,78 +619,6 @@ namespace ClientManager.View
         }
     }
     
-    /// <summary>
-    /// Given a <see cref="PhotoSlideShowNavigator"/>, navigates to the PhotoSlideShow represented by that navigator.
-    /// If not given a <see cref="PhotoSlideShowNavigator"/>, it will navigate to a slideshow based on the current Album. 
-    /// </summary>
-    public sealed class NavigateSlideShowCommand : NavigationCommand
-    {
-        /// <summary>
-        /// Initializes a new instance of the NavigateToSlideShowCommand class.
-        /// </summary>
-        /// <param name="viewManager">
-        /// ViewManager associated with ViewCommand subclasses.
-        /// </param>
-        public NavigateSlideShowCommand(ViewManager viewManager)
-            : base(viewManager)
-        {}
-
-        /// <summary>
-        /// Navigation-specific logic that can be overridden by subclasses of NavigationCommand to provide custom navigation behavior.
-        /// </summary>
-        /// <param name="parameter">
-        /// Execution parameter for NavigationCommand.
-        /// </param>
-        protected override void PerformNavigate(object parameter)
-        {
-            SlideShow slideShow = null;
-            var photoSlideShowNavigator = parameter as SlideShowNavigator;
-
-            if (photoSlideShowNavigator == null)
-            {
-                var albumNavigator = parameter as PhotoAlbumNavigator;
-                if (albumNavigator == null)
-                {
-                    albumNavigator = ServiceProvider.ViewManager.CurrentNavigator as PhotoAlbumNavigator;
-                }
-
-                if (albumNavigator != null && albumNavigator.FirstChild != null)
-                {
-                    slideShow = new SlideShow(albumNavigator);
-                    photoSlideShowNavigator = new SlideShowNavigator(slideShow);
-                }
-            }
-
-            if (photoSlideShowNavigator == null)
-            {
-                var photoNavigator = ServiceProvider.ViewManager.CurrentNavigator as PhotoNavigator;
-                if (photoNavigator != null)
-                {
-                    slideShow = new SlideShow(photoNavigator);
-                    photoSlideShowNavigator = new SlideShowNavigator(slideShow);
-                }
-            }
-
-            if (photoSlideShowNavigator == null)
-            {
-                if (ServiceProvider.FacebookService.IsOnline)
-                {
-                    var allAlbumsNavigator = ServiceProvider.ViewManager.MasterNavigator.PhotoAlbumsNavigator;
-                    if (allAlbumsNavigator.FirstChild != null)
-                    {
-                        slideShow = new SlideShow((PhotoAlbumCollectionNavigator)allAlbumsNavigator);
-                        photoSlideShowNavigator = new SlideShowNavigator(slideShow);
-                    }
-                }
-            }
-
-            if (photoSlideShowNavigator != null)
-            {
-                ViewManager.NavigateByCommand(photoSlideShowNavigator);
-            }
-        }
-    }
-
     public sealed class NavigateLoginCommand : NavigationCommand
     {
         public NavigateLoginCommand(ViewManager viewManager)

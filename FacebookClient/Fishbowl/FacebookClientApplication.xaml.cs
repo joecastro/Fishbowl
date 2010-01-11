@@ -14,16 +14,23 @@ namespace FacebookClient
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Media;
+    using Contigo;
     using FacebookClient.Properties;
     using Microsoft.Windows.Shell;
     using Standard;
-    using Microsoft.Bing;
 
     /// <summary>
     /// Code behind file for the FacebookClient Application XAML.
     /// </summary>
     public partial class FacebookClientApplication : Application
     {
+        private enum _WindowMode
+        {
+            Normal,
+            SlideShow,
+            MiniMode,
+        }
+
         internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
         internal const string BingApiKey = "63F02036684DE7BEA0FDE713C0D1653056727276";
 
@@ -47,7 +54,9 @@ namespace FacebookClient
         private MainWindow _mainWindow;
         private MiniModeWindow _minimodeWindow;
         private ChatWindow _chatWindow;
-        private bool _isInMiniMode = false;
+        private SlideShowWindow _slideshowWindow;
+        private _WindowMode _viewMode = _WindowMode.Normal;
+        private _WindowMode _previousViewMode = _WindowMode.Normal;
 
         public static IEnumerable<string> AvailableThemes { get { return _ThemeNames.AsReadOnly(); } }
 
@@ -108,7 +117,7 @@ namespace FacebookClient
             }
         }
 
-        /// <summary>Whether the client is currently Tier 2 capable which is required for hardware-accelerated effects. </summary>
+        /// <summary>Whether the client is currently Tier 2 capable which is required for hardware-accelerated effects.</summary>
         public static bool IsShaderEffectSupported
         {
             get { return RenderCapability.Tier == 0x00020000 && RenderCapability.IsPixelShaderVersionSupported(2, 0); }
@@ -220,7 +229,7 @@ namespace FacebookClient
         private void SignalExternalCommandLineArgs(object sender, SingleInstanceEventArgs e)
         {
             bool handledByWindow = false;
-            if (_isInMiniMode)
+            if (_viewMode == _WindowMode.MiniMode)
             {
                 _minimodeWindow.Activate();
 
@@ -241,11 +250,14 @@ namespace FacebookClient
         internal void SwitchToMiniMode()
         {
             Dispatcher.VerifyAccess();
-            if (_isInMiniMode)
+
+            ExitSlideShow();
+
+            if (_viewMode == _WindowMode.MiniMode)
             {
                 return;
             }
-            _isInMiniMode = true;
+            _viewMode = _WindowMode.MiniMode;
 
             _mainWindow.Hide();
             _minimodeWindow.Show();
@@ -269,11 +281,14 @@ namespace FacebookClient
         internal void SwitchToMainMode()
         {
             Dispatcher.VerifyAccess();
-            if (!_isInMiniMode)
+
+            ExitSlideShow();
+
+            if (_viewMode == _WindowMode.Normal)
             {
                 return;
             }
-            _isInMiniMode = false;
+            _viewMode = _WindowMode.Normal;
 
             _minimodeWindow.Hide();
             _mainWindow.Show();
@@ -307,5 +322,61 @@ namespace FacebookClient
             _chatWindow.Closed += (sender, e) => _chatWindow = null;
             _chatWindow.Show();
         }
+
+        internal void SwitchToSlideShow(FacebookPhotoCollection photos, int startIndex)
+        {
+            if (_viewMode == _WindowMode.SlideShow)
+            {
+                Assert.IsNotNull(_slideshowWindow);
+                _slideshowWindow.Activate();
+                return;
+            }
+
+            _previousViewMode = _viewMode;
+            _viewMode = _WindowMode.SlideShow;
+
+            if (_chatWindow != null)
+            {
+                _chatWindow.Hide();
+            }
+
+            if (_minimodeWindow.IsVisible)
+            {
+                _minimodeWindow.Hide();
+            }
+
+            if (_mainWindow.IsVisible)
+            {
+                _mainWindow.Hide();
+            }
+
+            _slideshowWindow = new SlideShowWindow(photos, startIndex);
+            _slideshowWindow.Show();
+            _slideshowWindow.Closing += (sender, e) => ExitSlideShow();
+        }
+
+        internal void ExitSlideShow()
+        {
+            if (_viewMode != _WindowMode.SlideShow)
+            {
+                return;
+            }
+
+            _viewMode = _previousViewMode;
+            if (_viewMode == _WindowMode.MiniMode)
+            {
+                _minimodeWindow.Show();
+            }
+            else
+            {
+                _mainWindow.Show();
+            }
+
+            if (_chatWindow != null)
+            {
+                _chatWindow.Show();
+            }
+        }
+
     }
 }

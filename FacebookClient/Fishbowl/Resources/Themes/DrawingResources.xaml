@@ -30,7 +30,7 @@
     </CombinedGeometry>
   </GeometryGroup>
 
-  <CombinedGeometry x:Key="SlideshowGeometry">
+  <CombinedGeometry x:Key="SlideShowGeometry">
     <CombinedGeometry.Geometry1>
       <CombinedGeometry GeometryCombineMode="Exclude">
         <CombinedGeometry.Geometry1>
@@ -79,9 +79,9 @@
           <DrawingGroup.Transform>
             <TranslateTransform X="12" Y="9" />
           </DrawingGroup.Transform>
-          <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="{StaticResource SlideshowGeometry}" />
+          <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
         </DrawingGroup>
-        <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource SlideshowGeometry}" />
+        <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
