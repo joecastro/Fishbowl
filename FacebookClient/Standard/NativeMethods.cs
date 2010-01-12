@@ -2071,7 +2071,7 @@ namespace Standard
             SuppressMessage(
                 "Microsoft.Interoperability",
                 "CA1400:PInvokeEntryPointsShouldExist"),
-            DllImport("user32.dll", EntryPoint = "GetWindowLongPtr", SetLastError = true)
+            DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)
         ]
         private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, GWL nIndex, IntPtr dwNewLong);
 
