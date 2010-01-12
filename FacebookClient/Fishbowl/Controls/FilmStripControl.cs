@@ -160,7 +160,8 @@ namespace FacebookClient
             ListBoxItem selectedListBoxItem;
             int numberOfItemsDelta = 0;
             int scrollDirection = -1; // -1 for moving to the left and 1 for right
-            double blurAmount = 0.03; // the default DirectionalBlurEffect amount
+            double maxBlurAmount = 0.003; // the default DirectionalBlurEffect max amount
+            double minBlurAmount = 0.001; // the default DirectionalBlurEffect min amount
 
             if (!this.IsLoaded)
             {
@@ -218,10 +219,11 @@ namespace FacebookClient
                 if (numberOfItemsDelta > 2)
                 {
                     // The amount of blur is relative to the number of items being scrolled within the film strip
-                    // with the maximum blur amount of blurAmount. The blur direction must also match direction of the
+                    // clampt between minBlurAmount and maxBlurAmount. The blur direction must also match direction of the
                     // FilmStripPanel.SetHorizontalOffset's horizontal animation to prevent jittering
-                    blurAmount *= scrollDirection;
-                    this.filmStripMultiItemBlurEffectAnimation.From = blurAmount * ((numberOfItemsDelta <= 0.0 ? 1.0 : numberOfItemsDelta) / (this.Items != null && this.Items.Count > 0.0 ? this.Items.Count - 1 : 1.0));
+                    double amount = maxBlurAmount * ((numberOfItemsDelta <= 0.0 ? 1.0 : numberOfItemsDelta) / (this.Items != null && this.Items.Count > 0.0 ? this.Items.Count - 1 : 1.0));
+                    amount = Math.Max(minBlurAmount, amount);
+                    this.filmStripMultiItemBlurEffectAnimation.From = amount * scrollDirection;
                     this.filmStripMultiItemBlurEffectAnimation.To = 0;
                     this.filmStripMultiItemBlurEffectAnimation.Duration = FilmStripControl.standardSlideFilmStripDuration + new Duration(new TimeSpan(Math.Min(MaxNumberOfItemsDelta, numberOfItemsDelta) * perItemSlideFilmStripTime));
                     this.filmStripMultiItemBlurEffectAnimation.AccelerationRatio = 0.4;
@@ -237,8 +239,10 @@ namespace FacebookClient
 
                     // The amount of blur should slowly accumulate when moving between many items sequentially
                     // such as holding down the arrow key. The HandoffBehavior.SnapshotAndReplace behavior will ensure 
-                    // the a smooth transition to the next animation.
-                    this.filmStripOneItemBlurEffectAnimation.From += blurAmount * 0.01 * scrollDirection; // accumulate blur in small increments
+                    // a smooth transition to the next animation.
+                    double amount = Math.Abs(this.filmStripOneItemBlurEffectAnimation.From.Value) + (maxBlurAmount * 0.01); // accumulate blur in small increments
+                    amount = Math.Min(maxBlurAmount, amount);
+                    this.filmStripOneItemBlurEffectAnimation.From += amount * scrollDirection;
                     this.filmStripOneItemBlurEffectAnimation.To = 0;
                     this.filmStripOneItemBlurEffectAnimation.Duration = FilmStripControl.standardSlideFilmStripDuration + new Duration(new TimeSpan(Math.Min(MaxNumberOfItemsDelta, numberOfItemsDelta) * perItemSlideFilmStripTime));
                     this.filmStripOneItemBlurEffectAnimation.AccelerationRatio = 0.4;

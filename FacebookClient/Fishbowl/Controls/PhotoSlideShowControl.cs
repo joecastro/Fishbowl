@@ -10,16 +10,14 @@
 namespace FacebookClient
 {
     using System;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
-    using System.Windows.Interop;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
     using ClientManager;
-    using ClientManager.Data;
-    using ClientManager.View;
     using TransitionEffects;
     using Contigo;
 
@@ -33,10 +31,10 @@ namespace FacebookClient
 
         public static readonly DependencyProperty FacebookPhotoCollectionProperty = DependencyProperty.Register(
             "FacebookPhotoCollection",
-            typeof(FacebookPhotoCollection), 
+            typeof(FacebookPhotoCollection),
             typeof(PhotoSlideShowControl),
             new PropertyMetadata(
-                null, 
+                null,
                 (d, e) => ((PhotoSlideShowControl)d)._OnFacebookPhotoCollectionChanged(e)));
 
         public FacebookPhotoCollection FacebookPhotoCollection
@@ -50,7 +48,7 @@ namespace FacebookClient
             _photos = null;
             currentChild.FacebookPhoto = null;
             oldChild.FacebookPhoto = null;
-            timer.Stop();
+            transitionTimer.Stop();
             SetValue(PausedPropertyKey, false);
 
             var photoCollection = e.NewValue as FacebookPhotoCollection;
@@ -65,7 +63,7 @@ namespace FacebookClient
             _photos = photos;
 
             CoerceValue(CurrentIndexProperty);
-            
+
             currentChild.FacebookPhoto = _CurrentPhoto;
             oldChild.FacebookPhoto = _NextPhoto;
 
@@ -143,22 +141,16 @@ namespace FacebookClient
             }
         }
 
-
         private static readonly DependencyPropertyKey PausedPropertyKey = DependencyProperty.RegisterReadOnly(
-            "Paused",
-            typeof(bool),
-            typeof(PhotoSlideShowControl),
-            new FrameworkPropertyMetadata(false));
+                        "Paused",
+                        typeof(bool),
+                        typeof(PhotoSlideShowControl),
+                        new FrameworkPropertyMetadata(false));
 
         /// <summary>
         /// DependencyProperty for <see cref="Paused"/> property.
         /// </summary>
         public static readonly DependencyProperty PausedProperty = PausedPropertyKey.DependencyProperty;
-
-        /// <summary>
-        /// Transition effect used by this control.
-        /// </summary>
-        private static TransitionEffect enterTransitionEffect = new FadeTransitionEffect();
 
         private FacebookPhoto[] _photos;
 
@@ -180,12 +172,83 @@ namespace FacebookClient
         /// <summary>
         /// Timer to control interval between transitions.
         /// </summary>
-        private DispatcherTimer timer;
+        private DispatcherTimer transitionTimer;
+
+        /// <summary>
+        /// Timer to hide the mouse pointer and the slide show controls (play, pause, stop, ...).
+        /// </summary>
+        private DispatcherTimer mousePointerTimer;
 
         /// <summary>
         /// PRNG used to select the next transition to be applied.
         /// </summary>
-        private Random rand = new Random();
+        private static Random rand = new Random();
+
+        /// <summary>
+        /// The list of all kinds of transition effects that are supported
+        /// </summary>
+        private static Type[] transitionEffectTypes;
+
+        /// <summary>
+        /// List of the different types of animations that are supported.
+        /// </summary>
+        private enum AnimationType { None, ZoomIn, ZoomOut, PanLeft, PanRight };
+
+        /// <summary>
+        /// The type of the animation currently in progress.
+        /// </summary>
+        AnimationType currentAnimationType;
+
+        /// <summary>
+        /// Maximum Frame Rate for the slide show animation and transition animation
+        /// </summary>
+        private static int animFrameRate = 20;
+
+        /// <summary>
+        /// The FROM and TO values to be used for various types of animation.
+        /// </summary>
+        private static double scaleAnimFrom = 1.25;
+        private static double scaleAnimTo = 1.35;
+        private static double transAnimFrom = 0;
+        private static double transAnimTo = 35;
+
+        /// <summary>
+        /// Defines the total amount of time (in milliseconds) to be used as the animation interval.
+        /// </summary>
+        private static double totalAnimationPeriod = 6000;
+
+        /// <summary>
+        /// The amound of time elapsed while animating the slide show. This is used to when pausing & resuming
+        /// the animation, in order to figure out how much time is remaining for animation of the paused slide
+        /// before going to the next one.
+        /// </summary>
+        private double elapsedAnimationPeriod = 0;
+
+        /// <summary>
+        /// The global transform group and scale/translate transforms used for animation.
+        /// </summary>
+        private TransformGroup transformGroup = null;
+        private ScaleTransform scaleTransform = null;
+        private TranslateTransform translateTransform = null;
+
+        /// <summary>
+        /// Holds a reference to the Border object that holds the slide show controls (play, pause, stop, ...).
+        /// </summary>
+        private Border menuBorder = null;
+
+        /// <summary>
+        /// Holds the last location of the mouse pointer.
+        /// </summary>
+        private Point? lastMousePosition = null;
+
+        /// <summary>
+        /// Static constructor for retrieving the list of all kinds of supported transition effects
+        /// </summary>
+        static PhotoSlideShowControl()
+        {
+            Assembly assembly = Assembly.GetAssembly(typeof(TransitionEffect));
+            transitionEffectTypes = assembly.GetTypes();
+        }
 
         /// <summary>
         /// Initializes a new instance of the PhotoSlideShowControl class.
@@ -195,8 +258,19 @@ namespace FacebookClient
             this.currentChild = new SimplePhotoViewerControl();
             this.oldChild = new SimplePhotoViewerControl();
 
-            this.timer = new DispatcherTimer(TimeSpan.FromSeconds(6), DispatcherPriority.Input, this.OnTimerTick, Dispatcher);
-            this.timer.Stop();
+            this.transitionTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnTransitionTimerTick, Dispatcher);
+            this.transitionTimer.Stop();
+
+            this.mousePointerTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnMousePointerTimerTick, Dispatcher);
+            this.mousePointerTimer.Stop();
+
+            this.currentAnimationType = AnimationType.None;
+
+            transformGroup = new TransformGroup();
+            this.translateTransform = new TranslateTransform(transAnimFrom, transAnimFrom);
+            this.scaleTransform = new ScaleTransform(scaleAnimFrom, scaleAnimFrom);
+            transformGroup.Children.Add(this.translateTransform);
+            transformGroup.Children.Add(this.scaleTransform);
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
@@ -232,13 +306,19 @@ namespace FacebookClient
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            this.menuBorder = this.Template.FindName("PART_MenuBorder", this) as Border;
             this.photoHost = this.Template.FindName("PART_PhotoHost", this) as Decorator;
-            this.photoHost.Child = this.currentChild;
 
-            if (this.photoHost != null && _photos != null)
+            if (this.photoHost != null)
             {
-                this.StartTimer();
-                this.Cursor = Cursors.None;
+                this.photoHost.Child = this.currentChild;
+                this.photoHost.RenderTransform = this.transformGroup;
+                this.photoHost.RenderTransformOrigin = new Point(0.5, 0.5);
+
+                if (_photos != null)
+                {
+                    this.StartTimer();
+                }
             }
         }
 
@@ -250,21 +330,41 @@ namespace FacebookClient
         ///
         /// </summary>
         /// <param name="e">Arguments describing the event.</param>
-        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseDown(e);
-            this.Cursor = Cursors.Arrow;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="e">Arguments describing the event.</param>
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             base.OnPreviewMouseMove(e);
-          //  this.Cursor = Cursors.Hand;  // Mouse is "moving" even when it's not.  Gotta look into this.
 
+            if (lastMousePosition == null)
+            {
+                lastMousePosition = e.GetPosition(this);
+
+                // Display the slide show controls
+                if (this.menuBorder != null)
+                {
+                    this.menuBorder.BeginAnimation(Border.OpacityProperty, null);
+                    this.menuBorder.Opacity = 1.0;
+                }
+
+                // Restart the timer that would take away the mouse pointer & slide show controls after a while
+                this.mousePointerTimer.Stop();
+                this.mousePointerTimer.Start();
+            }
+            else if (e.GetPosition(this) != lastMousePosition.Value)
+            {
+                lastMousePosition = e.GetPosition(this);
+                this.Cursor = Cursors.Arrow;
+
+                // Display the slide show controls
+                if (this.menuBorder != null)
+                {
+                    this.menuBorder.BeginAnimation(Border.OpacityProperty, null);
+                    this.menuBorder.Opacity = 1.0;
+                }
+
+                // Restart the timer that would take away the mouse pointer & slide show controls after a while
+                this.mousePointerTimer.Stop();
+                this.mousePointerTimer.Start();
+            }
         }
 
         /// <summary>
@@ -381,7 +481,6 @@ namespace FacebookClient
                 if (slideShow != null)
                 {
                     slideShow.StartTimer();
-                    slideShow.Cursor = Cursors.None;
                     e.Handled = true;
                 }
             }
@@ -405,8 +504,6 @@ namespace FacebookClient
                 }
             }
         }
-
-    
 
         /// <summary>
         /// Executed event handler for next slide command
@@ -517,7 +614,8 @@ namespace FacebookClient
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             this.currentChild.Effect = null;
-            this.timer.Stop();
+            this.transitionTimer.Stop();
+            this.mousePointerTimer.Stop();
             this.SetValue(PausedPropertyKey, false);
         }
 
@@ -544,9 +642,10 @@ namespace FacebookClient
         /// </summary>
         private void StartTimer()
         {
-            this.timer.Start();
+            this.transitionTimer.Start();
+            this.mousePointerTimer.Start();
+            this.ResumeSlideShowAnimation();
             this.SetValue(PausedPropertyKey, false);
-            this.Cursor = Cursors.None;
         }
 
         /// <summary>
@@ -554,7 +653,9 @@ namespace FacebookClient
         /// </summary>
         private void StopTimer()
         {
-            this.timer.Stop();
+            this.transitionTimer.Stop();
+            this.mousePointerTimer.Stop();
+            this.PauseSlideShowAnimation();
             this.SetValue(PausedPropertyKey, true);
             this.Cursor = Cursors.Arrow;
         }
@@ -564,11 +665,13 @@ namespace FacebookClient
         /// </summary>
         private void ApplyTransitionEffect()
         {
-            DoubleAnimation da = new DoubleAnimation(0.0, 1.0, new Duration(TimeSpan.FromMilliseconds(600)), FillBehavior.HoldEnd);
+            DoubleAnimation da = new DoubleAnimation(0.0, 1.0, new Duration(TimeSpan.FromMilliseconds(totalAnimationPeriod / 5)), FillBehavior.HoldEnd);
             da.AccelerationRatio = 0.5;
             da.DecelerationRatio = 0.5;
             da.Completed += new EventHandler(this.TransitionCompleted);
-            enterTransitionEffect.BeginAnimation(TransitionEffect.ProgressProperty, da);
+            // Force the frame rate to animFrameRate instead of WPF's default value of 60fps.
+            // this will reduce the CPU load on low-end machines, and will conserve battery for portable devices.
+            Timeline.SetDesiredFrameRate(da, animFrameRate);
 
             VisualBrush vb = new VisualBrush(this.oldChild);
             vb.Viewbox = new Rect(0, 0, this.oldChild.ActualWidth, this.oldChild.ActualHeight);
@@ -578,8 +681,39 @@ namespace FacebookClient
             this.oldChild.Measure(new Size(this.oldChild.ActualWidth, this.oldChild.ActualHeight));
             this.oldChild.Arrange(new Rect(0, 0, this.oldChild.ActualWidth, this.oldChild.ActualHeight));
 
-            enterTransitionEffect.OldImage = vb;
-            this.currentChild.Effect = enterTransitionEffect;
+            TransitionEffect transitionEffect = GetRandomTransitionEffect();
+            transitionEffect.OldImage = vb;
+            this.currentChild.Effect = transitionEffect;
+
+            transitionEffect.BeginAnimation(TransitionEffect.ProgressProperty, da, HandoffBehavior.SnapshotAndReplace);
+        }
+
+        /// <summary>
+        /// Randomely picks a transition effect among the ones that are implemented.
+        /// </summary>
+        /// <returns>A transition effect</returns>
+        private TransitionEffect GetRandomTransitionEffect()
+        {
+            TransitionEffect transitionEffect = null;
+
+            try
+            {
+                // randomely pick a transition effect that is instantiable
+                int idx = 0;
+                do
+                {
+                    idx = rand.Next(transitionEffectTypes.Length);
+                } while (transitionEffectTypes[idx].IsAbstract == true);
+
+                transitionEffect = Activator.CreateInstance(transitionEffectTypes[idx]) as TransitionEffect;
+            }
+            catch (Exception)
+            {
+                // in case of any problems, default to Fade transition effect
+                transitionEffect = new FadeTransitionEffect();
+            }
+
+            return transitionEffect;
         }
 
         /// <summary>
@@ -598,7 +732,7 @@ namespace FacebookClient
                 CurrentIndex = (CurrentIndex + 1) % _photos.Length;
             }
 
-            this.ChangePhoto(false);    
+            this.ChangePhoto(false);
         }
 
         /// <summary>
@@ -625,7 +759,7 @@ namespace FacebookClient
         /// </summary>
         private void NavigateToPhoto()
         {
-            this.timer.Stop();
+            this.transitionTimer.Stop();
             this.SetValue(PausedPropertyKey, false);
             if (_photos != null)
             {
@@ -642,13 +776,38 @@ namespace FacebookClient
         /// </summary>
         /// <param name="sender">Event source.</param>
         /// <param name="e">Event args describing the event.</param>
-        private void OnTimerTick(object sender, EventArgs e)
+        private void OnTransitionTimerTick(object sender, EventArgs e)
         {
-            this.Cursor = Cursors.None;
             this.ChangePhoto(true);
             if (_photos != null)
             {
                 CurrentIndex = (CurrentIndex + 1) % _photos.Length;
+            }
+
+            // If resuming from a paused state, then reset the time interval to its maximum
+            if (this.transitionTimer.Interval.Milliseconds != totalAnimationPeriod)
+            {
+                this.transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod);
+            }
+        }
+
+        /// <summary>
+        /// Handler for timer tick - takes away the mouse pointer and the slide show controls.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="e">Event args describing the event.</param>
+        private void OnMousePointerTimerTick(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.None;
+            this.mousePointerTimer.Stop();
+
+            if (this.menuBorder != null)
+            {
+                DoubleAnimation da = new DoubleAnimation(0.0, TimeSpan.FromSeconds(1));
+                // Force the frame rate to animFrameRate instead of WPF's default value of 60fps.
+                // this will reduce the CPU load on low-end machines, and will conserve battery for portable devices.
+                Timeline.SetDesiredFrameRate(da, animFrameRate);
+                this.menuBorder.BeginAnimation(Border.OpacityProperty, da, HandoffBehavior.SnapshotAndReplace);
             }
         }
 
@@ -665,9 +824,10 @@ namespace FacebookClient
                 {
                     this.SwapChildren();
                     this.ApplyTransitionEffect();
+                    this.ResumeSlideShowAnimation();
                 }
                 else
-                {    
+                {
                     // Apply the current slide show content. 
                     // Load the old child with the next photo so it will advance to the next photo if the user resumes play.
                     this.currentChild.FacebookPhoto = _CurrentPhoto;
@@ -687,6 +847,120 @@ namespace FacebookClient
             if (_photos != null)
             {
                 this.oldChild.FacebookPhoto = _NextPhoto;
+            }
+        }
+
+        /// <summary>
+        /// Pauses the animation of the slide show
+        /// </summary>
+        private void PauseSlideShowAnimation()
+        {
+            double scaleValue = this.scaleTransform.ScaleX;
+            double transValue = this.translateTransform.X;
+
+            switch (currentAnimationType)
+            {
+                case AnimationType.ZoomIn:
+                case AnimationType.ZoomOut:
+                    elapsedAnimationPeriod = (scaleValue - scaleAnimFrom) / (scaleAnimTo - scaleAnimFrom) * totalAnimationPeriod;
+                    break;
+
+                case AnimationType.PanLeft:
+                case AnimationType.PanRight:
+                    elapsedAnimationPeriod = (Math.Abs(transValue) - transAnimFrom) / (transAnimTo - transAnimFrom) * totalAnimationPeriod;
+                    break;
+            }
+
+            this.scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+            this.scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+            this.translateTransform.BeginAnimation(TranslateTransform.XProperty, null);
+
+            this.scaleTransform.ScaleX = scaleValue;
+            this.scaleTransform.ScaleY = scaleValue;
+            this.translateTransform.X = transValue;
+
+            this.transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod - elapsedAnimationPeriod);
+        }
+
+        /// <summary>
+        /// Resumes/Starts the animation of the slide show
+        /// </summary>
+        private void ResumeSlideShowAnimation()
+        {
+            if (this.Paused == false)
+            {
+                // The slide show animation was not paused so proceed normally
+
+                AnimationType nextAnimationType = AnimationType.None;
+
+                switch (currentAnimationType)
+                {
+                    case AnimationType.ZoomIn:
+                        nextAnimationType = AnimationType.ZoomOut;
+                        break;
+
+                    case AnimationType.ZoomOut:
+                        nextAnimationType = AnimationType.PanLeft;
+                        break;
+
+                    case AnimationType.PanLeft:
+                        nextAnimationType = AnimationType.PanRight;
+                        break;
+
+                    case AnimationType.PanRight:
+                        nextAnimationType = AnimationType.ZoomIn;
+                        break;
+
+                    default:
+                        nextAnimationType = AnimationType.ZoomIn;
+                        break;
+                }
+
+                AnimateSlideShow(nextAnimationType);
+                currentAnimationType = nextAnimationType;
+            }
+            else
+            {
+                // The previous slide show animation was paused so resume it
+                AnimateSlideShow(currentAnimationType);
+            }
+        }
+
+        /// <summary>
+        /// Given a type of animation, it will animate the slide show.
+        /// </summary>
+        /// <param name="animType">The type of animation to perform (ZoomIn, ZoomOut, PanLeft, PanRight)</param>
+        private void AnimateSlideShow(AnimationType animType)
+        {
+            DoubleAnimation da = new DoubleAnimation();
+            da.Duration = this.transitionTimer.Interval;
+            // Force the frame rate to animFrameRate instead of WPF's default value of 60fps.
+            // this will reduce the CPU load on low-end machines, and will conserve battery for portable devices.
+            Timeline.SetDesiredFrameRate(da, animFrameRate);
+
+            switch (animType)
+            {
+                case AnimationType.ZoomIn:
+                    da.To = scaleAnimTo;
+                    this.scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    this.scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    break;
+
+                case AnimationType.ZoomOut:
+                    da.To = scaleAnimFrom;
+                    this.scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    this.scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    break;
+
+                case AnimationType.PanLeft:
+                    da.To = -1 * transAnimTo;
+                    this.translateTransform.BeginAnimation(TranslateTransform.XProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    break;
+
+                case AnimationType.PanRight:
+                    da.To = transAnimFrom;
+                    this.translateTransform.BeginAnimation(TranslateTransform.XProperty, da, HandoffBehavior.SnapshotAndReplace);
+                    break;
             }
         }
 

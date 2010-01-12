@@ -339,7 +339,7 @@
     </Style>
 
 
-    <Style x:Key="ExitButtonStyle" TargetType="{x:Type Button}">
+    <!--<Style x:Key="ExitButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Padding" Value="10,0,10,0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="VerticalAlignment" Value="Top" />
@@ -386,7 +386,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Template">
