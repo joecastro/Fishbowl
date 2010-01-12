@@ -30,6 +30,22 @@
     </CombinedGeometry>
   </GeometryGroup>
 
+  <GeometryGroup x:Key="SaveDiskGeometry">
+    <CombinedGeometry GeometryCombineMode="Exclude">
+      <CombinedGeometry.Geometry1>
+        <RectangleGeometry Rect="0,0,100,100" RadiusX="5" RadiusY="5"/>
+      </CombinedGeometry.Geometry1>
+      <CombinedGeometry.Geometry2>
+        <CombinedGeometry Geometry2="M85,0 100,15 100,0">
+          <CombinedGeometry.Geometry1>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="20,-20,60,60"/>
+          </CombinedGeometry.Geometry1>
+        </CombinedGeometry>
+      </CombinedGeometry.Geometry2>
+    </CombinedGeometry>
+    <RectangleGeometry Rect="60,5,12,25"/>
+  </GeometryGroup>
+
   <CombinedGeometry x:Key="SlideShowGeometry">
     <CombinedGeometry.Geometry1>
       <CombinedGeometry GeometryCombineMode="Exclude">

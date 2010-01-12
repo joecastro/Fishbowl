@@ -210,22 +210,27 @@
                             </StackPanel>
                             
                             <StackPanel  Grid.Row="3"  Orientation="Horizontal" Margin="2,0,0,0" >
-                                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" 
-                                           FontFamily="../Fonts/#Gotham" Margin="0,6,0,0" TextWrapping="Wrap">
-                                    <InlineUIContainer><Image Source="../Images/save.png" Width="18" VerticalAlignment="Bottom" /></InlineUIContainer>
-                                 <Hyperlink Command="FacebookClient:PhotoAlbumControl.SaveAlbumCommand" CommandParameter="{Binding}" AutomationProperties.AutomationId="SaveAlbum" AutomationProperties.Name="SaveAlbum"               
-                                    ToolTip="Save Album"   FontFamily="../Fonts/#Gotham" FontSize="14">
-                                     <Run xml:space="preserve" BaselineAlignment="Center"> Save Album</Run></Hyperlink>
-						        </TextBlock>
-
-                                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" 
-                                           FontFamily="../Fonts/#Gotham" Margin="10,6,0,0" TextWrapping="Wrap">
-    							<InlineUIContainer><Image Source="../Images/photo_slideshow.png" Width="18" VerticalAlignment="Bottom" /></InlineUIContainer>
-                                 <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}"
-                                    FontFamily="../Fonts/#Gotham" FontSize="14">
-                                     <Run xml:space="preserve" BaselineAlignment="Center"> Play Slide Show</Run></Hyperlink>
-						        </TextBlock>
-                                
+                              <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="../Fonts/#Gotham" Margin="0,6,0,0" TextWrapping="Wrap">
+                                <InlineUIContainer>
+                                  <Image Source="../Images/save.png" Width="18" VerticalAlignment="Bottom" />
+                                </InlineUIContainer>
+                                <Hyperlink Command="FacebookClient:PhotoAlbumControl.SaveAlbumCommand" CommandParameter="{Binding}" FontFamily="../Fonts/#Gotham" FontSize="14">
+                                <Run xml:space="preserve" BaselineAlignment="Center"> Save Album</Run></Hyperlink>
+                              </TextBlock>
+                              <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="../Fonts/#Gotham" Margin="10,6,0,0" TextWrapping="Wrap">
+                                <InlineUIContainer>
+                                  <Image Source="../Images/photo_slideshow.png" Width="18" VerticalAlignment="Bottom" />
+                                </InlineUIContainer>
+                                <Hyperlink Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigatePhotoPlayerCommand}" CommandParameter="{Binding}" FontFamily="../Fonts/#Gotham" FontSize="14">
+                                <Run xml:space="preserve" BaselineAlignment="Center"> Play</Run></Hyperlink>
+                              </TextBlock>
+                              <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="../Fonts/#Gotham" Margin="10,6,0,0" TextWrapping="Wrap">
+                                <InlineUIContainer>
+                                  <Image Source="../Images/photo_slideshow.png" Width="18" VerticalAlignment="Bottom" />
+                                </InlineUIContainer>
+                                <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}" FontFamily="../Fonts/#Gotham" FontSize="14">
+                                <Run xml:space="preserve" BaselineAlignment="Center"> Start Slide Show</Run></Hyperlink>
+                              </TextBlock>
                             </StackPanel>
 
                             <TextBlock  Grid.Row="4"   Foreground="{DynamicResource Foreground_ContentElement}" FontSize="16" HorizontalAlignment="Left" Margin="0,14,0,0" TextWrapping="Wrap"  Height="Auto" 
@@ -265,7 +270,7 @@
                                  <Hyperlink Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToPriorSiblingCommand}"                
                                     ToolTip="Previous Album (Up Arrow Key)" Foreground="Black"  FontFamily="../Fonts/#Gotham" FontSize="14">
                                      <Run xml:space="preserve" BaselineAlignment="Center"> Previous Album</Run></Hyperlink>
-						        </TextBlock>-->
+                    </TextBlock>-->
 
                             <!--<TextBlock Foreground="Black" Grid.Column="1" Text="Previous Album" HorizontalAlignment="Left" ToolTip="Next Album (Up Arrow Key)" />-->
                             
@@ -363,8 +368,8 @@
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="Segoe UI" TextWrapping="Wrap" Text="{Binding Path=Title}">
                 <TextBlock Text="{Binding Path=Photos.Count}"/> Photos | 
                 <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}" Foreground="#DDDDDD"  FontSize="14">Slide Show</Hyperlink>
-							
-						</TextBlock>
+              
+            </TextBlock>
                     </StackPanel>
                     <ItemsControl Grid.Row="1" Margin="20,0,20,0" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos}" ItemsPanel="{StaticResource VirtualizingHorizontalRowPanel}" ItemTemplate="{StaticResource GalleryItemTemplate}" Focusable="False"/>
                 </Grid>
@@ -402,19 +407,19 @@
                     <StackPanel Margin="20,10,10,0" MaxHeight="265" VerticalAlignment="Top">
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="36" FontFamily="Segoe UI" TextWrapping="Wrap" Text="{Binding Path=Title}"/>
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14">
-							<TextBlock Text="{Binding Path=LastModified, Converter={StaticResource DateTimeConverter}}"/> 
+              <TextBlock Text="{Binding Path=LastModified, Converter={StaticResource DateTimeConverter}}"/> 
 
-						</TextBlock>
+            </TextBlock>
                         <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="14" FontFamily="Segoe UI" TextWrapping="Wrap" Text="{Binding Path=Title}">
-							<TextBlock Text="{Binding Path=Photos.Count}"/> Photos |
-							<Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}"
+              <TextBlock Text="{Binding Path=Photos.Count}"/> Photos |
+              <Hyperlink Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" CommandParameter="{Binding}"
                          Foreground="#DDDDDD" FontSize="14">Slide Show</Hyperlink>
-							
-						</TextBlock>
+              
+            </TextBlock>
                     </StackPanel>
                     <ItemsControl Grid.Row="1" Margin="20,0,20,0" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos}" 
-								  ItemsPanel="{StaticResource VirtualizingHorizontalRowPanel}" 
-								  ItemTemplate="{StaticResource GalleryItemTemplate}" Focusable="False"/>
+                  ItemsPanel="{StaticResource VirtualizingHorizontalRowPanel}" 
+                  ItemTemplate="{StaticResource GalleryItemTemplate}" Focusable="False"/>
                 </Grid>
                 <!--<Grid Opacity="0.3" Panel.ZIndex="2">
                     <ClientManagerControls:LargePhotoThumbnailControl FacebookPhoto="{Binding Path=Photos[0]}" RenderTransformOrigin="0.5,0.5" Focusable="False"/>

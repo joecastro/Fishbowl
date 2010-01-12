@@ -1044,6 +1044,10 @@
         <FacebookClient:SearchViewControl DataContext="{Binding}"/>
     </DataTemplate>
 
+  <DataTemplate DataType="{x:Type ClientManagerView:PhotoPlayer}">
+        <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}"/>
+    </DataTemplate>
+      
     <!-- Missing Item Error Template -->
     <DataTemplate DataType="{x:Type ClientManagerData:MissingItemError}">
         <Grid>
