@@ -72,7 +72,10 @@
         <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
 
-      <ClientManagerControls:MainContentContainer x:Name="ContentPane" Grid.Row="1"
+      <ClientManagerControls:MainContentContainer x:Name="ContentPane"
+          Grid.Row="1"
+          Focusable="True"
+          FocusVisualStyle="{x:Null}"
           KeyboardNavigation.DirectionalNavigation="None"
           KeyboardNavigation.IsTabStop="False"/>
         

@@ -18,37 +18,6 @@
         </Setter>
     </Style>
 
-    <!-- Control template for the items control hosting slide show buttons -->
-    <Style x:Key="SlideShowToolbar" TargetType="{x:Type ItemsControl}">
-        <!-- Default styles for controls inside the toolbar as style resources -->
-        <Style.Resources>
-            <!-- Control template for buttons -->
-            <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="OverridesDefaultStyle" Value="True"/>
-                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="Margin" Value="5, 0" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Button}">
-                            <ContentPresenter RecognizesAccessKey="True" Margin="{TemplateBinding Padding}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Style.Resources>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ItemsControl}">
-                    <StackPanel Orientation="Horizontal" IsItemsHost="True" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Margin" Value="5" />
-    </Style>
-
     <!-- SimplePhotoViewerControl Template -->
     <Style x:Key="{x:Type FacebookClient:SimplePhotoViewerControl}" TargetType="{x:Type FacebookClient:SimplePhotoViewerControl}">
         <Setter Property="Template">
@@ -70,85 +39,115 @@
         </Setter>
     </Style>
 
-    <!-- SlideShowControl template -->
-    <ControlTemplate x:Key="PhotoSlideShowTemplate" TargetType="{x:Type FacebookClient:PhotoSlideShowControl}">
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#161616">
-            <!--<Button Grid.Row="0" Opacity=".4" Margin="5,8,10,0" VerticalAlignment="Top" HorizontalAlignment="Left"  
-                    Background="Black" Foreground="DarkGray" Style="{DynamicResource ExitButtonStyle}"
-                    Content="Exit"  Command="MediaCommands.Stop"/>-->
-            
-            <Decorator x:Name="PART_PhotoHost" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            
-            <Border x:Name="PART_MenuBorder"
-                    Height="60" Margin="5" 
-                    SnapsToDevicePixels="True"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Center"
-                    Background="#66000000"
-                    CornerRadius="6"
-                    Opacity="0.0">
-                <ItemsControl x:Name="MenuItemsControl" SnapsToDevicePixels="True" Style="{StaticResource SlideShowToolbar}">
-                    <Button x:Name="PlayPauseButton" Command="MediaCommands.Pause" AutomationProperties.AutomationId="PlayPause" AutomationProperties.Name="PlayPause" ToolTip="Pause slide show" Padding="3">
-                        <Image x:Name="PlayPauseImage" Height="32" Source="pack://application:,,,/Resources/Images/PauseSlideShow.png" />
-                    </Button>
-                    <Button Command="MediaCommands.Stop" AutomationProperties.AutomationId="Stop" AutomationProperties.Name="Stop" ToolTip="Stop slide show" Padding="3">
-                        <Image Height="32" Source="pack://application:,,,/Resources/Images/StopSlideShow.png" />
-                    </Button>
-                    <Button Command="MediaCommands.PreviousTrack" AutomationProperties.AutomationId="PrevSlide" AutomationProperties.Name="PrevSlide" ToolTip="Previous slide" Padding="3">
-                        <Image Height="32" Source="pack://application:,,,/Resources/Images/PrevSlide.png" />
-                    </Button>
-                    <Button Command="MediaCommands.NextTrack" AutomationProperties.AutomationId="NextSlide" AutomationProperties.Name="NextSlide" ToolTip="Next slide" Padding="3">
-                        <Image Height="32" Source="pack://application:,,,/Resources/Images/NextSlide.png"/>
-                    </Button>
-                </ItemsControl>
-            </Border>
+  <!-- SlideShowControl template -->
+  <ControlTemplate x:Key="PhotoSlideShowTemplate" TargetType="{x:Type FacebookClient:PhotoSlideShowControl}">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#161616">
+      <Decorator x:Name="PART_PhotoHost" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
-            <StackPanel x:Name="PART_AlbumInfo" Margin="0,8,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
-                <Grid Margin="0,0,0,4">
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
+      <Border x:Name="PART_MenuBorder"
+          Padding="5"
+          Margin="5" 
+          SnapsToDevicePixels="True"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Center"
+          Background="#66000000"
+          CornerRadius="6"
+          Opacity="0.0">
+        <StackPanel Orientation="Horizontal">
+          <Button Width="80" Height="30"
+              Style="{StaticResource StandardButtonStyle}"
+              Command="MediaCommands.Stop" 
+              VerticalAlignment="Center"
+              ToolTip="Stop slide show">
+            <TextBlock>Exit</TextBlock>
+          </Button>
+          <Button Width="50" Height="30"
+              Style="{StaticResource StandardButtonStyle}"
+              Command="MediaCommands.PreviousTrack" 
+              VerticalAlignment="Center"
+              ToolTip="Previous slide">
+            <Image>
+              <Image.Source>
+                <DrawingImage Drawing="{Binding Source={StaticResource PrevArrowToolbarDrawingBrush}, Path=Drawing}"/>
+              </Image.Source>
+            </Image>
+          </Button>
+          <Button Width="50" Height="40"
+              x:Name="PlayPauseButton"
+              Style="{StaticResource StandardButtonStyle}"
+              Command="MediaCommands.Pause" 
+              VerticalAlignment="Center"
+              ToolTip="Pause slide show">
+            <Image x:Name="PlayPauseImage">
+              <Image.Source>
+                <DrawingImage Drawing="{Binding Source={StaticResource PauseToolbarDrawingBrush}, Path=Drawing}"/>
+              </Image.Source>
+            </Image>
+          </Button>
+          <Button Width="50" Height="30"
+              Style="{StaticResource StandardButtonStyle}"
+              Command="MediaCommands.NextTrack" 
+              VerticalAlignment="Center"
+              ToolTip="Next slide">
+            <Image>
+              <Image.Source>
+                <DrawingImage Drawing="{Binding Source={StaticResource NextArrowToolbarDrawingBrush}, Path=Drawing}"/>
+              </Image.Source>
+            </Image>
+          </Button>
+        </StackPanel>
+      </Border>
+
+      <StackPanel x:Name="PART_AlbumInfo" Margin="0,8,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Grid Margin="0,0,0,4">
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
                                FontFamily="./Fonts/#Gotham" Opacity="1" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
                                Foreground="White" FontWeight="Medium" TextWrapping="Wrap">
                         <TextBlock.Effect>
                           <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>                               
-                    </TextBlock>
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
+                        </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
                                FontFamily="./Fonts/#Gotham" Opacity=".8" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
                                Foreground="White" FontWeight="Medium" TextWrapping="Wrap"/>
-                </Grid>
-                <Grid Margin="0,0,0,4">
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
+        </Grid>
+        <Grid Margin="0,0,0,4">
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
                                Foreground="White" Opacity="1" FontWeight="Light" TextWrapping="Wrap">
                         <TextBlock.Effect>
                           <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>  
-                    </TextBlock>
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
+                        </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
-                               Foreground="White" Opacity=".7" FontWeight="Light" TextWrapping="Wrap"/>                    
-                </Grid>
-                <Grid>
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
+                               Foreground="White" Opacity=".7" FontWeight="Light" TextWrapping="Wrap"/>
+        </Grid>
+        <Grid>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity="1" FontWeight="Light"
                                Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap">
                         <TextBlock.Effect>
                           <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>  
-                    </TextBlock>
-                    <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
+                        </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity=".5" FontWeight="Light"
-                               Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap"/>                    
-                </Grid>
-            </StackPanel>
+                               Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap"/>
         </Grid>
-        <ControlTemplate.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Paused}" Value="True">
-                <Setter TargetName="PlayPauseButton" Property="Command" Value="MediaCommands.Play" />
-                <Setter TargetName="PlayPauseButton" Property="ToolTip" Value="Resume slide show" />
-                <Setter TargetName="PlayPauseImage" Property="Source" Value="pack://application:,,,/Resources/Images/PlaySlideShow.png" />
-            </DataTrigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
+      </StackPanel>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Paused}" Value="True">
+        <Setter TargetName="PlayPauseButton" Property="Command" Value="MediaCommands.Play" />
+        <Setter TargetName="PlayPauseButton" Property="ToolTip" Value="Resume slide show" />
+        <Setter TargetName="PlayPauseImage" Property="Source">
+          <Setter.Value>
+            <DrawingImage Drawing="{Binding Source={StaticResource PlayArrowToolbarDrawingBrush}, Path=Drawing}"/>
+          </Setter.Value>
+        </Setter>
+      </DataTrigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
 </ResourceDictionary>

@@ -10,12 +10,12 @@ namespace ClientManager.View
         {
             Verify.IsNotNull(album, "album");
 
-            StartFacebookPhoto = startingPhoto;
+            StartIndex = album.Photos.IndexOf(startingPhoto);
             FacebookPhotoAlbum = album;
         }
 
         public FacebookPhotoAlbum FacebookPhotoAlbum { get; private set; }
-        public FacebookPhoto StartFacebookPhoto { get; private set; }
+        public int StartIndex { get; private set; }
 
         public Navigator GetNavigator() { return new _PhotoPlayerNavigator(this); }
 

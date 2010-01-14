@@ -6,6 +6,44 @@
   F1M2,9C2.01200008392334,9 2.13299989700317,9 3,9 4.10400009155273,9 5,9 5,9 5,9 5,16 5,16 5,16.867000579834 5,16.988000869751 5,17 4.89499998092651,17 3,17 3,17 3,17 2,9 2,9z M12,2C13.1040000915527,2 13.5520000457764,4.04300022125244 13,5 13,5 11.2849998474121,8 11.2849998474121,8 11.2849998474121,8 15,8 15,8 16.6569995880127,8 17,9.3430004119873 17,11 17,11 16,15 16,15 16,16.6569995880127 13,18 13,18 13,18 8,17 8,17 6.34299993515015,17 6,15.6569995880127 6,14 6,14 6,11 6,11 6,10.6929998397827 6.05900001525879,10.4020004272461 6.14499998092651,10.1230001449585 6.08500003814697,9.89900016784668 6.04899978637695,9.55099964141846 6.04899978637695,9 6.04899978637695,9 10.423999786377,4.06300020217896 10.423999786377,4.06300020217896 10.9759998321533,3.10599994659424 11,2 12,2z"
   -->
 
+  <GeometryGroup x:Key="SaveDiskGeometry">
+    <CombinedGeometry GeometryCombineMode="Exclude">
+      <CombinedGeometry.Geometry1>
+        <RectangleGeometry Rect="0,0,100,100" RadiusX="5" RadiusY="5"/>
+      </CombinedGeometry.Geometry1>
+      <CombinedGeometry.Geometry2>
+        <CombinedGeometry Geometry2="M85,0 100,15 100,0">
+          <CombinedGeometry.Geometry1>
+            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="15,-20,60,60"/>
+          </CombinedGeometry.Geometry1>
+        </CombinedGeometry>
+      </CombinedGeometry.Geometry2>
+    </CombinedGeometry>
+    <RectangleGeometry Rect="55,5,12,25"/>
+  </GeometryGroup>
+
+  <PathGeometry x:Key="PlayArrowGeometry">
+    <PathFigure StartPoint="0,0" IsClosed="True">
+      <LineSegment Point="43.3, 25" IsSmoothJoin="True" />
+      <LineSegment Point="0, 50" IsSmoothJoin="True" />
+    </PathFigure>
+  </PathGeometry>
+
+  <GeometryGroup x:Key="PauseGeometry">
+    <RectangleGeometry Rect="0,0,12,50" RadiusX="5" RadiusY="5"/>
+    <RectangleGeometry Rect="18,0,12,50" RadiusX="5" RadiusY="5"/>
+  </GeometryGroup>
+
+  <GeometryGroup x:Key="NextArrowGeometry">
+    <PathGeometry>
+      <PathFigure StartPoint="0,0" IsClosed="True">
+        <LineSegment Point="43.3, 25" IsSmoothJoin="True" />
+        <LineSegment Point="0, 50" IsSmoothJoin="True" />
+      </PathFigure>
+    </PathGeometry>
+    <RectangleGeometry Rect="45,0,12,50" RadiusX="5" RadiusY="5"/>
+  </GeometryGroup>
+
   <GeometryGroup x:Key="BuddyGeometry">
     <EllipseGeometry Center="50,20" RadiusX="25" RadiusY="25" />
     <CombinedGeometry GeometryCombineMode="Exclude">
@@ -30,64 +68,74 @@
     </CombinedGeometry>
   </GeometryGroup>
 
-  <GeometryGroup x:Key="SaveDiskGeometry">
-    <CombinedGeometry GeometryCombineMode="Exclude">
-      <CombinedGeometry.Geometry1>
-        <RectangleGeometry Rect="0,0,100,100" RadiusX="5" RadiusY="5"/>
-      </CombinedGeometry.Geometry1>
-      <CombinedGeometry.Geometry2>
-        <CombinedGeometry Geometry2="M85,0 100,15 100,0">
-          <CombinedGeometry.Geometry1>
-            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="20,-20,60,60"/>
-          </CombinedGeometry.Geometry1>
-        </CombinedGeometry>
-      </CombinedGeometry.Geometry2>
-    </CombinedGeometry>
-    <RectangleGeometry Rect="60,5,12,25"/>
-  </GeometryGroup>
-
-  <CombinedGeometry x:Key="SlideShowGeometry">
+  <CombinedGeometry x:Key="SlideShowGeometry" GeometryCombineMode="Exclude">
     <CombinedGeometry.Geometry1>
-      <CombinedGeometry GeometryCombineMode="Exclude">
-        <CombinedGeometry.Geometry1>
-          <GeometryGroup>
-            <RectangleGeometry Rect="0, 0, 100, 60" />
-          </GeometryGroup>
-        </CombinedGeometry.Geometry1>
-        <CombinedGeometry.Geometry2>
-          <GeometryGroup>
-            <RectangleGeometry Rect="-10, 10, 20, 40" RadiusX="2" RadiusY="2" />
-            <RectangleGeometry Rect="20, 10, 60, 40" RadiusX="2" RadiusY="2" />
-            <RectangleGeometry Rect="90, 10, 20, 40" RadiusX="2" RadiusY="2" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="10, 5" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="30, 5" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="50, 5" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="70, 5" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="90, 5" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="10, 55" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="30, 55" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="50, 55" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="70, 55" />
-            <EllipseGeometry RadiusX="3" RadiusY="3" Center="90, 55" />
-          </GeometryGroup>
-        </CombinedGeometry.Geometry2>
-      </CombinedGeometry>
+      <RectangleGeometry Rect="0,0,50,40" RadiusX="5" RadiusY="5"/>
     </CombinedGeometry.Geometry1>
     <CombinedGeometry.Geometry2>
-      <CombinedGeometry GeometryCombineMode="Exclude">
-        <CombinedGeometry.Geometry1>
-          <GeometryGroup FillRule="Nonzero">
-            <EllipseGeometry RadiusX="18" RadiusY="18" Center="50,50" />
-            <EllipseGeometry RadiusX="10" RadiusY="10" Center="50,25" />
-          </GeometryGroup>
-        </CombinedGeometry.Geometry1>
-        <CombinedGeometry.Geometry2>
-          <RectangleGeometry Rect="0, 50, 100, 20" />
-        </CombinedGeometry.Geometry2>
-      </CombinedGeometry>
+      <GeometryGroup>
+        <RectangleGeometry Rect="4,6,19,28"/>
+        <RectangleGeometry Rect="27,6,19,28"/>
+
+        <RectangleGeometry Rect="5,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="12,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="19,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="26,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="33,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="40,1.5,5,3" RadiusX=".5" RadiusY=".5"/>
+
+        <RectangleGeometry Rect="5,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="12,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="19,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="26,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="33,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+        <RectangleGeometry Rect="40,35.5,5,3" RadiusX=".5" RadiusY=".5"/>
+
+      </GeometryGroup>
     </CombinedGeometry.Geometry2>
   </CombinedGeometry>
 
+  <DrawingBrush x:Key="SlideShowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="SaveDiskToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SaveDiskGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="PlayArrowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PlayArrowGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="PauseToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PauseGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="NextArrowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="PrevArrowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <DrawingGroup.Transform>
+          <ScaleTransform ScaleX="-1"/>
+        </DrawingGroup.Transform>  
+        <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}"/>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  
   <DrawingBrush x:Key="SlideShowDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>

@@ -629,20 +629,9 @@
     <Resource Include="Resources\Images\arrowLeft_hover.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\ScePhotoViewer_Dark.png" />
-    <Resource Include="Resources\Images\ScePhotoViewer_Light.png" />
-    <Resource Include="Resources\Images\ReturnToAlbum.png" />
-    <Resource Include="Resources\Images\NextSlide.png" />
-    <Resource Include="Resources\Images\PauseSlideShow.png" />
-    <Resource Include="Resources\Images\PlaySlideShow.png" />
-    <Resource Include="Resources\Images\PrevSlide.png" />
-    <Resource Include="Resources\Images\StopSlideShow.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\photoAlbum_default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Arena_default.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\placeholderprofilephoto.png" />
@@ -650,7 +639,6 @@
   <ItemGroup>
     <Resource Include="Resources\Images\comments_arrow.png" />
     <Resource Include="Resources\Images\comment_icon.png" />
-    <Resource Include="Resources\Images\seattleskyline.jpg" />
     <Resource Include="Resources\Images\placeholderprofilephoto-square.png" />
     <Resource Include="Resources\Images\PlaceholderPhoto2.png" />
     <Resource Include="Resources\Images\PlaceholderPhoto3.png" />
@@ -665,7 +653,6 @@
     <Resource Include="Resources\Images\Controls\text_box_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_right.png" />
     <Resource Include="Resources\Images\Controls\search_icon_black.png" />
-    <Resource Include="Resources\Images\profile_settings.png" />
     <Resource Include="Resources\Images\Controls\status_icon.png" />
     <Resource Include="Resources\Images\avatar_background.png" />
     <Resource Include="Resources\Images\like_icon.png" />
@@ -739,9 +726,6 @@
     <Resource Include="Resources\Images\Controls\button_right_down.png" />
     <Resource Include="Resources\Images\Controls\button_right_hover.png" />
     <Resource Include="Resources\Images\Controls\button_right_up.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\tominimode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
