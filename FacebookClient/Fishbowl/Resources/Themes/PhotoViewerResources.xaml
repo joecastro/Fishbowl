@@ -4,7 +4,6 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:FacebookClientControls="clr-namespace:FacebookClient.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   
   <!-- Converter to format the application dates consistently -->
@@ -869,7 +868,7 @@
               <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <FacebookClientControls:FacebookPhotoTagControl/>
+                    <FacebookClient:FacebookPhotoTagControl/>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -896,13 +895,13 @@
                 </FacebookClient:PhotoDisplayControl.RenderTransform>
               </FacebookClient:PhotoDisplayControl>
             </ClientManagerControls:FacebookPhotoDragContainer>
-            <FacebookClientControls:PhotoTaggerControl
+            <FacebookClient:PhotoTaggerControl
               x:Name="PART_PhotoTaggerControl"
               HorizontalAlignment="Left"
               VerticalAlignment="Top"
               PhotoAlbum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookPhoto.Album}"
               Visibility="Collapsed"/>
-            <FacebookClientControls:TagTarget
+            <FacebookClient:TagTarget
               x:Name="PART_TagTargetElement"
               HorizontalAlignment="Left"
               VerticalAlignment="Top"
@@ -1133,7 +1132,7 @@
               <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <FacebookClientControls:FacebookPhotoTagControl/>
+                    <FacebookClient:FacebookPhotoTagControl/>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -1160,13 +1159,13 @@
                 </FacebookClient:PhotoDisplayControl.RenderTransform>
               </FacebookClient:PhotoDisplayControl>
             </ClientManagerControls:FacebookPhotoDragContainer>
-            <FacebookClientControls:PhotoTaggerControl
+            <FacebookClient:PhotoTaggerControl
               x:Name="PART_PhotoTaggerControl"
               HorizontalAlignment="Left"
               VerticalAlignment="Top"
               PhotoAlbum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookPhoto.Album}"
               Visibility="Collapsed"/>
-            <FacebookClientControls:TagTarget
+            <FacebookClient:TagTarget
               x:Name="PART_TagTargetElement"
               HorizontalAlignment="Left"
               VerticalAlignment="Top"
@@ -1407,7 +1406,7 @@
                 <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <FacebookClientControls:FacebookPhotoTagControl/>
+                      <FacebookClient:FacebookPhotoTagControl/>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -1434,13 +1433,13 @@
                   </FacebookClient:PhotoDisplayControl.RenderTransform>
                 </FacebookClient:PhotoDisplayControl>
               </ClientManagerControls:FacebookPhotoDragContainer>
-              <FacebookClientControls:PhotoTaggerControl
+              <FacebookClient:PhotoTaggerControl
                 x:Name="PART_PhotoTaggerControl"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 PhotoAlbum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookPhoto.Album}"
                 Visibility="Collapsed"/>
-              <FacebookClientControls:TagTarget
+              <FacebookClient:TagTarget
                 x:Name="PART_TagTargetElement"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"

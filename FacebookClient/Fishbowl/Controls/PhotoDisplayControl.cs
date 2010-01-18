@@ -12,20 +12,16 @@ using System.Windows.Interop;
 namespace FacebookClient
 {
     using System;
+    using System.ComponentModel;
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
-    using EffectLibrary;
-    using FacebookClient.Controls;
-    using Contigo;
-    using System.Collections.Generic;
     using ClientManager.Controls;
-    using System.Runtime.InteropServices;
-    using System.ComponentModel;
-    using System.Diagnostics;
+    using Contigo;
+    using EffectLibrary;
 
     /// <summary>
     /// Control used to display and animate a photo.

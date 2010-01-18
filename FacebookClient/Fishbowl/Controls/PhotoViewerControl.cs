@@ -18,7 +18,6 @@ namespace FacebookClient
     using ClientManager;
     using ClientManager.Controls;
     using Contigo;
-    using FacebookClient.Controls;
     using Standard;
 
     [

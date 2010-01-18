@@ -560,6 +560,17 @@ namespace Standard
             }
         }
 
+        public static void SafeDestroyWindow(ref IntPtr hwnd)
+        {
+            IntPtr p = hwnd;
+            hwnd = IntPtr.Zero;
+            if (NativeMethods.IsWindow(p))
+            {
+                NativeMethods.DestroyWindow(p);
+            }
+        }
+
+
         [
             SuppressMessage(
                 "Microsoft.Performance",

@@ -1,5 +1,5 @@
 ﻿
-namespace FacebookClient.Controls
+namespace FacebookClient
 {
     using System;
     using System.Collections;

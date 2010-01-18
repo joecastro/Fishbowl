@@ -64,6 +64,22 @@ namespace Standard
         public const string WebBrowserEvents = "EAB22AC2-30C1-11CF-A7EB-0000C05BAE0B";
         /// <summary>IID_DWebBrowserEvents2</summary>
         public const string WebBrowserEvents2 = "34A715A0-6587-11D0-924A-0020AFC7AC4D";
+        /// <summary>IID_IWICBitmapDecoder</summary>
+        public const string WICBitmapDecoder = "9EDDE9E7-8DEE-47ea-99DF-E6FAF2ED44BF";
+        /// <summary>IID_IWICBitmapFlipRotator</summary>
+        public const string WICBitmapFlipRotator = "5009834F-2D6A-41ce-9E1B-17C5AFF7A782";
+        /// <summary>IID_IWICBitmapFrameDecode</summary>
+        public const string WICBitmapFrameDecode = "3B16811B-6A43-4ec9-A813-3D930C13B940";
+        /// <summary>IID_IWICBitmap</summary>
+        public const string WICBitmap = "00000121-a8f2-4877-ba0a-fd2b6645fb94";
+        /// <summary>IID_IWICBitmapSource</summary>
+        public const string WICBitmapSource = "00000120-a8f2-4877-ba0a-fd2b6645fb94";
+        /// <summary>IID_IWICFormatConverter</summary>
+        public const string WICFormatConverter = "00000301-a8f2-4877-ba0a-fd2b6645fb94";
+        /// <summary>IID_IWICImagingFactory</summary>
+        public const string WICImagingFactory = "ec5ec8a9-c395-4314-9c77-54d7a935ff70";
+        /// <summary>IID_IWICStream</summary>
+        public const string WICStream = "135FF860-22B7-4ddf-B0F6-218F4F299A43";
 
         #region Win7 IIDs
 
@@ -113,6 +129,9 @@ namespace Standard
         /// <summary>CLSID_ShellLink</summary>
         /// <remarks>IID_IShellLink</remarks>
         public const string ShellLink = "00021401-0000-0000-C000-000000000046";
+
+        /// <summary>CLSID_WICImagingFactory</summary>
+        public const string WICImagingFactory = "cacaf262-9370-4615-a13b-9f5539da4c0a";
 
         #region Win7 CLSIDs
 

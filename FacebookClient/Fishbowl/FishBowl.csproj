@@ -56,6 +56,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -144,6 +145,9 @@
     <Compile Include="..\Standard\Verify.cs">
       <Link>Standard\Verify.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\WicProvider.cs">
+      <Link>Standard\WicProvider.cs</Link>
+    </Compile>
     <Compile Include="..\Standard\WindowExtensions.cs">
       <Link>Standard\WindowExtensions.cs</Link>
     </Compile>
@@ -154,9 +158,6 @@
     <Compile Include="Controls\BuddyListControl.xaml.cs">
       <DependentUpon>BuddyListControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Common\ActionICommand.cs" />
-    <Compile Include="Controls\Common\CompositionTargetRenderingListening.cs" />
-    <Compile Include="Controls\Common\WpfUtil.cs" />
     <Compile Include="Controls\DelayedResizeDecorator.cs" />
     <Compile Include="Controls\EmbeddedBrowserControl.xaml.cs">
       <DependentUpon>EmbeddedBrowserControl.xaml</DependentUpon>
@@ -218,9 +219,6 @@
     <Compile Include="ListPager.cs" />
     <Compile Include="MainWindowCommands.cs" />
     <Compile Include="Controls\GalleryHomeControl.cs" />
-    <Compile Include="Controls\PhotoActionButton.xaml.cs">
-      <DependentUpon>PhotoActionButton.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PaginatedItemsControl.cs" />
     <Compile Include="Controls\SearchAndFilterControl.xaml.cs">
       <DependentUpon>SearchAndFilterControl.xaml</DependentUpon>
@@ -337,10 +335,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NotificationsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PhotoActionButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

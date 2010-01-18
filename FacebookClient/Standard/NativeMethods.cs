@@ -32,6 +32,14 @@ namespace Standard
     }
 
     /// <summary>
+    /// BITMAPINFOHEADER Compression type.  BI_*.
+    /// </summary>
+    internal enum BI
+    {
+        RGB = 0,
+    }
+    
+    /// <summary>
     /// For IWebBrowser2.  OLECMDEXECOPT_*
     /// </summary>
     internal enum OLECMDEXECOPT
@@ -236,17 +244,90 @@ namespace Standard
     /// </summary>
     internal enum SM
     {
-        /// <summary>
-        /// The default width of an icon, in pixels.
-        /// </summary>
-        /// <remarks>
-        /// The LoadIcon function can load only icons with the dimensions that
-        /// SM_CXICON and SM_CYICON specifies.
-        /// </remarks>
+        CXSCREEN = 0,
+        CYSCREEN = 1,
+        CXVSCROLL = 2,
+        CYHSCROLL = 3,
+        CYCAPTION = 4,
+        CXBORDER = 5,
+        CYBORDER = 6,
+        CXFIXEDFRAME = 7,
+        CYFIXEDFRAME = 8,
+        CYVTHUMB = 9,
+        CXHTHUMB = 10,
         CXICON = 11,
         CYICON = 12,
+        CXCURSOR = 13,
+        CYCURSOR = 14,
+        CYMENU = 15,
+        CXFULLSCREEN = 16,
+        CYFULLSCREEN = 17,
+        CYKANJIWINDOW = 18,
+        MOUSEPRESENT = 19,
+        CYVSCROLL = 20,
+        CXHSCROLL = 21,
+        DEBUG = 22,
+        SWAPBUTTON = 23,
+        CXMIN = 28,
+        CYMIN = 29,
+        CXSIZE = 30,
+        CYSIZE = 31,
+        CXFRAME = 32,
+        CXSIZEFRAME = CXFRAME,
+        CYFRAME = 33,
+        CYSIZEFRAME = CYFRAME,
+        CXMINTRACK = 34,
+        CYMINTRACK = 35,
+        CXDOUBLECLK = 36,
+        CYDOUBLECLK = 37,
+        CXICONSPACING = 38,
+        CYICONSPACING = 39,
+        MENUDROPALIGNMENT = 40,
+        PENWINDOWS = 41,
+        DBCSENABLED = 42,
+        CMOUSEBUTTONS = 43,
+        SECURE = 44,
+        CXEDGE = 45,
+        CYEDGE = 46,
+        CXMINSPACING = 47,
+        CYMINSPACING = 48,
         CXSMICON = 49,
         CYSMICON = 50,
+        CYSMCAPTION = 51,
+        CXSMSIZE = 52,
+        CYSMSIZE = 53,
+        CXMENUSIZE = 54,
+        CYMENUSIZE = 55,
+        ARRANGE = 56,
+        CXMINIMIZED = 57,
+        CYMINIMIZED = 58,
+        CXMAXTRACK = 59,
+        CYMAXTRACK = 60,
+        CXMAXIMIZED = 61,
+        CYMAXIMIZED = 62,
+        NETWORK = 63,
+        CLEANBOOT = 67,
+        CXDRAG = 68,
+        CYDRAG = 69,
+        SHOWSOUNDS = 70,
+        CXMENUCHECK = 71,
+        CYMENUCHECK = 72,
+        SLOWMACHINE = 73,
+        MIDEASTENABLED = 74,
+        MOUSEWHEELPRESENT = 75,
+        XVIRTUALSCREEN = 76,
+        YVIRTUALSCREEN = 77,
+        CXVIRTUALSCREEN = 78,
+        CYVIRTUALSCREEN = 79,
+        CMONITORS = 80,
+        SAMEDISPLAYFORMAT = 81,
+        IMMENABLED = 82,
+        CXFOCUSBORDER = 83,
+        CYFOCUSBORDER = 84,
+        TABLETPC = 86,
+        MEDIACENTER = 87,
+        REMOTESESSION = 0x1000,
+        REMOTECONTROL = 0x2001,
     }
 
     /// <summary>
@@ -267,6 +348,27 @@ namespace Standard
         None = 0,
         UPDATEINIFILE = 0x01,
         SENDWININICHANGE = 0x02,
+    }
+
+    /// <summary>
+    /// CS_*
+    /// </summary>
+    [Flags]
+    internal enum CS : uint
+    {
+        VREDRAW = 0x0001,
+        HREDRAW = 0x0002,
+        DBLCLKS = 0x0008,
+        OWNDC = 0x0020,
+        CLASSDC = 0x0040,
+        PARENTDC = 0x0080,
+        NOCLOSE = 0x0200,
+        SAVEBITS = 0x0800,
+        BYTEALIGNCLIENT = 0x1000,
+        BYTEALIGNWINDOW = 0x2000,
+        GLOBALCLASS = 0x4000,
+        IME = 0x00010000,
+        DROPSHADOW = 0x00020000
     }
 
     /// <summary>
@@ -821,9 +923,37 @@ namespace Standard
         XP_ICON_MASK = 0x0000000F,
     }
 
+    /// <summary>
+    /// AC_*
+    /// </summary>
+    internal enum AC : byte
+    {
+        SRC_OVER = 0,
+        SRC_ALPHA = 1,
+    }
+
+    internal enum ULW
+    {
+        ALPHA = 2,
+        COLORKEY = 1,
+        OPAQUE = 4,
+    }
+
     #endregion
 
     #region SafeHandles
+
+    internal sealed class SafeATOM
+    {
+        internal short Atom { get; private set; }
+        internal IntPtr HInstance { get; private set; }
+
+        public SafeATOM(short atom, IntPtr hInstance)
+        {
+            Atom = atom;
+            HInstance = hInstance;
+        }
+    }
 
     internal sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
@@ -849,6 +979,9 @@ namespace Standard
             // Weird legacy function, documentation is unclear about how to use it...
             [DllImport("gdi32.dll", CharSet = CharSet.Unicode)]
             public static extern SafeDC CreateDC([MarshalAs(UnmanagedType.LPWStr)] string lpszDriver, [MarshalAs(UnmanagedType.LPWStr)] string lpszDevice, IntPtr lpszOutput, IntPtr lpInitData);
+
+            [DllImport("gdi32.dll", CharSet = CharSet.Unicode, SetLastError=true)]
+            public static extern SafeDC CreateCompatibleDC(IntPtr hdc);
 
             [DllImport("gdi32.dll")]
             [return: MarshalAs(UnmanagedType.Bool)]
@@ -909,6 +1042,38 @@ namespace Standard
             return dc;
         }
 
+        public static SafeDC CreateCompatibleDC(SafeDC hdc)
+        {
+            SafeDC dc = null;
+            try
+            {
+                IntPtr hPtr = IntPtr.Zero;
+                if (hdc != null)
+                {
+                    hPtr = hdc.handle;
+                }
+                dc = NativeMethods.CreateCompatibleDC(hPtr);
+                if (dc == null)
+                {
+                    HRESULT.ThrowLastError();
+                }
+            }
+            finally
+            {
+                if (dc != null)
+                {
+                    dc._created = true;
+                }
+            }
+
+            if (dc.IsInvalid)
+            {
+                throw new SystemException("Unable to create a device context from the specified device information.");
+            }
+
+            return dc;
+        }
+
         public static SafeDC GetDC(IntPtr hwnd)
         {
             SafeDC dc = null;
@@ -947,6 +1112,17 @@ namespace Standard
                 _created = false,
                 _hwnd = IntPtr.Zero,
             };
+        }
+    }
+
+    internal sealed class SafeHBITMAP : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private SafeHBITMAP() : base(true) { }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        protected override bool ReleaseHandle()
+        {
+            return NativeMethods.DeleteObject(handle);
         }
     }
 
@@ -1048,16 +1224,61 @@ namespace Standard
 
     #region Native Types
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct BLENDFUNCTION
+    {
+        // Must be AC_SRC_OVER
+        public AC BlendOp;
+        // Must be 0.
+        public byte BlendFlags;
+        // Alpha transparency between 0 (transparent) - 255 (opaque)
+        public byte SourceConstantAlpha;
+        // Must be AC_SRC_ALPHA
+        public AC AlphaFormat;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct RGBQUAD
+    {
+        public byte rgbBlue;
+        public byte rgbGreen;
+        public byte rgbRed;
+        public byte rgbReserved;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack=2)]
+    internal struct BITMAPINFOHEADER 
+    { 
+        public int biSize;
+        public int biWidth;
+        public int biHeight;
+        public short biPlanes;
+        public short biBitCount;
+        public BI biCompression;
+        public int biSizeImage;
+        public int biXPelsPerMeter;
+        public int biYPelsPerMeter;
+        public int biClrUsed;
+        public int biClrImportant;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct BITMAPINFO
+    { 
+        public BITMAPINFOHEADER bmiHeader; 
+        public RGBQUAD bmiColors;
+    }
+
     // Win7 only.
     [StructLayout(LayoutKind.Sequential)]
-    struct CHANGEFILTERSTRUCT
+    internal struct CHANGEFILTERSTRUCT
     {
         public uint cbSize;
         public MSGFLTINFO ExtStatus;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
-    struct SHFILEOPSTRUCT
+    internal struct SHFILEOPSTRUCT
     {
         public IntPtr hwnd;
         [MarshalAs(UnmanagedType.U4)]
@@ -1444,6 +1665,17 @@ namespace Standard
         {
             get { return _bottom - _top; }
         }
+
+        public POINT Position
+        {
+            get { return new POINT { x = _left, y = _top }; }
+        }
+
+        public SIZE Size
+        {
+            get { return new SIZE { cx = Width, cy = Height }; }
+        }
+
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -1514,7 +1746,14 @@ namespace Standard
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    struct StartupOutput
+    internal struct SIZE
+    {
+        public int cx;
+        public int cy;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct StartupOutput
     {
         public IntPtr hook;
         public IntPtr unhook;
@@ -1570,6 +1809,25 @@ namespace Standard
         public int flags;
     }
 
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
+    internal struct WNDCLASSEX
+    {
+        public int cbSize;
+        public CS style;
+        public WndProc lpfnWndProc;
+        public int cbClsExtra;
+        public int cbWndExtra;
+        public IntPtr hInstance;
+        public IntPtr hIcon;
+        public IntPtr hCursor;
+        public IntPtr hbrBackground;
+        [MarshalAs(UnmanagedType.LPWStr)]
+        public string lpszMenuName;
+        [MarshalAs(UnmanagedType.LPWStr)]
+        public string lpszClassName;
+        public IntPtr hIconSm;
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct MOUSEINPUT
     {
@@ -1602,15 +1860,16 @@ namespace Standard
 
     #endregion
 
+    /// <summary>Delegate declaration that matches native WndProc signatures.</summary>
+    internal delegate IntPtr WndProc(IntPtr hwnd, WM uMsg, IntPtr wParam, IntPtr lParam);
+
+    /// <summary>Delegate declaration that matches managed WndProc signatures.</summary>
+    internal delegate IntPtr MessageHandler(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled);
+
     // Some native methods are shimmed through public versions that handle converting failures into thrown exceptions.
     [SuppressUnmanagedCodeSecurity]
     internal static class NativeMethods
     {
-        /// <summary>
-        /// Delegate declaration that matches WndProc signatures.
-        /// </summary>
-        public delegate IntPtr MessageHandler(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled);
-
         [DllImport("user32.dll", EntryPoint="ChangeWindowMessageFilter", SetLastError=true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _ChangeWindowMessageFilter(WM message, MSGFLT dwFlag);
@@ -1690,6 +1949,34 @@ namespace Standard
             }
         }
 
+        [DllImport("gdi32.dll", EntryPoint="CreateDIBSection", SetLastError=true)]
+        private static extern SafeHBITMAP _CreateDIBSection(SafeDC hdc, [In] ref BITMAPINFO bitmapInfo, int iUsage, [Out] out IntPtr ppvBits, IntPtr hSection, int dwOffset);
+
+        [DllImport("gdi32.dll", EntryPoint = "CreateDIBSection", SetLastError = true)]
+        private static extern SafeHBITMAP _CreateDIBSectionIntPtr(IntPtr hdc, [In] ref BITMAPINFO bitmapInfo, int iUsage, [Out] out IntPtr ppvBits, IntPtr hSection, int dwOffset);
+
+        public static SafeHBITMAP CreateDIBSection(SafeDC hdc, ref BITMAPINFO bitmapInfo, out IntPtr ppvBits, IntPtr hSection, int dwOffset)
+        {
+            const int DIB_RGB_COLORS = 0;
+            SafeHBITMAP hBitmap = null;
+            if (hdc == null)
+            {
+                hBitmap = _CreateDIBSectionIntPtr(IntPtr.Zero, ref bitmapInfo, DIB_RGB_COLORS, out ppvBits, hSection, dwOffset);
+            }
+            else
+            {
+                hBitmap = _CreateDIBSection(hdc, ref bitmapInfo, DIB_RGB_COLORS, out ppvBits, hSection, dwOffset);
+            }
+
+            if (hBitmap.IsInvalid)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return hBitmap;
+        }
+
+
         [DllImport("gdi32.dll", EntryPoint = "CreateRoundRectRgn", SetLastError = true)]
         private static extern IntPtr _CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
 
@@ -1732,6 +2019,44 @@ namespace Standard
         [DllImport("gdi32.dll")]
         public static extern IntPtr CreateSolidBrush(int crColor);
 
+        [DllImport("user32.dll", SetLastError=true, CharSet=CharSet.Unicode, EntryPoint="CreateWindowExW")]
+        private static extern IntPtr _CreateWindowEx(
+            WS_EX dwExStyle,
+            [MarshalAs(UnmanagedType.LPWStr)] string lpClassName,
+            [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName,
+            WS dwStyle,
+            int x,
+            int y,
+            int nWidth,
+            int nHeight,
+            IntPtr hWndParent,
+            IntPtr hMenu,
+            IntPtr hInstance,
+            IntPtr lpParam);
+
+        public static IntPtr CreateWindowEx(
+            WS_EX dwExStyle,
+            string lpClassName,
+            string lpWindowName,
+            WS dwStyle,
+            int x,
+            int y,
+            int nWidth,
+            int nHeight,
+            IntPtr hWndParent,
+            IntPtr hMenu,
+            IntPtr hInstance,
+            IntPtr lpParam)
+        {
+            IntPtr ret = _CreateWindowEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+            if (IntPtr.Zero == ret)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return ret;
+        }
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "DefWindowProcW")]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, WM Msg, IntPtr wParam, IntPtr lParam);
 
@@ -1741,6 +2066,12 @@ namespace Standard
 
         [DllImport("user32.dll")]
         public static extern bool DestroyIcon(IntPtr handle);
+
+        [DllImport("user32.dll", SetLastError=true)]
+        public static extern bool DestroyWindow(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsWindow(IntPtr hwnd);
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern void DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS pMarInset);
@@ -1993,6 +2324,23 @@ namespace Standard
             }
         }
 
+        [DllImport("user32.dll", SetLastError=true, EntryPoint="RegisterClassExW")]
+        private static extern short _RegisterClassEx([In] ref WNDCLASSEX lpwcx);
+
+        // Note that this will throw HRESULT_FROM_WIN32(ERROR_CLASS_ALREADY_EXISTS) on duplicate registration.
+        // If needed, consider adding a Try* version of this function that returns the error code since that
+        // may be ignorable.
+        public static short RegisterClassEx(ref WNDCLASSEX lpwcx)
+        {
+            short ret = _RegisterClassEx(ref lpwcx);
+            if (ret == 0)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return ret;
+        }
+
         [DllImport("user32.dll", EntryPoint = "RegisterWindowMessage", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern uint _RegisterWindowMessage([MarshalAs(UnmanagedType.LPWStr)] string lpString);
 
@@ -2004,6 +2352,21 @@ namespace Standard
                 HRESULT.ThrowLastError();
             }
             return (WM)iRet;
+        }
+
+        [DllImport("user32.dll", EntryPoint="SetActiveWindow", SetLastError=true)]
+        private static extern IntPtr _SetActiveWindow(IntPtr hWnd);
+
+        public static IntPtr SetActiveWindow(IntPtr hwnd)
+        {
+            Verify.IsNotDefault(hwnd, "hwnd");
+            IntPtr ret = _SetActiveWindow(hwnd);
+            if (ret == IntPtr.Zero)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return ret;
         }
 
         // This is aliased as a macro in 32bit Windows.
@@ -2118,8 +2481,105 @@ namespace Standard
         [DllImport("user32.dll")]
         public static extern uint TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
+        [DllImport("gdi32.dll", EntryPoint="SelectObject", SetLastError = true)]
+        private static extern IntPtr _SelectObject(SafeDC hdc, IntPtr hgdiobj);
+
+        public static IntPtr SelectObject(SafeDC hdc, IntPtr hgdiobj)
+        {
+            IntPtr ret = _SelectObject(hdc, hgdiobj);
+            if (ret == IntPtr.Zero)
+            {
+                HRESULT.ThrowLastError();
+            }
+            return ret;
+        }
+
+        [DllImport("gdi32.dll", EntryPoint = "SelectObject", SetLastError = true)]
+        private static extern IntPtr _SelectObjectSafeHBITMAP(SafeDC hdc, SafeHBITMAP hgdiobj);
+
+        public static IntPtr SelectObject(SafeDC hdc, SafeHBITMAP hgdiobj)
+        {
+            IntPtr ret = _SelectObjectSafeHBITMAP(hdc, hgdiobj);
+            if (ret == IntPtr.Zero)
+            {
+                HRESULT.ThrowLastError();
+            }
+            return ret;
+        }
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SendInput(int nInputs, ref INPUT pInputs, int cbSize);
+
+        [DllImport("user32.dll", EntryPoint="UnregisterClass", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _UnregisterClassAtom(IntPtr lpClassName, IntPtr hInstance);
+
+        [DllImport("user32.dll", EntryPoint = "UnregisterClass", CharSet=CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _UnregisterClassName(string lpClassName, IntPtr hInstance);
+
+        public static void UnregisterClass(short atom, IntPtr hinstance)
+        {
+            if (!_UnregisterClassAtom(new IntPtr(atom), hinstance))
+            {
+                HRESULT.ThrowLastError();
+            }
+        }
+
+        [DllImport("user32.dll", SetLastError=true, EntryPoint="UpdateLayeredWindow")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _UpdateLayeredWindow(
+            IntPtr hwnd, 
+            SafeDC hdcDst, 
+            [In] ref POINT pptDst, 
+            [In] ref SIZE psize, 
+            SafeDC hdcSrc, 
+            [In] ref POINT pptSrc,
+            int crKey,
+            ref BLENDFUNCTION pblend,
+            ULW dwFlags);
+
+        [DllImport("user32.dll", SetLastError = true, EntryPoint = "UpdateLayeredWindow")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _UpdateLayeredWindowIntPtr(
+            IntPtr hwnd,
+            IntPtr hdcDst,
+            IntPtr pptDst,
+            IntPtr psize,
+            IntPtr hdcSrc,
+            IntPtr pptSrc,
+            int crKey,
+            ref BLENDFUNCTION pblend,
+            ULW dwFlags);
+
+        public static void UpdateLayeredWindow(
+            IntPtr hwnd,
+            SafeDC hdcDst,
+            ref POINT pptDst,
+            ref SIZE psize,
+            SafeDC hdcSrc,
+            ref POINT pptSrc,
+            int crKey,
+            ref BLENDFUNCTION pblend,
+            ULW dwFlags)
+        {
+            if (!_UpdateLayeredWindow(hwnd, hdcDst, ref pptDst, ref psize, hdcSrc, ref pptSrc, crKey, ref pblend, dwFlags))
+            {
+                HRESULT.ThrowLastError();
+            }
+        }
+
+        public static void UpdateLayeredWindow(
+            IntPtr hwnd,
+            int crKey,
+            ref BLENDFUNCTION pblend,
+            ULW dwFlags)
+        {
+            if (!_UpdateLayeredWindowIntPtr(hwnd, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, crKey, ref pblend, dwFlags))
+            {
+                HRESULT.ThrowLastError();
+            }
+        }
 
         #region Win7 declarations
 
