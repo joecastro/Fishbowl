@@ -1,8 +1,8 @@
 namespace FacebookClient
 {
     using System;
-    using System.Windows;
-    using System.Windows.Threading;
+    using System.Reflection;
+    using Standard;
 
     public static class FishBowl
     {
@@ -11,12 +11,14 @@ namespace FacebookClient
         {
             if (SingleInstance.InitializeAsFirstInstance("Fishbowl"))
             {
-                var splash = new SplashScreen("Resources/Images/Splash.png");
+                var splash = new SplashScreen
+                {
+                    ResourceAssembly = Assembly.GetEntryAssembly(),
+                    ResourceName =  "resources/images/splash.png",
+                    CloseOnMainWindowCreation = true,
+                };
                 
-                // Don't show this with the fade-out.  It pops the main window and doesn't look good.
-                // Fixed in .Net with the TopMost property...
-                splash.Show(false);
-                Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, (Action)(() => splash.Close(TimeSpan.Zero)));
+                splash.Show();
 
                 var application = new FacebookClientApplication();
 

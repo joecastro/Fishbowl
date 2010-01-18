@@ -943,18 +943,6 @@ namespace Standard
 
     #region SafeHandles
 
-    internal sealed class SafeATOM
-    {
-        internal short Atom { get; private set; }
-        internal IntPtr HInstance { get; private set; }
-
-        public SafeATOM(short atom, IntPtr hInstance)
-        {
-            Atom = atom;
-            HInstance = hInstance;
-        }
-    }
-
     internal sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]

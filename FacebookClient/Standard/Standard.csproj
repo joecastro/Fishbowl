@@ -98,6 +98,7 @@
     <Compile Include="ShellProvider.cs" />
     <Compile Include="SmallString.cs" />
     <Compile Include="SmallUri.cs" />
+    <Compile Include="SplashScreen.cs" />
     <Compile Include="StreamHelper.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="UTVerify.cs" />

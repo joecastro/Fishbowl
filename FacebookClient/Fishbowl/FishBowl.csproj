@@ -136,6 +136,9 @@
     <Compile Include="..\Standard\ShellProvider.cs">
       <Link>Standard\ShellProvider.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\SplashScreen.cs">
+      <Link>Standard\SplashScreen.cs</Link>
+    </Compile>
     <Compile Include="..\Standard\StreamHelper.cs">
       <Link>Standard\StreamHelper.cs</Link>
     </Compile>
