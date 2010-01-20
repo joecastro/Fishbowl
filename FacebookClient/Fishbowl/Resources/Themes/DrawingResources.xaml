@@ -43,6 +43,11 @@
     </PathGeometry>
     <RectangleGeometry Rect="45,0,12,50" RadiusX="5" RadiusY="5"/>
   </GeometryGroup>
+  
+  <GeometryGroup x:Key="ShuffleGeometry">
+    <PathGeometry Figures="M0,12 50,12 50,0 70,20 50,40 50,28 0,28Z M70,47 20,47 20,35 0,55 20,75 20,63 70,63">
+    </PathGeometry>
+  </GeometryGroup>
 
   <GeometryGroup x:Key="BuddyGeometry">
     <EllipseGeometry Center="50,20" RadiusX="25" RadiusY="25" />
@@ -119,6 +124,12 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="ShuffleToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource ShuffleGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  
   <DrawingBrush x:Key="NextArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}" />

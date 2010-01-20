@@ -179,6 +179,146 @@
     </Setter>
   </Style>
 
+  <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+    <Setter Property="Padding" Value="15,0,15,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="MinWidth" Value="41" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Foreground" Value="#3b5998" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ToggleButton}">
+          <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True" Margin="2" >
+            <Grid Margin="-3,-3,-6,-6" Width="{Binding Path=ActualWidth, ElementName=Root}">
+              <Grid x:Name="up">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="20" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="../Images/Controls/button_left_up.png" Stretch="Fill" Margin="0,0,0,0" />
+                <Image Grid.Column="1" Source="../Images/Controls/button_middle_up.png" Stretch="Fill"/>
+                <Image Grid.Column="2" Source="../Images/Controls/button_right_up.png" Stretch="Fill" Margin="0,0,0,0" />
+              </Grid>
+
+              <Grid x:Name="hover" Opacity="0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="20" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="../Images/Controls/button_left_hover.png" Stretch="Fill" Margin="0,0,0,0" />
+                <Image Grid.Column="1" Source="../Images/Controls/button_middle_hover.png" Stretch="Fill"/>
+                <Image Grid.Column="2" Source="../Images/Controls/button_right_hover.png" Stretch="Fill" Margin="0,0,0,0" />
+              </Grid>
+
+              <Grid x:Name="down" Opacity="0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="20" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="../Images/Controls/button_left_down.png" Stretch="Fill" Margin="0,0,0,0" />
+                <Image Grid.Column="1" Source="../Images/Controls/button_middle_down.png" Stretch="Fill"/>
+                <Image Grid.Column="2" Source="../Images/Controls/button_right_down.png" Stretch="Fill" Margin="0,0,0,0" />
+              </Grid>
+            </Grid>
+
+            <ContentPresenter x:Name="Content" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <!--<DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
+                    <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <!--<DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
+                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Padding" Value="15,0,15,0" />
     <Setter Property="Cursor" Value="Hand" />
@@ -603,7 +743,7 @@
   </DataTemplate>
 
   <DataTemplate DataType="{x:Type ClientManagerView:PhotoPlayer}">
-    <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}" CurrentIndex="{Binding StartIndex, Mode=OneTime}"/>
+    <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}" StartingPhoto="{Binding StartingPhoto, Mode=OneTime}"/>
   </DataTemplate>
 
   <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">

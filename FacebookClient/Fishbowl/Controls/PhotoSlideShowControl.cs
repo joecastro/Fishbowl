@@ -10,6 +10,8 @@
 namespace FacebookClient
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
@@ -18,8 +20,9 @@ namespace FacebookClient
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
     using ClientManager;
-    using TransitionEffects;
     using Contigo;
+    using Standard;
+    using TransitionEffects;
 
     /// <summary>
     /// Control used to display a slideshow of photo's with transitions.
@@ -27,7 +30,19 @@ namespace FacebookClient
     [TemplatePart(Name = "PART_PhotoHost", Type = typeof(Decorator))]
     public class PhotoSlideShowControl : Control
     {
-        public event Action Stopped;
+        public static RoutedCommand ToggleShuffleCommand { get; private set; }
+
+        public static readonly DependencyProperty StartingPhotoProperty = DependencyProperty.Register(
+            "StartingPhoto",
+            typeof(FacebookPhoto),
+            typeof(PhotoSlideShowControl),
+            new PropertyMetadata(null));
+
+        public FacebookPhoto StartingPhoto
+        {
+            get { return (FacebookPhoto)GetValue(StartingPhotoProperty); }
+            set { SetValue(StartingPhotoProperty, value); }
+        }
 
         public static readonly DependencyProperty FacebookPhotoCollectionProperty = DependencyProperty.Register(
             "FacebookPhotoCollection",
@@ -45,11 +60,13 @@ namespace FacebookClient
 
         private void _OnFacebookPhotoCollectionChanged(DependencyPropertyChangedEventArgs e)
         {
-            _photos = null;
-            currentChild.FacebookPhoto = null;
-            oldChild.FacebookPhoto = null;
-            transitionTimer.Stop();
+            _photos.Clear();
+            _shuffledPhotoIndices.Clear();
+            _currentChild.FacebookPhoto = null;
+            _oldChild.FacebookPhoto = null;
+            _transitionTimer.Stop();
             SetValue(PausedPropertyKey, false);
+            _realCurrentIndex = null;
 
             var photoCollection = e.NewValue as FacebookPhotoCollection;
             if (photoCollection == null || photoCollection.Count == 0)
@@ -57,30 +74,83 @@ namespace FacebookClient
                 return;
             }
 
-            var photos = new FacebookPhoto[photoCollection.Count];
-            photoCollection.CopyTo(photos, 0);
+            _photos.AddRange(photoCollection);
+            _shuffledPhotoIndices.AddRange(Enumerable.Range(0, photoCollection.Count));
+            _shuffledPhotoIndices.Shuffle();
+            _realCurrentIndex = 0;
 
-            _photos = photos;
+            _currentChild.FacebookPhoto = _CurrentPhoto;
+            _oldChild.FacebookPhoto = _NextPhoto;
 
-            CoerceValue(CurrentIndexProperty);
-
-            currentChild.FacebookPhoto = _CurrentPhoto;
-            oldChild.FacebookPhoto = _NextPhoto;
-
-            if (photoHost != null)
+            if (_photoHost != null)
             {
                 StartTimer();
             }
         }
 
-        public static readonly DependencyProperty CurrentIndexProperty = DependencyProperty.Register(
+        private static readonly DependencyPropertyKey IsStoppedPropertyKey = DependencyProperty.RegisterReadOnly(
+            "IsStopped",
+            typeof(bool), 
+            typeof(PhotoSlideShowControl),
+            new FrameworkPropertyMetadata(false));
+
+        public static readonly DependencyProperty IsStoppedProperty = IsStoppedPropertyKey.DependencyProperty;
+
+        public bool IsStopped
+        {
+            get { return (bool)GetValue(IsStoppedProperty); }
+            private set { SetValue(IsStoppedPropertyKey, value); }
+        }
+
+        private static readonly DependencyPropertyKey IsShuffledPropertyKey = DependencyProperty.RegisterReadOnly(
+            "IsShuffled", 
+            typeof(bool), 
+            typeof(PhotoSlideShowControl),
+            new PropertyMetadata(
+                false,
+                (d,e) => ((PhotoSlideShowControl)d)._OnIsShuffledChanged()));
+
+        public static readonly DependencyProperty IsShuffledProperty = IsShuffledPropertyKey.DependencyProperty;
+
+        public bool IsShuffled
+        {
+            get { return (bool)GetValue(IsShuffledProperty); }
+            private set { SetValue(IsShuffledPropertyKey, value); }
+        }
+
+        private void _OnIsShuffledChanged()
+        {
+            if (_realCurrentIndex == null)
+            {
+                return;
+            }
+
+            if (IsShuffled)
+            {
+                FacebookPhoto currentPhoto = _photos[_realCurrentIndex.Value];
+                int shuffledIndex = _shuffledPhotoIndices.FindIndex(index => _photos[index] == currentPhoto);
+                CurrentIndex = shuffledIndex;
+            }
+            else
+            {
+                FacebookPhoto currentPhoto = _photos[_shuffledPhotoIndices[_realCurrentIndex.Value]];
+                int unshuffledIndex = _photos.FindIndex(photo => photo == currentPhoto);
+                CurrentIndex = unshuffledIndex;
+            }
+
+            _currentChild.FacebookPhoto = _CurrentPhoto;
+            _oldChild.FacebookPhoto = _NextPhoto;
+        }
+
+        private static readonly DependencyPropertyKey CurrentIndexPropertyKey = DependencyProperty.RegisterReadOnly(
             "CurrentIndex",
             typeof(int),
             typeof(PhotoSlideShowControl),
             new PropertyMetadata(
                 0,
-                (d, e) => ((PhotoSlideShowControl)d)._OnCurrentIndexChanged(e),
-                (d, value) => ((PhotoSlideShowControl)d)._CoerceCurrentIndexValue(value)));
+                (d, e) => ((PhotoSlideShowControl)d)._OnCurrentIndexChanged(e)));
+
+        public static readonly DependencyProperty CurrentIndexProperty = CurrentIndexPropertyKey.DependencyProperty;
 
         /// <summary>
         /// Gets or sets the CurrentIndex property.  This dependency property 
@@ -89,39 +159,23 @@ namespace FacebookClient
         public int CurrentIndex
         {
             get { return (int)GetValue(CurrentIndexProperty); }
-            set { SetValue(CurrentIndexProperty, value); }
+            private set { SetValue(CurrentIndexPropertyKey, value); }
         }
 
         private void _OnCurrentIndexChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (photoHost == null)
+            if (_photoHost == null)
             {
-                currentChild.FacebookPhoto = _CurrentPhoto;
-                oldChild.FacebookPhoto = _NextPhoto;
+                _currentChild.FacebookPhoto = _CurrentPhoto;
+                _oldChild.FacebookPhoto = _NextPhoto;
             }
         }
-
-        private object _CoerceCurrentIndexValue(object value)
-        {
-            if (_photos == null)
-            {
-                return 0;
-            }
-
-            int i = (int)value;
-
-            i = Math.Min(i, _photos.Length - 1);
-            i = Math.Max(0, i);
-
-            return i;
-        }
-
 
         private FacebookPhoto _CurrentPhoto
         {
             get
             {
-                if (_photos == null)
+                if (_photos.Count == 0 || _realCurrentIndex == null)
                 {
                     return null;
                 }
@@ -133,61 +187,67 @@ namespace FacebookClient
         {
             get
             {
-                if (_photos == null)
+                if (_photos.Count == 0 || _realCurrentIndex == null)
                 {
                     return null;
                 }
-                return _photos[(CurrentIndex + 1) % _photos.Length];
+
+                int index = (_realCurrentIndex.Value + 1) % _photos.Count;
+                if (IsShuffled)
+                {
+                    index = _shuffledPhotoIndices[index];
+                }
+
+                return _photos[index];
             }
         }
 
         private static readonly DependencyPropertyKey PausedPropertyKey = DependencyProperty.RegisterReadOnly(
-                        "Paused",
-                        typeof(bool),
-                        typeof(PhotoSlideShowControl),
-                        new FrameworkPropertyMetadata(false));
+            "Paused",
+            typeof(bool),
+            typeof(PhotoSlideShowControl),
+            new FrameworkPropertyMetadata(false));
 
-        /// <summary>
-        /// DependencyProperty for <see cref="Paused"/> property.
-        /// </summary>
         public static readonly DependencyProperty PausedProperty = PausedPropertyKey.DependencyProperty;
 
-        private FacebookPhoto[] _photos;
+        private readonly List<FacebookPhoto> _photos = new List<FacebookPhoto>();
+        private readonly List<int> _shuffledPhotoIndices = new List<int>();
+        private int? _realCurrentIndex;
 
         /// <summary>
         /// Control hosting the current slide show image.
         /// </summary>
-        private SimplePhotoViewerControl currentChild;
+        private SimplePhotoViewerControl _currentChild;
 
         /// <summary>
         /// Control that temporarily hosts the old slide show image upon transition to the next image.
         /// </summary>
-        private SimplePhotoViewerControl oldChild;
+        private SimplePhotoViewerControl _oldChild;
 
         /// <summary>
         /// Decorator that hosts photo controls.
         /// </summary>
-        private Decorator photoHost;
+        private Decorator _photoHost;
 
         /// <summary>
         /// Timer to control interval between transitions.
         /// </summary>
-        private DispatcherTimer transitionTimer;
+        private DispatcherTimer _transitionTimer;
 
         /// <summary>
         /// Timer to hide the mouse pointer and the slide show controls (play, pause, stop, ...).
         /// </summary>
-        private DispatcherTimer mousePointerTimer;
+        private DispatcherTimer _mousePointerTimer;
 
         /// <summary>
         /// PRNG used to select the next transition to be applied.
         /// </summary>
-        private static Random rand = new Random();
+        private static readonly Random _rand = new Random();
 
         /// <summary>
         /// The list of all kinds of transition effects that are supported
         /// </summary>
-        private static Type[] transitionEffectTypes;
+        private static Type[] _transitionEffectTypes;
 
         /// <summary>
         /// List of the different types of animations that are supported.
@@ -246,8 +306,8 @@ namespace FacebookClient
         /// </summary>
         static PhotoSlideShowControl()
         {
-            Assembly assembly = Assembly.GetAssembly(typeof(TransitionEffect));
-            transitionEffectTypes = assembly.GetTypes();
+            _transitionEffectTypes = Assembly.GetAssembly(typeof(TransitionEffect)).GetTypes();
+            ToggleShuffleCommand = new RoutedCommand("ToggleShuffle", typeof(PhotoSlideShowControl));
         }
 
         /// <summary>
@@ -255,20 +315,20 @@ namespace FacebookClient
         /// </summary>
         public PhotoSlideShowControl()
         {
-            this.currentChild = new SimplePhotoViewerControl();
-            this.oldChild = new SimplePhotoViewerControl();
+            _currentChild = new SimplePhotoViewerControl();
+            _oldChild = new SimplePhotoViewerControl();
 
-            this.transitionTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnTransitionTimerTick, Dispatcher);
-            this.transitionTimer.Stop();
+            _transitionTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnTransitionTimerTick, Dispatcher);
+            _transitionTimer.Stop();
 
-            this.mousePointerTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnMousePointerTimerTick, Dispatcher);
-            this.mousePointerTimer.Stop();
+            _mousePointerTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnMousePointerTimerTick, Dispatcher);
+            _mousePointerTimer.Stop();
 
-            this.currentAnimationType = AnimationType.None;
+            currentAnimationType = AnimationType.None;
 
             transformGroup = new TransformGroup();
-            this.translateTransform = new TranslateTransform(transAnimFrom, transAnimFrom);
-            this.scaleTransform = new ScaleTransform(scaleAnimFrom, scaleAnimFrom);
+            translateTransform = new TranslateTransform(transAnimFrom, transAnimFrom);
+            scaleTransform = new ScaleTransform(scaleAnimFrom, scaleAnimFrom);
             transformGroup.Children.Add(this.translateTransform);
             transformGroup.Children.Add(this.scaleTransform);
 
@@ -284,9 +344,8 @@ namespace FacebookClient
             this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.NextTrack, new ExecutedRoutedEventHandler(OnNextSlideCommandExecuted), new CanExecuteRoutedEventHandler(OnNextSlideCommandCanExecute)));
             this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.PreviousTrack, new ExecutedRoutedEventHandler(OnPreviousSlideCommandExecuted), new CanExecuteRoutedEventHandler(OnPreviousSlideCommandCanExecute)));
             this.CommandBindings.Add(new CommandBinding(System.Windows.Input.MediaCommands.Stop, new ExecutedRoutedEventHandler(OnStopCommandExecuted), new CanExecuteRoutedEventHandler(OnStopCommandCanExecute)));
+            this.CommandBindings.Add(new CommandBinding(ToggleShuffleCommand, _OnToggleShuffleCommandExecuted, _OnToggleShuffleCommandCanExecute));
         }
-
-        #region Public Properties
 
         /// <summary>
         /// Gets a value indicating whether slide show is in paused mode or not.
@@ -296,10 +355,6 @@ namespace FacebookClient
             get { return (bool)GetValue(PausedProperty); }
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         /// OnApplyTemplate override
         /// </summary>
@@ -307,24 +362,20 @@ namespace FacebookClient
         {
             base.OnApplyTemplate();
             this.menuBorder = this.Template.FindName("PART_MenuBorder", this) as Border;
-            this.photoHost = this.Template.FindName("PART_PhotoHost", this) as Decorator;
+            this._photoHost = this.Template.FindName("PART_PhotoHost", this) as Decorator;
 
-            if (this.photoHost != null)
+            if (this._photoHost != null)
             {
-                this.photoHost.Child = this.currentChild;
-                this.photoHost.RenderTransform = this.transformGroup;
-                this.photoHost.RenderTransformOrigin = new Point(0.5, 0.5);
+                this._photoHost.Child = this._currentChild;
+                this._photoHost.RenderTransform = this.transformGroup;
+                this._photoHost.RenderTransformOrigin = new Point(0.5, 0.5);
 
-                if (_photos != null)
+                if (_photos.Count > 0)
                 {
                     this.StartTimer();
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         ///
@@ -346,8 +397,8 @@ namespace FacebookClient
                 }
 
                 // Restart the timer that would take away the mouse pointer & slide show controls after a while
-                this.mousePointerTimer.Stop();
-                this.mousePointerTimer.Start();
+                this._mousePointerTimer.Stop();
+                this._mousePointerTimer.Start();
             }
             else if (e.GetPosition(this) != lastMousePosition.Value)
             {
@@ -362,8 +413,8 @@ namespace FacebookClient
                 }
 
                 // Restart the timer that would take away the mouse pointer & slide show controls after a while
-                this.mousePointerTimer.Stop();
-                this.mousePointerTimer.Start();
+                this._mousePointerTimer.Stop();
+                this._mousePointerTimer.Start();
             }
         }
 
@@ -518,7 +569,7 @@ namespace FacebookClient
                 if (slideShow != null)
                 {
                     // Stop the timer, change the photo, move to the next photo and restart timer
-                    slideShow.MoveNext();
+                    slideShow._MoveNext();
                     e.Handled = true;
                 }
             }
@@ -597,25 +648,72 @@ namespace FacebookClient
                     slideShow.NavigateToPhoto();
                     e.Handled = true;
 
-                    var handler = slideShow.Stopped;
-                    if (handler != null)
-                    {
-                        handler();
-                    }
+                    slideShow.IsStopped = true;
+                }
+            }
+        }
+
+        private static void _OnToggleShuffleCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                PhotoSlideShowControl slideShow = sender as PhotoSlideShowControl;
+                if (slideShow != null)
+                {
+                    e.CanExecute = true;
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private static void _OnToggleShuffleCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                PhotoSlideShowControl slideShow = sender as PhotoSlideShowControl;
+                if (slideShow != null)
+                {
+                    // Stop the timer, change the photo, move to the next photo and restart timer
+                    slideShow.IsShuffled = !slideShow.IsShuffled;
+                    e.Handled = true;
                 }
             }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
+            if (this.StartingPhoto != null)
+            {
+                int startIndex = _photos.FindIndex(photo => photo == StartingPhoto);
+                if (startIndex != -1)
+                {
+                    if (IsShuffled)
+                    {
+                        startIndex = _shuffledPhotoIndices.FindIndex(i => i == startIndex);
+                    }
+                    _realCurrentIndex = startIndex;
+
+                    if (IsShuffled)
+                    {
+                        CurrentIndex = _shuffledPhotoIndices[_realCurrentIndex.Value];
+                    }
+                    else
+                    {
+                        CurrentIndex = _realCurrentIndex.Value;
+                    }
+
+                    _currentChild.FacebookPhoto = _CurrentPhoto;
+                    _oldChild.FacebookPhoto = _NextPhoto;
+                }
+            }
             this.Focus();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            this.currentChild.Effect = null;
-            this.transitionTimer.Stop();
-            this.mousePointerTimer.Stop();
+            this._currentChild.Effect = null;
+            this._transitionTimer.Stop();
+            this._mousePointerTimer.Stop();
             this.SetValue(PausedPropertyKey, false);
         }
 
@@ -624,17 +722,17 @@ namespace FacebookClient
         /// </summary>
         private void SwapChildren()
         {
-            SimplePhotoViewerControl temp = this.currentChild;
-            this.currentChild = this.oldChild;
-            this.oldChild = temp;
-            this.currentChild.Width = double.NaN;
-            this.currentChild.Height = double.NaN;
-            if (this.photoHost != null)
+            SimplePhotoViewerControl temp = this._currentChild;
+            this._currentChild = this._oldChild;
+            this._oldChild = temp;
+            this._currentChild.Width = double.NaN;
+            this._currentChild.Height = double.NaN;
+            if (this._photoHost != null)
             {
-                this.photoHost.Child = this.currentChild;
+                this._photoHost.Child = this._currentChild;
             }
 
-            this.oldChild.Effect = null;
+            this._oldChild.Effect = null;
         }
 
         /// <summary>
@@ -642,8 +740,8 @@ namespace FacebookClient
         /// </summary>
         private void StartTimer()
         {
-            this.transitionTimer.Start();
-            this.mousePointerTimer.Start();
+            this._transitionTimer.Start();
+            this._mousePointerTimer.Start();
             this.ResumeSlideShowAnimation();
             this.SetValue(PausedPropertyKey, false);
         }
@@ -653,8 +751,8 @@ namespace FacebookClient
         /// </summary>
         private void StopTimer()
         {
-            this.transitionTimer.Stop();
-            this.mousePointerTimer.Stop();
+            this._transitionTimer.Stop();
+            this._mousePointerTimer.Stop();
             this.PauseSlideShowAnimation();
             this.SetValue(PausedPropertyKey, true);
             this.Cursor = Cursors.Arrow;
@@ -673,17 +771,17 @@ namespace FacebookClient
             // this will reduce the CPU load on low-end machines, and will conserve battery for portable devices.
             Timeline.SetDesiredFrameRate(da, animFrameRate);
 
-            VisualBrush vb = new VisualBrush(this.oldChild);
-            vb.Viewbox = new Rect(0, 0, this.oldChild.ActualWidth, this.oldChild.ActualHeight);
+            VisualBrush vb = new VisualBrush(this._oldChild);
+            vb.Viewbox = new Rect(0, 0, this._oldChild.ActualWidth, this._oldChild.ActualHeight);
             vb.ViewboxUnits = BrushMappingMode.Absolute;
-            this.oldChild.Width = this.oldChild.ActualWidth;
-            this.oldChild.Height = this.oldChild.ActualHeight;
-            this.oldChild.Measure(new Size(this.oldChild.ActualWidth, this.oldChild.ActualHeight));
-            this.oldChild.Arrange(new Rect(0, 0, this.oldChild.ActualWidth, this.oldChild.ActualHeight));
+            this._oldChild.Width = this._oldChild.ActualWidth;
+            this._oldChild.Height = this._oldChild.ActualHeight;
+            this._oldChild.Measure(new Size(this._oldChild.ActualWidth, this._oldChild.ActualHeight));
+            this._oldChild.Arrange(new Rect(0, 0, this._oldChild.ActualWidth, this._oldChild.ActualHeight));
 
             TransitionEffect transitionEffect = GetRandomTransitionEffect();
             transitionEffect.OldImage = vb;
-            this.currentChild.Effect = transitionEffect;
+            this._currentChild.Effect = transitionEffect;
 
             transitionEffect.BeginAnimation(TransitionEffect.ProgressProperty, da, HandoffBehavior.SnapshotAndReplace);
         }
@@ -702,10 +800,10 @@ namespace FacebookClient
                 int idx = 0;
                 do
                 {
-                    idx = rand.Next(transitionEffectTypes.Length);
-                } while (transitionEffectTypes[idx].IsAbstract == true);
+                    idx = _rand.Next(_transitionEffectTypes.Length);
+                } while (_transitionEffectTypes[idx].IsAbstract == true);
 
-                transitionEffect = Activator.CreateInstance(transitionEffectTypes[idx]) as TransitionEffect;
+                transitionEffect = Activator.CreateInstance(_transitionEffectTypes[idx]) as TransitionEffect;
             }
             catch (Exception)
             {
@@ -720,19 +818,47 @@ namespace FacebookClient
         /// Advances to next photo. This action stops the timer and puts the slide show in paused mode, slide changes now only take place
         /// through user-initiated action.
         /// </summary>
-        private void MoveNext()
+        private void _MoveNext()
         {
             if (!this.Paused)
             {
                 this.StopTimer();
             }
 
-            if (_photos != null)
-            {
-                CurrentIndex = (CurrentIndex + 1) % _photos.Length;
-            }
-
+            _IncrementRealCurrentIndex();
             this.ChangePhoto(false);
+        }
+
+        private void _IncrementRealCurrentIndex()
+        {
+            if (_photos.Count > 0)
+            {
+                _realCurrentIndex = (_realCurrentIndex + 1) % _photos.Count;
+                if (IsShuffled)
+                {
+                    CurrentIndex = _shuffledPhotoIndices[_realCurrentIndex.Value];
+                }
+                else
+                {
+                    CurrentIndex = _realCurrentIndex.Value;
+                }
+            }
+        }
+
+        private void _DecrementRealCurrentIndex()
+        {
+            if (_photos.Count > 0)
+            {
+                _realCurrentIndex = (_realCurrentIndex + _photos.Count - 1) % _photos.Count;
+                if (IsShuffled)
+                {
+                    CurrentIndex = _shuffledPhotoIndices[_realCurrentIndex.Value];
+                }
+                else
+                {
+                    CurrentIndex = _realCurrentIndex.Value;
+                }
+            }
         }
 
         /// <summary>
@@ -746,11 +872,7 @@ namespace FacebookClient
                 this.StopTimer();
             }
 
-            if (_photos != null)
-            {
-                CurrentIndex = (CurrentIndex + _photos.Length - 1) % _photos.Length;
-            }
-
+            _DecrementRealCurrentIndex();
             this.ChangePhoto(false);
         }
 
@@ -759,9 +881,9 @@ namespace FacebookClient
         /// </summary>
         private void NavigateToPhoto()
         {
-            this.transitionTimer.Stop();
+            this._transitionTimer.Stop();
             this.SetValue(PausedPropertyKey, false);
-            if (_photos != null)
+            if (_photos.Count > 0)
             {
                 FacebookPhoto photo = _photos[CurrentIndex];
                 if (ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.CanExecute(photo))
@@ -779,15 +901,12 @@ namespace FacebookClient
         private void OnTransitionTimerTick(object sender, EventArgs e)
         {
             this.ChangePhoto(true);
-            if (_photos != null)
-            {
-                CurrentIndex = (CurrentIndex + 1) % _photos.Length;
-            }
+            _IncrementRealCurrentIndex();
 
             // If resuming from a paused state, then reset the time interval to its maximum
-            if (this.transitionTimer.Interval.Milliseconds != totalAnimationPeriod)
+            if (this._transitionTimer.Interval.Milliseconds != totalAnimationPeriod)
             {
-                this.transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod);
+                this._transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod);
             }
         }
 
@@ -799,7 +918,7 @@ namespace FacebookClient
         private void OnMousePointerTimerTick(object sender, EventArgs e)
         {
             this.Cursor = Cursors.None;
-            this.mousePointerTimer.Stop();
+            this._mousePointerTimer.Stop();
 
             if (this.menuBorder != null)
             {
@@ -818,7 +937,7 @@ namespace FacebookClient
         /// <param name="applyTransitionEffect">If true, transition animation and effects are initiated.</param>
         private void ChangePhoto(bool applyTransitionEffect)
         {
-            if (_photos != null && !this.oldChild.ImageDownloadInProgress)
+            if (_photos.Count > 0 && !this._oldChild.ImageDownloadInProgress)
             {
                 if (applyTransitionEffect)
                 {
@@ -830,8 +949,8 @@ namespace FacebookClient
                 {
                     // Apply the current slide show content. 
                     // Load the old child with the next photo so it will advance to the next photo if the user resumes play.
-                    this.currentChild.FacebookPhoto = _CurrentPhoto;
-                    this.oldChild.FacebookPhoto = _NextPhoto;
+                    this._currentChild.FacebookPhoto = _CurrentPhoto;
+                    this._oldChild.FacebookPhoto = _NextPhoto;
                 }
             }
         }
@@ -843,11 +962,8 @@ namespace FacebookClient
         /// <param name="e">Event args describing the event.</param>
         private void TransitionCompleted(object sender, EventArgs e)
         {
-            this.currentChild.Effect = null;
-            if (_photos != null)
-            {
-                this.oldChild.FacebookPhoto = _NextPhoto;
-            }
+            _currentChild.Effect = null;
+            _oldChild.FacebookPhoto = _NextPhoto;
         }
 
         /// <summary>
@@ -871,15 +987,15 @@ namespace FacebookClient
                     break;
             }
 
-            this.scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, null);
-            this.scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, null);
-            this.translateTransform.BeginAnimation(TranslateTransform.XProperty, null);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, null);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, null);
+            translateTransform.BeginAnimation(TranslateTransform.XProperty, null);
 
-            this.scaleTransform.ScaleX = scaleValue;
-            this.scaleTransform.ScaleY = scaleValue;
-            this.translateTransform.X = transValue;
+            scaleTransform.ScaleX = scaleValue;
+            scaleTransform.ScaleY = scaleValue;
+            translateTransform.X = transValue;
 
-            this.transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod - elapsedAnimationPeriod);
+            _transitionTimer.Interval = TimeSpan.FromMilliseconds(totalAnimationPeriod - elapsedAnimationPeriod);
         }
 
         /// <summary>
@@ -933,7 +1049,7 @@ namespace FacebookClient
         private void AnimateSlideShow(AnimationType animType)
         {
             DoubleAnimation da = new DoubleAnimation();
-            da.Duration = this.transitionTimer.Interval;
+            da.Duration = this._transitionTimer.Interval;
             // Force the frame rate to animFrameRate instead of WPF's default value of 60fps.
             // this will reduce the CPU load on low-end machines, and will conserve battery for portable devices.
             Timeline.SetDesiredFrameRate(da, animFrameRate);
@@ -963,7 +1079,5 @@ namespace FacebookClient
                     break;
             }
         }
-
-        #endregion
     }
 }

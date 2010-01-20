@@ -323,7 +323,7 @@ namespace FacebookClient
             _chatWindow.Show();
         }
 
-        internal void SwitchToSlideShow(FacebookPhotoCollection photos, int startIndex)
+        internal void SwitchToSlideShow(FacebookPhotoCollection photos, FacebookPhoto startPhoto)
         {
             if (_viewMode == _WindowMode.SlideShow)
             {
@@ -350,7 +350,7 @@ namespace FacebookClient
                 _mainWindow.Hide();
             }
 
-            _slideshowWindow = new SlideShowWindow(photos, startIndex);
+            _slideshowWindow = new SlideShowWindow(photos, startPhoto);
             _slideshowWindow.Show();
             _slideshowWindow.Closing += (sender, e) => ExitSlideShow();
         }

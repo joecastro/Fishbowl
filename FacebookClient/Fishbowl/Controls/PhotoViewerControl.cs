@@ -660,7 +660,7 @@ namespace FacebookClient
 
         private void _StartSlideShow()
         {
-            ((FacebookClientApplication)Application.Current).SwitchToSlideShow(FacebookPhoto.Album.Photos, FacebookPhoto.Album.Photos.IndexOf(FacebookPhoto));
+            ((FacebookClientApplication)Application.Current).SwitchToSlideShow(FacebookPhoto.Album.Photos, FacebookPhoto);
         }
     }
 }

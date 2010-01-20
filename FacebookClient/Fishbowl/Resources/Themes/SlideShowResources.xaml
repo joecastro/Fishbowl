@@ -61,6 +61,19 @@
               ToolTip="Stop slide show">
             <TextBlock>Exit</TextBlock>
           </Button>
+          <ToggleButton Width="50" Height="30"
+              Style="{StaticResource StandardToggleButtonStyle}"
+              Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 
+              CommandTarget="{Binding}"
+              IsChecked="{Binding IsShuffled}"
+              VerticalAlignment="Center"
+              ToolTip="Shuffle">
+            <Image>
+              <Image.Source>
+                <DrawingImage Drawing="{Binding Source={StaticResource ShuffleToolbarDrawingBrush}, Path=Drawing}"/>
+              </Image.Source>
+            </Image>
+          </ToggleButton>
           <Button Width="50" Height="30"
               Style="{StaticResource StandardButtonStyle}"
               Command="MediaCommands.PreviousTrack" 

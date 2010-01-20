@@ -245,5 +245,43 @@ namespace Standard
                 yield return list[i];
             }
         }
+
+        public static IList<T> Shuffle<T>(this IList<T> list)
+        {
+            var r = new Random();
+            return Shuffle(list, () => r.Next(list.Count));
+        }
+
+        public static IList<T> Shuffle<T>(this IList<T> list, Func<int> numberGenerator)
+        {
+            Verify.IsNotNull(list, "list");
+            Verify.IsNotNull(numberGenerator, "numberGenerator");
+
+            var swapIndices = new int[list.Count];
+            for (int i = 0; i < list.Count; ++i)
+            {
+                int j = numberGenerator();
+                if (j < 0 || j >= list.Count)
+                {
+                    throw new ArgumentException("The number generator function generated a number outside the valid range.");
+                }
+                swapIndices[i] = j;
+            }
+            return _Shuffle(list, swapIndices);
+        }
+
+        private static IList<T> _Shuffle<T>(IList<T> list, int[] swapIndices)
+        {
+            Assert.AreEqual(list.Count, swapIndices.Length);
+            for (int i = swapIndices.Length; i > 1; --i)
+            {
+                int k = swapIndices[i-1];
+                T temp = list[k];
+                list[k] = list[i-1];
+                list[i-1] = temp;
+            }
+
+            return list;
+        }
     }
 }

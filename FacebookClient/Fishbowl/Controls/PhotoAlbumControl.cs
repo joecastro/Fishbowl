@@ -83,7 +83,7 @@ namespace FacebookClient
         {
             if (_CanStartSlideShow)
             {
-                ((FacebookClientApplication)Application.Current).SwitchToSlideShow(PhotoAlbum.Photos, 0);
+                ((FacebookClientApplication)Application.Current).SwitchToSlideShow(PhotoAlbum.Photos, PhotoAlbum.Photos[0]);
             }
         }
 
