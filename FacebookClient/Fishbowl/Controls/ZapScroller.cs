@@ -3,6 +3,7 @@ namespace FacebookClient
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -12,6 +13,7 @@ namespace FacebookClient
     using System.Windows.Controls;
     using System.Windows.Data;
     using System.Windows.Input;
+    using System.Windows.Threading;
 
     #region ActionICommand
 
@@ -239,6 +241,36 @@ namespace FacebookClient
             set { SetValue(CurrentItemProperty, value); }
         }
 
+        public static readonly DependencyProperty PlayTimeIntervalProperty =
+            DependencyProperty.Register("PlayTimeInterval", typeof(int), typeof(ZapScroller),
+            new PropertyMetadata(new PropertyChangedCallback(playTimeInterval_changed)));
+
+        public int PlayTimeInterval
+        {
+            get { return (int)GetValue(PlayTimeIntervalProperty); }
+            set { SetValue(PlayTimeIntervalProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsPlayingProperty =
+            DependencyProperty.Register("IsPlaying", typeof(bool), typeof(ZapScroller),
+            new PropertyMetadata(new PropertyChangedCallback(isPlaying_changed)));
+
+        public bool IsPlaying
+        {
+            get { return (bool)GetValue(IsPlayingProperty); }
+            set { SetValue(IsPlayingProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsShuffledProperty =
+            DependencyProperty.Register("IsShuffled", typeof(bool), typeof(ZapScroller),
+            new PropertyMetadata(new PropertyChangedCallback(isShuffled_changed)));
+
+        public bool IsShuffled
+        {
+            get { return (bool)GetValue(IsShuffledProperty); }
+            set { SetValue(IsShuffledProperty, value); }
+        }
+
         public void First()
         {
             if (canFirst())
@@ -249,6 +281,19 @@ namespace FacebookClient
 
         public void Previous()
         {
+            if (IsShuffled)
+            {
+                if (m_currentIndexInIndexList > 0)
+                {
+                    CurrentItemIndex = m_indexList[--m_currentIndexInIndexList];
+                }
+                else
+                {
+                    m_currentIndexInIndexList = m_indexList.Count - 1;
+                    CurrentItemIndex = m_currentIndexInIndexList;
+                }
+                return;
+            }
             if (canPrevious())
             {
                 CurrentItemIndex--;
@@ -257,6 +302,19 @@ namespace FacebookClient
 
         public void Next()
         {
+            if (IsShuffled)
+            {
+                if (m_currentIndexInIndexList < m_indexList.Count - 1)
+                {
+                    CurrentItemIndex = m_indexList[++m_currentIndexInIndexList];
+                }
+                else
+                {
+                    m_currentIndexInIndexList = 0;
+                    CurrentItemIndex = m_currentIndexInIndexList;
+                }
+                return;
+            }
             if (canNext())
             {
                 CurrentItemIndex++;
@@ -278,7 +336,7 @@ namespace FacebookClient
                 if (CurrentItemIndex == ItemCount - 1)
                     CurrentItemIndex = 0;
                 else
-                    CurrentItemIndex = CurrentItemIndex+1;
+                    CurrentItemIndex = CurrentItemIndex + 1;
             }
         }
 
@@ -325,16 +383,68 @@ namespace FacebookClient
             }
         }
 
+        protected virtual void OnPlayTimeIntervalChanged(int oldValue, int newValue)
+        {
+            if (m_dispatcherTimer == null)
+            {
+                m_dispatcherTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, PlayTimeInterval), DispatcherPriority.Background, new EventHandler(moveToNextIndex), this.Dispatcher);
+            }
+
+            if (m_dispatcherTimer != null)
+            {
+                if (IsPlaying)
+                {
+                    m_dispatcherTimer.Stop();
+                }
+
+                m_dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, newValue);
+
+                if (IsPlaying)
+                {
+                    m_dispatcherTimer.Start();
+                }
+            }
+        }
+
+        protected virtual void OnIsPlayingChanged(bool oldValue, bool newValue)
+        {
+            if (m_dispatcherTimer == null)
+            {
+                m_dispatcherTimer = new DispatcherTimer(new TimeSpan(0, 0, 0, 0, PlayTimeInterval), DispatcherPriority.Background, new EventHandler(moveToNextIndex), this.Dispatcher);
+            }
+
+            if (IsPlaying)
+            {
+                m_dispatcherTimer.Start();
+            }
+            else
+            {
+                m_dispatcherTimer.Stop();
+            }
+        }
+
+        protected virtual void OnIsShuffledChanged(bool oldValue, bool newValue)
+        {
+            if (IsShuffled)
+            {
+                createIndexList();
+            }
+        }
+
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             base.OnItemsSourceChanged(oldValue, newValue);
 
             ItemCollection newItems = this.Items;
 
+            if (IsShuffled)
+            {
+                createIndexList();
+            }
+
             if (newItems != m_internalItemCollection)
             {
                 m_internalItemCollection = newItems;
-
                 resetProperties();
             }
         }
@@ -342,6 +452,11 @@ namespace FacebookClient
         protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnItemsChanged(e);
+
+            if (IsShuffled)
+            {
+                createIndexList();
+            }
 
             if (m_internalItemCollection != Items)
             {
@@ -359,6 +474,23 @@ namespace FacebookClient
             zapScroller.OnCurrentItemIndexChanged((int)e.OldValue, (int)e.NewValue);
         }
 
+        private static void playTimeInterval_changed(DependencyObject element, DependencyPropertyChangedEventArgs e)
+        {
+            ZapScroller zapScroller = (ZapScroller)element;
+            zapScroller.OnPlayTimeIntervalChanged((int)e.OldValue, (int)e.NewValue);
+        }
+
+        private static void isPlaying_changed(DependencyObject element, DependencyPropertyChangedEventArgs e)
+        {
+            ZapScroller zapScroller = (ZapScroller)element;
+            zapScroller.OnIsPlayingChanged((bool)e.OldValue, (bool)e.NewValue);
+        }
+
+        private static void isShuffled_changed(DependencyObject element, DependencyPropertyChangedEventArgs e)
+        {
+            ZapScroller zapScroller = (ZapScroller)element;
+            zapScroller.OnIsShuffledChanged((bool)e.OldValue, (bool)e.NewValue);
+        }
 
         private void resetEdgeCommands()
         {
@@ -441,6 +573,7 @@ namespace FacebookClient
             {
                 SetValue(ItemCountPropertyKey, m_internalItemCollection.Count);
             }
+
             if (CurrentItemIndex >= ItemCount)
             {
                 CurrentItemIndex = (ItemCount - 1);
@@ -458,6 +591,66 @@ namespace FacebookClient
             resetCommands();
         }
 
+        /// <summary>
+        /// Creates a shuffled play list
+        /// </summary>
+        private void createIndexList()
+        {
+            this.Dispatcher.VerifyAccess();
+
+            if (m_indexList == null)
+            {
+                m_indexList = new List<int>();
+            }
+
+            m_indexList.Clear();
+
+            List<int> randomIndexes = new List<int>();
+            for (int i = 0; i < ItemCount; i++)
+            {
+                randomIndexes.Add(i);
+            }
+
+            Random rand = new Random();
+            for (int i = 0; i < ItemCount; i++)
+            {
+                int indexOfIndex = rand.Next(randomIndexes.Count);
+                m_indexList.Add(randomIndexes[indexOfIndex]);
+                randomIndexes.RemoveAt(indexOfIndex);
+            }
+
+            m_currentIndexInIndexList = 0;
+        }
+
+        private void moveToNextIndex(object sender, EventArgs e)
+        {
+            this.Dispatcher.VerifyAccess();
+
+            if (IsShuffled)
+            {
+                if (m_currentIndexInIndexList < m_indexList.Count - 1)
+                {
+                    CurrentItemIndex = m_indexList[++m_currentIndexInIndexList];
+                }
+                else
+                {
+                    m_currentIndexInIndexList = 0;
+                    CurrentItemIndex = m_currentIndexInIndexList;
+                }
+            }
+            else if (IsPlaying)
+            {
+                if (CurrentItemIndex < Items.Count - 1)
+                {
+                    Next();
+                }
+                else
+                {
+                    First();
+                }
+            }
+        }
+
         private bool canFirst()
         {
             return (ItemCount > 1) && (CurrentItemIndex > 0);
@@ -465,12 +658,12 @@ namespace FacebookClient
 
         private bool canNext()
         {
-            return (CurrentItemIndex >= 0) && CurrentItemIndex < (ItemCount - 1);
+            return ((CurrentItemIndex >= 0) && CurrentItemIndex < (ItemCount - 1)) || IsShuffled;
         }
 
         private bool canPrevious()
         {
-            return CurrentItemIndex > 0;
+            return (CurrentItemIndex > 0) || IsShuffled;
         }
 
         private bool canLast()
@@ -484,7 +677,6 @@ namespace FacebookClient
         }
 
         private ItemCollection m_internalItemCollection;
-
         private ZapDecorator m_zapDecorator;
 
         private readonly ICommand _firstCommand, _previousCommand, _nextCommand, _lastCommand, _moreCommand;
@@ -493,10 +685,15 @@ namespace FacebookClient
         private readonly ObservableCollection<ZapCommandItem> m_commandItems = new ObservableCollection<ZapCommandItem>();
         private readonly ReadOnlyObservableCollection<ZapCommandItem> m_commandItemsRO;
 
+        private List<int> m_indexList; // used in Play or Shuffle modes to keep track of and control displayed items and newly added/deleted itmes
+        private int m_currentIndexInIndexList;
+        private DispatcherTimer m_dispatcherTimer;
+
+        private DateTime m_lastItemsUpdateTime = DateTime.Now;
+
         #endregion
 
         public const string PART_ZapDecorator = "PART_ZapDecorator";
 
     }
-
 }

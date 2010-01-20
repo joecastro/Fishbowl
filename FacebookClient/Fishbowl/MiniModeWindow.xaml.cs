@@ -18,6 +18,7 @@ namespace FacebookClient
     using Contigo;
     using FacebookClient.Properties;
     using Standard;
+    using System.Windows.Controls.Primitives;
 
     public partial class MiniModeWindow : Window
     {
@@ -443,6 +444,55 @@ namespace FacebookClient
             ((FacebookClientApplication)Application.Current).SwitchToMainMode();
             e.Cancel = true;
             base.OnClosing(e);
+        }
+
+        /// <summary>
+        /// When mini mode window is shown, start playing unless the user explicitly stopped playing before (defined in Settings)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible && Settings.Default.IsMiniModePlaying)
+            {
+                PART_ZapScroller2.IsPlaying = true;
+            }
+            else
+            {
+                PART_ZapScroller2.IsPlaying = false;
+            }
+        }
+
+        /// <summary>
+        /// Updates the Play application setting
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlayButton_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleButton playButton = sender as ToggleButton;
+            if (playButton.IsChecked == true)
+            {
+                Settings.Default.IsMiniModePlaying = true;
+            }
+            else if (playButton.IsChecked == false)
+            {
+                Settings.Default.IsMiniModePlaying = false;
+            }
+        }
+
+        /// <summary>
+        /// When the user browses right or left in the news feed, stop playing if in play mode
+        /// We won't modify the global Play setting, because the user probably didn't want playing to stop permanently
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RepeatButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PART_ZapScroller2.IsPlaying)
+            {
+                PART_ZapScroller2.IsPlaying = false;
+            }
         }
     }
 }

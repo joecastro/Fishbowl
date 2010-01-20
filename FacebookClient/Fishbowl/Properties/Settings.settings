@@ -41,5 +41,8 @@
     <Setting Name="ChatWindowBounds" Type="System.Windows.Rect" Scope="User">
       <Value Profile="(Default)">Empty</Value>
     </Setting>
+    <Setting Name="IsMiniModePlaying" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
