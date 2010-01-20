@@ -4,6 +4,7 @@ namespace FacebookClient
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
@@ -15,7 +16,6 @@ namespace FacebookClient
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Navigation;
-    using System.Windows.Threading;
     using ClientManager;
     using ClientManager.Controls;
     using ClientManager.View;
@@ -149,8 +149,7 @@ namespace FacebookClient
             ServiceProvider.GoneOnline += (sender, e) =>
             {
                 IsOnline = true;
-                // Once the friends collection is populated, use the top friends to make a custom splash screen with their profile images
-                ServiceProvider.ViewManager.Friends.CollectionChanged += SplashScreenOverlay.FriendsPopulated;
+                ServiceProvider.ViewManager.Friends.CollectionChanged += _OnFriendsHasCount;
             };
             
             ServiceProvider.ViewManager.PropertyChanged += _OnViewManagerPropertyChanged;
@@ -220,6 +219,15 @@ namespace FacebookClient
             this.PreviewStylusMove += new StylusEventHandler(OnPreviewStylusMove);
 
             this.SizeChanged += new SizeChangedEventHandler((sender, e) => IsInSmallMode = e.NewSize.Width < SmallModeWidth);
+        }
+
+        private void _OnFriendsHasCount(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (ServiceProvider.ViewManager.Friends.Count > 0)
+            {
+                ServiceProvider.ViewManager.Friends.CollectionChanged -= _OnFriendsHasCount;
+                SplashScreenOverlay.GenerateCustomSplashScreen(ServiceProvider.ViewManager.Friends);
+            }
         }
 
         private void _OnNotificationNavigationRequested(object sender, RequestNavigateEventArgs e)

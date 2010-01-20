@@ -221,8 +221,6 @@
 
         public IEnumerator<T> GetEnumerator()
         {
-            Assert.Implies(SourceService != null, () => SourceService.Dispatcher.CheckAccess());
-
             T[] copy;
             lock (_sourceCollection.SyncRoot)
             {

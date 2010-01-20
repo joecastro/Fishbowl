@@ -10,15 +10,29 @@ namespace FacebookClient
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using System.Windows.Threading;
-    using ClientManager;
     using Contigo;
     using Standard;
 
-    static class SplashScreenOverlay
+    public static class SplashScreenOverlay
     {
+        private static bool _hasGeneratedSplash = false;
+
+        // Dimensions that match the face locations in the splash screen.
+        // This data is specific to the 5-bubble formatted splash.  If we change the splash screen, need to recalculate the rectangles.
+        private static readonly Rect[] _BubbleRects = new Rect[]
+        {
+            new Rect(new Point( 68,  92),  new Point(173, 197)), 
+            new Rect(new Point(188,  54),  new Point(246, 113)),
+            new Rect(new Point( 37, 204),  new Point(112, 282)), 
+            new Rect(new Point(198, 150),  new Point(275, 228)),
+            new Rect(new Point(191, 243),  new Point(247, 295)),
+        };
+
         // Path to the custom splash screen 
         public static readonly string CustomSplashPath = Environment.ExpandEnvironmentVariables("%APPDATA%\\fishbowl_customsplash.png");
+
+        // Don't make this statically initialized because the pack:// uri may not yet have been registered.
+        //private static readonly Uri _SplashResourceUri = new Uri("pack://application:,,,/Resources/Images/splash.png");
 
         // How to clip the pictures
         public enum ClipAlgorithm
@@ -28,6 +42,40 @@ namespace FacebookClient
         }
 
         /// <summary>
+        /// Finds cached copy of the splash screen and deletes it on logout.
+        /// </summary>
+        public static void DeleteCustomSplashScreen()
+        {
+            try
+            {
+                Utility.SafeDeleteFile(CustomSplashPath);
+            }
+            // It's too bad if something is holding onto the file.
+            catch (IOException)
+            { }
+        }
+
+        public static void GenerateCustomSplashScreen(FacebookContactCollection friends)
+        {
+            // We don't need to lock on _hasGeneratedSplash because this should only ever enter on one thread.
+            friends.VerifyAccess();
+
+            if (_hasGeneratedSplash)
+            {
+                return;
+            }
+            _hasGeneratedSplash = true;
+            // Do this on a separate thread to not block the UI.
+            var t = new Thread((ParameterizedThreadStart)_BuildFriendsListsAndUpdateSplashImages)
+            {
+                Name = "Splash Screen Generation",
+                IsBackground = true,
+            };
+            t.Start(friends);
+        }
+
+
+        /// <summary>
         /// Renders the passed in images over top the source image, masking with elliptical or rectangular opacity mask as specified, returns an image of this.
         /// </summary>
         /// <param name="sourceImage">Image to be overlaid</param>
@@ -35,188 +83,126 @@ namespace FacebookClient
         /// <param name="facesToOverlay">Images to be overlaid on sourceimage</param>
         /// <param name="howToClip">Rectangular or elliptical clipping</param>
         /// <returns></returns>
-        public static BitmapSource AddOverlay(BitmapSource sourceImage, Rect[] overlayPositions, BitmapSource[] facesToOverlay, ClipAlgorithm howToClip)
+        private static BitmapSource _AddOverlay(BitmapSource sourceImage, IList<Rect> overlayPositions, IList<ImageSource> overlayImages, ClipAlgorithm howToClip)
         {
-            var myImage = new Image
+            Verify.IsNotNull(sourceImage, "sourceImage");
+            Verify.IsNotNull(overlayPositions, "overlayPositions");
+            Verify.IsNotNull(overlayImages, "facesToOverlay");
+            
+            var imageCompositor = new Canvas
             {
-                Source = sourceImage,
+                Width = sourceImage.PixelWidth,
+                Height = sourceImage.PixelHeight,
             };
 
-            Canvas imageCompositor = new Canvas();
-            imageCompositor.Width = sourceImage.PixelWidth;
-            imageCompositor.Height = sourceImage.PixelHeight;
-            imageCompositor.Children.Add(myImage);
+            imageCompositor.Children.Add(new Image { Source = sourceImage });
 
-            for (int index = 0; ((index < overlayPositions.Length) && (index < facesToOverlay.Length)); index++)
+            // Note that the overlay rects and images may not match in length.
+            // The user may not have enough friends to fill in the splash screen.  This is okay.
+            foreach (var pair in overlayPositions.Zip(overlayImages, (rect, img) => new { Img = img, Rect = rect }))
             {
-                imageCompositor.Children.Add(_GetCanvasOverlay(facesToOverlay[index], overlayPositions[index], howToClip));
+                imageCompositor.Children.Add(_GetCanvasOverlay(pair.Img, pair.Rect, howToClip));
             }
             
-            return (BitmapSource)Utility.GenerateBitmapSource((Visual)imageCompositor, imageCompositor.Width, imageCompositor.Height, true);
+            return Utility.GenerateBitmapSource(imageCompositor, imageCompositor.Width, imageCompositor.Height, true);
         }
 
-        /// <summary>
-        /// Finds cached copy of the splash screen and deletes it on logout.
-        /// </summary>
-        public static void DeleteCustomSplashScreen()
+        private static void _BuildFriendsListsAndUpdateSplashImages(object friendsObj)
         {
+            var friends = (FacebookContactCollection)friendsObj;
             try
             {
-                if (File.Exists(CustomSplashPath))
-                {
-                    Utility.SafeDeleteFile(CustomSplashPath);
-                }
-            }
-            catch { }; // Do nothing.  If something is holding a handle to this file, not much we can do about it.
-        }
+                IEnumerable<FacebookContact> lessInterestingFriendsEnum;
+                List<FacebookContact> interestingFriends = friends.SplitWhere(f => f.InterestLevel >= 0.8, out lessInterestingFriendsEnum).ToList();
+                List<FacebookContact> lessInterestingFriends = lessInterestingFriendsEnum.ToList();
 
-        /// <summary>
-        /// Callback for when the Friends list changes.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public static void FriendsPopulated(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            // Prevent doing anything until we have friends in the collection.
-            // TODO: Can we un-subscribe from the notification after getting friends?
-            if ((ServiceProvider.ViewManager.Friends.Count > 0) && !_createdFriendsSplash)
-            {
-                try
-                {
-                    Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(
-                        delegate
-                        {
-                            try
-                            {
-                                BuildFriendsListsAndUpdateSplashImages();
-                            }
-                            catch { };
-                            return null;
-                        })
-                        , null);
-                    _createdFriendsSplash = true;
-                }
-                catch
-                {
-                    // Do nothing if this fails, but ideally this should eventually "phone home" with a callstack...
-                };
-            }
-        }
+                int friendCount = Math.Min((interestingFriends.Count + lessInterestingFriends.Count), 5);
 
-        // Only respond to the friend collection changing the first time 
-        // (if the user adds friend(s) in a session, this could get called twice.
-        private static bool _createdFriendsSplash = false;
-        private static int _currentCount = 0;
-        private static int _friendCount = 0;
-        private static void BuildFriendsListsAndUpdateSplashImages()
-        {
-            // No need to write a custom splash screen to the appdata folder for people without friends
-            // This is unlikely though since we should only get here if the collection is populated.
-            if (ServiceProvider.ViewManager.Friends.Count == 0)
-            {
-                return;
-            }
+                var chosenFriends = new List<FacebookContact>(friendCount);
+                var rand = new Random(DateTime.Now.Millisecond);
+                int selectedFriendCount = 0;
 
-            List<FacebookContact> interestingFriends = 
-                (from friend in ServiceProvider.ViewManager.Friends where friend.InterestLevel >= 0.8 select friend).ToList();
-            List<FacebookContact> lessInterestingFriends = 
-                (from friend in ServiceProvider.ViewManager.Friends where friend.InterestLevel < 0.8 select friend).ToList();
-            
-            _friendCount = Math.Min((interestingFriends.Count + lessInterestingFriends.Count), 5);
-            FacebookContact[] chosenFriends = new FacebookContact[_friendCount];
-            Random rand = new Random(DateTime.Now.Millisecond);
-            int selectedFriendCount = 0;
-
-            if (lessInterestingFriends.Count > 0)
-            {
-                FacebookContact lessInterest = lessInterestingFriends[rand.Next(lessInterestingFriends.Count - 1)];
-                lessInterestingFriends.Remove(lessInterest);
-                chosenFriends[selectedFriendCount] = lessInterest;
-                selectedFriendCount++;
-            }
-
-            while ((selectedFriendCount < 5) && interestingFriends.Count > 0 && lessInterestingFriends.Count > 0)
-            {
-                if (interestingFriends.Count > 0)
-                {
-                    FacebookContact interest = interestingFriends[rand.Next(interestingFriends.Count - 1)];
-                    interestingFriends.Remove(interest);
-                    chosenFriends[selectedFriendCount] = interest;
-                    selectedFriendCount++;
-                }
-                else if (lessInterestingFriends.Count > 0)
+                if (lessInterestingFriends.Count > 0)
                 {
                     FacebookContact lessInterest = lessInterestingFriends[rand.Next(lessInterestingFriends.Count - 1)];
                     lessInterestingFriends.Remove(lessInterest);
-                    chosenFriends[selectedFriendCount] = lessInterest;
+                    chosenFriends.Add(lessInterest);
                     selectedFriendCount++;
                 }
-            }
-            GetImageSourceAsyncCallback imageDownloadCompleted = new GetImageSourceAsyncCallback(_OnGetFriendImageCompleted);
-            friendImages = new List<BitmapSource>(_friendCount);
-            friendCompleted = new ManualResetEvent(false);
 
-            for (int count = 0; count < selectedFriendCount; count++)
+                while ((selectedFriendCount < 5) && (interestingFriends.Count > 0 || lessInterestingFriends.Count > 0))
+                {
+                    if (interestingFriends.Count > 0)
+                    {
+                        FacebookContact interest = interestingFriends[rand.Next(interestingFriends.Count - 1)];
+                        interestingFriends.Remove(interest);
+                        chosenFriends.Add(interest);
+                        selectedFriendCount++;
+                    }
+                    else if (lessInterestingFriends.Count > 0)
+                    {
+                        FacebookContact lessInterest = lessInterestingFriends[rand.Next(lessInterestingFriends.Count - 1)];
+                        lessInterestingFriends.Remove(lessInterest);
+                        chosenFriends.Add(lessInterest);
+                        selectedFriendCount++;
+                    }
+                }
+
+                var friendImages = new List<ImageSource>(friendCount);
+
+                foreach (var friend in chosenFriends)
+                {
+                    friend.Image.GetImageAsync(
+                        FacebookImageDimensions.Square,
+                        (sender, e) =>
+                        {
+                            if (e.Cancelled || e.Error != null)
+                            {
+                                return;
+                            }
+                            friendImages.Add(e.ImageSource);
+                            if (friendImages.Count == friendCount)
+                            {
+                                try
+                                {
+                                    _FriendImageDownloadCompleted(friendImages);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Assert.Fail(ex.Message);
+                                }
+                            }
+                        });
+                }
+            }
+            catch (Exception e)
             {
-                chosenFriends[count].Image.GetImageAsync(FacebookImageDimensions.Square, imageDownloadCompleted);
+                Assert.Fail(e.Message);
             }
         }
 
-        static List<BitmapSource> friendImages;
-        static ManualResetEvent friendCompleted;
-        private static void _OnGetFriendImageCompleted(object sender, GetImageSourceCompletedEventArgs e)
+        private static void _FriendImageDownloadCompleted(List<ImageSource> friendImages)
         {
-            friendImages.Add((BitmapSource)e.ImageSource);
-            ++_currentCount;
-            _FriendImageDownloadCompleted();
-        }
+            BitmapSource overlaidImage = SplashScreenOverlay._AddOverlay(
+                new BitmapImage(new Uri("pack://application:,,,/Resources/Images/splash.png")), 
+                _BubbleRects,
+                friendImages, 
+                ClipAlgorithm.Elliptical);
 
-        private static void _FriendImageDownloadCompleted()
-        {
-            if (_currentCount < 5)
-            {
-                return;
-            }
-            // No point recording a custom splash screen if we failed to get images for it.
-            // 2nd part is for debugging, don't check in like this.
-            if (friendImages.Count > 0)
-            {
-                // This data is specific to the 5-bubble formatted splash.  If we change the splash screen, need to recalculate the rectangles.
-                Rect[] fishbowlBubbles = new Rect[]{ new Rect(new Point(68,92), new Point(173,197)), 
-                                                 new Rect(new Point(188,54), new Point(246,113)),
-                                                 new Rect(new Point(37,204), new Point(112,282)), 
-                                                 new Rect(new Point(198,150), new Point(275,228)),
-                                                 new Rect(new Point(191,243), new Point(247,295))};
-
-                BitmapImage imageToOverLay = new BitmapImage();
-                imageToOverLay.BeginInit();
-                imageToOverLay.UriSource = new Uri("pack://application:,,,/Resources/Images/splash.png");
-                imageToOverLay.EndInit();
-                // End "This data is specific ..."
-
-                BitmapSource overlaidImage = SplashScreenOverlay.AddOverlay(imageToOverLay, fishbowlBubbles,
-                    (friendImages.ToArray()), SplashScreenOverlay.ClipAlgorithm.Elliptical);
-
-                Image myImg = new Image();
-                myImg.Source = overlaidImage;
-                Standard.Utility.SaveToPng((FrameworkElement)myImg, Environment.ExpandEnvironmentVariables(SplashScreenOverlay.CustomSplashPath), new Rect(new Size(overlaidImage.PixelWidth, overlaidImage.PixelHeight)));
-            }
+            Utility.SaveToPng(overlaidImage, CustomSplashPath, new Size(overlaidImage.PixelWidth, overlaidImage.PixelHeight));
         }        
 
-        private static UIElement _GetCanvasOverlay(BitmapSource bitmapSource, Rect rect, ClipAlgorithm howToClip)
-        {
-            Image faceImage = new Image();
-            faceImage.Source = bitmapSource;
-            return _GetCanvasOverlay(faceImage, rect, howToClip);
-        }
-
         // Creates an element with Canvas attached DPs and appropriate masking if specified.
-        private static UIElement _GetCanvasOverlay(Image face, Rect overlayPosition, ClipAlgorithm howToClip)
+        private static UIElement _GetCanvasOverlay(ImageSource overlaySource, Rect overlayPosition, ClipAlgorithm howToClip)
         {
-            face.Width = overlayPosition.Width;
-            face.Height = overlayPosition.Height;
-            Canvas.SetLeft(face, overlayPosition.Left);
-            Canvas.SetTop(face, overlayPosition.Top);
+            var image = new Image
+            {
+                Source = overlaySource,
+                Width = overlayPosition.Width,
+                Height = overlayPosition.Height
+            };
+            Canvas.SetLeft(image, overlayPosition.Left);
+            Canvas.SetTop(image, overlayPosition.Top);
 
             switch (howToClip)
             {
@@ -244,7 +230,7 @@ namespace FacebookClient
 
                     var drawBrush = new DrawingBrush(ellipseDrawing);
 
-                    face.OpacityMask = drawBrush;
+                    image.OpacityMask = drawBrush;
                     break;
                 case ClipAlgorithm.Rectangular:
                     // TODO: Do we care to do any gradient opacity masking here?
@@ -252,7 +238,7 @@ namespace FacebookClient
                     break;
             }
 
-            return face;
+            return image;
         }
     }
 }

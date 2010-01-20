@@ -29,6 +29,37 @@ namespace Standard
             }
         }
 
+        /// <summary>Partition a collection into two, based on whether the items match a predicate.</summary>
+        /// <typeparam name="T">The type of the enumeration.</typeparam>
+        /// <param name="collection">The original collection to split.</param>
+        /// <param name="condition">The condition to use for the split.</param>
+        /// <param name="rest">A collection of all items in the original collection that do not satisfy the condition.</param>
+        /// <returns>A collection of all items in the original collection that satisfy the condition.</returns>
+        /// <remarks>Unlike most extension methods of this nature, this does not perform the operation lazily.</remarks>
+        public static IEnumerable<T> SplitWhere<T>(this IEnumerable<T> collection, Predicate<T> condition, out IEnumerable<T> rest)
+        {
+            Verify.IsNotNull(collection, "collection");
+            Verify.IsNotNull(condition, "condition");
+
+            var passList = new List<T>();
+            var failList = new List<T>();
+
+            foreach (T t in collection)
+            {
+                if (condition(t))
+                {
+                    passList.Add(t);
+                }
+                else
+                {
+                    failList.Add(t);
+                }
+            }
+
+            rest = failList;
+            return passList;
+        }
+
         /// <summary>
         /// Limit an enumeration to be constrained to a subset after a given index.
         /// </summary>

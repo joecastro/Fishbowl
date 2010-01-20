@@ -173,28 +173,14 @@ namespace Standard
             return bmp;
         }
 
-        /// <summary>
-        /// Saves arbitrary framework element to a PNG file.
-        /// </summary>
-        /// <param name="visual">WPF FrameworkElement to make into image</param>
-        /// <param name="fileName">File to write resulting image to</param>
-        /// <param name="imageSize">Rectangular size to render WPF control</param>
-        public static void SaveToPng(FrameworkElement visual, string fileName, Rect imageSize)
+        public static void SaveToPng(BitmapSource source, string fileName, Size imageSize)
         {
-            ((UIElement)visual).Measure(Size.Empty);
-            ((UIElement)visual).Arrange(imageSize);
-
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-
-            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-            bitmap.Render(visual);
-            BitmapFrame frame = BitmapFrame.Create(bitmap);
-            encoder.Frames.Add(frame);
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(source));
 
             using (FileStream stream = File.Create(fileName))
             {
                 encoder.Save(stream);
-                stream.Flush();
             }
         }
 
@@ -573,10 +559,15 @@ namespace Standard
         /// Simple guard against the exceptions that File.Delete throws on null and empty strings.
         /// </summary>
         /// <param name="path">The path to delete.  Unlike File.Delete, this can be null or empty.</param>
+        /// <remarks>
+        /// Note that File.Delete, and by extension SafeDeleteFile, does not throw an exception
+        /// if the file does not exist.
+        /// </remarks>
         public static void SafeDeleteFile(string path)
         {
             if (!string.IsNullOrEmpty(path))
             {
+
                 File.Delete(path);
             }
         }
