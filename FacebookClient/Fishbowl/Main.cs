@@ -13,6 +13,7 @@ namespace FacebookClient
             {
                 var splash = new SplashScreen
                 {
+                    ImageFileName = SplashScreenOverlay.CustomSplashPath,
                     ResourceAssembly = Assembly.GetEntryAssembly(),
                     ResourceName =  "resources/images/splash.png",
                     CloseOnMainWindowCreation = true,

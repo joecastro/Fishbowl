@@ -66,7 +66,7 @@ namespace FacebookClient
                 return;
             }
 
-            ImageSource = Utility.GenerateBitmapSource(this, 16, 16);
+            ImageSource = Utility.GenerateBitmapSource(this, 16, 16, false);
         }
     }
 }

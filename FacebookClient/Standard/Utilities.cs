@@ -155,8 +155,14 @@ namespace Standard
             return bmp;
         }
 
-        public static BitmapSource GenerateBitmapSource(Visual visual, double renderWidth, double renderHeight)
+        public static BitmapSource GenerateBitmapSource(Visual visual, double renderWidth, double renderHeight, bool performLayout)
         {
+            if (performLayout)
+            {
+                ((UIElement)visual).Measure(Size.Empty);
+                ((UIElement)visual).Arrange(new Rect(new Size(renderWidth, renderHeight)));
+            }
+
             var bmp = new RenderTargetBitmap((int)renderWidth, (int)renderHeight, 96, 96, PixelFormats.Pbgra32);
             var dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
@@ -165,6 +171,31 @@ namespace Standard
             }
             bmp.Render(dv);
             return bmp;
+        }
+
+        /// <summary>
+        /// Saves arbitrary framework element to a PNG file.
+        /// </summary>
+        /// <param name="visual">WPF FrameworkElement to make into image</param>
+        /// <param name="fileName">File to write resulting image to</param>
+        /// <param name="imageSize">Rectangular size to render WPF control</param>
+        public static void SaveToPng(FrameworkElement visual, string fileName, Rect imageSize)
+        {
+            ((UIElement)visual).Measure(Size.Empty);
+            ((UIElement)visual).Arrange(imageSize);
+
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+
+            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)visual.ActualWidth, (int)visual.ActualHeight, 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(visual);
+            BitmapFrame frame = BitmapFrame.Create(bitmap);
+            encoder.Frames.Add(frame);
+
+            using (FileStream stream = File.Create(fileName))
+            {
+                encoder.Save(stream);
+                stream.Flush();
+            }
         }
 
         // This can be cached.  It's not going to change under reasonable circumstances.

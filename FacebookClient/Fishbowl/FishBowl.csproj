@@ -118,6 +118,9 @@
     <Compile Include="..\Standard\DpiHelper.cs">
       <Link>Standard\DpiHelper.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\Enumerable2.cs">
+      <Link>Standard\Enumerable2.cs</Link>
+    </Compile>
     <Compile Include="..\Standard\ErrorCodes.cs">
       <Link>Standard\ErrorCodes.cs</Link>
     </Compile>
@@ -288,6 +291,7 @@
     <Compile Include="SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SplashScreenOverlay.cs" />
     <Compile Include="Standard\SendMouseInput.cs">
       <SubType>Code</SubType>
     </Compile>

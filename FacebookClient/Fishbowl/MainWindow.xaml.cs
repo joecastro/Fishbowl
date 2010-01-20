@@ -12,16 +12,15 @@ namespace FacebookClient
     using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Input;
-    using System.Windows.Interop;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Navigation;
+    using System.Windows.Threading;
     using ClientManager;
     using ClientManager.Controls;
     using ClientManager.View;
-    using Standard;
     using Contigo;
-    using Microsoft.Bing;
+    using Standard;
 
     /// <summary>
     /// The ScePhoto view mode; regular or full-screen with options.
@@ -132,6 +131,7 @@ namespace FacebookClient
         private readonly RoutedCommand _SwitchFullScreenModeCommand;
 
         private WindowStyle _windowStyle = WindowStyle.None;
+        
         private WindowState _windowState = WindowState.Normal;
 
         /// <summary>
@@ -140,6 +140,7 @@ namespace FacebookClient
         private ResizeMode _resizeMode = ResizeMode.NoResize;
 
         private PhotoUploadWizard _photoUploadWizard;
+        
         private EmbeddedBrowserControl _embeddedBrowserControl;
 
         public MainWindow()
@@ -148,6 +149,8 @@ namespace FacebookClient
             ServiceProvider.GoneOnline += (sender, e) =>
             {
                 IsOnline = true;
+                // Once the friends collection is populated, use the top friends to make a custom splash screen with their profile images
+                ServiceProvider.ViewManager.Friends.CollectionChanged += SplashScreenOverlay.FriendsPopulated;
             };
             
             ServiceProvider.ViewManager.PropertyChanged += _OnViewManagerPropertyChanged;
@@ -218,7 +221,7 @@ namespace FacebookClient
 
             this.SizeChanged += new SizeChangedEventHandler((sender, e) => IsInSmallMode = e.NewSize.Width < SmallModeWidth);
         }
-                
+
         private void _OnNotificationNavigationRequested(object sender, RequestNavigateEventArgs e)
         {
             // If there's no handler then send it as a navigation command.

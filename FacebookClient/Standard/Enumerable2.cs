@@ -176,6 +176,12 @@ namespace Standard
             return true;
         }
 
+        public static void AddRange<T>(this ICollection<T> collection, params T[] items)
+        {
+            Verify.IsNotNull(collection, "collection");
+            _AddRange(collection, items);
+        }
+
         public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
         {
             Verify.IsNotNull(collection, "collection");
