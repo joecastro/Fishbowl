@@ -8,7 +8,6 @@ namespace Standard
     using System.Runtime.ConstrainedExecution;
     using System.Runtime.InteropServices;
     using System.Runtime.InteropServices.ComTypes;
-    using System.Security;
     using System.Security.Permissions;
     using Microsoft.Win32.SafeHandles;
 
@@ -1312,16 +1311,11 @@ namespace Standard
         IntPtr hBalloonIcon;
     }
 
-    [SecurityCritical]
     [StructLayout(LayoutKind.Explicit)]
     internal class PROPVARIANT : IDisposable
     {
         private static class NativeMethods
         {
-            /// <SecurityNote>
-            /// Critical: Suppresses unmanaged code security.
-            /// </SecurityNote>
-            [SecurityCritical, SuppressUnmanagedCodeSecurity]
             [DllImport("ole32.dll")]
             internal static extern int PropVariantClear(PROPVARIANT pvar);
         }
@@ -1337,23 +1331,12 @@ namespace Standard
         [FieldOffset(8)]
         private short boolVal;
 
-        /// <SecurityNote>
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
         public VarEnum VarType
         {
-            [SecurityCritical, SecurityTreatAsSafe]
             get { return (VarEnum)vt; }
         }
 
         // Right now only using this for strings.
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         public string GetValue()
         {
             if (vt == (ushort)VarEnum.VT_LPWSTR)
@@ -1364,11 +1347,6 @@ namespace Standard
             return null;
         }
 
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         public void SetValue(bool f)
         {
             Clear();
@@ -1376,11 +1354,6 @@ namespace Standard
             boolVal = (short)(f ? -1 : 0);
         }
 
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         public void SetValue(string val)
         {
             Clear();
@@ -1388,11 +1361,6 @@ namespace Standard
             pointerVal = Marshal.StringToCoTaskMemUni(val);
         }
 
-        /// <SecurityNote>
-        /// Critical - Calls critical PropVariantClear
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         public void Clear()
         {
             NativeMethods.PropVariantClear(this);
@@ -1400,32 +1368,17 @@ namespace Standard
 
         #region IDisposable Pattern
 
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         ~PROPVARIANT()
         {
             Dispose(false);
         }
 
-        /// <SecurityNote>
-        /// Critical: This class is tagged Critical
-        /// TreatAsSafe - This class is only available in full trust.
-        /// </SecurityNote>
-        [SecurityCritical, SecurityTreatAsSafe]
         private void Dispose(bool disposing)
         {
             Clear();
@@ -1855,7 +1808,6 @@ namespace Standard
     internal delegate IntPtr MessageHandler(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled);
 
     // Some native methods are shimmed through public versions that handle converting failures into thrown exceptions.
-    [SuppressUnmanagedCodeSecurity]
     internal static class NativeMethods
     {
         [DllImport("user32.dll", EntryPoint="ChangeWindowMessageFilter", SetLastError=true)]
@@ -2131,18 +2083,15 @@ namespace Standard
 
         [DllImport("kernel32.dll")]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        [SuppressUnmanagedCodeSecurity]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool FindClose(IntPtr handle);
 
         // Not shimming this SetLastError=true function because callers want to evaluate the reason for failure.
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        [SuppressUnmanagedCodeSecurity]
         public static extern SafeFindHandle FindFirstFileW(string lpFileName, [In, Out, MarshalAs(UnmanagedType.LPStruct)] WIN32_FIND_DATAW lpFindFileData);
 
         // Not shimming this SetLastError=true function because callers want to evaluate the reason for failure.
         [DllImport("kernel32.dll", SetLastError = true)]
-        [SuppressUnmanagedCodeSecurity]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool FindNextFileW(SafeFindHandle hndFindFile, [In, Out, MarshalAs(UnmanagedType.LPStruct)] WIN32_FIND_DATAW lpFindFileData);
 
@@ -2594,7 +2543,6 @@ namespace Standard
         // This overload is required.  There's a cast in the Shell code that causes the wrong vtbl to be used
         // if we let the marshaller convert the parameter to an IUnknown.
         [DllImport("shell32.dll", EntryPoint = "SHAddToRecentDocs")]
-        [SecurityCritical, SuppressUnmanagedCodeSecurity]
         private static extern void _SHAddToRecentDocs_ShellLink(SHARD uFlags, IShellLinkW pv);
 
         public static void SHAddToRecentDocs(string path)

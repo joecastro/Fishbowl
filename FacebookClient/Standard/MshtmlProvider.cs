@@ -9,7 +9,6 @@ namespace Standard
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Runtime.InteropServices.ComTypes;
-    using System.Security;
     using System.Windows.Controls;
 
     [
@@ -171,7 +170,6 @@ namespace Standard
         DefaultMember("Name"),
         Guid(IID.WebBrowser2),
         InterfaceType(ComInterfaceType.InterfaceIsIDispatch),
-        SuppressUnmanagedCodeSecurity,
     ]
     interface IWebBrowser2
     {
