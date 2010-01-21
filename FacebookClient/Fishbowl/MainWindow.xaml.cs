@@ -21,6 +21,7 @@ namespace FacebookClient
     using ClientManager.View;
     using Contigo;
     using Standard;
+    using Microsoft.Windows.Shell;
 
     /// <summary>
     /// The ScePhoto view mode; regular or full-screen with options.
@@ -218,7 +219,7 @@ namespace FacebookClient
             this.PreviewStylusSystemGesture += new StylusSystemGestureEventHandler(OnPreviewStylusSystemGesture);
             this.PreviewStylusMove += new StylusEventHandler(OnPreviewStylusMove);
 
-            this.SizeChanged += new SizeChangedEventHandler((sender, e) => IsInSmallMode = e.NewSize.Width < SmallModeWidth);
+            this.SizeChanged += _OnSizeChanged;
         }
 
         private void _OnFriendsHasCount(object sender, NotifyCollectionChangedEventArgs e)
@@ -236,6 +237,16 @@ namespace FacebookClient
             Hyperlink hyperlink = sender as Hyperlink;
             ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(hyperlink.NavigateUri);
             e.Handled = true;
+        }
+
+        private void _OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            IsInSmallMode = e.NewSize.Width < SmallModeWidth;
+
+            if (ServiceProvider.ViewManager.Dialog != null)
+            {
+                _UpdateClipMargin();
+            }
         }
 
         private void _OnMessageNavigationRequested(object sender, RequestNavigateEventArgs e)
@@ -268,7 +279,40 @@ namespace FacebookClient
                 case "CurrentRootNavigator":
                     _OnRootNavigatorChanged();
                     break;
+                case "Dialog":
+                    _OnDialogChanged();
+                    break;
             }
+        }
+
+        private void _OnDialogChanged()
+        {
+            _UpdateClipMargin();
+        }
+
+        private void _UpdateClipMargin()
+        {
+            TaskbarItemInfo tbii = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            if (ServiceProvider.ViewManager.Dialog == null)
+            {
+                Thickness margin = new Thickness(0, Header.ActualHeight, 0, Footer.ActualHeight);
+                tbii.ThumbnailClipMargin = margin;
+            }
+            else
+            {
+                tbii.ThumbnailClipMargin = default(Thickness);
+            }
+        }
+
+        private Thickness _SubtractSizesToGetThickness(Size outerSize, Size innerSize)
+        {
+            double width = outerSize.Width - innerSize.Width;
+            double height = outerSize.Height - innerSize.Height;
+
+            double x = width / 2;
+            double y = height / 2;
+
+            return new Thickness(x, y, x, y);
         }
 
         private void _OnRootNavigatorChanged()

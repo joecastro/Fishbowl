@@ -574,10 +574,7 @@ namespace ClientManager.View
         /// <param name="sourceDialog">The dialog to show.</param>
         public void ShowDialog(FrameworkElement sourceDialog)
         {
-            if (sourceDialog == null)
-            {
-                throw new ArgumentNullException("sourceDialog");
-            }
+            Verify.IsNotNull(sourceDialog, "sourceDialog");
 
             if (Dialog != null)
             {
