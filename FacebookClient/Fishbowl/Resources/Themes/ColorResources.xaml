@@ -10,7 +10,7 @@
   <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#99777777"/>
 
   <!-- Default foreground brush for content elements, e.g. text -->
-  <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
+  <!--<SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>-->
 
   <!-- Default brush for content hightlights -->
   <SolidColorBrush x:Key="Foreground_ContentHighlight" Color="#0099ff"/>

@@ -4,7 +4,7 @@
   <Grid>
     <Canvas>
       <Path x:Name="Swoosh1"
-          Fill="#1C317ADD" 
+          Fill="{DynamicResource AnimatedSwoosh1}" 
           Data="M 0,0 C 800,0 800,400 1600,415 C 2400,400 2400,0 3200,0 C 4000,0 4000,400 4800,415 C 5600,400 5600,0 6400,0 L 6400,570 L 0,570 Z">
         <Path.RenderTransform>
           <TranslateTransform />
@@ -20,7 +20,7 @@
         </Path.Resources>
       </Path>
       <Path x:Name="Swoosh2" 
-          Fill="#1C317ADD" 
+          Fill="{DynamicResource AnimatedSwoosh2}" 
           Data="M 0,200 C 800,200 800,400 1600,415 C 2400,400 2400,200 3200,200 C 4000,200 4000,400 4800,415 C 5600,400 5600,200 6400,200 L 6400,570 L 0,570 Z"
           Canvas.Left="-3200" >
         <Path.RenderTransform>

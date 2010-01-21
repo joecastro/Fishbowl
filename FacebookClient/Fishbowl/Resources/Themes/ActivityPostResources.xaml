@@ -15,7 +15,7 @@
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontSize" Value="12" />
-    <Setter Property="Foreground" Value="#3B5998" />
+    <Setter Property="Foreground" Value="{DynamicResource ActivityActionButtonForeground}" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>
   <ControlTemplate x:Key="LikeButtonTemplate" TargetType="{x:Type Button}">
@@ -69,6 +69,8 @@
         <Setter Property="Opacity" Value="0.3" />
       </Trigger>
     </ControlTemplate.Triggers>
+      
+      
   </ControlTemplate>
   <Style x:Key="CommentButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type ButtonBase}">
     <Setter Property="Template" Value="{DynamicResource CommentButtonTemplate}" />
@@ -143,6 +145,7 @@
     <Setter Property="FontSize" Value="14" />
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="Visibility" Value="Visible" />
+    <Setter Property="Foreground" Value="{DynamicResource AttachmentTitleTextBlockForeground}"/>
     <Style.Triggers>
       <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
         <Setter Property="Visibility" Value="Collapsed" />
@@ -155,6 +158,7 @@
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="Margin" Value="0,5,0,0" />
     <Setter Property="Visibility" Value="Visible" />
+      <Setter Property="Foreground" Value="{DynamicResource AttachmentDescriptionTextBlockForeground}"/>
   </Style>
   <Style x:Key="AttachmentCaptionTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
@@ -163,6 +167,7 @@
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="Margin" Value="0,0,0,5" />
     <Setter Property="Visibility" Value="Visible" />
+      <Setter Property="Foreground" Value="{DynamicResource AttachmentCaptionTextBlockForeground}"/>
     <Style.Triggers>
       <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
         <Setter Property="Visibility" Value="Collapsed" />
@@ -181,18 +186,20 @@
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontWeight" Value="Bold" />
     <Setter Property="FontSize" Value="15" />
+    <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
   </Style>
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontSize" Value="13" />
-  </Style>
+    <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+    </Style>
   <DataTemplate x:Key="NewsFeedCommentTemplate" DataType="{x:Type Facebook:ActivityComment}">
     <Grid x:Name="CommentPanel" MinHeight="65" Margin="0,0,0,5">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <Rectangle Height="2" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="#FFFFFF" SnapsToDevicePixels="True" />
+      <Rectangle Height="2" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
       <ClientManagerControls:FacebookImageDragContainer VerticalAlignment="Top" FacebookImage="{Binding FromUser.Image}">
         <Button x:Name="NewsfeedProfilePhotoButton" RenderTransformOrigin="0.5,0.5" Width="60" Height="60" Margin="0,5" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" Style="{StaticResource AnimatedItemButton}">
             <Button.RenderTransform>
@@ -411,16 +418,8 @@
   <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
     <Grid x:Name="Root" MinHeight="130" MinWidth="400" Background="Transparent" HorizontalAlignment="Stretch">
       <!--<ClientManagerControls:NewsFeedItemOverlay Margin="0,0,0,0" SnapsToDevicePixels="True" />-->
-      <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True">
-        <Rectangle.Fill>
-          <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Offset="0" Color="Transparent" />
-            <GradientStop Offset=".05" Color="#d9e2f8" />
-            <GradientStop Offset=".9" Color="#d9e2f8" />
-            <GradientStop Offset="1" Color="Transparent" />
-          </LinearGradientBrush>
-        </Rectangle.Fill>
-      </Rectangle>
+      <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}"/>
+
       <Grid MaxWidth="800" HorizontalAlignment="Stretch" Margin="10, 5">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
@@ -471,7 +470,7 @@
               </Grid>
             </InlineUIContainer>
             <TextBlock x:Name="TargetBlock">
-              <Run FontFamily="Webdings" Foreground="#215868">4
+              <Run FontFamily="Webdings" Foreground="{DynamicResource ActivityPostPersonToPersonArrowBrush}">4
               </Run>
               <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Target}">
                 <FacebookClient:BindableRun Text="{Binding Target.Name}" />
@@ -524,12 +523,12 @@
             </ToggleButton>
             <ToggleButton x:Name="MoreCommentsButton" Margin="12,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Margin="15,-2,0,0" VerticalAlignment="Top" FontFamily="../Fonts/#Gotham" FontStyle="Italic" FontWeight="Light" Opacity=".6">
-              <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" />
+              <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
             </TextBlock>
           </StackPanel>
           </StackPanel>
           <StackPanel Grid.Column="0" Grid.Row="1">
-            <Border x:Name="Comments" Margin="0,3,0,0" Background="#253b5998" CornerRadius="6,6,0,0" HorizontalAlignment="Stretch">
+            <Border x:Name="Comments" Margin="0,3,0,0" Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6,6,0,0" HorizontalAlignment="Stretch">
               <Border.Style>
                 <Style TargetType="Border">
                   <Setter Property="Visibility" Value="Visible" />
@@ -544,11 +543,12 @@
                 </Style>
               </Border.Style>
               <Grid>
-                <Image Width="9" Height="5" HorizontalAlignment="Left" Margin="140,-5,0,0" VerticalAlignment="Top" Source="../Images/comments_arrow.png" />
+              <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
+                                    <!--<Image Width="9" Height="5" HorizontalAlignment="Left" Margin="140,-5,0,0" VerticalAlignment="Top" Source="../Images/comments_arrow.png" />-->
                 <ItemsControl Margin="10,0,10,0" ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}" ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource NewsFeedCommentTemplate}" />
               </Grid>
             </Border>
-            <Border HorizontalAlignment="Left" Margin="0,0,0,3" Background="#253b5998" CornerRadius="0,0,6,6">
+            <Border HorizontalAlignment="Left" Margin="0,0,0,3" Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="0,0,6,6">
               <Border.Style>
                 <Style TargetType="Border">
                   <Setter Property="Visibility" Value="Collapsed" />
@@ -574,15 +574,15 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding />
                       <Binding ElementName="CommentTextBox" Path="Text" />
                     </MultiBinding>
                   </Button.CommandParameter>
-                  <Button.Style>
-                    <Style BasedOn="{StaticResource StandardButtonStyle}" TargetType="{x:Type Button}">
+                  <!--<Button.Style>
+                    <Style BasedOn="{DynamicResource StandardButtonStyle}" TargetType="{x:Type Button}">
                       <Setter Property="IsEnabled" Value="True" />
                       <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=CommentTextBox, Path=Text}" Value="">
@@ -590,7 +590,7 @@
                         </DataTrigger>
                       </Style.Triggers>
                     </Style>
-                  </Button.Style>
+                  </Button.Style>-->
                 </Button>
               </StackPanel>
             </Border>
@@ -629,7 +629,7 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="AllowDrop" Value="true" />
     <Setter Property="FontSize" Value="14px" />
-    <Setter Property="Foreground" Value="#35528c" />
+    <Setter Property="Foreground" Value="{DynamicResource CommentTextBoxForeground}" />
     <Setter Property="Background" Value="#FFFFFF" />
     <Setter Property="MinHeight" Value="23" />
     <Setter Property="MaxLines" Value="8" />
@@ -661,7 +661,7 @@
               <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill" />
               <Image Grid.Column="2" Grid.Row="2" Margin="-0.1,0,0,0" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" />
             </Grid>
-            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" Foreground="#35528c" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
+            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" Foreground="{DynamicResource CommentTextBoxForeground}" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
             <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" VerticalAlignment="Center" FontWeight="Medium" />
           </Grid>
           <ControlTemplate.Triggers>

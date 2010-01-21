@@ -55,7 +55,7 @@
           Opacity="0.0">
         <StackPanel Orientation="Horizontal">
           <Button Width="80" Height="30"
-              Style="{StaticResource StandardButtonStyle}"
+              Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.Stop" 
               VerticalAlignment="Center"
               ToolTip="Stop slide show">
@@ -75,7 +75,7 @@
             </Image>
           </ToggleButton>
           <Button Width="50" Height="30"
-              Style="{StaticResource StandardButtonStyle}"
+              Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.PreviousTrack" 
               VerticalAlignment="Center"
               ToolTip="Previous slide">
@@ -87,7 +87,7 @@
           </Button>
           <Button Width="50" Height="40"
               x:Name="PlayPauseButton"
-              Style="{StaticResource StandardButtonStyle}"
+              Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.Pause" 
               VerticalAlignment="Center"
               ToolTip="Pause slide show">
@@ -98,7 +98,7 @@
             </Image>
           </Button>
           <Button Width="50" Height="30"
-              Style="{StaticResource StandardButtonStyle}"
+              Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.NextTrack" 
               VerticalAlignment="Center"
               ToolTip="Next slide">
@@ -116,9 +116,9 @@
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
                                FontFamily="./Fonts/#Gotham" Opacity="1" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
                                Foreground="White" FontWeight="Medium" TextWrapping="Wrap">
-                        <TextBlock.Effect>
-                          <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>
+            <TextBlock.Effect>
+                <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
                                FontFamily="./Fonts/#Gotham" Opacity=".8" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
@@ -128,9 +128,9 @@
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
                                Foreground="White" Opacity="1" FontWeight="Light" TextWrapping="Wrap">
-                        <TextBlock.Effect>
-                          <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>
+            <TextBlock.Effect>
+              <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
@@ -140,9 +140,9 @@
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity="1" FontWeight="Light"
                                Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap">
-                        <TextBlock.Effect>
-                          <BlurEffect KernelType="Gaussian" Radius="15" />
-                        </TextBlock.Effect>
+            <TextBlock.Effect>
+              <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
                                FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity=".5" FontWeight="Light"

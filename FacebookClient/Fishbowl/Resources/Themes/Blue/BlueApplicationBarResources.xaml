@@ -49,6 +49,9 @@
     <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush"
                      Color="#FF95A5C7"  />
     
+    <SolidColorBrush x:Key="FriendViewerCategoryTabsHoveredBrush"
+                     Color="#FF95A5C7"  />
+    
     <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush"
                      Color="#253b5998"  />
 

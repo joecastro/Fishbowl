@@ -751,7 +751,14 @@
               CommandTarget="{Binding ElementName=PART_PhotoDisplay}"
               Style="{DynamicResource TopToolbarButton}"
               ToolTip="Zoom the photo in">
-              <Image Source="../Images/zoom_in.png"/>
+              <!--<StackPanel Orientation="Horizontal">
+                  <Image Source="../Images/zoom_in.png"/>--> 
+                <Image Height="16" RenderTransformOrigin="0,0">
+                    <Image.Source>
+                        <DrawingImage Drawing="{Binding Source={StaticResource ZoomInDrawingBrush}, Path=Drawing}"/>
+                    </Image.Source>
+                </Image>
+                <!--</StackPanel>-->
             </Button>
             <Button
               Command="FacebookClient:PhotoDisplayControl.FitPhotoToWindowCommand"
@@ -772,7 +779,13 @@
               CommandTarget="{Binding ElementName=PART_PhotoDisplay}"
               Style="{DynamicResource TopToolbarButton}"
               ToolTip="Zoom the photo out">
-              <Image Source="../Images/zoom_out.png"/>
+                <!--<Image Source="../Images/zoom_out.png"/>-->
+                <Image Height="16" RenderTransformOrigin="0,0" Margin="4 0">
+                    <Image.Source>
+                        <DrawingImage Drawing="{Binding Source={StaticResource ZoomOutDrawingBrush}, Path=Drawing}"/>
+                    </Image.Source>
+                </Image>
+                
             </Button>
             <Rectangle
               Width="1"
@@ -794,7 +807,12 @@
               CommandParameter="{Binding}"
               Style="{DynamicResource TopToolbarButton}"
               ToolTip="Save the photo">
-              <Image Source="../Images/save.png"/>
+              <!--<Image Source="../Images/save.png"/>-->
+                 <Image Height="14">
+                    <Image.Source>
+                        <DrawingImage Drawing="{Binding Source={StaticResource SaveDiskToolbarDrawingBrush}, Path=Drawing}"/>
+                    </Image.Source>
+                </Image>
             </Button>
             <Rectangle
               Width="1"
@@ -1051,7 +1069,7 @@
           VerticalAlignment="Top"
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
-          <Border Background="#253b5998" CornerRadius="6">
+          <Border Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6">
             <StackPanel>
               <ItemsControl
                 x:Name="CommentsList"
@@ -1079,14 +1097,14 @@
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
 
-                <Button Margin="10,4,0,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Margin="10,4,3,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />
                       <Binding ElementName="CommentTextBox" Path="Text" />
                     </MultiBinding>
                   </Button.CommandParameter>
-                  <Button.Style>
+                  <!--<Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
                       <Setter Property="IsEnabled" Value="True" />
                       <Style.Triggers>
@@ -1095,7 +1113,7 @@
                         </DataTrigger>
                       </Style.Triggers>
                     </Style>
-                  </Button.Style>
+                  </Button.Style>-->
                 </Button>
 
               </StackPanel>
@@ -1339,7 +1357,7 @@
                     FontFamily="../Fonts/#Gotham"
                     FontSize="22px"
                     FontWeight="Regular"
-                    Foreground="#000000"
+                    Foreground="{DynamicResource PhotoViewerAlbumNameForeground}"
                     Text="{TemplateBinding Content}"
                     TextWrapping="Wrap"/>
                   <ControlTemplate.Triggers>
@@ -1359,13 +1377,13 @@
               FontFamily="../Fonts/#Gotham"
               FontSize="13px"
               FontWeight="Light"
-              Foreground="#000000"
+              Foreground="{DynamicResource PhotoViewerAlbumNameForeground}"
               Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos.Count, StringFormat=\{0\} photos}"/>
             <TextBlock
               FontFamily="../Fonts/#Gotham"
               FontSize="11px"
               FontWeight="Light"
-              Foreground="#000000"
+              Foreground="{DynamicResource PhotoViewerAlbumTimeStampForeground}"
               Opacity=".56"
               Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"/>
           </StackPanel>
@@ -1401,7 +1419,7 @@
                   FontSize="14"
                   FontWeight="Medium"
                   TextWrapping="Wrap">
-                  <FacebookClient:HyperlinkTextContent Foreground="Gray" Text="{Binding Path=FacebookPhoto.Caption}"/>
+                  <FacebookClient:HyperlinkTextContent Foreground="{DynamicResource PhotoCaptionForeground}" Text="{Binding Path=FacebookPhoto.Caption}"/>
                 </TextBlock>
                 <ItemsControl ItemsPanel="{StaticResource PhotoTagPanel}" ItemsSource="{Binding Path=FacebookPhoto.Tags}">
                   <ItemsControl.ItemTemplate>
@@ -1454,7 +1472,7 @@
           VerticalAlignment="Center"
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
-          <Border Background="#253b5998" CornerRadius="6">
+          <Border Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6">
             <StackPanel>
               <ItemsControl
                 x:Name="CommentsList"
@@ -1481,14 +1499,14 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Margin="10,4,0,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />
                       <Binding ElementName="CommentTextBox" Path="Text" />
                     </MultiBinding>
                   </Button.CommandParameter>
-                  <Button.Style>
+                  <!--<Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
                       <Setter Property="IsEnabled" Value="True" />
                       <Style.Triggers>
@@ -1497,7 +1515,7 @@
                         </DataTrigger>
                       </Style.Triggers>
                     </Style>
-                  </Button.Style>
+                  </Button.Style>-->
                 </Button>
 
               </StackPanel>

@@ -89,14 +89,14 @@
     <Setter Property="FontSize" Value="14"/>
     <Setter Property="FontWeight" Value="Light"/>
     <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-    <Setter Property="Foreground" Value="#FF393939"/>
+    <Setter Property="Foreground" Value="{DynamicResource AlbumTitleForeground}"/>
   </Style>
   
   <Style x:Key="AlbumInfoStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
     <Setter Property="FontSize" Value="12"/>
     <Setter Property="FontWeight" Value="Light"/>
-    <Setter Property="Foreground" Value="#FF393939"/>
+    <Setter Property="Foreground" Value="{DynamicResource AlbumInfoForeground}"/>
   </Style>
   
   <!-- Template to display one photo and the album title, used on the homepage list view -->
@@ -403,7 +403,7 @@
           <ColumnDefinition Width="Auto" MinWidth="75" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="1" Foreground="{DynamicResource FacebookBlueBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock Grid.Column="1" Foreground="{DynamicResource PageNavigationTextForeground}" VerticalAlignment="Center" HorizontalAlignment="Center">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />

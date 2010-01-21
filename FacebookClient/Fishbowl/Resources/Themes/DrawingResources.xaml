@@ -102,37 +102,37 @@
 
   <DrawingBrush x:Key="SlideShowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="SaveDiskToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SaveDiskGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SaveDiskGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="PlayArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PlayArrowGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PlayArrowGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="PauseToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PauseGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PauseGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="ShuffleToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource ShuffleGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource ShuffleGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
   
   <DrawingBrush x:Key="NextArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
@@ -142,7 +142,7 @@
         <DrawingGroup.Transform>
           <ScaleTransform ScaleX="-1"/>
         </DrawingGroup.Transform>  
-        <GeometryDrawing Brush="{StaticResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}"/>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}"/>
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
@@ -154,12 +154,59 @@
           <DrawingGroup.Transform>
             <TranslateTransform X="12" Y="9" />
           </DrawingGroup.Transform>
-          <GeometryDrawing Brush="{StaticResource IconBackgroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
+          <GeometryDrawing Brush="{DynamicResource IconBackgroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
         </DrawingGroup>
-        <GeometryDrawing Brush="{StaticResource IconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
+        <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
+
+    <DrawingGroup x:Key="ZoomInDrawing">
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+            <GeometryDrawing.Geometry>
+                <CombinedGeometry GeometryCombineMode="Union">
+                    <CombinedGeometry.Geometry1>
+                        <RectangleGeometry Rect="2.5, 0, 2,7"  />
+                    </CombinedGeometry.Geometry1>
+                    <CombinedGeometry.Geometry2>
+                        <RectangleGeometry Rect="0,2.5,7,2" />
+                    </CombinedGeometry.Geometry2>
+                </CombinedGeometry>
+            </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+    </DrawingGroup> 
+
+  <DrawingBrush x:Key="ZoomInDrawingBrush" Stretch="Uniform">
+      <DrawingBrush.Drawing>
+          <DrawingGroup>
+              <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+                      <GeometryDrawing.Geometry>
+                          <CombinedGeometry GeometryCombineMode="Union">
+                              <CombinedGeometry.Geometry1>
+                                  <RectangleGeometry Rect="2.5, 0, 2,7"  />
+                              </CombinedGeometry.Geometry1>
+                              <CombinedGeometry.Geometry2>
+                                  <RectangleGeometry Rect="0,2.5,7,2" />
+                              </CombinedGeometry.Geometry2>
+                          </CombinedGeometry>
+                      </GeometryDrawing.Geometry>
+                  </GeometryDrawing>
+              </DrawingGroup>
+      </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="ZoomOutDrawingBrush" Stretch="Uniform">
+      <DrawingBrush.Drawing>
+          <DrawingGroup>
+              <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+                  <GeometryDrawing.Geometry>
+                     <RectangleGeometry Rect="0,2.5,7,2" />          
+                  </GeometryDrawing.Geometry>
+              </GeometryDrawing>
+          </DrawingGroup>
+      </DrawingBrush.Drawing>
+  </DrawingBrush>
+
 
   <DrawingBrush x:Key="NotificationsPostDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>

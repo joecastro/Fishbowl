@@ -11,7 +11,7 @@
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
     <Setter Property="FontSize" Value="15px" />
     <Setter Property="FontWeight" Value="Light" />
-    <Setter Property="Foreground" Value="#C0000000" />
+    <Setter Property="Foreground" Value="{DynamicResource FriendViewerInformationalTextBlockForeground}" />
   </Style>
 
   <TextBlock x:Key="InterestingYetNoPhotosTextBlock" Style="{StaticResource FriendViewerInformationalTextBlock}">
@@ -47,16 +47,17 @@
   <ControlTemplate x:Key="FriendRadioButtonTemplate" TargetType="{x:Type RadioButton}">
     <Grid Cursor="Hand">
 
-      <Rectangle x:Name="bevel1" Fill="#caced6" Height="1" SnapsToDevicePixels="True" Margin="0,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
-      <Rectangle x:Name="bevel2" Fill="#e9edf3" Height="1" SnapsToDevicePixels="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+      <Rectangle x:Name="bevel1" Fill="{DynamicResource FriendViewerCategoryTabsBevel1}" Height="1" SnapsToDevicePixels="True" Margin="0,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+      <Rectangle x:Name="bevel2" Fill="{DynamicResource FriendViewerCategoryTabsBevel2}" Height="1" SnapsToDevicePixels="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+      <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
       <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
-      <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
-      <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="#3f3f3f" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="14px" FontWeight="Light" Text="{TemplateBinding Content}" />
+      
+      <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="14px" FontWeight="Light" Text="{TemplateBinding Content}" />
     </Grid>
     <ControlTemplate.Triggers>
       <Trigger Property="IsChecked" Value="True">
         <Setter TargetName="selected" Property="Opacity" Value="1" />
-        <Setter TargetName="ContentTextblock" Property="Foreground" Value="#FFFFFF" />
+        <Setter TargetName="ContentTextblock" Property="Foreground" Value="{DynamicResource FriendViewerCategoryTabsSelectedTextBrush}" />
         <Setter TargetName="ContentTextblock" Property="FontWeight" Value="Medium" />
       </Trigger>
       <Trigger Property="Tag" Value="False">
@@ -105,10 +106,13 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Thumb}">
           <Grid Background="Transparent">
-            <Image x:Name="up" Source="../Images/Controls/interest_slider_thumb_up.png" />
-            <Image x:Name="hover" Source="../Images/Controls/interest_slider_thumb_up.png" Opacity="0" />
-            <Image x:Name="down" Source="../Images/Controls/interest_slider_thumb_up.png" Opacity="0" />
-          </Grid>
+            <!--<Image x:Name="up" Source="../Images/Controls/interest_slider_thumb_up.png" />-->
+            <!--<Image x:Name="up" Source="../Images/Controls/interest_slider_thumb_up.png" />
+            <Image x:Name="down" Source="../Images/Controls/interest_slider_thumb_up.png" Opacity="0" />-->
+            <Polygon RenderTransformOrigin="0,0" x:Name="up" Fill="{DynamicResource LikeSliderThumbBrushUp}" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
+            <Polygon RenderTransformOrigin="0,0" x:Name="down" Fill="{DynamicResource LikeSliderThumbBrushDown}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1" />
+            <Polygon RenderTransformOrigin="0,0" x:Name="hover" Fill="{DynamicResource LikeSliderThumbBrushHover}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
+        </Grid>
 
           <ControlTemplate.Triggers>
             <EventTrigger RoutedEvent="Mouse.MouseEnter">
@@ -117,6 +121,7 @@
                   <Storyboard>
                     <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
@@ -127,6 +132,7 @@
                   <Storyboard>
                     <DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
@@ -135,22 +141,24 @@
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
+                      <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
             </EventTrigger>
-            <EventTrigger RoutedEvent="Mouse.MouseUp">
+          <!--  <EventTrigger RoutedEvent="Mouse.MouseUp">
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                      <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
-            </EventTrigger>
+            </EventTrigger>-->
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
@@ -193,17 +201,22 @@
                   <RepeatButton Style="{StaticResource InterestRepeatButton}" Command="Slider.DecreaseLarge" />
                 </Track.DecreaseRepeatButton>
                 <Track.Thumb>
-                  <Thumb Style="{StaticResource InterestThumb}" />
+                  <Thumb Style="{StaticResource InterestThumb}" Margin="5 0 0 0" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
                   <RepeatButton Style="{StaticResource InterestRepeatButton}" Command="Slider.IncreaseLarge" />
                 </Track.IncreaseRepeatButton>
               </Track>
-
-              <Image Grid.Row="2" Source="../Images/Controls/interest_tick_bar.png" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="4" Margin="-20,0,-20,0" />
+                <Canvas Grid.Row="2" Background="Transparent" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Width="150" Height="4" Margin="-20,0,-20,0">
+                    <Rectangle Width="150" Height="4" RadiusX="2" RadiusY="2"  Canvas.Top="0" Canvas.Left="0" Fill="{DynamicResource LikeSliderBackground}" RenderTransformOrigin="0,0" />
+                    <Ellipse Width="4" Height="4" Fill="{DynamicResource LikeSliderTickBrush}" Canvas.Left="10" Canvas.Top="0"/>
+                    <Ellipse Width="4" Height="4" Fill="{DynamicResource LikeSliderTickBrush}" Canvas.Right="10" Canvas.Top="0"/>
+                    <Ellipse Width="4" Height="4" Fill="{DynamicResource LikeSliderTickBrush}" Canvas.Left="73" Canvas.Top="0"/>
+                </Canvas>
+                <!--<Image Grid.Row="2" Source="../Images/Controls/interest_tick_bar.png" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="4" Margin="-20,0,-20,0" />-->
               <TickBar Grid.Row="2" Placement="Bottom" Height="4" Visibility="Visible" />
 
-              <TextBlock Grid.Row="3" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" FontStyle="Italic" Margin="0,5,0,0" Text="Interest Level" Foreground="#3b5998" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+              <TextBlock Grid.Row="3" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" FontStyle="Italic" Margin="0,5,0,0" Text="Interest Level" Foreground="{DynamicResource InterestLevelTextForeground}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
             </Grid>
           </Border>
           <ControlTemplate.Triggers>
@@ -289,7 +302,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontWeight" Value="Light" />
     <Setter Property="FontSize" Value="12" />
-    <Setter Property="Foreground" Value="Black" />
+    <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}" />
   </Style>
   <Style x:Key="AlbumTitleStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value=".. /Fonts/#Gotham" />
@@ -388,7 +401,7 @@
       </DockPanel>
 
       <StackPanel x:Name="HeaderArea" MinHeight="50" Margin="10,6,0,0" VerticalAlignment="Top" DockPanel.Dock="Top">
-        <TextBlock IsHyphenationEnabled="True" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontFamily="../Fonts/#Gotham" FontSize="20px" FontWeight="Bold" Foreground="#C0000000" Text="{Binding Path=FacebookContact.Name}" />
+        <TextBlock IsHyphenationEnabled="True" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontFamily="../Fonts/#Gotham" FontSize="20px" FontWeight="Bold" Foreground="{DynamicResource FriendViewerNameForeground}" Text="{Binding Path=FacebookContact.Name}" />
         <Path Grid.Row="1" Fill="#FFE3E7F0" Stretch="Fill" Stroke="#FFE3E7F0" HorizontalAlignment="Left" Margin="25,10,0,0" Width="15" Data="M22.166642,154.45381 L29.999666,187.66699 40.791059,154.54395" StrokeThickness="3" VerticalAlignment="Top" Height="25" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
           <Path.Style>
             <Style TargetType="Path">
@@ -424,17 +437,7 @@
             <FacebookClient:HyperlinkTextContent FontFamily="../Fonts/#Gotham" Text="{Binding Path=FacebookContact.StatusMessage.Message}" />
           </TextBlock>
         </Border>
-        <Rectangle Margin="20,2" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True">
-          <Rectangle.Fill>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-              <GradientStop Offset="0" Color="Transparent" />
-              <GradientStop Offset=".05" Color="#d9e2f8" />
-              <GradientStop Offset=".9" Color="#d9e2f8" />
-              <GradientStop Offset="1" Color="Transparent" />
-            </LinearGradientBrush>
-          </Rectangle.Fill>
-        </Rectangle>
-
+        <Rectangle Margin="20,2" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}" />
       </StackPanel>
 
       <Grid x:Name="ContentArea">
@@ -584,8 +587,8 @@
                   </Style>
                 </Border.Style>
                 <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="7,5,0,7">
-                  <Button Content="Share" DockPanel.Dock="Right" Height="22" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=PART_WriteOnWallTextBox}" FontSize="13" Margin="10,4,5,0">
-                    <Button.Style>
+                  <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=PART_WriteOnWallTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Content="Share" DockPanel.Dock="Right" Height="22" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=PART_WriteOnWallTextBox}" FontSize="13" Margin="10,4,5,0">
+                    <!--<Button.Style>
                       <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
                         <Setter Property="IsEnabled" Value="True" />
                         <Style.Triggers>
@@ -594,7 +597,7 @@
                           </DataTrigger>
                         </Style.Triggers>
                       </Style>
-                    </Button.Style>
+                    </Button.Style>-->
                   </Button>
 
                   <FacebookClient:CommandTextBox x:Name="PART_WriteOnWallTextBox" BannerText="{Binding Path=FacebookContact.FirstName, StringFormat=Write on \{0\}\'s wall}" Panel.ZIndex="1" Style="{DynamicResource CommentTextBoxStyle}" Margin="0" MaxWidth="300" FontSize="13" TextWrapping="Wrap" SpellCheck.IsEnabled="True" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.WriteOnWallCommand}">

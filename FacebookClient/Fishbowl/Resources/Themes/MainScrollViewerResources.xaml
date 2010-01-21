@@ -324,16 +324,7 @@
                         <RepeatButton x:Name="IncreaseRepeat" Grid.Row="2" Style="{DynamicResource ScrollBar.Black_LineButton}" 
                                                         HorizontalAlignment="Stretch" Margin="0,0,1,0"
                                                         Command="ScrollBar.LineDownCommand" Content="M 0 0 L 3.5 4 L 7 0 Z" />
-                        <Rectangle x:Name="DividerLine" HorizontalAlignment="Left" Width="1.2"  Grid.RowSpan="3">
-                            <Rectangle.Fill>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Offset="0" Color="Transparent" />
-                                    <GradientStop Offset=".05" Color="#d9e2f8" />
-                                    <GradientStop Offset=".9" Color="#d9e2f8" />
-                                    <GradientStop Offset="1" Color="Transparent" />
-                                </LinearGradientBrush>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <Rectangle x:Name="DividerLine" HorizontalAlignment="Left" Width="1.2"  Grid.RowSpan="3" Fill="{DynamicResource VerticalDividerBrush}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="Orientation" Value="Horizontal">
@@ -378,16 +369,11 @@
                     <Grid Background="Transparent">
                         <Path HorizontalAlignment="Center" Name="buttonArrow"
 							VerticalAlignment="Center"
-							Data="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}">
+							Data="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" Fill="{DynamicResource ScrollBarArrowBrush}">
                             <Path.LayoutTransform>
                                 <ScaleTransform ScaleX="2" ScaleY="2"/>
                             </Path.LayoutTransform>
-                            <Path.Fill>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                    <GradientStop Offset="0" Color="#35528c"/>
-                                    <GradientStop Offset="1" Color="#35528c"/>
-                                </LinearGradientBrush>
-                            </Path.Fill>
+                            
                         </Path>
                     </Grid>
                 </ControlTemplate>

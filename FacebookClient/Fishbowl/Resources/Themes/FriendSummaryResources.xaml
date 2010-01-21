@@ -52,7 +52,7 @@
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
         <TextBlock DockPanel.Dock="Top" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="{Binding HasData, FallbackValue=False}">
-            <FacebookClient:BindableRun Text="{Binding Name}" />
+            <FacebookClient:BindableRun Text="{Binding Name}"/>
           </Hyperlink>
           <InlineUIContainer>
             <Grid Width="14" Height="14" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -168,7 +168,7 @@
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Column="1" Foreground="{DynamicResource FacebookBlueBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Foreground="{DynamicResource PageNavigationTextForeground}" HorizontalAlignment="Center" VerticalAlignment="Center">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />

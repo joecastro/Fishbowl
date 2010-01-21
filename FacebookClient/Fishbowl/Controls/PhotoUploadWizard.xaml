@@ -81,7 +81,7 @@
                                     <RowDefinition Height="9" />
                                 </Grid.RowDefinitions>
 
-                                <Border CornerRadius="6.5" Background="#FF7489B6" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+                                <Border CornerRadius="6.5" Background="{DynamicResource UploadWizardPrimaryBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
                                 <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
 
                                 <Image Grid.Column="0" Source="pack://application:,,,/Resources/Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />

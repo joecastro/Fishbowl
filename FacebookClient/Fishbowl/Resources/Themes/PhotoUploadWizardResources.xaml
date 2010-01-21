@@ -20,7 +20,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Microsoft_Windows_Themes:ButtonChrome x:Name="Chrome" SnapsToDevicePixels="true" Background="#FF7489B6" BorderBrush="{TemplateBinding BorderBrush}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}">
+                    <Microsoft_Windows_Themes:ButtonChrome x:Name="Chrome" SnapsToDevicePixels="true" Background="{DynamicResource UploadWizardPrimaryBrush}" BorderBrush="{TemplateBinding BorderBrush}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}">
                         <Grid HorizontalAlignment="Right" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
                             <Path Fill="Black" HorizontalAlignment="Center" Margin="3,1,0,0" x:Name="Arrow" VerticalAlignment="Center" Data="{StaticResource DownArrowGeometry}"/>
                         </Grid>
@@ -78,11 +78,9 @@
                         <Path.RenderTransform>
                             <RotateTransform Angle="90" />
                         </Path.RenderTransform>
-
                     </Path>
                 </Viewbox>
             </Border>
-
             <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>
 
@@ -122,7 +120,6 @@
                 </Viewbox>
 
             </Border>
-
             <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
         </Grid>
 
@@ -169,7 +166,7 @@
                                 <RowDefinition Height="9" />
                             </Grid.RowDefinitions>
 
-                            <Border CornerRadius="6.5" x:Name="CaptionTextBoxBorder" Background="#FF7489B6" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+                            <Border CornerRadius="6.5" x:Name="CaptionTextBoxBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
                             <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
 
                             <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
@@ -234,7 +231,7 @@
                         </Grid.ColumnDefinitions>
                         <Popup Margin="1" x:Name="PART_Popup" AllowsTransparency="true" IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Grid.ColumnSpan="2">
                             <Microsoft_Windows_Themes:SystemDropShadowChrome MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding Path=ActualWidth, ElementName=MainGrid}" x:Name="Shdw" Color="Transparent">
-                                <Border x:Name="DropDownBorder" Background="#FF7489B6" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
+                                <Border x:Name="DropDownBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
                                     <ScrollViewer CanContentScroll="true" Style="{DynamicResource MainScrollViewerStyle}">
                                         <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Contained"/>
                                     </ScrollViewer>

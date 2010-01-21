@@ -23,8 +23,8 @@
       </StackPanel>
       <DockPanel DockPanel.Dock="Bottom">
         <Button DockPanel.Dock="Right" Margin="5" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Click="_OnClose" />
-        <TextBlock Margin="5" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light">
-          <Hyperlink Click="_OnPrivacyWebsiteClicked">Privacy statement</Hyperlink>
+        <TextBlock Margin="5" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light" Opacity=".6">
+          <Hyperlink Click="_OnPrivacyWebsiteClicked" Foreground="{DynamicResource SettingsDialogForeground}">Privacy statement</Hyperlink>
         </TextBlock>
       </DockPanel>
       <ScrollViewer VerticalScrollBarVisibility="Hidden">
@@ -32,12 +32,12 @@
           <Button x:Name="ClearCacheButton" Click="_OnClearCacheButtonClicked" Margin="5,2" Style="{DynamicResource StandardButtonStyle}" Width="Auto" HorizontalAlignment="Left" Content="Clear Image Cache" />
           <TextBlock x:Name="ClearCacheInfoTextBlock" Margin="5,2"  Foreground="Gray" TextAlignment="Right" FontStyle="Italic">(Images will be purged when the application next shuts down)</TextBlock>
           <StackPanel Orientation="Horizontal">
-            <Label Margin="10,2">Visual Style</Label>
+            <Label Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Visual Style</Label>
             <ComboBox x:Name="VisualStyleBox" Margin="0,2"/>
           </StackPanel>
-          <CheckBox x:Name="DisableUpdatesCheckBox" Margin="10,2">Disable automatic updates</CheckBox>
-          <CheckBox x:Name="OpenPagesInBrowserCheckBox" Margin="10,2">Open web content in external browser</CheckBox>
-          <CheckBox x:Name="KeepMiniModeOnTopCheckBox" Margin="10,2">Keep the mini-mode window on top of all others.</CheckBox>
+          <CheckBox x:Name="DisableUpdatesCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Disable automatic updates</CheckBox>
+          <CheckBox x:Name="OpenPagesInBrowserCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Open web content in external browser</CheckBox>
+          <CheckBox x:Name="KeepMiniModeOnTopCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep the mini-mode window on top of all others.</CheckBox>
         </StackPanel>
       </ScrollViewer>
     </DockPanel>

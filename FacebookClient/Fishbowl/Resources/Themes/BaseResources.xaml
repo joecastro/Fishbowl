@@ -8,14 +8,15 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager">
 
-  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
-  <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
-  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-  <FacebookClient:AddConverter x:Key="AddConverter" />
+    <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
+    <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <FacebookClient:AddConverter x:Key="AddConverter" />
+    <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
 
   <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
   <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="ToolbarIconForegroundBrush" Color="#3B5998" />
+  <!--<SolidColorBrush x:Key="ToolbarIconForegroundBrush" Color="#3B5998" />-->
 
   <ItemsPanelTemplate x:Key="VirtualizedItemsPanelTemplate">
     <VirtualizingStackPanel />
@@ -112,7 +113,7 @@
               </Path.RenderTransform>
             </Path>
           </Viewbox>
-          <TextBlock Text="Previous Album" FontSize="13" Margin="5,4,0,0" />
+          <TextBlock Text="Previous Album" FontSize="13" Margin="5,4,0,0" Foreground="{DynamicResource AlbumNavigationTextForeground}"/>
         </StackPanel>
       </Border>
       <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -150,7 +151,7 @@
               </Path.RenderTransform>
             </Path>
           </Viewbox>
-          <TextBlock Text="Next Album" FontSize="13" Margin="5,3,0,0" />
+          <TextBlock Text="Next Album" FontSize="13" Margin="5,3,0,0" Foreground="{DynamicResource AlbumNavigationTextForeground}" />
         </StackPanel>
       </Border>
       <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -319,7 +320,7 @@
     </Setter>
   </Style>
 
-  <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
+  <!-- Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Padding" Value="15,0,15,0" />
     <Setter Property="Cursor" Value="Hand" />
     <Setter Property="VerticalAlignment" Value="Top" />
@@ -379,67 +380,64 @@
             <ContentPresenter x:Name="Content" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" 
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-          </Grid>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-              <Trigger.ExitActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
-                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.ExitActions>
-              <Trigger.EnterActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <!--<DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
-                    <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.EnterActions>
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Trigger.EnterActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
-                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.EnterActions>
-              <Trigger.ExitActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <!--<DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />-->
-                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-              <Trigger.EnterActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                    <!--<DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.EnterActions>
-              <Trigger.ExitActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                    <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.ExitActions>
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                       <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                                       </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                                        </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+
+
+  
 
   <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Template">
@@ -746,29 +744,31 @@
     <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}" StartingPhoto="{Binding StartingPhoto, Mode=OneTime}"/>
   </DataTemplate>
 
-  <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
-    <Setter Property="OverridesDefaultStyle" Value="true"/>
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="12px"/>
-    <Setter Property="Foreground" Value="White"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="ToolTip">
-          <Border 
-              CornerRadius="3"
-              Background="{DynamicResource TooltipBackgroundBrush}" 
-              BorderThickness="1" 
-              Padding="10,3,10,3" 
-              BorderBrush="#7494C0" 
-              SnapsToDevicePixels="True" >
-            <ContentPresenter 
-                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
+
+    <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border CornerRadius="3" Background="{DynamicResource TooltipBackgroundBrush}" BorderThickness="1" Padding="10,3,10,3" BorderBrush="{DynamicResource TooltipBorderBrush}" SnapsToDevicePixels="True" >
+                        <!--<Border.Background>
+                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                                <GradientStop Color="#DF35528C" Offset="0.25"/>
+                                <GradientStop Color="#8F35528C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>-->
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

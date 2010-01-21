@@ -20,24 +20,15 @@
               <TextBlock Text="Notifications" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">
-              <ItemsControl x:Name="NotificationList" Background="White" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}">
+              <ItemsControl x:Name="NotificationList" Background="{DynamicResource PopupListControlBackgroundBrush}" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type Facebook:Notification}">
                     <DockPanel Margin="0,0,0,5">
-                      <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <Rectangle.Fill>
-                          <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Offset="0" Color="Transparent" />
-                            <GradientStop Offset=".05" Color="#d9e2f8" />
-                            <GradientStop Offset=".9" Color="#d9e2f8" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                          </LinearGradientBrush>
-                        </Rectangle.Fill>
-                      </Rectangle>
+                            <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center" Fill="{DynamicResource NewsFeedItemDividerBrush}" />
 
-                      <Button DockPanel.Dock="Right" 
+                            <Button DockPanel.Dock="Right" 
                               Content="r"
-                              Foreground="{DynamicResource FacebookBlueBrush}" 
+                              Foreground="{DynamicResource PopupListControlDeleteItemBrush}" 
                               FontFamily="Webdings" 
                               Style="{StaticResource SimpleButtonStyle}" 
                               VerticalAlignment="Top" 
@@ -59,7 +50,7 @@
                             </Style.Triggers>
                           </Style> 
                         </TextBlock.Style>
-                        <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnNotificationRequestNavigate" />
+                        <FacebookClient:HyperlinkTextContent Text="{Binding Title}" RequestNavigate="_OnNotificationRequestNavigate"  Foreground="{DynamicResource NotificationMessageTextForeground}"/>
                         <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}">
                           <TextBlock.Style>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CreatedTextBlockStyle}">

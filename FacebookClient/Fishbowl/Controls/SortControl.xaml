@@ -27,19 +27,19 @@
           <ControlTemplate TargetType="{x:Type TabItem}">
             <Grid>
               <Grid x:Name="selected" Opacity="0">
-                <Border Background="#6d84b4" BorderBrush="#3b5998" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
+                <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
               </Grid>
 
               <Grid x:Name="hover" Opacity="0">
-                <Border Background="#6d84b4" BorderBrush="#3b5998" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
+                <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
               </Grid>
 
-              <Rectangle Fill="#b3c4e9" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
+              <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
 
-              <Rectangle Fill="#b3c4e9" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
+              <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
 
-              <TextBlock x:Name="text" Foreground="#4b4b4b" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-              <TextBlock x:Name="text2" Foreground="#4b4b4b" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
               <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Tag="{Binding}">
                 <Button.Template>
@@ -82,8 +82,27 @@
                   <BeginStoryboard>
                     <Storyboard>
                       <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                      <!--<ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text" Storyboard.TargetProperty="Visibility" >
+                            <ObjectAnimationUsingKeyFrames.KeyFrames>
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Hidden</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames.KeyFrames>
+                        </ObjectAnimationUsingKeyFrames>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text2" Storyboard.TargetProperty="Visibility" >
+                            <ObjectAnimationUsingKeyFrames.KeyFrames>
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames.KeyFrames>
+                        </ObjectAnimationUsingKeyFrames>
+
                     </Storyboard>
                   </BeginStoryboard>
                 </Trigger.ExitActions>
@@ -117,8 +136,8 @@
         Add more photos
       </Button>
 
-      <TextBlock DockPanel.Dock="Top" Foreground="#4b4b4b" FontSize="15px" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
-      <TextBlock DockPanel.Dock="Top" Foreground="#4b4b4b" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="15px" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
       <TabControl x:Name="SortTabs" Margin="0,6,0,0" />
     </DockPanel>
   </Border>

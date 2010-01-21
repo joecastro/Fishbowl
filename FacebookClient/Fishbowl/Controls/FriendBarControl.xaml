@@ -6,8 +6,8 @@
                                       Focusable="False">
 
     <Grid>
-        <Border Margin="0,2,0,0" Background="#103b5998" />
-        <Rectangle Height="1" SnapsToDevicePixels="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="#353b5998" />
+        <Border Margin="0,2,0,0" Background="{DynamicResource FriendBarBackgroundBrush}" />
+        <Rectangle Height="1" SnapsToDevicePixels="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="{DynamicResource FriendBarBorderBrush}" />
         
         <Grid x:Name="FilmStripBlurEffectArea">
             <FacebookClient:FilmStripControl ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Friends}"

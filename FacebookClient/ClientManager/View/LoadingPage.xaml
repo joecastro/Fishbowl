@@ -7,14 +7,14 @@
   <Grid>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
       <TextBlock 
-          Foreground="{DynamicResource FacebookBlueBrush}" 
+          Foreground="{DynamicResource SpinnerTextForeground}" 
           FontFamily="Fonts/#Gotham" 
           FontWeight="Light" 
           FontSize="32" 
           HorizontalAlignment="Center" 
           Text="Loading..." />
       <TextBlock 
-          Foreground="{DynamicResource FacebookBlueBrush}" 
+          Foreground="{DynamicResource SpinnerTextForeground}" 
           FontFamily="Fonts/#Gotham" 
           FontWeight="Light" 
           FontSize="13" 

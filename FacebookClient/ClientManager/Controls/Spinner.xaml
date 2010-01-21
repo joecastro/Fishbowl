@@ -34,73 +34,73 @@
 		</Grid.ColumnDefinitions>
 
 		<Viewbox>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity="1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-30" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity="1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-60" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".9">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-90" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".8">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-120" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".7">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-150" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".6">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-180" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".5">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-210" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".4">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-240" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".3">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-270" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".2">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-300" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-330" />
 			</Viewbox.RenderTransform>
-			<Path Fill="#35528c" Data="{StaticResource dotBar}"/>
+			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 
 	</Grid>
