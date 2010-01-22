@@ -653,16 +653,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\photoAlbum_default.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\placeholderprofilephoto.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Images\comments_arrow.png" />
     <Resource Include="Resources\Images\comment_icon.png" />
     <Resource Include="Resources\Images\placeholderprofilephoto-square.png" />
-    <Resource Include="Resources\Images\PlaceholderPhoto2.png" />
     <Resource Include="Resources\Images\PlaceholderPhoto3.png" />
     <Resource Include="Resources\Images\Fishbowl.ico" />
     <Resource Include="Resources\Images\splash.png" />
@@ -696,9 +689,6 @@
     <Resource Include="Resources\Images\Controls\text_box_top_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_top_right.png" />
     <Resource Include="Resources\Images\thumbtack.png" />
-    <Resource Include="Resources\Images\back_down.png" />
-    <Resource Include="Resources\Images\back_hover.png" />
-    <Resource Include="Resources\Images\back_up.png" />
     <Resource Include="Resources\Images\Controls\photo_bottom.png" />
     <Resource Include="Resources\Images\Controls\photo_bottom_left.png" />
     <Resource Include="Resources\Images\Controls\photo_bottom_right.png" />
@@ -707,26 +697,13 @@
     <Resource Include="Resources\Images\Controls\photo_top_left.png" />
     <Resource Include="Resources\Images\Controls\photo_top_right.png" />
     <Resource Include="Resources\Images\Controls\photo_top.png" />
-    <Resource Include="Resources\Images\save.png" />
     <Resource Include="Resources\Images\zoom.png" />
     <Resource Include="Resources\Images\zoom_in.png" />
     <Resource Include="Resources\Images\zoom_out.png" />
     <Resource Include="Resources\Images\photo_print.png" />
-    <Resource Include="Resources\Images\photo_slideshow.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\maximize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\btn_zoom100_click.png" />
-    <Resource Include="Resources\Images\btn_zoom100_default.png" />
-    <Resource Include="Resources\Images\btn_zoom100_hover.png" />
-    <Resource Include="Resources\Images\btn_zoomIn_click.png" />
-    <Resource Include="Resources\Images\btn_zoomIn_default.png" />
-    <Resource Include="Resources\Images\btn_zoomIn_hover.png" />
-    <Resource Include="Resources\Images\btn_zoomOut_click.png" />
-    <Resource Include="Resources\Images\btn_zoomOut_default.png" />
-    <Resource Include="Resources\Images\btn_zoomOut_hover.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Controls\interest_slider_thumb_down.png" />

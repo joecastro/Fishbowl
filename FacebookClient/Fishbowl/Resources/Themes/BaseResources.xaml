@@ -16,7 +16,6 @@
 
   <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
   <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
-  <!--<SolidColorBrush x:Key="ToolbarIconForegroundBrush" Color="#3B5998" />-->
 
   <ItemsPanelTemplate x:Key="VirtualizedItemsPanelTemplate">
     <VirtualizingStackPanel />
@@ -468,6 +467,22 @@
       </Trigger>
     </Style.Triggers>
   </Style>
+
+  <Style x:Key="SimpleButtonBaseStyle" TargetType="{x:Type ButtonBase}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <ContentPresenter />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter Property="Cursor" Value="Hand" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+  
   <!-- Animated Item -->
   <Style x:Key="AnimatedItemButton" TargetType="{x:Type Button}">
     <Setter Property="Cursor" Value="Hand" />
@@ -567,6 +582,41 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <Style x:Key="StandardToolbarContentControlStyle" TargetType="{x:Type ContentControl}">
+    <Setter Property="Padding" Value="15,0,15,0" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="MinWidth" Value="41" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ContentControl}">
+          <Grid Margin="-1,-1,-4,-4">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Column="0" Source="../Images/Controls/button_left_up.png" Stretch="Fill" Margin="0,0,0,0" />
+            <Image Grid.Column="1" Source="../Images/Controls/button_middle_up.png" Stretch="Fill"/>
+            <Image Grid.Column="2" Source="../Images/Controls/button_right_up.png" Stretch="Fill" Margin="0,0,0,0" />
+
+            <ContentPresenter 
+              Grid.Column="1"
+              x:Name="Content" 
+              Content="{TemplateBinding Content}" 
+              Margin="{TemplateBinding Padding}" 
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
 
   <!-- Large Photo Thumbnail Template -->
   <Style TargetType="{x:Type ClientManagerControls:LargePhotoThumbnailControl}">
