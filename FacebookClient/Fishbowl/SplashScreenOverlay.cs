@@ -10,6 +10,7 @@ namespace FacebookClient
     using System.Windows.Controls;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Shapes;
     using Contigo;
     using Standard;
 
@@ -21,11 +22,11 @@ namespace FacebookClient
         // This data is specific to the 5-bubble formatted splash.  If we change the splash screen, need to recalculate the rectangles.
         private static readonly Rect[] _BubbleRects = new Rect[]
         {
-            new Rect(new Point( 68,  92),  new Point(173, 197)), 
-            new Rect(new Point(188,  54),  new Point(246, 113)),
-            new Rect(new Point( 37, 204),  new Point(112, 282)), 
-            new Rect(new Point(198, 150),  new Point(275, 228)),
-            new Rect(new Point(191, 243),  new Point(247, 295)),
+            new Rect( 38, 205,  78,  78),  // Leftmost
+            new Rect( 70,  95, 100, 100),  // Top left
+            new Rect(189,  55,  60,  60),  // Top Right
+            new Rect(199, 148,  78,  78),  // Middle Right
+            new Rect(193, 245,  53,  53),  // Bottom Right
         };
 
         // Path to the custom splash screen 
@@ -153,7 +154,7 @@ namespace FacebookClient
                 foreach (var friend in chosenFriends)
                 {
                     friend.Image.GetImageAsync(
-                        FacebookImageDimensions.Square,
+                        FacebookImageDimensions.Normal,
                         (sender, e) =>
                         {
                             if (e.Cancelled || e.Error != null)
@@ -184,9 +185,9 @@ namespace FacebookClient
         private static void _FriendImageDownloadCompleted(List<ImageSource> friendImages)
         {
             BitmapSource overlaidImage = SplashScreenOverlay._AddOverlay(
-                new BitmapImage(new Uri("pack://application:,,,/Resources/Images/splash.png")), 
+                new BitmapImage(new Uri("pack://application:,,,/Resources/Images/splash.png")),
                 _BubbleRects,
-                friendImages, 
+                friendImages,
                 ClipAlgorithm.Elliptical);
 
             Utility.SaveToPng(overlaidImage, CustomSplashPath, new Size(overlaidImage.PixelWidth, overlaidImage.PixelHeight));
@@ -195,42 +196,35 @@ namespace FacebookClient
         // Creates an element with Canvas attached DPs and appropriate masking if specified.
         private static UIElement _GetCanvasOverlay(ImageSource overlaySource, Rect overlayPosition, ClipAlgorithm howToClip)
         {
-            var image = new Image
-            {
-                Source = overlaySource,
-                Width = overlayPosition.Width,
-                Height = overlayPosition.Height
-            };
-            Canvas.SetLeft(image, overlayPosition.Left);
-            Canvas.SetTop(image, overlayPosition.Top);
+            Brush opacityBrush = null;
 
             switch (howToClip)
             {
                 case ClipAlgorithm.Elliptical:
-
-                    var edgeFading = new RadialGradientBrush
+                    double dimensionDelta = overlayPosition.Height - overlayPosition.Width;
+                    opacityBrush = new DrawingBrush
                     {
-                        GradientOrigin = new Point(0.5, 0.5),
-                        Center = new Point(0.5, 0.5),
-                        // Currently perfectly circular but wouldn't be too hard to make this match the dimensions of the rect if needed.
-                        RadiusX = 0.5,
-                        RadiusY = 0.5
+                        Drawing = new GeometryDrawing
+                        {
+                            Geometry = new EllipseGeometry(overlayPosition),
+                            Brush = new RadialGradientBrush
+                            {
+                                GradientOrigin = new Point(0.5, 0.5),
+                                Center = new Point(0.5, 0.5),
+                                // Since we subtracted Height From Width above (arbitrary) to normalize radii for 
+                                // the gradient, subtract for Width and add for Height (I can show this on paper but this "works" for stretching radius.
+                                RadiusX = 0.5 - (0.5 * (dimensionDelta / overlayPosition.Height)),
+                                RadiusY = 0.5 + (0.5 * (dimensionDelta / overlayPosition.Width)),
+                                GradientStops = 
+                                {
+                                    new GradientStop(Colors.White, 0.0),
+                                    new GradientStop(Colors.White, 0.85),
+                                    new GradientStop(Colors.Transparent, 1.0),
+                                },
+                            },
+                        }
                     };
 
-                    edgeFading.GradientStops.AddRange(
-                        new GradientStop(Colors.White, 0.0),
-                        new GradientStop(Color.FromArgb(0xDF, 0, 0, 0), 0.87),
-                        new GradientStop(Colors.Transparent, 1.0));
-
-                    var ellipseDrawing = new GeometryDrawing
-                    {
-                        Geometry = new EllipseGeometry(overlayPosition),
-                        Brush = edgeFading,
-                    };
-
-                    var drawBrush = new DrawingBrush(ellipseDrawing);
-
-                    image.OpacityMask = drawBrush;
                     break;
                 case ClipAlgorithm.Rectangular:
                     // TODO: Do we care to do any gradient opacity masking here?
@@ -238,7 +232,24 @@ namespace FacebookClient
                     break;
             }
 
-            return image;
+            var rect = new Rectangle
+            {
+                Width = overlayPosition.Width,
+                Height = overlayPosition.Height,
+                Fill = new ImageBrush
+                {
+                    ImageSource = overlaySource,
+                    Stretch = Stretch.UniformToFill,
+                    AlignmentX = AlignmentX.Center,
+                    AlignmentY = AlignmentY.Center
+                },
+                OpacityMask = opacityBrush,
+            };
+
+            Canvas.SetLeft(rect, overlayPosition.Left);
+            Canvas.SetTop(rect, overlayPosition.Top);
+
+            return rect;
         }
     }
 }
