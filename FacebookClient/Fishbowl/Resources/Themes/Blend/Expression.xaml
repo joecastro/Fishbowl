@@ -167,6 +167,25 @@
     <Setter Property="FontSize" Value="14px" />
   </Style>
 
+  <Style x:Key="StandardToolbarHostStyle" TargetType="{x:Type ContentControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ContentControl}">
+          <Grid>
+            <Border Background="{DynamicResource NormalBrush}" BorderBrush="{DynamicResource NormalBorderBrush}" BorderThickness="1" CornerRadius="3" />
+            <Border BorderBrush="{DynamicResource NormalBorderBrush}" BorderThickness="1" CornerRadius="3" Background="{StaticResource ShineBrush}" Opacity="1" />
+
+            <ContentPresenter x:Name="Content"
+              Content="{TemplateBinding Content}" 
+              Margin="{TemplateBinding Padding}" 
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="Red"/>
     <SolidColorBrush x:Key="FilterTabItemTopColor" Color="Green"/>
     

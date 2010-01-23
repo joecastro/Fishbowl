@@ -294,7 +294,7 @@
               <ToggleButton.Template>
                 <ControlTemplate TargetType="{x:Type ButtonBase}">
                   <Grid>
-                    <Ellipse x:Name="ShuffleGlow" Fill="#CCFFFFFF" Margin="2,2" >
+                    <Ellipse x:Name="ShuffleGlow" Fill="#88FFFFFF" Margin="2,2" >
                       <Ellipse.Effect>
                         <BlurEffect Radius="4"/>
                       </Ellipse.Effect>
