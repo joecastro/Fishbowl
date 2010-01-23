@@ -38,7 +38,7 @@
   <GeometryGroup x:Key="RightArrowGeometry">
     <PathGeometry Figures="M10,12 50,12 50,0 70,20 50,40 50,28 10,28Z" />
   </GeometryGroup>
-  
+
   <GeometryGroup x:Key="ShuffleGeometry">
     <PathGeometry Figures="M0,12 50,12 50,0 70,20 50,40 50,28 0,28Z M70,47 20,47 20,35 0,55 20,75 20,63 70,63"/>
   </GeometryGroup>
@@ -67,6 +67,29 @@
     </CombinedGeometry>
   </GeometryGroup>
 
+  <CombinedGeometry x:Key="PrinterGeometry" GeometryCombineMode="Exclude">
+    <CombinedGeometry.Geometry1>
+      <GeometryGroup>
+        <RectangleGeometry Rect="9,0,23,13" RadiusX="0" RadiusY="0"/>
+        <RectangleGeometry Rect="0,14,43,26" RadiusX="4" RadiusY="4"/>
+      </GeometryGroup>
+    </CombinedGeometry.Geometry1>
+    <CombinedGeometry.Geometry2>
+      <GeometryGroup>
+        <RectangleGeometry Rect="4,19,4,4" RadiusX="2" RadiusY="2"/>
+        <RectangleGeometry Rect="10,19,4,4" RadiusX="2" RadiusY="2"/>
+
+        <RectangleGeometry Rect="7,31,28,9"/>
+        <RectangleGeometry Rect="8,32,26,8"/>
+
+        <RectangleGeometry Rect="23,-10,20,19" RadiusX="5" RadiusY="5"/>
+        <RectangleGeometry Rect="24,-11,20,19" RadiusX="5" RadiusY="5"/>
+        <PathGeometry Figures="M24,0 32,0 32,8Z"/>
+
+      </GeometryGroup>
+    </CombinedGeometry.Geometry2>
+  </CombinedGeometry>
+
   <CombinedGeometry x:Key="SlideShowGeometry" GeometryCombineMode="Exclude">
     <CombinedGeometry.Geometry1>
       <RectangleGeometry Rect="0,0,50,40" RadiusX="5" RadiusY="5"/>
@@ -94,6 +117,22 @@
     </CombinedGeometry.Geometry2>
   </CombinedGeometry>
 
+  <GeometryGroup x:Key="ZoomMagnifyingGlassGeometry">
+    <EllipseGeometry Center="12,12" RadiusX="13" RadiusY="13"/>
+    <EllipseGeometry Center="12,12" RadiusX="10" RadiusY="10"/>
+    <RectangleGeometry Rect="9.75,25,5.5,28" RadiusX="3" RadiusY="1.5">
+      <RectangleGeometry.Transform>
+        <RotateTransform Angle="-30" CenterX="12" CenterY="12" />
+      </RectangleGeometry.Transform>
+    </RectangleGeometry>
+  </GeometryGroup>
+
+  <DrawingBrush x:Key="PrinterToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PrinterGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <DrawingBrush x:Key="SlideShowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SlideShowGeometry}" />
@@ -103,6 +142,12 @@
   <DrawingBrush x:Key="SaveDiskToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource SaveDiskGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="ZoomMagnifyingGlassToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource ZoomMagnifyingGlassGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
@@ -123,7 +168,7 @@
       <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource ShuffleGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
-  
+
   <DrawingBrush x:Key="RightArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
@@ -135,7 +180,7 @@
       <DrawingGroup>
         <DrawingGroup.Transform>
           <ScaleTransform ScaleX="-1"/>
-        </DrawingGroup.Transform>  
+        </DrawingGroup.Transform>
         <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}"/>
       </DrawingGroup>
     </DrawingBrush.Drawing>
@@ -172,7 +217,7 @@
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
-  
+
   <DrawingBrush x:Key="SlideShowDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
@@ -187,50 +232,50 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-    <DrawingGroup x:Key="ZoomInDrawing">
-        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
-            <GeometryDrawing.Geometry>
-                <CombinedGeometry GeometryCombineMode="Union">
-                    <CombinedGeometry.Geometry1>
-                        <RectangleGeometry Rect="2.5, 0, 2,7"  />
-                    </CombinedGeometry.Geometry1>
-                    <CombinedGeometry.Geometry2>
-                        <RectangleGeometry Rect="0,2.5,7,2" />
-                    </CombinedGeometry.Geometry2>
-                </CombinedGeometry>
-            </GeometryDrawing.Geometry>
-        </GeometryDrawing>
-    </DrawingGroup> 
+  <DrawingGroup x:Key="ZoomInDrawing">
+    <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+      <GeometryDrawing.Geometry>
+        <CombinedGeometry GeometryCombineMode="Union">
+          <CombinedGeometry.Geometry1>
+            <RectangleGeometry Rect="2.5, 0, 2,7"  />
+          </CombinedGeometry.Geometry1>
+          <CombinedGeometry.Geometry2>
+            <RectangleGeometry Rect="0,2.5,7,2" />
+          </CombinedGeometry.Geometry2>
+        </CombinedGeometry>
+      </GeometryDrawing.Geometry>
+    </GeometryDrawing>
+  </DrawingGroup>
 
   <DrawingBrush x:Key="ZoomInDrawingBrush" Stretch="Uniform">
-      <DrawingBrush.Drawing>
-          <DrawingGroup>
-              <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
-                      <GeometryDrawing.Geometry>
-                          <CombinedGeometry GeometryCombineMode="Union">
-                              <CombinedGeometry.Geometry1>
-                                  <RectangleGeometry Rect="2.5, 0, 2,7"  />
-                              </CombinedGeometry.Geometry1>
-                              <CombinedGeometry.Geometry2>
-                                  <RectangleGeometry Rect="0,2.5,7,2" />
-                              </CombinedGeometry.Geometry2>
-                          </CombinedGeometry>
-                      </GeometryDrawing.Geometry>
-                  </GeometryDrawing>
-              </DrawingGroup>
-      </DrawingBrush.Drawing>
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+          <GeometryDrawing.Geometry>
+            <CombinedGeometry GeometryCombineMode="Union">
+              <CombinedGeometry.Geometry1>
+                <RectangleGeometry Rect="2.5, 0, 2,7"  />
+              </CombinedGeometry.Geometry1>
+              <CombinedGeometry.Geometry2>
+                <RectangleGeometry Rect="0,2.5,7,2" />
+              </CombinedGeometry.Geometry2>
+            </CombinedGeometry>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="ZoomOutDrawingBrush" Stretch="Uniform">
-      <DrawingBrush.Drawing>
-          <DrawingGroup>
-              <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
-                  <GeometryDrawing.Geometry>
-                     <RectangleGeometry Rect="0,2.5,7,2" />          
-                  </GeometryDrawing.Geometry>
-              </GeometryDrawing>
-          </DrawingGroup>
-      </DrawingBrush.Drawing>
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="0,2.5,7,2" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="NotificationsPostDrawingBrush" Stretch="Uniform">
@@ -526,7 +571,7 @@
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
-  
+
   <DrawingBrush x:Key="PhotosDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
@@ -677,7 +722,7 @@
       </GeometryDrawing>
     </DrawingBrush.Drawing>
   </DrawingBrush>
-  
+
   <DrawingBrush x:Key="CloseDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Geometry="F0 M0,0 10,10 M10,0 0,10">

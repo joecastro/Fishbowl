@@ -25,7 +25,6 @@
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoViewerResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoAlbumResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendViewerResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/GalleryScrollViewer.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/GalleryHomeResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SearchResultsResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ShellResources.xaml" />

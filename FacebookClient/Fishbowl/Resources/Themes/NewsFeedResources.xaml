@@ -84,11 +84,9 @@
               Style="{DynamicResource ZoomInOutButtons}" >
                 <Image Height="16" RenderTransformOrigin="0,0">
                     <Image.Source>
-                                <!--<DrawingImage Drawing="{DynamicResource ZoomInDrawing}"/>-->
                         <DrawingImage Drawing="{Binding Source={StaticResource ZoomInDrawingBrush}, Path=Drawing}"/>
                     </Image.Source>
                 </Image>
-                <!--<Image Source="../Images/zoom_in.png"  />-->
           </Button>
         </Viewbox>
         <Viewbox Height="22" Width="22" Margin="5,5,0,0">

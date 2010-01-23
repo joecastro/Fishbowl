@@ -125,6 +125,39 @@
       </Rectangle>
     </Grid>
   </ControlTemplate>
+  
+  <ControlTemplate x:Key="StandardTextBoxFrameControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1">
+        <Rectangle.Stroke>
+          <LinearGradientBrush StartPoint="0,.5" EndPoint="3,.5" MappingMode="Absolute">
+            <GradientStop Color="#979797" Offset="0"/>
+            <GradientStop Color="#00979797" Offset="1"/>
+          </LinearGradientBrush>
+        </Rectangle.Stroke>
+        <Rectangle.Fill>
+          <LinearGradientBrush StartPoint="0,.5" EndPoint="5,.5" MappingMode="Absolute">
+            <GradientStop Color="#DBDBDB" Offset="0"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+          </LinearGradientBrush>
+        </Rectangle.Fill>
+      </Rectangle>
+      <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1">
+        <Rectangle.Stroke>
+          <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,3" MappingMode="Absolute">
+            <GradientStop Color="#979797" Offset="0"/>
+            <GradientStop Color="#00979797" Offset="1"/>
+          </LinearGradientBrush>
+        </Rectangle.Stroke>
+        <Rectangle.Fill>
+          <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,5" MappingMode="Absolute">
+            <GradientStop Color="#DBDBDB" Offset="0"/>
+            <GradientStop Color="Transparent" Offset="1"/>
+          </LinearGradientBrush>
+        </Rectangle.Fill>
+      </Rectangle>
+    </Grid>
+  </ControlTemplate>
 
   <ControlTemplate x:Key="StandardRoundButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
     <Grid>
