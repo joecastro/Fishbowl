@@ -895,7 +895,7 @@
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <DockPanel
-        MaxWidth="250"
+        MaxWidth="220"
         Grid.Column="0"
         Grid.Row="0"
         HorizontalAlignment="Left"
@@ -1200,7 +1200,7 @@
   <!-- photo contact info -->
       <StackPanel 
           Orientation="Vertical" 
-          Width="250" 
+          Width="200" 
           Margin="10"
           Grid.Column="0"
           Grid.Row="0"
@@ -1462,9 +1462,9 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   <ClientManagerControls:SizeControlTemplateCollection x:Key="PhotoViewerTemplateCollection">
-    <ClientManagerControls:SizeControlTemplate MaxWidth="600" Template="{StaticResource PhotoViewerTemplate_VeryNarrow}"/>
+    <ClientManagerControls:SizeControlTemplate MaxWidth="700" Template="{StaticResource PhotoViewerTemplate_VeryNarrow}"/>
   <!-- very narrow -->
-    <ClientManagerControls:SizeControlTemplate MaxWidth="975" MinWidth="600" Template="{StaticResource PhotoViewerTemplate_Narrow}"/>
+    <ClientManagerControls:SizeControlTemplate MaxWidth="975" MinWidth="700" Template="{StaticResource PhotoViewerTemplate_Narrow}"/>
   <!-- narrow -->
     <ClientManagerControls:SizeControlTemplate MinWidth="975" Template="{StaticResource PhotoViewerTemplate_Wide}"/>
   <!-- wide -->

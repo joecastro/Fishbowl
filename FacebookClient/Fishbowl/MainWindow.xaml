@@ -9,7 +9,7 @@
     xmlns:std="clr-namespace:Standard"
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     Width="900" Height="600"
-    MinWidth="600" MinHeight="280"
+    MinWidth="640" MinHeight="280"
     AllowDrop="True"
     Background="{DynamicResource MainWindowBackgroundBrush}"
     ShowsNavigationUI="False"

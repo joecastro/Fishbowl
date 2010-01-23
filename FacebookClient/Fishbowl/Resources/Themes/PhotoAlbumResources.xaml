@@ -112,7 +112,7 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       
-      <StackPanel Orientation="Vertical" Width="250" Margin="10">
+      <StackPanel Orientation="Vertical" Width="200" Margin="10">
         <Button x:Name="ActivityButton" VerticalAlignment="Top" Style="{StaticResource AnimatedItemButton}" 
                 Margin="10" Click="OnNavigateToContentButtonClicked" HorizontalAlignment="Left" 
                 ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
@@ -162,9 +162,9 @@
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="42px" FontFamily="../Fonts/#Gohtam" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Center" TextAlignment="Center" />
+        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="42px" FontFamily="../Fonts/#Gohtam" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
         
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Left">
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
               Height="26"
@@ -211,7 +211,7 @@
           </Button>
         </StackPanel>
 
-        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontSize="16" HorizontalAlignment="Left" Margin="0,14,0,0" TextWrapping="Wrap" MaxHeight="200" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
+        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontSize="16" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
           <FacebookClient:HyperlinkTextContent Text="{Binding Path=Description, Mode=OneWay}" />
         </TextBlock>
 
