@@ -88,7 +88,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type Button}" BasedOn="{x:Null}" x:Key="BlendButton">
+    <Style TargetType="{x:Type Button}" x:Key="BlendButtonStyle">
         <Setter Property="FocusVisualStyle" Value="{DynamicResource NuclearButtonFocusVisual}" />
         <Setter Property="Background" Value="{DynamicResource NormalBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -2488,7 +2488,7 @@
     </LinearGradientBrush>
     <SolidColorBrush x:Key="ButtonNormalBorder" Color="#FF707070" />
 
-    <Style TargetType="{x:Type ToggleButton}">
+    <Style TargetType="{x:Type ToggleButton}" x:Key="BlendToggleButtonStyle">
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
         <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}" />
         <Setter Property="BorderBrush" Value="{StaticResource ButtonNormalBorder}" />

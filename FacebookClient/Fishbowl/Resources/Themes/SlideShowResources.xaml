@@ -63,7 +63,7 @@
             <TextBlock>Exit</TextBlock>
           </Button>
           <ToggleButton Width="40" Height="30"
-              Style="{StaticResource StandardToggleButtonStyle}"
+              Style="{DynamicResource StandardToggleButtonStyle}"
               Margin="0"
               Padding="5,2"
               Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 

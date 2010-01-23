@@ -177,6 +177,87 @@
     </Grid>
   </ControlTemplate>
 
+  <ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="StandardToggleButtonControlTemplate">
+    <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True">
+      <Control x:Name="up" Template="{StaticResource StandardButtonChromeNormalControlTemplate}"/>
+      <Control x:Name="hover" Opacity="0" Template="{StaticResource StandardButtonChromeHoverControlTemplate}"/>
+      <Control x:Name="down" Opacity="0" Template="{StaticResource StandardButtonChromePressedControlTemplate}"/>
+      <ContentPresenter x:Name="Content"
+          Content="{TemplateBinding Content}" 
+          Margin="{TemplateBinding Padding}" 
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsChecked" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+              <!--<DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+              <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
   <ControlTemplate TargetType="{x:Type Button}" x:Key="StandardButtonControlTemplate">
     <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True">
       <Control x:Name="up" Template="{StaticResource StandardButtonChromeNormalControlTemplate}"/>
@@ -257,7 +338,25 @@
     <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
     <Setter Property="Template" Value="{DynamicResource StandardButtonControlTemplate}"/>
   </Style>
-  
+
+  <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+    <Setter Property="Padding" Value="15,0,15,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="MinWidth" Value="41" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="Foreground" Value="#3b5998" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
+    <Setter Property="Template" Value="{DynamicResource StandardToggleButtonControlTemplate}"/>
+  </Style>
+
   <Style x:Key="StandardToolbarHostStyle" TargetType="{x:Type ContentControl}">
     <Setter Property="Template">
       <Setter.Value>

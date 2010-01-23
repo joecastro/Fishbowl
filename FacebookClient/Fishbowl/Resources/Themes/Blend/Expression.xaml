@@ -137,8 +137,7 @@
     <SolidColorBrush x:Key="FilterButtonDivider1" Color="#FF444444" />
     <SolidColorBrush x:Key="FilterButtonDivider2" Color="#FF444444" />
 
-    <!--To see the old style: remove BasedOn, uncomment the bottommost setters -->
-    <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource BlendButton}">
+    <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource BlendButtonStyle}">
         <Setter Property="Padding" Value="15,0,15,0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="VerticalAlignment" Value="Top" />
@@ -148,16 +147,27 @@
         <Setter Property="MinWidth" Value="41" />
         <Setter Property="Height" Value="40" />
         <Setter Property="Margin" Value="0" />
-        <!--<Setter Property="Foreground" Value="Red" />-->
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
         <Setter Property="FontSize" Value="14px" />
-        <!--<Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
-        <Setter Property="Template" Value="{StaticResource StandardButtonControlTemplate}"/>-->
     </Style>
 
+  <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource BlendToggleButtonStyle}">
+    <Setter Property="Padding" Value="15,0,15,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="MinWidth" Value="41" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontSize" Value="14px" />
+  </Style>
 
-    <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="Red"/>
+  <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="Red"/>
     <SolidColorBrush x:Key="FilterTabItemTopColor" Color="Green"/>
     
     <SolidColorBrush x:Key="FilterTabTextHoverColor" Color="Red"/>
