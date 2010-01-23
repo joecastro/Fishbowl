@@ -380,6 +380,11 @@
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(PostId, other.PostId, "other", "Can't merge two ActivityPosts with different Ids.");
 
+            if (object.ReferenceEquals(this, other))
+            {
+                return;
+            }
+
             ActorUserId = other.ActorUserId;
             Attachment = other.Attachment;
             CanComment = other.CanComment;

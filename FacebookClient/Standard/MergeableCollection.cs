@@ -100,6 +100,10 @@
         private readonly Dictionary<string, T> _fkidLookup;
         private _Comparer _itemComparer = new _Comparer();
 
+        // Block reentrancy that would cause the collection to be reordered.
+        // If while we're doing a merge we get change notifications that the item has changed, ignore it.
+        private IMergeable<T> _suspendNotificationsForMergeableObject;
+
         public object SyncRoot { get; private set; }
 
         public MergeableCollection()
@@ -354,7 +358,9 @@
                             _items.Insert(index, item);
                         }
 
-                        ((IMergeable<T>)this[index]).Merge(newItem);
+                        _suspendNotificationsForMergeableObject = (IMergeable<T>)this[index];
+                        _suspendNotificationsForMergeableObject.Merge(newItem);
+                        _suspendNotificationsForMergeableObject = null;
                     }
 
                     if (index != -1)
@@ -390,7 +396,9 @@
                         }
                         else
                         {
-                            ((IMergeable<T>)_items[index]).Merge(item);
+                            _suspendNotificationsForMergeableObject = (IMergeable<T>)this[index];
+                            _suspendNotificationsForMergeableObject.Merge(item);
+                            _suspendNotificationsForMergeableObject = null;
                         }
                     }
                 }
@@ -495,7 +503,9 @@
         private void _OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             var item = sender as T;
-            if (item != null)
+            // If we're doing a merge of this item then we expect that properties may change.
+            // Don't reorder because of this.  We expect the merge is putting the item in the right place.
+            if (item != null && item != _suspendNotificationsForMergeableObject)
             {
                 lock (SyncRoot)
                 {
