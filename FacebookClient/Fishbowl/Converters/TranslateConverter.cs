@@ -1,4 +1,6 @@
-﻿namespace FacebookClient
+﻿#if BING_TRANSLATION_SERVICE
+
+namespace FacebookClient
 {
     using System;
     using System.Windows;
@@ -48,3 +50,5 @@
         #endregion
     }
 }
+
+#endif

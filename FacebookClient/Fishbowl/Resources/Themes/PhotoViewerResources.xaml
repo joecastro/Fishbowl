@@ -11,58 +11,6 @@
   <!-- Converter to convert the ZoomFactor of a photo to the appropriate BitmapScalingMode for best quality -->
   <FacebookClient:PhotoZoomFactorToBitmapScalingModeConverter x:Key="PhotoZoomFactorToBitmapScalingModeConverter"/>
   
-  <!-- Styling for toolbar popups -->
-  <Style x:Key="PhotoViewerToolbarPopup" TargetType="{x:Type Border}">
-    <Setter Property="Background" Value="{DynamicResource Background_PhotoViewerDefault}"/>
-    <Setter Property="BorderBrush" Value="{DynamicResource Background_PhotoViewerOver}"/>
-    <Setter Property="BorderThickness" Value="2"/>
-    <Setter Property="Padding" Value="5"/>
-    <Setter Property="CornerRadius" Value="3"/>
-    <Setter Property="Canvas.Left" Value="50"/>
-    <Setter Property="Panel.ZIndex" Value="5"/>
-    <Setter Property="HorizontalAlignment" Value="Left"/>
-    <Setter Property="Width" Value="150"/>
-  </Style>
-
-  <!-- Style for the close 'X' on a popup -->
-  <Style x:Key="PhotoViewerToolbarPopupCloseLink" TargetType="{x:Type Hyperlink}">
-    <Setter Property="FontSize" Value="14"/>
-    <Setter Property="FontWeight" Value="Bold"/>
-    <Setter Property="FontFamily" Value="Consolas"/>
-    <Setter Property="Foreground" Value="{DynamicResource Background_PhotoViewerChecked}"/>
-    <Setter Property="TextDecorations" Value="None"/>
-    <Style.Triggers>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource Background_PhotoViewerPressed}"/>
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-  <!-- TextBox style for textboxes used in toolbar popups -->
-  <Style x:Key="PhotoViewerToolbarPopupTextBox" TargetType="{x:Type TextBox}">
-    <Setter Property="Background" Value="{DynamicResource Background_PhotoViewerDefault}"/>
-    <Setter Property="Foreground" Value="{DynamicResource Foreground_ChromeText}"/>
-    <Setter Property="BorderBrush" Value="{DynamicResource Border_ItemOutline}"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type TextBox}">
-          <Border x:Name="Bd"
-              Background="{TemplateBinding Background}"
-              BorderBrush="{TemplateBinding BorderBrush}"
-              BorderThickness="{TemplateBinding BorderThickness}"
-              SnapsToDevicePixels="true">
-            <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-          </Border>
-          <ControlTemplate.Triggers>
-            <Trigger Property="IsEnabled" Value="false">
-              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-              <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-  
   <!-- Style for buttons (thumbnails) in the film strip -->
   <Style x:Key="FilmStripThumbnailButton" TargetType="{x:Type Button}">
     <Setter Property="Cursor" Value="Hand"/>
@@ -407,33 +355,6 @@
                   <Border Height="10" Background="{DynamicResource Background_PhotoViewerDefault}" CornerRadius="4"/>
                 </StackPanel>
               </StackPanel>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-  <!-- Control template for the toolbar expander popup -->
-      <Style x:Key="{x:Type Expander}" TargetType="{x:Type Expander}">
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type Expander}">
-              <Grid>
-                <ContentPresenter ContentSource="Header"/>
-                <Canvas
-                  x:Name="Content"
-                  Margin="10,-6,0,0"
-                  ClipToBounds="False"
-                  Visibility="Collapsed">
-                  <Border Style="{StaticResource PhotoViewerToolbarPopup}">
-                    <ContentPresenter/>
-                  </Border>
-                </Canvas>
-              </Grid>
-              <ControlTemplate.Triggers>
-                <Trigger Property="IsExpanded" Value="True">
-                  <Setter TargetName="Content" Property="Visibility" Value="Visible"/>
-                </Trigger>
-              </ControlTemplate.Triggers>
             </ControlTemplate>
           </Setter.Value>
         </Setter>
@@ -1015,7 +936,7 @@
           </TextBlock>
           <StackPanel Margin="0,10,0,0">
             <StackPanel.Resources>
-              <Style x:Key="Goopta" TargetType="{x:Type StackPanel}">
+              <Style TargetType="{x:Type StackPanel}">
                 <Setter Property="Visibility" Value="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
               </Style>
             </StackPanel.Resources>
@@ -1273,122 +1194,65 @@
         <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="250"/>
+        <ColumnDefinition Width="Auto"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
   <!-- photo contact info -->
-      <Grid
-        MaxWidth="250"
-        Grid.Column="0"
-        Grid.Row="0"
-        HorizontalAlignment="Left"
-        Margin="5,45,0,5"
-        Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
-        <StackPanel Margin="5" VerticalAlignment="Top">
-          <StackPanel VerticalAlignment="Top" DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}">
-            <Button
-              x:Name="ActivityButton"
-              HorizontalAlignment="Left"
-              Margin="0, 7, 0, 0"
-              VerticalAlignment="Top"
-              Click="OnNavigateToContentButtonClicked"
-              ClientManagerView:ViewManager.NavigationContent="{Binding}"
-              RenderTransformOrigin="0.5,0.5"
-              Style="{StaticResource AnimatedItemButton}">
-              <Button.RenderTransform>
-                  <TransformGroup>
-                      <RotateTransform Angle="-6"/>
-                  </TransformGroup>
-              </Button.RenderTransform>
-              <Grid Width="106" Height="106">
-                <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png"/>
-                <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Big">
-                  <ClientManagerControls:FacebookImageControl.Template>
-                    <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                      <Border Margin="4,4,4.5,6">
-                        <Border.Background>
-                          <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill"/>
-                        </Border.Background>
-                      </Border>
-                    </ControlTemplate>
-                  </ClientManagerControls:FacebookImageControl.Template>
-                </ClientManagerControls:FacebookImageControl>
-              </Grid>
-            </Button>
-            <TextBlock Margin="0,20,0,0" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
-              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}">
-                <FacebookClient:BindableRun Text="{Binding Name}"/>
-              </Hyperlink>
-              <InlineUIContainer>
-                <Grid
-                  Width="14"
-                  Height="14"
-                  HorizontalAlignment="Left"
-                  Margin="6,0,0,0"
-                  VerticalAlignment="Center">
-                  <Image
-                    Name="Away"
-                    Width="14"
-                    Height="14"
-                    Source="pack://application:,,,/Resources/Images/status_away.png"
-                    Visibility="Collapsed"/>
-                  <Image
-                    Name="Online"
-                    Width="14"
-                    Height="14"
-                    Source="pack://application:,,,/Resources/Images/status_online.png"
-                    Visibility="Collapsed"/>
-                </Grid>
-              </InlineUIContainer>
-            </TextBlock>
-          </StackPanel>
-          <StackPanel Margin="0,10,0,0">
-            <StackPanel.Resources>
-              <Style x:Key="Goopta" TargetType="{x:Type StackPanel}">
-                <Setter Property="Visibility" Value="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
-              </Style>
-            </StackPanel.Resources>
-            <Button Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}" Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}">
-              <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                  <TextBlock
-                    x:Name="ContactTextBlock"
-                    Cursor="Hand"
-                    FontFamily="../Fonts/#Gotham"
-                    FontSize="22px"
-                    FontWeight="Regular"
-                    Foreground="{DynamicResource PhotoViewerAlbumNameForeground}"
-                    Text="{TemplateBinding Content}"
-                    TextWrapping="Wrap"/>
-                  <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                      <Setter TargetName="ContactTextBlock" Property="TextDecorations" Value="Underline"/>
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="False">
-                      <Setter TargetName="ContactTextBlock" Property="TextDecorations" Value="{x:Null}"/>
-                    </Trigger>
-                  </ControlTemplate.Triggers>
+      <StackPanel 
+          Orientation="Vertical" 
+          Width="250" 
+          Margin="10"
+          Grid.Column="0"
+          Grid.Row="0"
+          Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"
+          DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}">
+        <Button x:Name="ActivityButton" VerticalAlignment="Top" Style="{StaticResource AnimatedItemButton}" 
+                Margin="10" Click="OnNavigateToContentButtonClicked" HorizontalAlignment="Left" 
+                ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
+                RenderTransformOrigin="0.5,0.5">
+          <Button.RenderTransform>
+            <TransformGroup>
+              <RotateTransform Angle="-6"/>
+            </TransformGroup>
+          </Button.RenderTransform>
+          <Grid Width="106" Height="106">
+            <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png"/>
+            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Owner.Image}" FacebookImageDimensions="Big">
+              <ClientManagerControls:FacebookImageControl.Template>
+                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                  <Border Margin="4,4,4.5,6">
+                    <Border.Background>
+                      <ImageBrush Stretch="UniformToFill" ImageSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                    </Border.Background>
+                  </Border>
                 </ControlTemplate>
-              </Button.Template>
-            </Button>
-            <TextBlock
-              Margin="0,5,0,0"
-              VerticalAlignment="Center"
-              FontFamily="../Fonts/#Gotham"
-              FontSize="13px"
-              FontWeight="Light"
-              Foreground="{DynamicResource PhotoViewerAlbumNameForeground}"
-              Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos.Count, StringFormat=\{0\} photos}"/>
-            <TextBlock
-              FontFamily="../Fonts/#Gotham"
-              FontSize="11px"
-              FontWeight="Light"
-              Foreground="{DynamicResource PhotoViewerAlbumTimeStampForeground}"
-              Opacity=".56"
-              Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"/>
-          </StackPanel>
-        </StackPanel>
-      </Grid>
+              </ClientManagerControls:FacebookImageControl.Template>
+            </ClientManagerControls:FacebookImageControl>
+          </Grid>
+        </Button>
+        <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="22px" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
+          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
+            <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
+          </Hyperlink>
+        </TextBlock>
+        <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Regular" FontSize="22px" Foreground="{DynamicResource PhotoViewerAlbumNameForeground}" TextWrapping="Wrap">
+          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}">
+            <FacebookClient:BindableRun Text="{Binding Title}"/>
+          </Hyperlink>
+        </TextBlock>
+
+        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light">
+          <TextBlock.Text>
+            <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
+          </TextBlock.Text>
+        </TextBlock>
+        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light">
+          <TextBlock.Text>
+            <Binding StringFormat="{}{0} photos" Path="Photos.Count" />
+          </TextBlock.Text>
+        </TextBlock>
+      </StackPanel>
+
       <Grid Grid.Column="1" Grid.Row="0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*"/>

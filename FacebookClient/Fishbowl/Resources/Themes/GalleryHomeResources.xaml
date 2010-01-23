@@ -397,13 +397,22 @@
         </ItemsControl.ItemsPanel>
       </FacebookClient:PaginatedItemsControl>
 
-      <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,0,0,5" DataContext="{Binding ElementName=GalleryPreviewListBox, Path=ListPager}">
+      <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5" DataContext="{Binding ElementName=GalleryPreviewListBox, Path=ListPager}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" MinWidth="75" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Column="1" Foreground="{DynamicResource PageNavigationTextForeground}" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+        <RepeatButton
+            Style="{StaticResource SimpleButtonBaseStyle}"
+            Grid.Column="0"
+            Margin="5,1"
+            Command="{Binding Path=PreviousCommand}" 
+            ToolTip="Previous page">
+          <Rectangle Height="25" Width="25" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
+        </RepeatButton>
+        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" MinWidth="80">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />
@@ -411,10 +420,15 @@
             </MultiBinding>
           </TextBlock.Text>
         </TextBlock>
-        <RepeatButton x:Name="NavigateLeft" Grid.Column="0" Margin="5,1" Style="{StaticResource NavigateLeftButtonStyle}" Command="{Binding Path=PreviousCommand}" ToolTip="Previous Page" />
-        <RepeatButton x:Name="NavigateRight" Grid.Column="2" Margin="5,1" Style="{StaticResource NavigateRightButtonStyle}" Command="{Binding Path=NextCommand}" ToolTip="Next Page" />
+        <RepeatButton
+            Style="{StaticResource SimpleButtonBaseStyle}"
+            Grid.Column="2"
+            Margin="5,1"
+            Command="{Binding Path=NextCommand}" 
+            ToolTip="Next page">
+          <Rectangle Height="25" Width="25" Fill="{DynamicResource RightArrowToolbarDrawingBrush}"/>
+        </RepeatButton>
       </Grid>
-
     </Grid>
   </ControlTemplate>
   

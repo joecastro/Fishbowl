@@ -5,8 +5,12 @@
   <SolidColorBrush x:Key="ActivityPostCommentDividerBrush" Color="White" />
   <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
 
-  <Color x:Key="ToolbarIconForegroundColor">#3B5998</Color>
-  <SolidColorBrush x:Key="ToolbarIconForegroundBrush" Color="{DynamicResource ToolbarIconForegroundColor}" />
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0"/>
+      <GradientStop Color="#3F60A0" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
 
   <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF7489B6" />
   <SolidColorBrush x:Key="InterestLevelTextForeground" Color="#3b5998"/>
@@ -122,6 +126,21 @@
     </Grid>
   </ControlTemplate>
 
+  <ControlTemplate x:Key="StandardRoundButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="5" RadiusY="16" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+      <Rectangle RadiusX="5" RadiusY="16" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+      <Rectangle RadiusX="4" RadiusY="15" StrokeThickness="1" Stroke="White" >
+        <Rectangle.Fill>
+          <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
+            <GradientStop Color="#EEF3FE" Offset="0"/>
+            <GradientStop Color="#C1D3FB" Offset="1"/>
+          </LinearGradientBrush>
+        </Rectangle.Fill>
+      </Rectangle>
+    </Grid>
+  </ControlTemplate>
+  
   <ControlTemplate x:Key="StandardButtonChromePressedControlTemplate" TargetType="{x:Type Control}">
     <Grid>
       <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">

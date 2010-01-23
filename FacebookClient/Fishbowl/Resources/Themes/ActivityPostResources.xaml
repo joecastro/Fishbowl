@@ -9,7 +9,6 @@
 
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
-  <FacebookClient:TranslateConverter x:Key="TranslateConverter"/>
   
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
@@ -185,7 +184,7 @@
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="FontSize" Value="15" />
+    <Setter Property="FontSize" Value="15px" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
   </Style>
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">

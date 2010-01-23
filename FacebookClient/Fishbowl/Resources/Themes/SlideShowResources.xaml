@@ -46,7 +46,7 @@
 
       <Border x:Name="PART_MenuBorder"
           Padding="5"
-          Margin="5" 
+          Margin="5,10" 
           SnapsToDevicePixels="True"
           VerticalAlignment="Top"
           HorizontalAlignment="Center"
@@ -54,15 +54,18 @@
           CornerRadius="6"
           Opacity="0.0">
         <StackPanel Orientation="Horizontal">
-          <Button Width="80" Height="30"
+          <Button Width="65" Height="30"
+              Margin="5"
               Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.Stop" 
               VerticalAlignment="Center"
               ToolTip="Stop slide show">
             <TextBlock>Exit</TextBlock>
           </Button>
-          <ToggleButton Width="50" Height="30"
+          <ToggleButton Width="40" Height="30"
               Style="{StaticResource StandardToggleButtonStyle}"
+              Margin="0"
+              Padding="5,2"
               Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 
               CommandTarget="{Binding}"
               IsChecked="{Binding IsShuffled}"
@@ -74,37 +77,42 @@
               </Image.Source>
             </Image>
           </ToggleButton>
-          <Button Width="50" Height="30"
+          <Button Width="40" Height="30"
               Style="{DynamicResource StandardButtonStyle}"
+              Margin="5"
+              Padding="5,0"
               Command="MediaCommands.PreviousTrack" 
               VerticalAlignment="Center"
               ToolTip="Previous slide">
             <Image>
               <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource PrevArrowToolbarDrawingBrush}, Path=Drawing}"/>
+                <DrawingImage Drawing="{Binding Source={StaticResource LeftArrowToolbarDrawingBrush}, Path=Drawing}"/>
               </Image.Source>
             </Image>
           </Button>
-          <Button Width="50" Height="40"
+          <Button Width="50" Height="50"
               x:Name="PlayPauseButton"
               Style="{DynamicResource StandardButtonStyle}"
               Command="MediaCommands.Pause" 
               VerticalAlignment="Center"
-              ToolTip="Pause slide show">
+              ToolTip="Pause slide show"
+              Padding="5">
             <Image x:Name="PlayPauseImage">
               <Image.Source>
                 <DrawingImage Drawing="{Binding Source={StaticResource PauseToolbarDrawingBrush}, Path=Drawing}"/>
               </Image.Source>
             </Image>
           </Button>
-          <Button Width="50" Height="30"
+          <Button Width="40" Height="30"
               Style="{DynamicResource StandardButtonStyle}"
+              Margin="5,0"
+              Padding="5"
               Command="MediaCommands.NextTrack" 
               VerticalAlignment="Center"
               ToolTip="Next slide">
             <Image>
               <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource NextArrowToolbarDrawingBrush}, Path=Drawing}"/>
+                <DrawingImage Drawing="{Binding Source={StaticResource RightArrowToolbarDrawingBrush}, Path=Drawing}"/>
               </Image.Source>
             </Image>
           </Button>

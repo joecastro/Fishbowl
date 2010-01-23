@@ -169,8 +169,8 @@ namespace FacebookClient
             m_commandItemsRO = new ReadOnlyObservableCollection<ZapCommandItem>(m_commandItems);
 
             _firstCommand = ActionICommand.Create(First, canFirst, out m_canFirstChanged);
-            _previousCommand = ActionICommand.Create(Previous, canPrevious, out m_canPreviousChanged);
-            _nextCommand = ActionICommand.Create(Next, canNext, out m_canNextChanged);
+            _previousCommand = ActionICommand.Create(Previous, CanPrevious, out m_canPreviousChanged);
+            _nextCommand = ActionICommand.Create(Next, CanNext, out m_canNextChanged);
             _lastCommand = ActionICommand.Create(Last, canLast, out m_canLastChanged);
             _moreCommand = ActionICommand.Create(More, canMore, out m_canMoreChanged);
         }
@@ -251,9 +251,13 @@ namespace FacebookClient
             set { SetValue(PlayTimeIntervalProperty, value); }
         }
 
-        public static readonly DependencyProperty IsPlayingProperty =
-            DependencyProperty.Register("IsPlaying", typeof(bool), typeof(ZapScroller),
-            new PropertyMetadata(new PropertyChangedCallback(isPlaying_changed)));
+        public static readonly DependencyProperty IsPlayingProperty = DependencyProperty.Register(
+            "IsPlaying", 
+            typeof(bool),
+            typeof(ZapScroller),
+            new PropertyMetadata(
+                false,
+                isPlaying_changed));
 
         public bool IsPlaying
         {
@@ -294,7 +298,7 @@ namespace FacebookClient
                 }
                 return;
             }
-            if (canPrevious())
+            if (CanPrevious())
             {
                 CurrentItemIndex--;
             }
@@ -315,7 +319,7 @@ namespace FacebookClient
                 }
                 return;
             }
-            if (canNext())
+            if (CanNext())
             {
                 CurrentItemIndex++;
             }
@@ -656,12 +660,12 @@ namespace FacebookClient
             return (ItemCount > 1) && (CurrentItemIndex > 0);
         }
 
-        private bool canNext()
+        public bool CanNext()
         {
             return ((CurrentItemIndex >= 0) && CurrentItemIndex < (ItemCount - 1)) || IsShuffled;
         }
 
-        private bool canPrevious()
+        public bool CanPrevious()
         {
             return (CurrentItemIndex > 0) || IsShuffled;
         }

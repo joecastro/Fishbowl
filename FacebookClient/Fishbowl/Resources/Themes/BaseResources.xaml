@@ -8,11 +8,11 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager">
 
-    <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
-    <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    <FacebookClient:AddConverter x:Key="AddConverter" />
-    <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
+  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
+  <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  <FacebookClient:AddConverter x:Key="AddConverter" />
+  <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
 
   <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
   <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
@@ -21,76 +21,16 @@
     <VirtualizingStackPanel />
   </ItemsPanelTemplate>
 
-  <ControlTemplate x:Key="NavigateLeftButtonTemplate" TargetType="RepeatButton">
-    <Grid x:Name="Root">
-      <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
-        <Viewbox Height="18" Margin="0,-2,0,0">
-          <Path x:Name="Arrow"
-                  Fill="Gray"
-                  Stroke="Gray"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="25"
-                  Height="25"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="5,0,0,0"
-                  Cursor="Hand">
-            <Path.RenderTransform>
-              <RotateTransform Angle="90" />
-            </Path.RenderTransform>
-          </Path>
-        </Viewbox>
-      </Border>
-      <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-    </Grid>
-  </ControlTemplate>
-
-  <Style x:Key="NavigateLeftButtonStyle" TargetType="RepeatButton">
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="Width" Value="Auto" />
-    <Setter Property="Height" Value="35" />
-    <Setter Property="Template" Value="{StaticResource NavigateLeftButtonTemplate}" />
+  <Style x:Key="ToolbarTextBlockStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="Foreground" Value="#3b5998" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
   </Style>
-
-  <ControlTemplate x:Key="NavigateRightButtonTemplate" TargetType="RepeatButton">
-    <Grid x:Name="Root">
-      <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
-        <Viewbox Height="18" Margin="0,-4,0,0">
-          <Path x:Name="Arrow"
-                  Fill="Gray"
-                  Stroke="Gray"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="25"
-                  Height="25"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="5,0,0,0"
-                  Cursor="Hand">
-            <Path.RenderTransform>
-              <RotateTransform Angle="270" />
-            </Path.RenderTransform>
-          </Path>
-        </Viewbox>
-      </Border>
-      <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-    </Grid>
-  </ControlTemplate>
-
-  <Style x:Key="NavigateRightButtonStyle" TargetType="RepeatButton">
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="Width" Value="Auto" />
-    <Setter Property="Height" Value="35" />
-    <Setter Property="Template" Value="{StaticResource NavigateRightButtonTemplate}" />
-  </Style>
-
+  
   <ControlTemplate x:Key="NavigateUpButtonTemplate" TargetType="RepeatButton">
     <Grid x:Name="Root" >
       <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
@@ -319,156 +259,9 @@
     </Setter>
   </Style>
 
-  <!-- Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
-    <Setter Property="Padding" Value="15,0,15,0" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="VerticalContentAlignment" Value="Center" />
-    <Setter Property="HorizontalContentAlignment" Value="Center" />
-    <Setter Property="MinWidth" Value="41" />
-    <Setter Property="Height" Value="40" />
-    <Setter Property="Margin" Value="0" />
-    <Setter Property="Foreground" Value="#3b5998" />
-    <Setter Property="FontWeight" Value="Medium" />
-    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-    <Setter Property="FontSize" Value="14px" />
-    <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Button}">
-          <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True" Margin="2" >
-            <Grid Margin="-3,-3,-6,-6" Width="{Binding Path=ActualWidth, ElementName=Root}">
-              <Grid x:Name="up">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="20" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
-
-                <Image Grid.Column="0" Source="../Images/Controls/button_left_up.png" Stretch="Fill" Margin="0,0,0,0" />
-                <Image Grid.Column="1" Source="../Images/Controls/button_middle_up.png" Stretch="Fill"/>
-                <Image Grid.Column="2" Source="../Images/Controls/button_right_up.png" Stretch="Fill" Margin="0,0,0,0" />
-              </Grid>
-
-              <Grid x:Name="hover" Opacity="0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="20" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
-
-                <Image Grid.Column="0" Source="../Images/Controls/button_left_hover.png" Stretch="Fill" Margin="0,0,0,0" />
-                <Image Grid.Column="1" Source="../Images/Controls/button_middle_hover.png" Stretch="Fill"/>
-                <Image Grid.Column="2" Source="../Images/Controls/button_right_hover.png" Stretch="Fill" Margin="0,0,0,0" />
-              </Grid>
-
-              <Grid x:Name="down" Opacity="0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="20" />
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
-
-                <Image Grid.Column="0" Source="../Images/Controls/button_left_down.png" Stretch="Fill" Margin="0,0,0,0" />
-                <Image Grid.Column="1" Source="../Images/Controls/button_middle_down.png" Stretch="Fill"/>
-                <Image Grid.Column="2" Source="../Images/Controls/button_right_down.png" Stretch="Fill" Margin="0,0,0,0" />
-              </Grid>
-            </Grid>
-
-            <ContentPresenter x:Name="Content" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" 
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                       <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                        </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                                       </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                                        </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>-->
-
-
-  
-
-  <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Button}">
-          <ContentPresenter />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="True">
-        <Setter Property="Cursor" Value="Hand" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
-  <Style x:Key="SimpleRepeatButtonStyle" TargetType="{x:Type RepeatButton}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type RepeatButton}">
-          <ContentPresenter />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="True">
-        <Setter Property="Cursor" Value="Hand" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
   <Style x:Key="SimpleButtonBaseStyle" TargetType="{x:Type ButtonBase}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Focusable" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ButtonBase}">
@@ -482,7 +275,9 @@
       </Trigger>
     </Style.Triggers>
   </Style>
-  
+
+  <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource SimpleButtonBaseStyle}"/>
+
   <!-- Animated Item -->
   <Style x:Key="AnimatedItemButton" TargetType="{x:Type Button}">
     <Setter Property="Cursor" Value="Hand" />

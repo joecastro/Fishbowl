@@ -94,6 +94,14 @@ namespace FacebookClient
 
                 HwndSource.FromHwnd(hwnd).AddHook(_WndProc);
             };
+
+            this.InputBindings.Add(new InputBinding(MediaCommands.NextTrack, new KeyGesture(Key.Right)));
+            this.InputBindings.Add(new InputBinding(MediaCommands.PreviousTrack, new KeyGesture(Key.Left)));
+            this.CommandBindings.Add(new CommandBinding(MediaCommands.TogglePlayPause, _OnPlayPauseCommandExecuted, _OnPlayPauseCommandCanExecute));
+            this.CommandBindings.Add(new CommandBinding(MediaCommands.Pause, _OnPauseCommandExecuted, _OnPauseCommandCanExecute));
+            this.CommandBindings.Add(new CommandBinding(MediaCommands.Play, _OnResumeCommandExecuted, _OnResumeCommandCanExecute));
+            this.CommandBindings.Add(new CommandBinding(MediaCommands.NextTrack, _OnNextSlideCommandExecuted, _OnNextSlideCommandCanExecute));
+            this.CommandBindings.Add(new CommandBinding(MediaCommands.PreviousTrack, _OnPreviousSlideCommandExecuted, _OnPreviousSlideCommandCanExecute));
         }
 
         private void _OnTopmostChanged()
@@ -463,35 +471,84 @@ namespace FacebookClient
             }
         }
 
-        /// <summary>
-        /// Updates the Play application setting
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlayButton_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleButton playButton = sender as ToggleButton;
-            if (playButton.IsChecked == true)
-            {
-                Settings.Default.IsMiniModePlaying = true;
-            }
-            else if (playButton.IsChecked == false)
-            {
-                Settings.Default.IsMiniModePlaying = false;
-            }
-        }
-
-        /// <summary>
-        /// When the user browses right or left in the news feed, stop playing if in play mode
-        /// We won't modify the global Play setting, because the user probably didn't want playing to stop permanently
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RepeatButton_Click(object sender, RoutedEventArgs e)
+        private void _OnPlayPauseCommandExecuted(object sender, RoutedEventArgs e)
         {
             if (PART_ZapScroller2.IsPlaying)
             {
-                PART_ZapScroller2.IsPlaying = false;
+                MediaCommands.Pause.Execute(sender, null);
+            }
+            else
+            {
+                MediaCommands.Play.Execute(sender, null);
+            }
+        }
+
+        private void _OnPlayPauseCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.CanExecute = true;
+                e.Handled = true;
+            }
+        }
+
+        private void _OnPauseCommandExecuted(object sender, RoutedEventArgs e)
+        {
+            PART_ZapScroller2.IsPlaying = false;
+            Settings.Default.IsMiniModePlaying = false;
+        }
+
+        private void _OnPauseCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.CanExecute = PART_ZapScroller2.IsPlaying;
+                e.Handled = true;
+            }
+        }
+
+        private void _OnResumeCommandExecuted(object sender, RoutedEventArgs e)
+        {
+            PART_ZapScroller2.IsPlaying = true;
+            Settings.Default.IsMiniModePlaying = true;
+        }
+
+        private void _OnResumeCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.CanExecute = !PART_ZapScroller2.IsPlaying;
+                e.Handled = true;
+            }
+        }
+
+        private void _OnNextSlideCommandExecuted(object sender, RoutedEventArgs e)
+        {
+            PART_ZapScroller2.Next();
+            PART_ZapScroller2.IsPlaying = false;
+        }
+
+        private void _OnNextSlideCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.CanExecute = PART_ZapScroller2.CanNext();
+                e.Handled = true;
+            }
+        }
+
+        private void _OnPreviousSlideCommandExecuted(object sender, RoutedEventArgs e)
+        {
+            PART_ZapScroller2.Previous();
+            PART_ZapScroller2.IsPlaying = false;
+        }
+
+        private void _OnPreviousSlideCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.CanExecute = PART_ZapScroller2.CanPrevious();
+                e.Handled = true;
             }
         }
     }

@@ -50,8 +50,7 @@
           MaxScale="2.5" 
           MouseWheelScrollDelta="96" 
           IsAnimationEnabled="False"
-          FocusOnLoad="True"
-          NavigateRightCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateFriendsCommand}">
+          FocusOnLoad="True">
         <FacebookClient:DelayedResizeDecorator HorizontalAlignment="Left">
           <FacebookClient:IncrementalLoadListBox x:Name="IncrementalLoadListBox" 
               ScrollViewer.VerticalScrollBarVisibility="Disabled" 

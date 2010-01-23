@@ -15,7 +15,6 @@ namespace ClientManager
     using ClientManager.View;
     using Contigo;
     using Standard;
-    using Microsoft.Bing;
 
     /// <summary>
     /// Hosts and provides access to all ClientManager services.
@@ -30,18 +29,6 @@ namespace ClientManager
         public static ViewManager ViewManager { get; private set; }
 
         /// <summary>
-        /// Whether the TranslationService object is available.
-        /// </summary>
-        /// <remarks>
-        /// Bing and Facebook have completely different SLAs and since the app is functional
-        /// with Facebook and without Bing, don't hold up the app because of an inability to
-        /// translate text.
-        /// </remarks>
-        public static bool IsTranslationServiceAvailble { get; private set; }
-
-        public static TranslationService TranslationService { get; private set; }
-
-        /// <summary>
         /// Shuts down the service provider.
         /// </summary>
         public static void Shutdown(Action<string> deleteCallback)
@@ -52,8 +39,6 @@ namespace ClientManager
                 FacebookService = null;
             }
             ViewManager = null;
-            IsTranslationServiceAvailble = false;
-            TranslationService = null;
         }
 
         public static void Initialize(string facebookAppId, string bingAppId, string[] parameters, Dispatcher dispatcher)
@@ -61,20 +46,7 @@ namespace ClientManager
             try
             {
                 var facebook = new FacebookService(facebookAppId, dispatcher);
-
-                TranslationService bing = null;
-
-                try
-                {
-                    bing = new TranslationService(bingAppId);
-                }
-                catch (Exception)
-                { }
-
                 var view = new ViewManager(facebook, parameters);
-
-                TranslationService = bing;
-                IsTranslationServiceAvailble = bing != null;
                 FacebookService = facebook;
                 ViewManager = view;
             }

@@ -22,31 +22,25 @@
     <RectangleGeometry Rect="55,5,12,25"/>
   </GeometryGroup>
 
-  <PathGeometry x:Key="PlayArrowGeometry">
-    <PathFigure StartPoint="0,0" IsClosed="True">
-      <LineSegment Point="43.3, 25" IsSmoothJoin="True" />
-      <LineSegment Point="0, 50" IsSmoothJoin="True" />
-    </PathFigure>
-  </PathGeometry>
+  <GeometryGroup x:Key="PlayArrowGeometry">
+    <PathGeometry Figures="M0,0 43.3,25 0,50Z" />
+    <EllipseGeometry Center="18,25" RadiusX="36" RadiusY="36"/>
+    <EllipseGeometry Center="18,25" RadiusX="45" RadiusY="45"/>
+  </GeometryGroup>
 
   <GeometryGroup x:Key="PauseGeometry">
     <RectangleGeometry Rect="0,0,12,50" RadiusX="5" RadiusY="5"/>
     <RectangleGeometry Rect="18,0,12,50" RadiusX="5" RadiusY="5"/>
+    <EllipseGeometry Center="16,25" RadiusX="36" RadiusY="36"/>
+    <EllipseGeometry Center="16,25" RadiusX="45" RadiusY="45"/>
   </GeometryGroup>
 
-  <GeometryGroup x:Key="NextArrowGeometry">
-    <PathGeometry>
-      <PathFigure StartPoint="0,0" IsClosed="True">
-        <LineSegment Point="43.3, 25" IsSmoothJoin="True" />
-        <LineSegment Point="0, 50" IsSmoothJoin="True" />
-      </PathFigure>
-    </PathGeometry>
-    <RectangleGeometry Rect="45,0,12,50" RadiusX="5" RadiusY="5"/>
+  <GeometryGroup x:Key="RightArrowGeometry">
+    <PathGeometry Figures="M10,12 50,12 50,0 70,20 50,40 50,28 10,28Z" />
   </GeometryGroup>
   
   <GeometryGroup x:Key="ShuffleGeometry">
-    <PathGeometry Figures="M0,12 50,12 50,0 70,20 50,40 50,28 0,28Z M70,47 20,47 20,35 0,55 20,75 20,63 70,63">
-    </PathGeometry>
+    <PathGeometry Figures="M0,12 50,12 50,0 70,20 50,40 50,28 0,28Z M70,47 20,47 20,35 0,55 20,75 20,63 70,63"/>
   </GeometryGroup>
 
   <GeometryGroup x:Key="BuddyGeometry">
@@ -130,19 +124,51 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
   
-  <DrawingBrush x:Key="NextArrowToolbarDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="RightArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}" />
+      <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="PrevArrowToolbarDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="LeftArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Transform>
           <ScaleTransform ScaleX="-1"/>
         </DrawingGroup.Transform>  
-        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource NextArrowGeometry}"/>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}"/>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="UpArrowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}">
+          <GeometryDrawing.Geometry>
+            <GeometryGroup Children="{Binding Source={StaticResource RightArrowGeometry}, Path=Children}">
+              <GeometryGroup.Transform>
+                <RotateTransform Angle="270"/>
+              </GeometryGroup.Transform>
+            </GeometryGroup>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="DownArrowToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}">
+          <GeometryDrawing.Geometry>
+            <GeometryGroup Children="{Binding Source={StaticResource RightArrowGeometry}, Path=Children}">
+              <GeometryGroup.Transform>
+                <RotateTransform Angle="90"/>
+              </GeometryGroup.Transform>
+            </GeometryGroup>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
@@ -206,7 +232,6 @@
           </DrawingGroup>
       </DrawingBrush.Drawing>
   </DrawingBrush>
-
 
   <DrawingBrush x:Key="NotificationsPostDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
