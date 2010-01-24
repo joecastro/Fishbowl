@@ -710,10 +710,11 @@
                             <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
                         </Grid>
 
-                        <Image x:Name="Icon" Source="../Images/Controls/search_icon.png" Width="14" Height="13"
-                               HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" />
-                        <Image x:Name="Icon2" Source="../Images/Controls/search_icon_black.png" Width="14" Height="13"
-                               HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" Opacity="0" />
+                        <Rectangle x:Name="Icon" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Fill="{DynamicResource SearchGlassLightDrawingBrush}"/>
+
+                        <Rectangle x:Name="Icon2" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" Opacity="0"
+                                   Fill="{DynamicResource SearchGlassDarkDrawingBrush}"/>
 
                         <TextBlock x:Name="HelpText" Margin="30,1,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" 
@@ -828,10 +829,7 @@
                             <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
                         </Grid>
 
-                        <Image x:Name="Icon" Source="../Images/Controls/status_icon.png" Width="14" Height="13"
-                               HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,6,0,0" Visibility="Hidden" />
-                        <!--<Image x:Name="Icon2" Source="../Images/Controls/status_icon_black.png" Width="14" Height="13"
-                               HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" Opacity="0" />-->
+            <Rectangle x:Name="Icon" Width="14" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,6,0,0" Visibility="Hidden" Fill="{DynamicResource BroadcastStatusDrawingBrush}"/>
 
                         <TextBlock x:Name="HelpText" Margin="10,5,0,0" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" 

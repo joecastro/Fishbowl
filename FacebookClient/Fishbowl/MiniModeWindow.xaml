@@ -385,8 +385,8 @@
 
               <!-- Large right margin because this is inline with the caption buttons. -->
               <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,60,0" HorizontalAlignment="Stretch">
-                <Image Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Source="pack://application:,,,/Resources/Images/status_away.png" Visibility="Collapsed" />
-                <Image Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Source="pack://application:,,,/Resources/Images/status_online.png" Visibility="Collapsed" />
+                <Rectangle x:Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusAwayDrawingBrush}" Visibility="Collapsed" />
+                <Rectangle x:Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusOnlineDrawingBrush}" Visibility="Collapsed" />
 
                 <Grid HorizontalAlignment="Left">
                   <TextBlock TextAlignment="Left" Text="{Binding Actor.Name}" Foreground="White" FontSize="14" FontWeight="Bold" TextTrimming="CharacterEllipsis">

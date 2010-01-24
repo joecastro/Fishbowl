@@ -11,7 +11,9 @@
       <GradientStop Color="#3F60A0" Offset="1"/>
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
-
+  
+  <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="#6A9FE9"/>
+    
   <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF7489B6" />
   <SolidColorBrush x:Key="InterestLevelTextForeground" Color="#3b5998"/>
   <SolidColorBrush x:Key="LikeSliderTickBrush" Color="#87AcF9" />
@@ -126,7 +128,21 @@
     </Grid>
   </ControlTemplate>
   
-  <ControlTemplate x:Key="StandardTextBoxFrameControlTemplate" TargetType="{x:Type Control}">
+  <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
+    <Grid Margin="{TemplateBinding Margin}">
+      <Rectangle Margin="2,4,-2,-4" Fill="#11000000"/>
+      <Rectangle Margin="4,2,-4,-2" Fill="#11000000"/>
+      <Rectangle Margin="-2" Fill="#11000000"/>
+      <Rectangle Fill="White" />
+      <ContentPresenter x:Name="Content"
+          Content="{TemplateBinding Content}" 
+          Margin="{TemplateBinding Padding}" 
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+    </Grid>
+  </ControlTemplate>
+  
+  <ControlTemplate x:Key="StandardTextBoxChromeControlTemplate" TargetType="{x:Type Control}">
     <Grid>
       <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1">
         <Rectangle.Stroke>
@@ -424,7 +440,7 @@
 
   <SolidColorBrush x:Key="SettingsDialogForeground" Color="Black"/>
 
-  <LinearGradientBrush x:Key="SeperatorBrush" StartPoint="0,0" EndPoint="0,1">
+  <LinearGradientBrush x:Key="SeparatorBrush" StartPoint="0,0" EndPoint="0,1">
     <GradientStop Color="Transparent" Offset="0" />
     <GradientStop Color="#2E4171" Offset="1" />
   </LinearGradientBrush>

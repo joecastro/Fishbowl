@@ -11,10 +11,17 @@
     
     <SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
     <SolidColorBrush x:Key="Foreground_ContentElement" Color="White"/>
-    
-    <!--<SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />-->
-    <SolidColorBrush x:Key="ToolbarIconForegroundBrush" Color="White" />
-    <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF333333" />
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="White" Offset="0"/>
+      <GradientStop Color="Silver" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="White"/>
+
+  <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF333333" />
     
     <SolidColorBrush x:Key="InterestLevelTextForeground" Color="White"/>
     <SolidColorBrush x:Key="LikeSliderTickBrush" Color="#BDBDBD" />
@@ -152,6 +159,20 @@
         <Setter Property="FontSize" Value="14px" />
     </Style>
 
+  <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
+    <Grid Margin="{TemplateBinding Margin}">
+      <Rectangle Margin="2,4,-2,-4" Fill="#11FFFFFF"/>
+      <Rectangle Margin="4,2,-4,-2" Fill="#11FFFFFF"/>
+      <Rectangle Margin="-2" Fill="#11000000"/>
+      <Rectangle Fill="White" />
+      <ContentPresenter x:Name="Content"
+          Content="{TemplateBinding Content}" 
+          Margin="{TemplateBinding Padding}" 
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+    </Grid>
+  </ControlTemplate>
+
   <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource BlendToggleButtonStyle}">
     <Setter Property="Padding" Value="15,0,15,0" />
     <Setter Property="Cursor" Value="Hand" />
@@ -235,7 +256,7 @@
 
     <SolidColorBrush x:Key="SettingsDialogForeground" Color="#FF333333"/>
     
-    <LinearGradientBrush x:Key="SeperatorBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush x:Key="SeparatorBrush" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="Transparent" Offset="0" />
             <GradientStop Color="#808080" Offset="1" />
     </LinearGradientBrush>

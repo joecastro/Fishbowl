@@ -97,8 +97,8 @@
                           Style="{StaticResource SimpleButtonStyle}"
                           Click="StartChatButton_Click">
                           <Grid>
-                            <Image Name="Away" Source="pack://application:,,,/Resources/Images/status_away.png" Width="14" Height="14" Visibility="Collapsed" />
-                            <Image Name="Online" Source="pack://application:,,,/Resources/Images/status_online.png" Width="14" Height="14" Visibility="Collapsed" />
+                            <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+                            <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
                           </Grid>
                         </Button>
                       </StackPanel>

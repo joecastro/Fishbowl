@@ -215,7 +215,6 @@
     <Compile Include="Converters\EmptyStringToBooleanConverter.cs" />
     <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\RandomAngleToTransformConverter.cs" />
-    <Compile Include="Converters\FilterToImageConverter.cs" />
     <Compile Include="Converters\SexPronounConverter.cs" />
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
     <Compile Include="Converters\TranslateConverter.cs" />
@@ -550,10 +549,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\Themes\TocBarResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Resources\Themes\Zap.Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -633,16 +628,11 @@
     <Resource Include="Resources\Images\logo.png" />
     <Resource Include="Resources\Images\main_navigation_divider.png" />
     <Resource Include="Resources\Images\main_header_shadow.png" />
-    <Resource Include="Resources\Images\Controls\search_icon.png" />
     <Resource Include="Resources\Images\Controls\text_box_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_right.png" />
-    <Resource Include="Resources\Images\Controls\search_icon_black.png" />
-    <Resource Include="Resources\Images\Controls\status_icon.png" />
     <Resource Include="Resources\Images\avatar_background.png" />
     <Resource Include="Resources\Images\like_icon.png" />
     <Resource Include="Resources\Images\photo_background.png" />
-    <Resource Include="Resources\Images\status_away.png" />
-    <Resource Include="Resources\Images\status_online.png" />
     <Resource Include="Resources\Images\Icons\feed_icon.png" />
     <Resource Include="Resources\Images\Icons\links_icon.png" />
     <Resource Include="Resources\Images\Icons\network_icon.png" />
@@ -658,20 +648,6 @@
     <Resource Include="Resources\Images\Controls\text_box_top_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_top_right.png" />
     <Resource Include="Resources\Images\thumbtack.png" />
-    <Resource Include="Resources\Images\Controls\photo_bottom.png" />
-    <Resource Include="Resources\Images\Controls\photo_bottom_left.png" />
-    <Resource Include="Resources\Images\Controls\photo_bottom_right.png" />
-    <Resource Include="Resources\Images\Controls\photo_left.png" />
-    <Resource Include="Resources\Images\Controls\photo_right.png" />
-    <Resource Include="Resources\Images\Controls\photo_top_left.png" />
-    <Resource Include="Resources\Images\Controls\photo_top_right.png" />
-    <Resource Include="Resources\Images\Controls\photo_top.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Images\Controls\interest_slider_thumb_down.png" />
-    <Resource Include="Resources\Images\Controls\interest_slider_thumb_hover.png" />
-    <Resource Include="Resources\Images\Controls\interest_slider_thumb_up.png" />
-    <Resource Include="Resources\Images\Controls\interest_tick_bar.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

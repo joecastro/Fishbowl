@@ -13,7 +13,6 @@
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/NewsFeedResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBarResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/TocBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SearchAndFilterResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendSummaryResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/IconNotificationButtonResources.xaml" />

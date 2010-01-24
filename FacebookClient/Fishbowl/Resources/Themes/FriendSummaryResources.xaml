@@ -55,10 +55,10 @@
             <FacebookClient:BindableRun Text="{Binding Name}"/>
           </Hyperlink>
           <InlineUIContainer>
-            <Grid Width="14" Height="14" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
-              <Image Name="Away" Source="pack://application:,,,/Resources/Images/status_away.png" Width="14" Height="14" Visibility="Collapsed" />
-              <Image Name="Online" Source="pack://application:,,,/Resources/Images/status_online.png" Width="14" Height="14" Visibility="Collapsed" />
-            </Grid> 
+            <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
+              <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+              <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+            </Grid>
           </InlineUIContainer>
         </TextBlock>
         

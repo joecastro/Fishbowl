@@ -8,8 +8,6 @@
              Focusable="False" 
              x:Name="TopControl">
   <UserControl.Resources>
-    <FacebookClient:FilterToImageConverter x:Key="filterToImageConverter" />
-
     <Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}">
       <Setter Property="Template">
         <Setter.Value>

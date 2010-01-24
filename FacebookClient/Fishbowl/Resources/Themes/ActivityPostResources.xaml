@@ -463,9 +463,9 @@
               <FacebookClient:BindableRun Text="{Binding Actor.Name}" />
             </Hyperlink>
             <InlineUIContainer>
-              <Grid x:Name="Status" Width="14" Height="14" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
-                <Image Name="Away" Width="14" Height="14" Source="pack://application:,,,/Resources/Images/status_away.png" Visibility="Collapsed" />
-                <Image Name="Online" Width="14" Height="14" Source="pack://application:,,,/Resources/Images/status_online.png" Visibility="Collapsed" />
+              <Grid x:Name="Status" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
+                <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+                <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
               </Grid>
             </InlineUIContainer>
             <TextBlock x:Name="TargetBlock">

@@ -42,61 +42,34 @@
     <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
       <Button
           Height="80" Width="80"
-          Margin=".5,0"
           Click="OnNavigateToContentButtonClicked"
           ClientManagerView:ViewManager.NavigationContent="{Binding}"
           Focusable="False"
           IsEnabled="{Binding HasData, FallbackValue=False}"
           Style="{StaticResource FilmStripThumbnailButton}">
-        <Grid>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="5" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="6" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="5" />
-              <RowDefinition Height="*" />
-              <RowDefinition Height="7" />
-              <RowDefinition Height="6" />
-            </Grid.RowDefinitions>
-
-            <Image Grid.Row="0" Grid.Column="0" Source="../Images/Controls/photo_top_left.png" Stretch="Fill" />
-            <Image Grid.Row="0" Grid.Column="1" Source="../Images/Controls/photo_top.png" Stretch="Fill" />
-            <Image Grid.Row="0" Grid.Column="2" Source="../Images/Controls/photo_top_right.png" Stretch="Fill" />
-
-            <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Source="../Images/Controls/photo_left.png" Stretch="Fill" />
-            <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Source="../Images/Controls/photo_right.png" Stretch="Fill" />
-            <Rectangle Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Fill="#FFFFFF" Stretch="Fill" />
-
-            <Image Grid.Row="3" Grid.Column="0" Source="../Images/Controls/photo_bottom_left.png" Stretch="Fill" />
-            <Image Grid.Row="3" Grid.Column="1" Source="../Images/Controls/photo_bottom.png" Stretch="Fill" />
-            <Image Grid.Row="3" Grid.Column="2" Source="../Images/Controls/photo_bottom_right.png" Stretch="Fill" />
-
-            <ClientManagerControls:FacebookImageControl Grid.Row="1" Grid.Column="1" FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
-              <ClientManagerControls:FacebookImageControl.Template>
-                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                  <Grid Margin="3">
-                    <Border x:Name="PlaceholderBorder" Background="Black" Visibility="Collapsed" />
-                    <Image x:Name="MainImage" VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                  </Grid>
-                  <ControlTemplate.Triggers>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
-                      <Setter TargetName="MainImage" Property="Visibility" Value="Collapsed" />
-                      <Setter TargetName="PlaceholderBorder" Property="Visibility" Value="Visible" />
-                    </DataTrigger>
-                  </ControlTemplate.Triggers>
-                </ControlTemplate>
-              </ClientManagerControls:FacebookImageControl.Template>
-            </ClientManagerControls:FacebookImageControl>
-          </Grid>
-        </Grid>
+        <ContentControl Margin="3" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
+            <ClientManagerControls:FacebookImageControl.Template>
+              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                <Grid Margin="4,4,4,11">
+                  <Border x:Name="PlaceholderBorder" Background="Black" Visibility="Collapsed" />
+                  <Image x:Name="MainImage" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                </Grid>
+                <ControlTemplate.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
+                    <Setter TargetName="MainImage" Property="Visibility" Value="Collapsed" />
+                    <Setter TargetName="PlaceholderBorder" Property="Visibility" Value="Visible" />
+                  </DataTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </ClientManagerControls:FacebookImageControl.Template>
+          </ClientManagerControls:FacebookImageControl>
+        </ContentControl>
       </Button>
     </ClientManagerControls:FacebookPhotoDragContainer>
   </DataTemplate>
   
-  <!-- Colour overrides for the film strip -->
+  <!-- Color overrides for the film strip -->
   <Style x:Key="FilmStripStyle">
     <Style.Resources>
       <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
@@ -389,63 +362,15 @@
         <ControlTemplate TargetType="{x:Type FacebookClient:PhotoDisplayControl}">
           <Grid>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="12"/>
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="10"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="12"/>
-              </Grid.RowDefinitions>
-              <Image
-                Grid.Column="0"
-                Grid.Row="0"
-                Source="../Images/Controls/photo_top_left.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="1"
-                Grid.Row="0"
-                Source="../Images/Controls/photo_top.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="2"
-                Grid.Row="0"
-                Source="../Images/Controls/photo_top_right.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="0"
-                Grid.Row="1"
-                Source="../Images/Controls/photo_left.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="2"
-                Grid.Row="1"
-                Source="../Images/Controls/photo_right.png"
-                Stretch="Fill"/>
-              <Rectangle
+              <ContentControl Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="8">
+                <Rectangle
                 Width="{Binding ElementName=PhotoViewBox, Path=ActualWidth}"
                 Height="{Binding ElementName=PhotoViewBox, Path=ActualHeight}"
                 Grid.Column="1"
                 Grid.Row="1"
                 Fill="#FFFFFF"
                 Stretch="Fill"/>
-              <Image
-                Grid.Column="0"
-                Grid.Row="2"
-                Source="../Images/Controls/photo_bottom_left.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="1"
-                Grid.Row="2"
-                Source="../Images/Controls/photo_bottom.png"
-                Stretch="Fill"/>
-              <Image
-                Grid.Column="2"
-                Grid.Row="2"
-                Source="../Images/Controls/photo_bottom_right.png"
-                Stretch="Fill"/>
+              </ContentControl>
             </Grid>
             <Border
               x:Name="PhotoViewBox"
@@ -912,24 +837,9 @@
               <FacebookClient:BindableRun Text="{Binding Name}"/>
             </Hyperlink>
             <InlineUIContainer>
-              <Grid
-                Width="14"
-                Height="14"
-                HorizontalAlignment="Left"
-                Margin="6,0,0,0"
-                VerticalAlignment="Center">
-                <Image
-                  Name="Away"
-                  Width="14"
-                  Height="14"
-                  Source="pack://application:,,,/Resources/Images/status_away.png"
-                  Visibility="Collapsed"/>
-                <Image
-                  Name="Online"
-                  Width="14"
-                  Height="14"
-                  Source="pack://application:,,,/Resources/Images/status_online.png"
-                  Visibility="Collapsed"/>
+              <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
+                <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+                <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
               </Grid>
             </InlineUIContainer>
           </TextBlock>

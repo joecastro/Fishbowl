@@ -50,41 +50,17 @@
           </StackPanel>
         </Button.ToolTip>
         <Viewbox>
-          <Grid Width="160" Height="160">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="12" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="10" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="15" />
-                <RowDefinition Height="12" />
-              </Grid.RowDefinitions>
-
-              <Image Grid.Row="0" Grid.Column="0" Source="../Images/Controls/photo_top_left.png" Stretch="Fill" />
-              <Image Grid.Row="0" Grid.Column="1" Source="../Images/Controls/photo_top.png" Stretch="Fill" />
-              <Image Grid.Row="0" Grid.Column="2" Source="../Images/Controls/photo_top_right.png" Stretch="Fill" />
-
-              <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Source="../Images/Controls/photo_left.png" Stretch="Fill" />
-              <Image Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Source="../Images/Controls/photo_right.png" Stretch="Fill" />
-              <Rectangle Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Fill="#FFFFFF" Stretch="Fill" />
-
-              <Image Grid.Row="3" Grid.Column="0" Source="../Images/Controls/photo_bottom_left.png" Stretch="Fill" />
-              <Image Grid.Row="3" Grid.Column="1" Source="../Images/Controls/photo_bottom.png" Stretch="Fill" />
-              <Image Grid.Row="3" Grid.Column="2" Source="../Images/Controls/photo_bottom_right.png" Stretch="Fill" />
-
-              <ClientManagerControls:FacebookImageControl Grid.Row="1" Grid.Column="1" 
+          <ContentControl Width="160" Height="160" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="4" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="10" FontFamily="Lucida Handwriting Italic" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
+              <ClientManagerControls:FacebookImageControl
                   FacebookImage="{Binding Image}" 
-                  FacebookImageDimensions="Normal" 
-                  RenderTransformOrigin="0.5,0.5">
+                  FacebookImageDimensions="Normal">
                 <ClientManagerControls:FacebookImageControl.Template>
                   <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                    <Grid Margin="6">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                       <Border x:Name="PlaceholderBorder" Background="Black" Visibility="Collapsed" />
-                      <Image x:Name="MainImage" VerticalAlignment="Top" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                      <Image x:Name="MainImage" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
                     </Grid>
                     <ControlTemplate.Triggers>
                       <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
@@ -95,10 +71,8 @@
                   </ControlTemplate>
                 </ClientManagerControls:FacebookImageControl.Template>
               </ClientManagerControls:FacebookImageControl>
-
-              <TextBlock Grid.Column="1" Grid.Row="2" Margin="4,0" FontSize="10" FontFamily="Lucida Handwriting Italic" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
-            </Grid>
-          </Grid>
+            </DockPanel>
+          </ContentControl>
         </Viewbox>
       </Button>
     </ClientManagerControls:FacebookPhotoDragContainer>
@@ -142,7 +116,7 @@
             <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
           </Hyperlink>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light">
+        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light" TextWrapping="Wrap">
           <TextBlock.Text>
             <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
           </TextBlock.Text>

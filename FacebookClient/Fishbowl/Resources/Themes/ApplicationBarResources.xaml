@@ -121,15 +121,6 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
-  <Style x:Key="NavigationSeparationStyle" TargetType="{x:Type Image}">
-    <Setter Property="Source" Value="../Images/main_navigation_divider.png" />
-    <Setter Property="Width" Value="3" />
-    <Setter Property="Height" Value="32" />
-    <Setter Property="Margin" Value="2" />
-    <Setter Property="VerticalAlignment" Value="Bottom" />
-    <Setter Property="SnapsToDevicePixels" Value="True" />
-  </Style>
-
   <Style x:Key="MiniModeButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -566,12 +557,9 @@
               </StackPanel>
             </ToggleButton>
 
-            <!--<Image x:Name="Separator1" Margin="8,0" DockPanel.Dock="Right" Style="{StaticResource NavigationSeparationStyle}" />-->
-                        <Rectangle x:Name="Separator1" Fill="{DynamicResource SeperatorBrush}" VerticalAlignment="Center" Margin="8,0" DockPanel.Dock="Right" Width="1" Height="20"/>
-                           
+            <Rectangle x:Name="Separator1" Fill="{DynamicResource SeparatorBrush}" VerticalAlignment="Center" Margin="8,0" DockPanel.Dock="Right" Width="3" Height="20"/>
 
-
-                        <Button x:Name="SignOutButton" Margin="3,1"
+            <Button x:Name="SignOutButton" Margin="3,1"
                     DockPanel.Dock="Right"
                     MinHeight="20"
                 VerticalAlignment="Center" HorizontalAlignment="Right" 

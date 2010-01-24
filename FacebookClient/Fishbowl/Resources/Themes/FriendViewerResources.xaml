@@ -106,12 +106,9 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type Thumb}">
           <Grid Background="Transparent">
-            <!--<Image x:Name="up" Source="../Images/Controls/interest_slider_thumb_up.png" />-->
-            <!--<Image x:Name="up" Source="../Images/Controls/interest_slider_thumb_up.png" />
-            <Image x:Name="down" Source="../Images/Controls/interest_slider_thumb_up.png" Opacity="0" />-->
-            <Polygon RenderTransformOrigin="0,0" x:Name="up" Fill="{DynamicResource LikeSliderThumbBrushUp}" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
-            <Polygon RenderTransformOrigin="0,0" x:Name="down" Fill="{DynamicResource LikeSliderThumbBrushDown}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1" />
-            <Polygon RenderTransformOrigin="0,0" x:Name="hover" Fill="{DynamicResource LikeSliderThumbBrushHover}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
+            <Polygon x:Name="up" Fill="{DynamicResource LikeSliderThumbBrushUp}" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
+            <Polygon x:Name="down" Fill="{DynamicResource LikeSliderThumbBrushDown}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1" />
+            <Polygon x:Name="hover" Fill="{DynamicResource LikeSliderThumbBrushHover}" Opacity="0" Points="0,0 13,0 13,11 6.5,22 0,11 0,0" Stroke="White" StrokeThickness="1"  />
         </Grid>
 
           <ControlTemplate.Triggers>
@@ -141,24 +138,13 @@
               <EventTrigger.Actions>
                 <BeginStoryboard>
                   <Storyboard>
-                      <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
                     <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
                   </Storyboard>
                 </BeginStoryboard>
               </EventTrigger.Actions>
             </EventTrigger>
-          <!--  <EventTrigger RoutedEvent="Mouse.MouseUp">
-              <EventTrigger.Actions>
-                <BeginStoryboard>
-                  <Storyboard>
-                      <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                    <DoubleAnimation To="1" Duration="0:0:0.4" Storyboard.TargetName="up" Storyboard.TargetProperty="Opacity" />
-                    <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                  </Storyboard>
-                </BeginStoryboard>
-              </EventTrigger.Actions>
-            </EventTrigger>-->
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
@@ -213,7 +199,6 @@
                     <Ellipse Width="4" Height="4" Fill="{DynamicResource LikeSliderTickBrush}" Canvas.Right="10" Canvas.Top="0"/>
                     <Ellipse Width="4" Height="4" Fill="{DynamicResource LikeSliderTickBrush}" Canvas.Left="73" Canvas.Top="0"/>
                 </Canvas>
-                <!--<Image Grid.Row="2" Source="../Images/Controls/interest_tick_bar.png" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Height="4" Margin="-20,0,-20,0" />-->
               <TickBar Grid.Row="2" Placement="Bottom" Height="4" Visibility="Visible" />
 
               <TextBlock Grid.Row="3" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" FontStyle="Italic" Margin="0,5,0,0" Text="Interest Level" Foreground="{DynamicResource InterestLevelTextForeground}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
@@ -357,29 +342,9 @@
           <ClientManagerControls:FacebookImageControl.Template>
             <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
               <Grid Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top" MaxHeight="400">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="12" />
-                  </Grid.ColumnDefinitions>
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="10" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="12" />
-                  </Grid.RowDefinitions>
-                  <Image Grid.Column="0" Grid.Row="0" Source="../Images/Controls/photo_top_left.png" Stretch="Fill" />
-                  <Image Grid.Column="1" Grid.Row="0" Source="../Images/Controls/photo_top.png" Stretch="Fill" />
-                  <Image Grid.Column="2" Grid.Row="0" Source="../Images/Controls/photo_top_right.png" Stretch="Fill" />
-                  <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/photo_left.png" Stretch="Fill" />
-                  <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/photo_right.png" Stretch="Fill" />
-                  <Rectangle Width="{Binding ElementName=PART_PhotoImage, Path=ActualWidth}" Height="{Binding ElementName=PART_PhotoImage, Path=ActualHeight}" Grid.Column="1" Grid.Row="1" Fill="#FFFFFF" Stretch="Fill" />
-                  <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/photo_bottom_left.png" Stretch="Fill" />
-                  <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/photo_bottom.png" Stretch="Fill" />
-                  <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/photo_bottom_right.png" Stretch="Fill" />
-                </Grid>
-
-                <Image x:Name="PART_PhotoImage" HorizontalAlignment="Center" Margin="9,9,11,11" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                <ContentControl Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="8">
+                  <Image x:Name="PART_PhotoImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                </ContentControl>
               </Grid>
             </ControlTemplate>
           </ClientManagerControls:FacebookImageControl.Template>

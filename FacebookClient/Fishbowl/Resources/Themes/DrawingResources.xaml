@@ -6,6 +6,21 @@
   F1M2,9C2.01200008392334,9 2.13299989700317,9 3,9 4.10400009155273,9 5,9 5,9 5,9 5,16 5,16 5,16.867000579834 5,16.988000869751 5,17 4.89499998092651,17 3,17 3,17 3,17 2,9 2,9z M12,2C13.1040000915527,2 13.5520000457764,4.04300022125244 13,5 13,5 11.2849998474121,8 11.2849998474121,8 11.2849998474121,8 15,8 15,8 16.6569995880127,8 17,9.3430004119873 17,11 17,11 16,15 16,15 16,16.6569995880127 13,18 13,18 13,18 8,17 8,17 6.34299993515015,17 6,15.6569995880127 6,14 6,14 6,11 6,11 6,10.6929998397827 6.05900001525879,10.4020004272461 6.14499998092651,10.1230001449585 6.08500003814697,9.89900016784668 6.04899978637695,9.55099964141846 6.04899978637695,9 6.04899978637695,9 10.423999786377,4.06300020217896 10.423999786377,4.06300020217896 10.9759998321533,3.10599994659424 11,2 12,2z"
   -->
 
+  <CombinedGeometry x:Key="BroadcastStatusGeometry" GeometryCombineMode="Intersect">
+    <CombinedGeometry.Geometry1>
+      <GeometryGroup>
+        <EllipseGeometry RadiusX="5" RadiusY="5"/>
+        <EllipseGeometry RadiusX="10" RadiusY="10"/>
+        <EllipseGeometry RadiusX="15" RadiusY="15"/>
+        <EllipseGeometry RadiusX="20" RadiusY="20"/>
+        <EllipseGeometry RadiusX="25" RadiusY="25"/>
+      </GeometryGroup>
+    </CombinedGeometry.Geometry1>
+    <CombinedGeometry.Geometry2>
+      <PathGeometry Figures="M0,-5 25,-25 25,25 0,5 -5,5 -5,-5Z"/>
+    </CombinedGeometry.Geometry2>
+  </CombinedGeometry>
+
   <GeometryGroup x:Key="SaveDiskGeometry">
     <CombinedGeometry GeometryCombineMode="Exclude">
       <CombinedGeometry.Geometry1>
@@ -126,6 +141,113 @@
       </RectangleGeometry.Transform>
     </RectangleGeometry>
   </GeometryGroup>
+
+  <!-- Slightly different from the zoom glass. -->
+  <CombinedGeometry x:Key="SearchMagnifyingGlassGeometry" GeometryCombineMode="Union">
+    <CombinedGeometry.Geometry1>
+      <GeometryGroup>
+        <EllipseGeometry Center="12,12" RadiusX="15" RadiusY="15"/>
+        <EllipseGeometry Center="12,12" RadiusX="10" RadiusY="10"/>
+      </GeometryGroup>
+    </CombinedGeometry.Geometry1>
+    <CombinedGeometry.Geometry2>
+      <RectangleGeometry Rect="9.75,25,5.5,29" RadiusX="3" RadiusY="1.5">
+        <RectangleGeometry.Transform>
+          <RotateTransform Angle="45" CenterX="12" CenterY="12" />
+        </RectangleGeometry.Transform>
+      </RectangleGeometry>
+    </CombinedGeometry.Geometry2>
+  </CombinedGeometry>
+
+  <DrawingBrush x:Key="StatusOnlineDrawingBrush">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing>
+          <GeometryDrawing.Brush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="Green" />
+              <GradientStop Color="YellowGreen" Offset="1" />
+            </LinearGradientBrush>
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#a3a3a3" Thickness="2"/>
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="0,0" RadiusX="20" RadiusY="20"/>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing>
+          <GeometryDrawing.Brush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="#DDFFFFFF" Offset="0" />
+              <GradientStop Color="#33FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="0,-8" RadiusX="14" RadiusY="9">
+              <EllipseGeometry.Transform>
+                <RotateTransform Angle="-30"/>
+              </EllipseGeometry.Transform>
+            </EllipseGeometry>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="StatusAwayDrawingBrush">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing>
+          <GeometryDrawing.Brush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="#ffe000" />
+              <GradientStop Color="#d4b100" Offset="1" />
+            </LinearGradientBrush>
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#a3a3a3" Thickness="2"/>
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="0,0" RadiusX="20" RadiusY="20"/>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing>
+          <GeometryDrawing.Brush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+              <GradientStop Color="#DDFFFFFF" Offset="0" />
+              <GradientStop Color="#33FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="0,-8" RadiusX="14" RadiusY="9">
+              <EllipseGeometry.Transform>
+                <RotateTransform Angle="-30"/>
+              </EllipseGeometry.Transform>
+            </EllipseGeometry>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="SearchGlassLightDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="White" Geometry="{StaticResource SearchMagnifyingGlassGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  
+  <DrawingBrush x:Key="SearchGlassDarkDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="Black" Geometry="{StaticResource SearchMagnifyingGlassGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="BroadcastStatusDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource FacebookBlueBrush}" Geometry="{StaticResource BroadcastStatusGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
 
   <DrawingBrush x:Key="PrinterToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>

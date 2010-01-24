@@ -24,7 +24,7 @@
   <Style x:Key="ToolbarTextBlockStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="HorizontalAlignment" Value="Center" />
-    <Setter Property="Foreground" Value="#3b5998" />
+    <Setter Property="Foreground" Value="{DynamicResource ToolbarTextBlockForegroundBrush}" />
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
     <Setter Property="FontSize" Value="14px" />
