@@ -9,7 +9,6 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
 
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
-  <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   <FacebookClient:AddConverter x:Key="AddConverter" />
   <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
