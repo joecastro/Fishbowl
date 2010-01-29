@@ -25,6 +25,9 @@
     <TargetZone>LocalIntranet</TargetZone>
     <ManifestCertificateThumbprint>355EF39F2A89A96CB5722BFC0AA701268393AB7D</ManifestCertificateThumbprint>
     <ManifestKeyFile>FishBowl_TemporaryKey.pfx</ManifestKeyFile>
+    <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -46,9 +49,6 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <DebugSymbols>true</DebugSymbols>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -65,6 +65,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <DebugType>pdbonly</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.WIA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -84,6 +85,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -160,9 +162,31 @@
     <Compile Include="ChatWindow.xaml.cs">
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ClientManager\AnimatedSwooshes.xaml.cs">
+      <DependentUpon>AnimatedSwooshes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClientManager\DragContainer.cs" />
     <Compile Include="Controls\AnimationHelper.cs" />
     <Compile Include="Controls\BuddyListControl.xaml.cs">
       <DependentUpon>BuddyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClientManager\FacebookImageControl.cs" />
+    <Compile Include="Controls\ClientManager\ImageThumbnailControl.cs" />
+    <Compile Include="Controls\ClientManager\LargePhotoThumbnailControl.cs" />
+    <Compile Include="Controls\ClientManager\MainContentContainer.cs" />
+    <Compile Include="Controls\ClientManager\NewsFeedItemOverlay.cs" />
+    <Compile Include="Controls\ClientManager\PhotoBaseControl.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerAlbumNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerBaseNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerCommentNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerContactNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerControl.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerPhotoNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerPostNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerTagNode.cs" />
+    <Compile Include="Controls\ClientManager\SizeTemplateControl.cs" />
+    <Compile Include="Controls\ClientManager\Spinner.xaml.cs">
+      <DependentUpon>Spinner.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\DelayedResizeDecorator.cs" />
     <Compile Include="Controls\EmbeddedBrowserControl.xaml.cs">
@@ -219,6 +243,7 @@
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
     <Compile Include="Converters\TranslateConverter.cs" />
     <Compile Include="DeploymentManager.cs" />
+    <Compile Include="DragDropLib.cs" />
     <Compile Include="HyperlinkTextContent.cs" />
     <Compile Include="Controls\AnimatingTilePanel.cs" />
     <Compile Include="BindableRun.cs" />
@@ -260,6 +285,7 @@
     <Compile Include="Converters\PhotoZoomFactorToBitmapScalingModeConverter.cs" />
     <Compile Include="Converters\RotationAngleToSimplePositiveAngleConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="View\ActionCommands.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -269,6 +295,7 @@
     <Compile Include="MiniModeWindow.xaml.cs">
       <DependentUpon>MiniModeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MissingItemError.cs" />
     <Compile Include="PeopleWhoLikeThisSpan.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -287,6 +314,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ApplicationInputHandler.cs" />
+    <Compile Include="ServiceProvider.cs" />
     <Compile Include="SingleInstance.cs" />
     <Compile Include="SlideShowWindow.xaml.cs">
       <DependentUpon>SlideShowWindow.xaml</DependentUpon>
@@ -296,6 +324,20 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UIListPager.cs" />
+    <Compile Include="View\EventResourceDictionary.cs" />
+    <Compile Include="View\HomePage.cs" />
+    <Compile Include="View\LoadingPage.xaml.cs">
+      <DependentUpon>LoadingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MasterNavigator.cs" />
+    <Compile Include="View\NavigationCommands.cs" />
+    <Compile Include="View\Navigator.cs" />
+    <Compile Include="View\PhotoPlayer.cs" />
+    <Compile Include="View\ViewCommand.cs" />
+    <Compile Include="View\ViewManager.cs" />
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -328,6 +370,14 @@
     <Page Include="Controls\BuddyListControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ClientManager\AnimatedSwooshes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ClientManager\Spinner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\EmbeddedBrowserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -557,6 +607,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Fonts\VINERITC.TTF" />
@@ -592,10 +650,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientManager\ClientManager.csproj">
-      <Project>{7B4CFB3D-C325-4386-8F35-22A533A2F50B}</Project>
-      <Name>ClientManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Contigo\Contigo.csproj">
       <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
       <Name>Contigo</Name>

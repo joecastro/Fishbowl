@@ -1,12 +1,12 @@
 <ClientManagerView:EventResourceDictionary x:Class="FacebookClient.FriendSummaryEventResourceDictionary"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
-    xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager"
-    xmlns:ClientManagerData="clr-namespace:ClientManager.Data;assembly=ClientManager"
-    xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager"
+    xmlns:ClientManager="clr-namespace:ClientManager"
+    xmlns:ClientManagerData="clr-namespace:ClientManager.Data"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     xmlns:Annotations="clr-namespace:System.Windows.Annotations;assembly=PresentationFramework">
 
   <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />

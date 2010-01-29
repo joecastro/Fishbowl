@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager">
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:PhotoUploadWizard}">
       <Border Width="505" Height="575" Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">

@@ -3,8 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager" 
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager">
+    xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
     <UserControl.Template>
         <ControlTemplate TargetType="{x:Type FacebookClient:UpdateStatusControl}">
             <ControlTemplate.Resources>

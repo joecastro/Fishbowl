@@ -1,9 +1,9 @@
 ﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.ActivityPostResourcesDictionary"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager"
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager"
-    xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager" 
+    xmlns:ClientManager="clr-namespace:ClientManager"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View" 
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo" 
     xmlns:FacebookClient="clr-namespace:FacebookClient">
 

@@ -3,10 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:ClientManager="clr-namespace:ClientManager;assembly=ClientManager" 
-    xmlns:ClientManagerData="clr-namespace:ClientManager.Data;assembly=ClientManager"
-    xmlns:ClientManagerView="clr-namespace:ClientManager.View;assembly=ClientManager"
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls;assembly=ClientManager">
+    xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerData="clr-namespace:ClientManager.Data"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
 
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <FacebookClient:AgeOfPostConverter x:Key="AgeOfpostConverter" />
