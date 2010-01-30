@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7B4CFB3D-C325-4386-8F35-22A533A2F50B}</ProjectGuid>
+    <ProjectGuid>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClientManager</RootNamespace>
-    <AssemblyName>ClientManager</AssemblyName>
+    <RootNamespace>Microsoft.Windows.Shell</RootNamespace>
+    <AssemblyName>Microsoft.Windows.Shell</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -17,8 +17,25 @@
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
     <SignAssembly>false</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +45,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +54,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,7 +65,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -59,7 +76,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore">
@@ -72,18 +89,14 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
+    <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq">
+    <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -95,14 +108,11 @@
     <Compile Include="..\Standard\Debug.cs">
       <Link>Standard\Debug.cs</Link>
     </Compile>
-    <Compile Include="..\Standard\DoubleUtil.cs">
-      <Link>Standard\DoubleUtil.cs</Link>
+    <Compile Include="..\Standard\DpiHelper.cs">
+      <Link>Standard\DpiHelper.cs</Link>
     </Compile>
     <Compile Include="..\Standard\ErrorCodes.cs">
       <Link>Standard\ErrorCodes.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\MshtmlProvider.cs">
-      <Link>Standard\MshtmlProvider.cs</Link>
     </Compile>
     <Compile Include="..\Standard\NativeMethods.cs">
       <Link>Standard\NativeMethods.cs</Link>
@@ -119,75 +129,31 @@
     <Compile Include="..\Standard\Verify.cs">
       <Link>Standard\Verify.cs</Link>
     </Compile>
-    <Compile Include="Controls\AnimatedSwooshes.xaml.cs">
-      <DependentUpon>AnimatedSwooshes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DragContainer.cs" />
-    <Compile Include="Controls\FacebookImageControl.cs" />
-    <Compile Include="Controls\ImageThumbnailControl.cs" />
-    <Compile Include="Controls\LargePhotoThumbnailControl.cs" />
-    <Compile Include="Controls\MainContentContainer.cs" />
-    <Compile Include="Controls\NewsFeedItemOverlay.cs" />
-    <Compile Include="Controls\PhotoBaseControl.cs" />
-    <Compile Include="Controls\PhotoExplorerAlbumNode.cs" />
-    <Compile Include="Controls\PhotoExplorerBaseNode.cs" />
-    <Compile Include="Controls\PhotoExplorerCommentNode.cs" />
-    <Compile Include="Controls\PhotoExplorerContactNode.cs" />
-    <Compile Include="Controls\PhotoExplorerControl.cs" />
-    <Compile Include="Controls\PhotoExplorerPhotoNode.cs" />
-    <Compile Include="Controls\PhotoExplorerPostNode.cs" />
-    <Compile Include="Controls\PhotoExplorerTagNode.cs" />
-    <Compile Include="Controls\SizeTemplateControl.cs" />
-    <Compile Include="Controls\Spinner.xaml.cs">
-      <DependentUpon>Spinner.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DragDropLib.cs" />
-    <Compile Include="View\ActionCommands.cs" />
-    <Compile Include="View\EventResourceDictionary.cs" />
-    <Compile Include="View\HomePage.cs" />
-    <Compile Include="Data\MissingItemError.cs" />
-    <Compile Include="View\PhotoPlayer.cs" />
-    <Compile Include="View\LoadingPage.xaml.cs">
-      <DependentUpon>LoadingPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="JumpItem.cs" />
+    <Compile Include="JumpList.cs" />
+    <Compile Include="JumpPath.cs" />
+    <Compile Include="JumpTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceProvider.cs" />
-    <Compile Include="View\MasterNavigator.cs" />
-    <Compile Include="View\NavigationCommands.cs" />
-    <Compile Include="View\Navigator.cs" />
-    <Compile Include="View\ViewCommand.cs" />
-    <Compile Include="View\ViewManager.cs" />
+    <Compile Include="TaskbarItemInfo.cs" />
+    <Compile Include="ThumbButtonInfo.cs" />
+    <Compile Include="ThumbButtonInfoCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contigo\Contigo.csproj">
-      <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
-      <Name>Contigo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
-      <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
-      <Name>Microsoft.Bing</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\AnimatedSwooshes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Spinner.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\LoadingPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\LoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
