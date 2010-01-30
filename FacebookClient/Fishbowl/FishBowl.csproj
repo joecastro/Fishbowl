@@ -207,7 +207,6 @@
     <Compile Include="Controls\FooterControl.cs" />
     <Compile Include="Controls\FriendButton.cs" />
     <Compile Include="Controls\FriendSummaryControl.cs" />
-    <Compile Include="Controls\IconNotificationButton.cs" />
     <Compile Include="Controls\IncrementalLoadListBox.cs" />
     <Compile Include="Controls\MainHeaderControl.cs" />
     <Compile Include="Controls\MessageNotificationsControl.xaml.cs">
@@ -231,9 +230,6 @@
     </Compile>
     <Compile Include="Controls\SortControl.xaml.cs">
       <DependentUpon>SortControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\StartupPrompt.xaml.cs">
-      <DependentUpon>StartupPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\UpdateStatusControl.xaml.cs">
       <DependentUpon>UpdateStatusControl.xaml</DependentUpon>
@@ -432,10 +428,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\StartupPrompt.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\TagTarget.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -504,14 +496,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\Themes\ButtonStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Themes\ColorResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Resources\Themes\Dark\Dark.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -544,10 +528,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\Themes\FriendBarResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Resources\Themes\FriendSummaryResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -559,10 +539,6 @@
     <Page Include="Resources\Themes\GalleryHomeResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Themes\IconNotificationButtonResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Themes\MainPageResources.xaml">
       <Generator>MSBuild:Compile</Generator>

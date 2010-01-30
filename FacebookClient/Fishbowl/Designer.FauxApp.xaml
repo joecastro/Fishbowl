@@ -4,6 +4,10 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <!-- Pick a default theme to leverage for resources -->
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Blend/Expression.xaml" />
+
+        <!-- The rest of these are theme agnostic and are duplicated in FacebookClientApplication.xaml -->
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/BaseResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/MainPageResources.xaml" />
@@ -14,10 +18,7 @@
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SearchAndFilterResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendSummaryResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/IconNotificationButtonResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoUploadWizardResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ButtonStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ColorResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SlideShowResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FlowViewerResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoViewerResources.xaml" />

@@ -13,6 +13,39 @@
   <FacebookClient:AddConverter x:Key="AddConverter" />
   <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
 
+  <!-- Foreground brush for text in top chrome -->
+  <SolidColorBrush x:Key="Foreground_ChromeText" Color="#FFE5E5E5" />
+
+  <!-- Override the default selection brush -->
+  <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#99777777"/>
+
+  <!-- Default brush for content hightlights -->
+  <SolidColorBrush x:Key="Foreground_ContentHighlight" Color="#0099ff"/>
+
+  <!-- Item outline brush -->
+  <SolidColorBrush x:Key="Border_ItemOutline" Color="#444444" />
+
+  <!-- Item outline brush thickness -->
+  <Thickness x:Key="Border_ItemOutline_Thickness">1</Thickness>
+
+  <!-- Photo Viewer Colors -->
+  <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
+  <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
+  <SolidColorBrush x:Key="Background_PhotoViewerPressed" Color="#909090" />
+  <SolidColorBrush x:Key="Background_PhotoViewerChecked" Color="#555555" />
+
+  <!-- Explorer Colors -->
+  <Pen x:Key="Pen_ExplorerNodes" Brush="#403b5998" Thickness="1"/>
+  <SolidColorBrush x:Key="Background_ExplorerNode" Color="#3b5998" />
+  <SolidColorBrush x:Key="Border_ExplorerNode" Color="#666666" />
+  <SolidColorBrush x:Key="Background_ExplorerNodeEnabled" Color="#BBBBBB" />
+  <SolidColorBrush x:Key="Foreground_ExplorerNodeEnabled" Color="#333333" />
+  <SolidColorBrush x:Key="Foreground_ExplorerNodeDefault" Color="#666666" />
+  <SolidColorBrush x:Key="Foreground_ExplorerNodeMouse" Color="#3b5998" />
+
+  <!-- Glow for keyboard focused visuals -->
+  <OuterGlowBitmapEffect x:Key="FocusedVisualGlow" GlowSize="6" GlowColor="#ffffff" Opacity="0.75"/>
+
   <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
   <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
 
@@ -29,7 +62,7 @@
     <Setter Property="FontSize" Value="14px" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
   </Style>
-  
+
   <ControlTemplate x:Key="NavigateUpButtonTemplate" TargetType="RepeatButton">
     <Grid x:Name="Root" >
       <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
@@ -414,30 +447,66 @@
   </DataTemplate>
 
 
-    <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
-        <Setter Property="OverridesDefaultStyle" Value="true"/>
-        <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-        <Setter Property="FontSize" Value="12px"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToolTip">
-                    <Border CornerRadius="3" Background="{DynamicResource TooltipBackgroundBrush}" BorderThickness="1" Padding="10,3,10,3" BorderBrush="{DynamicResource TooltipBorderBrush}" SnapsToDevicePixels="True" >
-                        <!--<Border.Background>
+  <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+    <Setter Property="OverridesDefaultStyle" Value="true"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontSize" Value="12px"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ToolTip">
+          <Border CornerRadius="3" Background="{DynamicResource TooltipBackgroundBrush}" BorderThickness="1" Padding="10,3,10,3" BorderBrush="{DynamicResource TooltipBorderBrush}" SnapsToDevicePixels="True" >
+            <!--<Border.Background>
                             <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
                                 <GradientStop Color="#DF35528C" Offset="0.25"/>
                                 <GradientStop Color="#8F35528C" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>-->
-                        <Grid>
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+            <Grid>
+              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="ZoomInOutButtons" TargetType="{x:Type Button}">
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="OverridesDefaultStyle" Value="True" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid>
+            <Border x:Name="hover" CornerRadius="3" Background="{DynamicResource SmallButtonHoverBackground}" Opacity="0" BorderBrush="{DynamicResource SmallButtonHoverBorder}" BorderThickness="1" />
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
 </ResourceDictionary>

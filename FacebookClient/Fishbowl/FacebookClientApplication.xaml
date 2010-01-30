@@ -11,14 +11,10 @@
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/MainScrollViewerResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ActivityPostResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/NewsFeedResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SearchAndFilterResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendSummaryResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/IconNotificationButtonResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoUploadWizardResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ButtonStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ColorResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SlideShowResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FlowViewerResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/PhotoViewerResources.xaml" />
