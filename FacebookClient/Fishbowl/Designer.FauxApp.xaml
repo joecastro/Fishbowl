@@ -14,7 +14,6 @@
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/MainScrollViewerResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ActivityPostResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/NewsFeedResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBarResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/SearchAndFilterResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FriendSummaryResources.xaml" />

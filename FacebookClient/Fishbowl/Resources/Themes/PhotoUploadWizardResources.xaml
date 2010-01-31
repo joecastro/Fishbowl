@@ -301,32 +301,6 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="AlbumComboBox" TargetType="{x:Type ComboBox}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ComboBox}">
-                    <Grid>
-                        <Border Background="#FF30497D" BorderThickness="0.5" CornerRadius="5">
-                            <Border.BorderBrush>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="Black" Offset="0"/>
-                                    <GradientStop Color="White" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.BorderBrush>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Margin="10,3,10,3" Source="c:\junk\mug19.jpg" Height="30" Width="50" Stretch="UniformToFill" />
-                                <TextBlock Text="Album Title" Foreground="White" VerticalAlignment="Center" />
-                            </StackPanel>
-                        </Border>
-                        <ScrollViewer>
-                            <ItemsPresenter/>
-                        </ScrollViewer>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style x:Key="MyShareTextBoxDarkStyle"
            TargetType="{x:Type TextBox}">
         <Setter Property="Template"

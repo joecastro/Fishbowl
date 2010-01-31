@@ -174,10 +174,4 @@
             <TextBlock Text="{Binding Name}" />
         </ToggleButton>
     </DataTemplate>
-
-    <Style x:Key="SearchAndFilterTreeViewItemStyle"
-           TargetType="{x:Type TreeViewItem}"
-           BasedOn="{StaticResource TocTreeViewItemStyle}">
-    </Style>
-
 </ResourceDictionary>

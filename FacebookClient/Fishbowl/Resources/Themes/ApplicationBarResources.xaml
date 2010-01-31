@@ -167,36 +167,6 @@
     <Setter Property="Template" Value="{StaticResource ToolbarToggleButtonTemplate}" />
   </Style>
 
-  <ControlTemplate x:Key="ToggleUpdateBoxButtonTemplate" TargetType="{x:Type ToggleButton}">
-    <Grid x:Name="Root">
-      <TextBlock x:Name="Glow" Text="{TemplateBinding Content}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource UpdateButtonTextBlockStyle}" Foreground="White" Opacity="0">
-					<TextBlock.Effect>
-						<BlurEffect />
-					</TextBlock.Effect>
-      </TextBlock>
-      <TextBlock x:Name="Main" HorizontalAlignment="Left" Style="{StaticResource UpdateButtonTextBlockStyle}" VerticalAlignment="Bottom" Text="{TemplateBinding Content}" />
-    </Grid>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Opacity" TargetName="Main" Value="0.5" />
-      </Trigger>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Opacity" TargetName="Glow" Value="1" />
-      </Trigger>
-      <Trigger Property="IsChecked" Value="True">
-        <Setter Property="Opacity" TargetName="Main" Value="0.7" />
-        <Setter Property="Opacity" TargetName="Glow" Value="0.8" />
-      </Trigger>
-    </ControlTemplate.Triggers>
-  </ControlTemplate>
-
-  <Style x:Key="ToggleUpdateBoxButtonStyle" TargetType="{x:Type ToggleButton}">
-    <Setter Property="Template" Value="{StaticResource ToggleUpdateBoxButtonTemplate}" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Margin" Value="10,0,0,2" />
-  </Style>
-
   <Style x:Key="UserNameTextBlockStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="FontSize" Value="16" />
     <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
@@ -209,15 +179,6 @@
     <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}" />
     <Setter Property="Margin" Value="0,10,0,0" />
-  </Style>
-
-  <Style x:Key="UpdateBoxBorderStyle" TargetType="{x:Type Border}">
-    <Setter Property="Background" Value="{StaticResource UpdateBoxBorderBackgroundBrush}" />
-    <Setter Property="Width" Value="560" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="Margin" Value="90,0,0,0" />
-    <Setter Property="CornerRadius" Value="0,0,16,16" />
   </Style>
 
   <ControlTemplate x:Key="FilterButtonTemplate" TargetType="{x:Type ToggleButton}">

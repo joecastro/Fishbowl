@@ -181,44 +181,6 @@
       </Trigger>
     </Style.Triggers>
   </Style>
-  <!-- The template used for displaying hyperlinked tags -->
-  <DataTemplate x:Key="PhotoTagTemplate">
-    <TextBlock
-        Margin="0,0,4,0"
-        FontSize="12"
-        Foreground="#AAAAAA"
-        TextWrapping="Wrap">
-      <Hyperlink
-          Click="OnNavigateToContentButtonClicked"
-          ClientManagerView:ViewManager.NavigationContent="{Binding Contact}"
-          Style="{StaticResource PhotoTagLink}">
-        <TextBlock Text="{Binding Contact.Name}" TextWrapping="Wrap"/>
-      </Hyperlink>
-    </TextBlock>
-  </DataTemplate>
-  <!-- The template used for displaying smaller hyperlinked tags -->
-  <DataTemplate x:Key="PhotoTagTemplateSmall">
-    <TextBlock Margin="0,0,4,0" FontSize="11" Foreground="#AAAAAA">
-      <Hyperlink Command="FacebookClient:PhotoViewerControl.ExploreTagCommand" CommandParameter="{Binding Converter={StaticResource SingleTagIdToStringConverter}}" Style="{StaticResource PhotoTagLink}">
-        <TextBlock Text="{Binding Converter={StaticResource SingleTagIdToStringConverter}}"/>
-      </Hyperlink>
-    </TextBlock>
-  </DataTemplate>
-  <!-- The template used for displaying hyperlinked tags in a flow document -->
-  <DataTemplate x:Key="PhotoTagTemplateFlow">
-    <TextBlock
-        Margin="2,2,4,2"
-        FontFamily="Arial"
-        FontSize="10pt"
-        FontWeight="Bold"
-        Foreground="White"
-        IsHyphenationEnabled="False"
-        TextWrapping="Wrap">
-      <Hyperlink Command="FacebookClient:PhotoViewerControl.ExploreTagCommand" CommandParameter="{Binding Converter={StaticResource SingleTagIdToStringConverter}}" Style="{StaticResource PhotoTagLink}">
-        <TextBlock Text="{Binding Converter={StaticResource SingleTagIdToStringConverter}}" TextAlignment="Center"/>
-      </Hyperlink>
-    </TextBlock>
-  </DataTemplate>
   <!-- The panel template for listing the photo's tags -->
   <ItemsPanelTemplate x:Key="PhotoTagPanel">
     <WrapPanel IsItemsHost="True"/>

@@ -495,63 +495,6 @@
         </Setter>
     </Style>
 
-    <ControlTemplate x:Key="BrowseBackButtonTemplate" TargetType="Button">
-        <Grid x:Name="Root">
-            <Image x:Name="up" Source="../Images/back_up.png" Opacity="1" />
-            <Image x:Name="hover" Source="../Images/back_hover.png" Opacity="0" />
-            <Image x:Name="down" Source="../Images/back_down.png" Opacity="0" />
-
-            <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Opacity" TargetName="Root" Value="0" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="BrowseBackButtonStyle" TargetType="Button">
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Width" Value="128" />
-        <Setter Property="Height" Value="35" />
-        <Setter Property="Template" Value="{StaticResource BrowseBackButtonTemplate}" />
-    </Style>
-
     <ControlTemplate x:Key="UpdateBoxButtonTemplate" TargetType="{x:Type ButtonBase}">
         <Grid x:Name="Root">
             <TextBlock x:Name="Glow"
