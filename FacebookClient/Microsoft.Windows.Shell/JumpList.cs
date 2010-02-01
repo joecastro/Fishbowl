@@ -112,6 +112,13 @@ namespace Microsoft.Windows.Shell
     [ContentProperty("JumpItems")]
     public sealed class JumpList : ISupportInitialize
     {
+        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
+        static JumpList()
+        {
+            // Passing NULL for the HMODULE returns the running executable path.
+            _FullName = NativeMethods.GetModuleFileName(IntPtr.Zero);
+        }
+
         /// <summary>
         /// Add the item at the specified file path to the application's JumpList's recent items.
         /// </summary>
@@ -866,7 +873,7 @@ namespace Microsoft.Windows.Shell
             }
         }
 
-        private static readonly string _FullName = Assembly.GetEntryAssembly().Location;
+        private static readonly string _FullName;
         
         #region Converter methods
 

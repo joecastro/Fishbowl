@@ -9,6 +9,7 @@ namespace Standard
     using System.Runtime.InteropServices;
     using System.Runtime.InteropServices.ComTypes;
     using System.Security.Permissions;
+    using System.Text;
     using Microsoft.Win32.SafeHandles;
 
     // Some COM interfaces and Win32 structures are already declared in the framework.
@@ -2197,6 +2198,33 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("gdi32.dll")]
         public static extern int GetDeviceCaps(SafeDC hdc, DeviceCap nIndex);
+
+        [DllImport("kernel32.dll", EntryPoint="GetModuleFileName", CharSet=CharSet.Unicode, SetLastError=true)]
+        private static extern int _GetModuleFileName(IntPtr hModule, StringBuilder lpFilename, int nSize);
+
+        public static string GetModuleFileName(IntPtr hModule)
+        {
+            var buffer = new StringBuilder((int)Win32Value.MAX_PATH);
+            while (true)
+            {
+                int size = _GetModuleFileName(hModule, buffer, buffer.Capacity);
+                if (size == 0)
+                {
+                    HRESULT.ThrowLastError();
+                }
+
+                // GetModuleFileName returns nSize when it's truncated but does NOT set the last error.
+                // MSDN documentation says this has changed in Windows 2000+.
+                if (size == buffer.Capacity)
+                {
+                    // Enlarge the buffer and try again.
+                    buffer.EnsureCapacity(buffer.Capacity * 2);
+                    continue;
+                }
+
+                return buffer.ToString();
+            }
+        }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", EntryPoint = "GetMonitorInfo", SetLastError = true)]

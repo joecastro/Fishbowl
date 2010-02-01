@@ -1,4 +1,8 @@
-﻿namespace Microsoft.Windows.Shell
+﻿/**************************************************************************\
+    Copyright Microsoft Corporation. All Rights Reserved.
+\**************************************************************************/
+
+namespace Microsoft.Windows.Shell
 {
     // CONSIDER:
     // The V4 implementation of this includes logic to handle hangs and crashes in Explorer.
@@ -454,8 +458,6 @@
                 return;
             }
 
-            _window.SizeChanged += _OnWindowSizeChanged;
-
             // Use whether we can get an HWND to determine if the Window has been shown.
             // If this works we'll assume everything's kosher.
             // If it fails we're going to jump through a few hoops to try to set our
@@ -477,14 +479,6 @@
                 _hwndSource.AddHook(_WndProc);
 
                 _OnIsAttachedChanged(true);
-            }
-        }
-
-        private void _OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (_hwndSource != null)
-            {
-                _UpdateThumbnailClipping(_isAttached);
             }
         }
 
@@ -521,13 +515,22 @@
 
                 handled = false;
             }
-            else if (message == WM.COMMAND)
+            else
             {
-                if (Utility.HIWORD(wParam.ToInt32()) == THUMBBUTTON.THBN_CLICKED)
+                switch (message)
                 {
-                    int index = Utility.LOWORD(wParam.ToInt32());
-                    ThumbButtonInfos[index].InvokeClick();
-                    handled = true;
+                    case WM.COMMAND:
+                        if (Utility.HIWORD(wParam.ToInt32()) == THUMBBUTTON.THBN_CLICKED)
+                        {
+                            int index = Utility.LOWORD(wParam.ToInt32());
+                            ThumbButtonInfos[index].InvokeClick();
+                            handled = true;
+                        }
+                        break;
+                    case WM.SIZE:
+                        _UpdateThumbnailClipping(_isAttached);
+                        handled = false;
+                        break;
                 }
             }
 
@@ -571,7 +574,6 @@
 
             // Remove all event listeners.
             _window.SourceInitialized -= _OnWindowSourceInitialized;
-            _window.SizeChanged -= _OnWindowSizeChanged;
 
             // Set all Superbar properties to defaults.
             _isAttached = false;
