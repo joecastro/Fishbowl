@@ -99,6 +99,11 @@ namespace StandardTests
                 return this.Equals(other);
             }
 
+            public override int GetHashCode()
+            {
+                return Name.GetHashCode() ^ SortValue.GetHashCode();
+            }
+
             #region IEquatable<_UO> Members
 
             public bool Equals(_UO other)

@@ -27,43 +27,43 @@
     </Style>
   </NavigationWindow.Style>
   
-  <TaskbarItemInfo.TaskbarItemInfo>
+  <shell:TaskbarItemInfo.TaskbarItemInfo>
     <!-- ThumbnailClipMargin is updated in the code behind because it is difficult to get the desired behavior just through XAML and converters. -->
-    <TaskbarItemInfo
+    <shell:TaskbarItemInfo
         ThumbnailClipMargin="0,85,0,24"
         Overlay="{Binding ElementName=Footer, Path=NotificationControl.ImageSource}">
-      <TaskbarItemInfo.ThumbButtonInfos>
-        <ThumbButtonInfoCollection>
-          <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See what's new with your friends">
-            <ThumbButtonInfo.ImageSource>
+      <shell:TaskbarItemInfo.ThumbButtonInfos>
+        <shell:ThumbButtonInfoCollection>
+          <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See what's new with your friends">
+            <shell:ThumbButtonInfo.ImageSource>
               <DrawingImage Drawing="{Binding Source={StaticResource Home3DrawingBrush}, Path=Drawing}"/>
-            </ThumbButtonInfo.ImageSource>
-          </ThumbButtonInfo>
-          <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on your friends">
-            <ThumbButtonInfo.ImageSource>
+            </shell:ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo>
+          <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on your friends">
+            <shell:ThumbButtonInfo.ImageSource>
               <DrawingImage Drawing="{Binding Source={StaticResource StackedBuddies2DrawingBrush}, Path=Drawing}"/>
-            </ThumbButtonInfo.ImageSource>
-          </ThumbButtonInfo>
-          <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on yourself">
-            <ThumbButtonInfo.ImageSource>
+            </shell:ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo>
+          <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="Check in on yourself">
+            <shell:ThumbButtonInfo.ImageSource>
               <DrawingImage Drawing="{Binding Source={StaticResource SingleBuddy2DrawingBrush}, Path=Drawing}"/>
-            </ThumbButtonInfo.ImageSource>
-          </ThumbButtonInfo>
-          <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See everyone's photos">
-            <ThumbButtonInfo.ImageSource>
+            </shell:ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo>
+          <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Description="See everyone's photos">
+            <shell:ThumbButtonInfo.ImageSource>
               <DrawingImage Drawing="{Binding Source={StaticResource PhotosDrawingBrush}, Path=Drawing}"/>
-            </ThumbButtonInfo.ImageSource>
-          </ThumbButtonInfo>
-          <ThumbButtonInfo IsBackgroundVisible="False" IsEnabled="False"/>
-          <ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateToContentCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" CommandParameter="[CurrentNavigator]" Description="Go to Facebook">
-            <ThumbButtonInfo.ImageSource>
+            </shell:ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo>
+          <shell:ThumbButtonInfo IsBackgroundVisible="False" IsEnabled="False"/>
+          <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateToContentCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" CommandParameter="[CurrentNavigator]" Description="Go to Facebook">
+            <shell:ThumbButtonInfo.ImageSource>
               <DrawingImage Drawing="{Binding Source={StaticResource FacebookDrawingBrush}, Path=Drawing}" />
-            </ThumbButtonInfo.ImageSource>
-          </ThumbButtonInfo>
-        </ThumbButtonInfoCollection>
-      </TaskbarItemInfo.ThumbButtonInfos>
-    </TaskbarItemInfo>
-  </TaskbarItemInfo.TaskbarItemInfo>
+            </shell:ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo>
+        </shell:ThumbButtonInfoCollection>
+      </shell:TaskbarItemInfo.ThumbButtonInfos>
+    </shell:TaskbarItemInfo>
+  </shell:TaskbarItemInfo.TaskbarItemInfo>
   
   <NavigationWindow.Content>
     <Grid x:Name="NavigationRoot">

@@ -190,7 +190,7 @@ namespace FacebookClient
                 friendImages,
                 ClipAlgorithm.Elliptical);
 
-            Utility.SaveToPng(overlaidImage, CustomSplashPath, new Size(overlaidImage.PixelWidth, overlaidImage.PixelHeight));
+            Utility.SaveToPng(overlaidImage, CustomSplashPath);
         }        
 
         // Creates an element with Canvas attached DPs and appropriate masking if specified.

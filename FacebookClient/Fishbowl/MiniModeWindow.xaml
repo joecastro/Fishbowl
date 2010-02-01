@@ -20,22 +20,22 @@
     MouseWheel="OnWindow_MouseWheel"
     IsVisibleChanged="_IsVisibleChanged">
   <shell:TaskbarItemInfo.TaskbarItemInfo>
-    <TaskbarItemInfo 
+    <shell:TaskbarItemInfo 
         Overlay="{Binding ElementName=NotificationCountControl, Path=ImageSource}"
         Description="{Binding ElementName=PART_ZapScroller2, Path=CurrentItem.Message}" ThumbnailClipMargin="0,0,0,33">
-      <TaskbarItemInfo.ThumbButtonInfos>
-        <ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
-          <ThumbButtonInfo.ImageSource>
+      <shell:TaskbarItemInfo.ThumbButtonInfos>
+        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
+          <shell:ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{Binding Source={StaticResource LeftArrowToolbarDrawingBrush}, Path=Drawing}"/>
-          </ThumbButtonInfo.ImageSource>
-        </ThumbButtonInfo>
-        <ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
-          <ThumbButtonInfo.ImageSource>
+          </shell:ThumbButtonInfo.ImageSource>
+        </shell:ThumbButtonInfo>
+        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
+          <shell:ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{Binding Source={StaticResource RightArrowToolbarDrawingBrush}, Path=Drawing}"/>
-          </ThumbButtonInfo.ImageSource>
-        </ThumbButtonInfo>
-      </TaskbarItemInfo.ThumbButtonInfos>
-    </TaskbarItemInfo>
+          </shell:ThumbButtonInfo.ImageSource>
+        </shell:ThumbButtonInfo>
+      </shell:TaskbarItemInfo.ThumbButtonInfos>
+    </shell:TaskbarItemInfo>
   </shell:TaskbarItemInfo.TaskbarItemInfo>
   <Window.Resources>
     <Style x:Key="RestoreButtonStyle" TargetType="{x:Type Button}">

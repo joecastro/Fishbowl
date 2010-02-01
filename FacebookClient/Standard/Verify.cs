@@ -12,7 +12,7 @@ namespace Standard
     using System;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
+    using System.Globalization;
     using System.IO;
     using System.Threading;
 
@@ -34,13 +34,8 @@ namespace Standard
         /// <exception cref="InvalidOperationException">
         /// Thrown if the calling thread's apartment state is not the same as the requiredState.
         /// </exception>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            DebuggerStepThrough
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsApartmentState(ApartmentState requiredState, string message)
         {
             if (Thread.CurrentThread.GetApartmentState() != requiredState)
@@ -54,17 +49,9 @@ namespace Standard
         /// </summary>
         /// <param name="value">The string to validate.</param>
         /// <param name="name">The name of the parameter that will be presented if an exception is thrown.</param>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1820:TestForEmptyStringsUsingStringLength",
-                Justification = "The point of this function is to give a better error message."),
-            DebuggerStepThrough
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength")]
+        [DebuggerStepThrough]
         public static void IsNeitherNullNorEmpty(string value, string name)
         {
             // catch caller errors, mixing up the parameters.  Name should never be empty.
@@ -87,17 +74,9 @@ namespace Standard
         /// </summary>
         /// <param name="value">The string to validate.</param>
         /// <param name="name">The name of the parameter that will be presented if an exception is thrown.</param>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1820:TestForEmptyStringsUsingStringLength",
-                Justification = "The point of this function is to give a better error message."),
-            DebuggerStepThrough
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Performance", "CA1820:TestForEmptyStringsUsingStringLength")]
+        [DebuggerStepThrough]
         public static void IsNeitherNullNorWhitespace(string value, string name)
         {
             // catch caller errors, mixing up the parameters.  Name should never be empty.
@@ -119,6 +98,8 @@ namespace Standard
         /// <typeparam name="T">Type of the object to validate.  Must be a class.</typeparam>
         /// <param name="obj">The object to validate.</param>
         /// <param name="name">The name of the parameter that will be presented if an exception is thrown.</param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsNotDefault<T>(T obj, string name) where T : struct
         {
             if (default(T).Equals(obj))
@@ -131,6 +112,8 @@ namespace Standard
         /// <typeparam name="T">Type of the object to validate.  Must be a class.</typeparam>
         /// <param name="obj">The object to validate.</param>
         /// <param name="name">The name of the parameter that will be presented if an exception is thrown.</param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsNotNull<T>(T obj, string name) where T : class
         {
             if (null == obj)
@@ -143,6 +126,8 @@ namespace Standard
         /// <typeparam name="T">Type of the object to validate.  Must be a class.</typeparam>
         /// <param name="obj">The object to validate.</param>
         /// <param name="name">The name of the parameter that will be presented if an exception is thrown.</param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsNull<T>(T obj, string name) where T : class
         {
             if (null != obj)
@@ -151,19 +136,23 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void PropertyIsNotNull<T>(T obj, string name) where T : class
         {
             if (null == obj)
             {
-                throw new InvalidOperationException(string.Format("The property {0} cannot be null at this time.", name));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "The property {0} cannot be null at this time.", name));
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void PropertyIsNull<T>(T obj, string name) where T : class
         {
             if (null != obj)
             {
-                throw new InvalidOperationException(string.Format("The property {0} must be null at this time.", name));
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "The property {0} must be null at this time.", name));
             }
         }
 
@@ -172,13 +161,8 @@ namespace Standard
         /// </summary>
         /// <param name="statement">The statement to be verified as true.</param>
         /// <param name="name">Name of the parameter to include in the ArgumentException.</param>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification="Shared code file."),
-            DebuggerStepThrough
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsTrue(bool statement, string name)
         {
             if (!statement)
@@ -193,13 +177,8 @@ namespace Standard
         /// <param name="statement">The statement to be verified as true.</param>
         /// <param name="name">Name of the parameter to include in the ArgumentException.</param>
         /// <param name="message">The message to include in the ArgumentException.</param>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            DebuggerStepThrough
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void IsTrue(bool statement, string name, string message)
         {
             if (!statement)
@@ -208,6 +187,8 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void AreEqual<T>(T expected, T actual, string parameterName, string message)
         {
             if (null == expected)
@@ -223,7 +204,9 @@ namespace Standard
                 throw new ArgumentException(message, parameterName);
             }
         }
-        
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void AreNotEqual<T>(T notExpected, T actual, string parameterName, string message)
         {
             if (null == notExpected)
@@ -240,6 +223,8 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void UriIsAbsolute(Uri uri, string parameterName)
         {
             Verify.IsNotNull(uri, parameterName);
@@ -255,14 +240,18 @@ namespace Standard
         /// <param name="lowerBoundInclusive">The lower bound inclusive value.</param>
         /// <param name="value">The value to verify.</param>
         /// <param name="upperBoundExclusive">The upper bound exclusive value.</param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void BoundedInteger(int lowerBoundInclusive, int value, int upperBoundExclusive, string parameterName)
         {
             if (value < lowerBoundInclusive || value >= upperBoundExclusive)
             {
-                throw new ArgumentException(string.Format("The integer value must be bounded with [{0}, {1})", lowerBoundInclusive, upperBoundExclusive), parameterName);
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The integer value must be bounded with [{0}, {1})", lowerBoundInclusive, upperBoundExclusive), parameterName);
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void BoundedDoubleInc(double lowerBoundInclusive, double value, double upperBoundInclusive, string message, string parameter)
         {
             if (value < lowerBoundInclusive || value > upperBoundInclusive)
@@ -271,6 +260,8 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void TypeSupportsInterface(Type type, Type interfaceType, string parameterName)
         {
             Assert.IsNeitherNullNorEmpty(parameterName);
@@ -283,24 +274,38 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         public static void FileExists(string filePath, string parameterName)
         {
             Verify.IsNeitherNullNorEmpty(filePath, parameterName);
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException(string.Format("No file exists at \"{0}\""), parameterName);
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "No file exists at \"{0}\"", filePath), parameterName);
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
         internal static void ImplementsInterface(object parameter, Type interfaceType, string parameterName)
         {
             Assert.IsNotNull(parameter);
             Assert.IsNotNull(interfaceType);
             Assert.IsTrue(interfaceType.IsInterface);
 
-            if (!parameter.GetType().GetInterfaces().Any(type => type == interfaceType))
+            bool isImplemented = false;
+            foreach (var ifaceType in parameter.GetType().GetInterfaces())
             {
-                throw new ArgumentException(string.Format("The parameter must implement interface {0}.", interfaceType.ToString()), parameterName);
+                if (ifaceType == interfaceType)
+                {
+                    isImplemented = true;
+                    break;
+                }
+            }
+
+            if (!isImplemented)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The parameter must implement interface {0}.", interfaceType.ToString()), parameterName);
             }
         }
     }

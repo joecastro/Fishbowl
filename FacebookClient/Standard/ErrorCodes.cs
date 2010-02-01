@@ -75,6 +75,7 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly Win32Error ERROR_CANCELLED = new Win32Error(1223);
         /// <summary>The window class was already registered.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly Win32Error ERROR_CLASS_ALREADY_EXISTS = new Win32Error(1410);
         /// <summary>The specified datatype is invalid.</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
@@ -220,16 +221,20 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT STG_E_INVALIDFUNCTION = new HRESULT(0x80030001);
         /// <summary>REGDB_E_CLASSNOTREG</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT REGDB_E_CLASSNOTREG = new HRESULT(0x80040154);
 
         /// <summary>DESTS_E_NO_MATCHING_ASSOC_HANDLER.  Win7 internal error code for Jump Lists.</summary>
         /// <remarks>There is no Assoc Handler for the given item registered by the specified application.</remarks>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT DESTS_E_NO_MATCHING_ASSOC_HANDLER = new HRESULT(0x80040F03);
         /// <summary>DESTS_E_NORECDOCS.  Win7 internal error code for Jump Lists.</summary>
         /// <remarks>The given item is excluded from the recent docs folder by the NoRecDocs bit on its registration.</remarks>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT DESTS_E_NORECDOCS = new HRESULT(0x80040F04);
         /// <summary>DESTS_E_NOTALLCLEARED.  Win7 internal error code for Jump Lists.</summary>
         /// <remarks>Not all of the items were successfully cleared</remarks>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT DESTS_E_NOTALLCLEARED = new HRESULT(0x80040F05);
 
         /// <summary>E_ACCESSDENIED</summary>
@@ -256,56 +261,101 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WC_E_SYNTAX = new HRESULT(0xC00CEE2D);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_GENERIC_ERROR = E_FAIL;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INVALIDPARAMETER = E_INVALIDARG;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_OUTOFMEMORY = E_OUTOFMEMORY;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_NOTIMPLEMENTED = E_NOTIMPL;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_ABORTED = E_ABORT;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_ACCESSDENIED = E_ACCESSDENIED;
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_VALUEOVERFLOW = INTSAFE_E_ARITHMETIC_OVERFLOW;
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_WRONGSTATE = Make(true, Facility.WinCodec, 0x2f04);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_VALUEOUTOFRANGE = Make(true, Facility.WinCodec, 0x2f05);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_UNKNOWNIMAGEFORMAT = Make(true, Facility.WinCodec, 0x2f07);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_UNSUPPORTEDVERSION = Make(true, Facility.WinCodec, 0x2f0B);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_NOTINITIALIZED = Make(true, Facility.WinCodec, 0x2f0C);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_ALREADYLOCKED = Make(true, Facility.WinCodec, 0x2f0D);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_PROPERTYNOTFOUND = Make(true, Facility.WinCodec, 0x2f40);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_PROPERTYNOTSUPPORTED = Make(true, Facility.WinCodec, 0x2f41);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_PROPERTYSIZE = Make(true, Facility.WinCodec, 0x2f42);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_CODECPRESENT = Make(true, Facility.WinCodec, 0x2f43);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_CODECNOTHUMBNAIL = Make(true, Facility.WinCodec, 0x2f44);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_PALETTEUNAVAILABLE = Make(true, Facility.WinCodec, 0x2f45);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_CODECTOOMANYSCANLINES = Make(true, Facility.WinCodec, 0x2f46);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INTERNALERROR = Make(true, Facility.WinCodec, 0x2f48);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_SOURCERECTDOESNOTMATCHDIMENSIONS = Make(true, Facility.WinCodec, 0x2f49);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_COMPONENTNOTFOUND = Make(true, Facility.WinCodec, 0x2f50);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_IMAGESIZEOUTOFRANGE = Make(true, Facility.WinCodec, 0x2f51);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_TOOMUCHMETADATA = Make(true, Facility.WinCodec, 0x2f52);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_BADIMAGE = Make(true, Facility.WinCodec, 0x2f60);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_BADHEADER = Make(true, Facility.WinCodec, 0x2f61);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_FRAMEMISSING = Make(true, Facility.WinCodec, 0x2f62);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_BADMETADATAHEADER = Make(true, Facility.WinCodec, 0x2f63);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_BADSTREAMDATA = Make(true, Facility.WinCodec, 0x2f70);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_STREAMWRITE = Make(true, Facility.WinCodec, 0x2f71);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_STREAMREAD = Make(true, Facility.WinCodec, 0x2f72);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_STREAMNOTAVAILABLE = Make(true, Facility.WinCodec, 0x2f73);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT = Make(true, Facility.WinCodec, 0x2f80);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_UNSUPPORTEDOPERATION = Make(true, Facility.WinCodec, 0x2f81);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INVALIDREGISTRATION = Make(true, Facility.WinCodec, 0x2f8A);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_COMPONENTINITIALIZEFAILURE = Make(true, Facility.WinCodec, 0x2f8B);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INSUFFICIENTBUFFER = Make(true, Facility.WinCodec, 0x2f8C);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_DUPLICATEMETADATAPRESENT = Make(true, Facility.WinCodec, 0x2f8D);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_PROPERTYUNEXPECTEDTYPE = Make(true, Facility.WinCodec, 0x2f8E);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_UNEXPECTEDSIZE = Make(true, Facility.WinCodec, 0x2f8F);
 
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INVALIDQUERYREQUEST = Make(true, Facility.WinCodec, 0x2f90);
-        public static readonly HRESULT WINCODEC_ERR_UNEXPECTEDMETADATATYPE  = Make(true, Facility.WinCodec, 0x2f91);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT WINCODEC_ERR_UNEXPECTEDMETADATATYPE = Make(true, Facility.WinCodec, 0x2f91);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_REQUESTONLYVALIDATMETADATAROOT = Make(true, Facility.WinCodec, 0x2f92);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT WINCODEC_ERR_INVALIDQUERYCHARACTER = Make(true, Facility.WinCodec, 0x2f93);
 
         /// <summary>

@@ -12,10 +12,10 @@
 
     using System;
     using System.ComponentModel;
+    using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Interop;
     using System.Windows.Media;
-    using System.Windows.Threading;
     using Standard;
 
     public enum TaskbarItemProgressState
@@ -61,12 +61,14 @@
             typeof(TaskbarItemInfo),
             new PropertyMetadata(null, _OnTaskbarItemInfoChanged, _CoerceTaskbarItemInfoValue));
 
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public static TaskbarItemInfo GetTaskbarItemInfo(Window window)
         {
             Verify.IsNotNull(window, "window");
             return (TaskbarItemInfo)window.GetValue(TaskbarItemInfoProperty);
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public static void SetTaskbarItemInfo(Window window, TaskbarItemInfo value)
         {
             Verify.IsNotNull(window, "window");
@@ -152,8 +154,8 @@
             typeof(TaskbarItemInfo),
             new PropertyMetadata(
                 TaskbarItemProgressState.None,
-                (d, e) => ((TaskbarItemInfo)d)._OnProgressStateChanged(e),
-                (d, e) => ((TaskbarItemInfo)d)._CoerceProgressState((TaskbarItemProgressState)e)));
+                (d, e) => ((TaskbarItemInfo)d)._OnProgressStateChanged(),
+                (d, e) => _CoerceProgressState((TaskbarItemProgressState)e)));
 
         /// <summary>
         /// Gets or sets the ProgressState property.  This dependency property 
@@ -168,7 +170,7 @@
         /// <summary>
         /// Handles changes to the ProgressState property.
         /// </summary>
-        private void _OnProgressStateChanged(DependencyPropertyChangedEventArgs e)
+        private void _OnProgressStateChanged()
         {
             if (!_isAttached)
             {
@@ -178,7 +180,7 @@
             _UpdateProgressState(true);
         }
 
-        private TaskbarItemProgressState _CoerceProgressState(TaskbarItemProgressState value)
+        private static TaskbarItemProgressState _CoerceProgressState(TaskbarItemProgressState value)
         {
             switch (value)
             {
@@ -206,8 +208,8 @@
             typeof(TaskbarItemInfo),
             new PropertyMetadata(
                 0d,
-                (d, e) => ((TaskbarItemInfo)d)._OnProgressValueChanged(e),
-                (d, e) => ((TaskbarItemInfo)d)._CoerceProgressValue((double)e)));
+                (d, e) => ((TaskbarItemInfo)d)._OnProgressValueChanged(),
+                (d, e) => _CoerceProgressValue((double)e)));
 
         /// <summary>
         /// Gets or sets the ProgressValue property.  This dependency property 
@@ -219,7 +221,7 @@
             set { SetValue(ProgressValueProperty, value); }
         }
 
-        private void _OnProgressValueChanged(DependencyPropertyChangedEventArgs e)
+        private void _OnProgressValueChanged()
         {
             if (!_isAttached)
             {
@@ -229,7 +231,7 @@
             _UpdateProgressValue(true);
         }
 
-        private double _CoerceProgressValue(double progressValue)
+        private static double _CoerceProgressValue(double progressValue)
         {
             if (double.IsNaN(progressValue))
             {
@@ -318,7 +320,7 @@
             new PropertyMetadata(
                 default(Thickness),
                 (d, e) => ((TaskbarItemInfo)d)._OnThumbnailClipMarginChanged(),
-                (d, e) => ((TaskbarItemInfo)d)._CoerceThumbnailClipMargin((Thickness)e)));
+                (d, e) => _CoerceThumbnailClipMargin((Thickness)e)));
 
         /// <summary>
         /// Gets or sets the LiveThumbnailClipMargin property.  This dependency property 
@@ -343,7 +345,7 @@
             _UpdateThumbnailClipping(true);
         }
 
-        private Thickness _CoerceThumbnailClipMargin(Thickness margin)
+        private static Thickness _CoerceThumbnailClipMargin(Thickness margin)
         {
             // Any negative margins we'll treat as no nil.
             if (margin.Left < 0
@@ -359,6 +361,7 @@
         /// <summary>
         /// ThumbButtonInfos Dependency Property
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Infos")]
         public static readonly DependencyProperty ThumbButtonInfosProperty = DependencyProperty.Register(
             "ThumbButtonInfos",
             typeof(ThumbButtonInfoCollection),
@@ -373,6 +376,8 @@
         /// Gets or sets the ThumbButtonInfos property.  This dependency property 
         /// indicates the collection of command buttons to be displayed in the Window's DWM thumbnail.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Infos")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ThumbButtonInfoCollection ThumbButtonInfos
         {
             get { return (ThumbButtonInfoCollection)GetValue(ThumbButtonInfosProperty); }
@@ -499,15 +504,10 @@
             // TaskbarButtonCreated and WM_COMMAND messages through.
             // In case the application is run with severe security restrictions,
             // don't propagate exceptions for a lack of being able to do this.
-            try
-            {
-                NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM_TASKBARBUTTONCREATED, MSGFLT.ALLOW);
-                NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM.COMMAND, MSGFLT.ALLOW);
-            }
-            catch (Exception)
-            {
-                // Native method call returned an error code.  Not the end of the world.
-            }
+            // These methods return HRESULTs that we're ignoring.
+            MSGFLTINFO dontCare;
+            NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM_TASKBARBUTTONCREATED, MSGFLT.ALLOW, out dontCare);
+            NativeMethods.ChangeWindowMessageFilterEx(hwnd, WM.COMMAND, MSGFLT.ALLOW, out dontCare);
         }
 
         private IntPtr _WndProc(IntPtr hwnd, int uMsg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -606,7 +606,13 @@
 
         private HRESULT _UpdateTooltip(bool attached)
         {
-            return _taskbarList.SetThumbnailTooltip(_hwndSource.Handle, Description ?? "");
+            string tooltip = Description ?? "";
+            if (!attached)
+            {
+                tooltip = "";
+            }
+
+            return _taskbarList.SetThumbnailTooltip(_hwndSource.Handle, tooltip);
         }
 
         private HRESULT _UpdateProgressValue(bool attached)

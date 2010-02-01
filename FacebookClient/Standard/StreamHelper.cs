@@ -28,6 +28,7 @@ namespace Standard
     /// This implementation is immutable, though it's possible that the underlying
     /// stream can be changed in another context.
     /// </remarks>
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
     internal sealed class ComStream : Stream
     {
         private const int STATFLAG_NONAME = 1;
@@ -250,6 +251,7 @@ namespace Standard
         /// For more information, see the existing documentation for IStream::Clone in the MSDN library.
         /// This class doesn't implement Clone.  A COMException is thrown if it is used.
         /// </remarks>
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Standard.HRESULT.ThrowIfFailed(System.String)")]
         [Obsolete("The method is not implemented", true)]
         public void Clone(out IStream ppstm)
         {
@@ -293,9 +295,12 @@ namespace Standard
         /// (Note the native signature is to a ULARGE_INTEGER*, so 64 bits are written
         /// to this parameter on success.)
         /// </param>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public void CopyTo(IStream pstm, long cb, IntPtr pcbRead, IntPtr pcbWritten)
         {
+            Verify.IsNotNull(pstm, "pstm");
+
             _Validate();
 
             // Reasonbly sized buffer, don't try to copy large streams in bulk.
@@ -344,7 +349,7 @@ namespace Standard
         /// For more information, see the existing documentation for IStream::LockRegion in the MSDN library.
         /// This class doesn't implement LockRegion.  A COMException is thrown if it is used.
         /// </remarks>
-        [Obsolete("The method is not implemented", true)]
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Standard.HRESULT.ThrowIfFailed(System.String)"), Obsolete("The method is not implemented", true)]
         public void LockRegion(long libOffset, long cb, int dwLockType)
         {
             HRESULT.STG_E_INVALIDFUNCTION.ThrowIfFailed("The method is not implemented.");
@@ -385,7 +390,7 @@ namespace Standard
         /// <remarks>
         /// This class doesn't implement Revert.  A COMException is thrown if it is used.
         /// </remarks>
-        [Obsolete("The method is not implemented", true)]
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Standard.HRESULT.ThrowIfFailed(System.String)"), Obsolete("The method is not implemented", true)]
         public void Revert()
         {
             HRESULT.STG_E_INVALIDFUNCTION.ThrowIfFailed("The method is not implemented.");
@@ -473,6 +478,7 @@ namespace Standard
         /// For more information, see the existing documentation for IStream::UnlockRegion in the MSDN library.
         /// This class doesn't implement UnlockRegion.  A COMException is thrown if it is used.
         /// </remarks>
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Standard.HRESULT.ThrowIfFailed(System.String)")]
         [Obsolete("The method is not implemented", true)]
         public void UnlockRegion(long libOffset, long cb, int dwLockType)
         {

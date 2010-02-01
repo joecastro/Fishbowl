@@ -8,13 +8,14 @@ namespace Microsoft.Windows.Shell
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Reflection;
     using System.Text;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Markup;
     using Standard;
-    using System.Threading;
 
     /// <summary>
     /// The list of possible reasons why a JumpItem would be rejected from a JumpList when applied.
@@ -111,11 +112,6 @@ namespace Microsoft.Windows.Shell
     [ContentProperty("JumpItems")]
     public sealed class JumpList : ISupportInitialize
     {
-        static JumpList()
-        {
-            _FullName = Assembly.GetEntryAssembly().Location;
-        }
-
         /// <summary>
         /// Add the item at the specified file path to the application's JumpList's recent items.
         /// </summary>
@@ -135,6 +131,7 @@ namespace Microsoft.Windows.Shell
         /// <remarks>
         /// This makes the item eligible for inclusion in the special Recent and Frequent categories.
         /// </remarks>
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
         public static void AddToRecentCategory(JumpPath jumpPath)
         {
             Verify.IsNotNull(jumpPath, "jumpPath");
@@ -316,6 +313,7 @@ namespace Microsoft.Windows.Shell
         /// This object is not guaranteed to retain its identity after a call to Apply or other implicit setting of the JumpList.
         /// It should be requeried at such times.
         /// </remarks>
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
         public List<JumpItem> JumpItems
         {
             get { return _jumpItems; }
@@ -342,6 +340,7 @@ namespace Microsoft.Windows.Shell
         /// to the current application when attached and a corresponding call to EndInit is made.
         /// Nested calls to BeginInit are not allowed.
         /// </remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "BeginInit")]
         public void BeginInit()
         {
             if (!_IsUnmodified)
@@ -358,6 +357,8 @@ namespace Microsoft.Windows.Shell
         /// <remarks>
         /// Calls to EndInit must be paired with calls to BeginInit.
         /// </remarks>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "EndInit")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "BeginInit")]
         public void EndInit()
         {
             if (_initializing != true)
@@ -406,6 +407,8 @@ namespace Microsoft.Windows.Shell
             }
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "JumpList")]
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "EndInit")]
         public void Apply()
         {
             if (_initializing == true)
@@ -437,6 +440,9 @@ namespace Microsoft.Windows.Shell
             }
         }
 
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "JumpLists")]
+        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Standard.Verify.IsApartmentState(System.Threading.ApartmentState,System.String)")]
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void _ApplyList()
         {
             Debug.Assert(_initializing == false);
@@ -452,11 +458,69 @@ namespace Microsoft.Windows.Shell
 
             List<JumpItem> successList;
             List<_RejectedJumpItemPair> rejectedList;
+            List<_ShellObjectPair> removedList;
 
+            try
+            {
+                _BuildShellLists(out successList, out rejectedList, out removedList);
+            }
+            catch (Exception)
+            {
+                // It's not okay to throw an exception here.  If Shell is rejecting the JumpList for some reason
+                // we don't want to be responsible for the app throwing an exception in its startup path.
+                // For common use patterns there isn't really any user code on the stack, so there isn't
+                // an opportunity to catch this in the app.
+                // We can instead handle this.
+                Assert.Fail();
+                RejectEverything();
+                return;
+            }
+
+            _jumpItems = successList;
+
+            // Raise the events for rejected and removed.
+            EventHandler<JumpItemsRejectedEventArgs> rejectedHandler = JumpItemsRejected;
+            EventHandler<JumpItemsRemovedEventArgs> removedHandler = JumpItemsRemovedByUser;
+
+            if (rejectedList.Count > 0 && rejectedHandler != null)
+            {
+                var items = new List<JumpItem>(rejectedList.Count);
+                var reasons = new List<JumpItemRejectionReason>(rejectedList.Count);
+
+                foreach (_RejectedJumpItemPair rejectionPair in rejectedList)
+                {
+                    items.Add(rejectionPair.JumpItem);
+                    reasons.Add(rejectionPair.Reason);
+                }
+
+                rejectedHandler(this, new JumpItemsRejectedEventArgs(items, reasons));
+            }
+
+            if (removedList.Count > 0 && removedHandler != null)
+            {
+                var items = new List<JumpItem>(removedList.Count);
+                foreach (_ShellObjectPair shellMap in removedList)
+                {
+                    // It's possible that not every shell object could be converted to a JumpItem.
+                    if (shellMap.JumpItem != null)
+                    {
+                        items.Add(shellMap.JumpItem);
+                    }
+                }
+
+                if (items.Count > 0)
+                {
+                    removedHandler(this, new JumpItemsRemovedEventArgs(items));
+                }
+            }
+        }
+
+        private void _BuildShellLists(out List<JumpItem> successList, out List<_RejectedJumpItemPair> rejectedList, out List<_ShellObjectPair> removedList)
+        {
             // Declare these outside the try block so we can cleanup native resources in the _ShellObjectPairs.
             List<List<_ShellObjectPair>> categories = null;
-            List<_ShellObjectPair> removedList = null;
-            var destinationList = (ICustomDestinationList)Activator.CreateInstance(Type.GetTypeFromCLSID(new Guid(CLSID.DestinationList)));
+            removedList = null;
+            ICustomDestinationList destinationList = CLSID.CoCreateInstance<ICustomDestinationList>(CLSID.DestinationList);
             try
             {
                 // Even though we're not exposing Shell's AppModelId concept, we'll still respect it
@@ -503,7 +567,7 @@ namespace Microsoft.Windows.Shell
                     if (jumpItem == null)
                     {
                         // App added a null jump item?  Just go through the normal failure mechanisms.
-                        rejectedList.Add(new _RejectedJumpItemPair{ JumpItem = jumpItem, Reason = JumpItemRejectionReason.InvalidItem });
+                        rejectedList.Add(new _RejectedJumpItemPair { JumpItem = jumpItem, Reason = JumpItemRejectionReason.InvalidItem });
                         continue;
                     }
 
@@ -590,17 +654,10 @@ namespace Microsoft.Windows.Shell
                 }
 
                 destinationList.CommitList();
-            }
-            catch
-            {
-                // It's not okay to throw an exception here.  If Shell is rejecting the JumpList for some reason
-                // we don't want to be responsible for the app throwing an exception in its startup path.
-                // For common use patterns there isn't really any user code on the stack, so there isn't
-                // an opportunity to catch this in the app.
-                // We can instead handle this.
-                Assert.Fail();
-                RejectEverything();
-                return;
+
+                // Swap the current list with what we were able to successfully place into the JumpList.
+                // Reverse it first to ensure that the items are in a repeatable order.
+                successList.Reverse();
             }
             finally
             {
@@ -619,47 +676,6 @@ namespace Microsoft.Windows.Shell
                 // Note that this only clears the ShellObjects, not the JumpItems.
                 // We still need the JumpItems out of this list for the JumpItemsRemovedByUser event.
                 _ShellObjectPair.ReleaseShellObjects(removedList);
-            }
-
-            // Swap the current list with what we were able to successfully place into the JumpList.
-            // Reverse it first to ensure that the items are in a repeatable order.
-            successList.Reverse();
-            _jumpItems = successList;
-
-            // Raise the events for rejected and removed.
-            EventHandler<JumpItemsRejectedEventArgs> rejectedHandler = JumpItemsRejected;
-            EventHandler<JumpItemsRemovedEventArgs> removedHandler = JumpItemsRemovedByUser;
-
-            if (rejectedList.Count > 0 && rejectedHandler != null)
-            {
-                var items = new List<JumpItem>(rejectedList.Count);
-                var reasons = new List<JumpItemRejectionReason>(rejectedList.Count);
-
-                foreach (_RejectedJumpItemPair rejectionPair in rejectedList)
-                {
-                    items.Add(rejectionPair.JumpItem);
-                    reasons.Add(rejectionPair.Reason);
-                }
-
-                rejectedHandler(this, new JumpItemsRejectedEventArgs(items, reasons));
-            }
-
-            if (removedList.Count > 0 && removedHandler != null)
-            {
-                var items = new List<JumpItem>(removedList.Count);
-                foreach (_ShellObjectPair shellMap in removedList)
-                {
-                    // It's possible that not every shell object could be converted to a JumpItem.
-                    if (shellMap.JumpItem != null)
-                    {
-                        items.Add(shellMap.JumpItem);
-                    }
-                }
-
-                if (items.Count > 0)
-                {
-                    removedHandler(this, new JumpItemsRemovedEventArgs(items));
-                }
             }
         }
 
@@ -850,10 +866,11 @@ namespace Microsoft.Windows.Shell
             }
         }
 
-        private static readonly string _FullName;
+        private static readonly string _FullName = Assembly.GetEntryAssembly().Location;
         
         #region Converter methods
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private static IShellLinkW CreateLinkFromJumpTask(JumpTask jumpTask, bool allowSeparators)
         {
             Debug.Assert(jumpTask != null);
@@ -924,9 +941,8 @@ namespace Microsoft.Windows.Shell
                 }
 
                 IPropertyStore propStore = (IPropertyStore)link;
-                var pv = new PROPVARIANT();
-                try
-                {
+                using (var pv = new PROPVARIANT())
+                { 
                     PKEY pkey = default(PKEY);
 
                     if (!string.IsNullOrEmpty(jumpTask.Title))
@@ -941,10 +957,6 @@ namespace Microsoft.Windows.Shell
                     }
 
                     propStore.SetValue(ref pkey, pv);
-                }
-                finally
-                {
-                    Utility.SafeDispose(ref pv);
                 }
 
                 propStore.Commit();
@@ -992,6 +1004,7 @@ namespace Microsoft.Windows.Shell
             return (IShellItem2)unk;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private static IShellItem2 CreateItemFromJumpPath(JumpPath jumpPath)
         {
             Debug.Assert(jumpPath != null);

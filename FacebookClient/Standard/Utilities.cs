@@ -27,12 +27,7 @@ namespace Standard
     {        
         private static readonly Version _osVersion = Environment.OSVersion.Version;
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static bool _MemCmp(IntPtr left, IntPtr right, long cb)
         {
             int offset = 0;
@@ -62,11 +57,13 @@ namespace Standard
             return true;
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static Exception FailableFunction<T>(Func<T> function, out T result)
         {
             return FailableFunction(5, function, out result);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static T FailableFunction<T>(Func<T> function)
         {
             T result;
@@ -78,6 +75,7 @@ namespace Standard
             return result;
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static T FailableFunction<T>(int maxRetries, Func<T> function)
         {
             T result;
@@ -89,6 +87,8 @@ namespace Standard
             return result;
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static Exception FailableFunction<T>(int maxRetries, Func<T> function, out T result)
         {
             Assert.IsNotNull(function);
@@ -113,12 +113,7 @@ namespace Standard
             }
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static byte[] GetBytesFromBitmapSource(BitmapSource bmp)
         {
             int width = bmp.PixelWidth;
@@ -132,17 +127,13 @@ namespace Standard
             return pixels;
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static BitmapSource GenerateBitmapSource(ImageSource img)
         {
             return GenerateBitmapSource(img, img.Width, img.Height);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static BitmapSource GenerateBitmapSource(ImageSource img, double renderWidth, double renderHeight)
         {
             var dv = new DrawingVisual();
@@ -155,25 +146,27 @@ namespace Standard
             return bmp;
         }
 
-        public static BitmapSource GenerateBitmapSource(Visual visual, double renderWidth, double renderHeight, bool performLayout)
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static BitmapSource GenerateBitmapSource(UIElement element, double renderWidth, double renderHeight, bool performLayout)
         {
             if (performLayout)
             {
-                ((UIElement)visual).Measure(Size.Empty);
-                ((UIElement)visual).Arrange(new Rect(new Size(renderWidth, renderHeight)));
+                element.Measure(Size.Empty);
+                element.Arrange(new Rect(new Size(renderWidth, renderHeight)));
             }
 
             var bmp = new RenderTargetBitmap((int)renderWidth, (int)renderHeight, 96, 96, PixelFormats.Pbgra32);
             var dv = new DrawingVisual();
             using (DrawingContext dc = dv.RenderOpen())
             {
-                dc.DrawRectangle(new VisualBrush(visual), null, new Rect(0, 0, renderWidth, renderHeight));
+                dc.DrawRectangle(new VisualBrush(element), null, new Rect(0, 0, renderWidth, renderHeight));
             }
             bmp.Render(dv);
             return bmp;
         }
 
-        public static void SaveToPng(BitmapSource source, string fileName, Size imageSize)
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static void SaveToPng(BitmapSource source, string fileName)
         {
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(source));
@@ -185,7 +178,7 @@ namespace Standard
         }
 
         // This can be cached.  It's not going to change under reasonable circumstances.
-        private static int s_bitDepth = 0;
+        private static int s_bitDepth; // = 0;
         private static int _GetBitDepth()
         {
             if (s_bitDepth == 0)
@@ -198,6 +191,7 @@ namespace Standard
             return s_bitDepth;
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static BitmapFrame GetBestMatch(IList<BitmapFrame> frames, int width, int height)
         {
             return _GetBestMatch(frames, _GetBitDepth(), width, height);
@@ -220,6 +214,7 @@ namespace Standard
 
         // Caller is responsible for destroying the HICON
         // Caller is responsible to ensure that GDI+ has been initialized.
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static IntPtr GenerateHICON(ImageSource image, Size dimensions)
         {
             if (image == null)
@@ -308,46 +303,50 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static int RGB(Color c)
         {
             return c.R | (c.G << 8) | (c.B << 16);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string GetHashString(string value)
         {
-            byte[] signatureHash = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(value));
-            string signature = signatureHash.Aggregate(
-                new StringBuilder(),
-                (sb, b) => sb.Append(b.ToString("x2"))).ToString();
-            return signature;
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] signatureHash = md5.ComputeHash(Encoding.UTF8.GetBytes(value));
+                string signature = signatureHash.Aggregate(
+                    new StringBuilder(),
+                    (sb, b) => sb.Append(b.ToString("x2", CultureInfo.InvariantCulture))).ToString();
+                return signature;
+            }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static int GET_X_LPARAM(IntPtr lParam)
         {
             return LOWORD(lParam.ToInt32());
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static int GET_Y_LPARAM(IntPtr lParam)
         {
             return HIWORD(lParam.ToInt32());
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static int HIWORD(int i)
         {
             return (short)(i >> 16);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static int LOWORD(int i)
         {
             return (short)(i & 0xFFFF);
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool AreImageSourcesEqual(ImageSource left, ImageSource right)
         {
             if (null == left)
@@ -373,15 +372,8 @@ namespace Standard
             return MemCmp(leftPixels, rightPixels, leftPixels.Length);
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Security",
-                "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public static bool AreStreamsEqual(Stream left, Stream right)
         {
             if (null == left)
@@ -466,12 +458,7 @@ namespace Standard
             }
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool GuidTryParse(string guidString, out Guid guid)
         {
             Verify.IsNeitherNullNorEmpty(guidString, "guidString");
@@ -492,50 +479,31 @@ namespace Standard
             return false;
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsFlagSet(int value, int mask)
         {
             return 0 != (value & mask);
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsFlagSet(uint value, uint mask)
         {
             return 0 != (value & mask);
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsFlagSet(long value, long mask)
         {
             return 0 != (value & mask);
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsFlagSet(ulong value, ulong mask)
         {
             return 0 != (value & mask);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsInterfaceImplemented(Type objectType, Type interfaceType)
         {
             Assert.IsNotNull(objectType);
@@ -545,11 +513,13 @@ namespace Standard
             return objectType.GetInterfaces().Any(type => type == interfaceType);
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsOSVistaOrNewer
         {
             get { return _osVersion >= new Version(6, 0); }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool IsOSWindows7OrNewer
         {
             get { return _osVersion >= new Version(6, 1); }
@@ -563,6 +533,7 @@ namespace Standard
         /// Note that File.Delete, and by extension SafeDeleteFile, does not throw an exception
         /// if the file does not exist.
         /// </remarks>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SafeDeleteFile(string path)
         {
             if (!string.IsNullOrEmpty(path))
@@ -572,6 +543,7 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SafeDestroyIcon(ref IntPtr hicon)
         {
             IntPtr p = hicon;
@@ -582,6 +554,7 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SafeDestroyWindow(ref IntPtr hwnd)
         {
             IntPtr p = hwnd;
@@ -593,12 +566,7 @@ namespace Standard
         }
 
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SafeDispose<T>(ref T disposable) where T : IDisposable
         {
             // Dispose can safely be called on an object multiple times.
@@ -612,6 +580,7 @@ namespace Standard
 
         /// <summary>GDI+'s DisposeImage</summary>
         /// <param name="gdipImage"></param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SafeDisposeImage(ref IntPtr gdipImage)
         {
             IntPtr p = gdipImage;
@@ -622,16 +591,8 @@ namespace Standard
             }
         }
 
-
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Security",
-                "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public static void SafeCoTaskMemFree(ref IntPtr ptr)
         {
             IntPtr p = ptr;
@@ -642,15 +603,8 @@ namespace Standard
             }
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Security",
-                "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public static void SafeFreeHGlobal(ref IntPtr hglobal)
         {
             IntPtr p = hglobal;
@@ -661,15 +615,8 @@ namespace Standard
             }
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file."),
-            SuppressMessage(
-                "Microsoft.Security",
-                "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public static void SafeRelease<T>(ref T comObject) where T : class
         {
             T t = comObject;
@@ -687,12 +634,7 @@ namespace Standard
         /// <param name="source">The StringBuilder to catenate the results into.</param>
         /// <param name="propertyName">The name of the property to be catenated.</param>
         /// <param name="value">The value of the property to be catenated.</param>
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void GeneratePropertyString(StringBuilder source, string propertyName, string value)
         {
             Assert.IsNotNull(source);
@@ -726,13 +668,8 @@ namespace Standard
         /// <typeparam name="T"></typeparam>
         /// <param name="object"></param>
         /// <returns></returns>
-        [
-            Obsolete,
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [Obsolete]
         public static string GenerateToString<T>(T @object) where T : struct
         {
             var sbRet = new StringBuilder();
@@ -750,12 +687,7 @@ namespace Standard
             return sbRet.ToString();
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void CopyStream(Stream destination, Stream source)
         {
             Assert.IsNotNull(source);
@@ -790,24 +722,23 @@ namespace Standard
             destination.Position = 0;
         }
 
-        [
-            SuppressMessage(
-                "Microsoft.Performance",
-                "CA1811:AvoidUncalledPrivateCode",
-                Justification = "Shared code file.")
-        ]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string HashStreamMD5(Stream stm)
         {
             stm.Position = 0;
             var hashBuilder = new StringBuilder();
-            foreach (byte b in MD5.Create().ComputeHash(stm))
+            using (MD5 md5 = MD5.Create())
             {
-                hashBuilder.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+                foreach (byte b in md5.ComputeHash(stm))
+                {
+                    hashBuilder.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+                }
             }
 
             return hashBuilder.ToString();
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void EnsureDirectory(string path)
         {
             if (!Directory.Exists(Path.GetDirectoryName(path)))
@@ -816,6 +747,7 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool MemCmp(byte[] left, byte[] right, int cb)
         {
             Assert.IsNotNull(left);
@@ -847,6 +779,7 @@ namespace Standard
             private int _byteCount;
             private int _charCount;
 
+            [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
             public _UrlDecoder(int size, Encoding encoding)
             {
                 _encoding = encoding;
@@ -854,17 +787,20 @@ namespace Standard
                 _byteBuffer = new byte[size];
             }
 
+            [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
             public void AddByte(byte b)
             {
                 _byteBuffer[_byteCount++] = b;
             }
 
+            [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
             public void AddChar(char ch)
             {
                 _FlushBytes();
                 _charBuffer[_charCount++] = ch;
             }
 
+            [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
             private void _FlushBytes()
             {
                 if (_byteCount > 0)
@@ -874,6 +810,7 @@ namespace Standard
                 }
             }
 
+            [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
             public string GetString()
             {
                 _FlushBytes();
@@ -885,6 +822,7 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string UrlDecode(string url)
         {
             if (url == null)
@@ -963,6 +901,7 @@ namespace Standard
         /// They are the 7-bit ASCII alphanumerics and the mark characters "-_.!~*'()".
         /// This implementation does not treat '~' as a safe character to be consistent with the System.Web version.
         /// </remarks>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string UrlEncode(string url)
         {
             if (url == null)
@@ -1020,6 +959,7 @@ namespace Standard
         // the list "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
         // The System.Web version unnecessarily escapes '~', which should be okay...
         // Keeping that same pattern here just to be consistent.
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static bool _UrlEncodeIsSafe(byte b)
         {
             if (_IsAsciiAlphaNumeric(b))
@@ -1044,6 +984,7 @@ namespace Standard
             return false;
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static bool _IsAsciiAlphaNumeric(byte b)
         {
             return (b >= 'a' && b <= 'z')
@@ -1051,6 +992,7 @@ namespace Standard
                 || (b >= '0' && b <= '9');
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static byte _IntToHex(int n)
         {
             Assert.BoundedInteger(0, n, 16);
@@ -1061,6 +1003,7 @@ namespace Standard
             return (byte)(n - 10 + 'A');
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static int _HexToInt(char h)
         {
             if (h >= '0' && h <= '9')

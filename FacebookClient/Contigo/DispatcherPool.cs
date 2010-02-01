@@ -46,7 +46,8 @@ namespace Contigo
 
             for (int i = 0; i < _asyncDispatchers.Length; ++i)
             {
-                var dispatcherThread = new Thread(_DispatcherThreadProc) { ApartmentState = ApartmentState.STA };
+                var dispatcherThread = new Thread(_DispatcherThreadProc);
+                dispatcherThread.SetApartmentState(ApartmentState.STA);
                 if (_asyncDispatchers.Length > 1)
                 {
                     dispatcherThread.Name = name + " (" + (i+1).ToString() + ")";
