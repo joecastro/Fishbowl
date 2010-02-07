@@ -5,7 +5,7 @@
     using System.Windows.Media;
     using Contigo;
 
-    public sealed class FacebookImageControl : Control
+    public class FacebookImageControl : Control
     {
         public static readonly DependencyProperty FacebookImageProperty = DependencyProperty.Register(
             "FacebookImage",
@@ -45,10 +45,29 @@
             set { SetValue(FacebookImageDimensionsProperty, value); }
         }
 
+        private static readonly DependencyPropertyKey IsImageUpdatingPropertyKey = DependencyProperty.RegisterReadOnly(
+            "IsImageUpdating",
+            typeof(bool),
+            typeof(FacebookImageControl),
+            new FrameworkPropertyMetadata(false));
+
+        public static readonly DependencyProperty IsImageUpdatingProperty = IsImageUpdatingPropertyKey.DependencyProperty;
+
+        public bool IsImageUpdating
+        {
+            get { return (bool)GetValue(IsImageUpdatingProperty); }
+            private set { SetValue(IsImageUpdatingPropertyKey, value); }
+        }
+
         public FacebookImageControl()
         {
-            var transformGroup = new TransformGroup();
-            transformGroup.Children.Add(new ScaleTransform(1, 1));
+            var transformGroup = new TransformGroup
+            {
+                Children = 
+                {
+                    new ScaleTransform(1,1)
+                }
+            };
 
             RenderTransform = transformGroup;
         }
@@ -57,24 +76,34 @@
         {
             if (FacebookImage != null && FacebookImageDimensions != null)
             {
-                FacebookImage.GetImageAsync((FacebookImageDimensions)FacebookImageDimensions, _OnGetImageSourceCompleted);
+                IsImageUpdating = true;
+                FacebookImage.GetImageAsync(FacebookImageDimensions.Value, _OnGetImageSourceCompleted);
             }
             else
             {
+                IsImageUpdating = false;
                 ImageSource = null;
             }
         }
 
         private void _OnGetImageSourceCompleted(object sender, GetImageSourceCompletedEventArgs e)
         {
-            if (e.Error == null && !e.Cancelled)
+            var senderImage = (FacebookImage)sender;
+            if (!object.ReferenceEquals(senderImage, this.FacebookImage))
             {
-                ImageSource = e.ImageSource;
+                // Getting a stale callback for a different object.  Ignore it.
+                return;
             }
-            else
+
+            if (e.Error != null || e.Cancelled)
             {
                 ImageSource = null;
+                IsImageUpdating = false;
+                return;
             }
+
+            ImageSource = e.ImageSource;
+            IsImageUpdating = false;
         }
     }
 }

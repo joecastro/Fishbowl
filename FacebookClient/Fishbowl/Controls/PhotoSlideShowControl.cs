@@ -23,6 +23,7 @@ namespace FacebookClient
     using Contigo;
     using Standard;
     using TransitionEffects;
+    using ClientManager.Controls;
 
     /// <summary>
     /// Control used to display a slideshow of photo's with transitions.
@@ -62,8 +63,8 @@ namespace FacebookClient
         {
             _photos.Clear();
             _shuffledPhotoIndices.Clear();
-            _currentChild.FacebookPhoto = null;
-            _oldChild.FacebookPhoto = null;
+            _currentChild.FacebookImage = null;
+            _oldChild.FacebookImage = null;
             _transitionTimer.Stop();
             SetValue(PausedPropertyKey, false);
             _realCurrentIndex = null;
@@ -79,8 +80,8 @@ namespace FacebookClient
             _shuffledPhotoIndices.Shuffle();
             _realCurrentIndex = 0;
 
-            _currentChild.FacebookPhoto = _CurrentPhoto;
-            _oldChild.FacebookPhoto = _NextPhoto;
+            _currentChild.FacebookImage = _CurrentPhoto.Image;
+            _oldChild.FacebookImage = _NextPhoto.Image;
 
             if (_photoHost != null)
             {
@@ -138,8 +139,8 @@ namespace FacebookClient
                 CurrentIndex = unshuffledIndex;
             }
 
-            _currentChild.FacebookPhoto = _CurrentPhoto;
-            _oldChild.FacebookPhoto = _NextPhoto;
+            _currentChild.FacebookImage = _CurrentPhoto.Image;
+            _oldChild.FacebookImage = _NextPhoto.Image;
         }
 
         private static readonly DependencyPropertyKey CurrentIndexPropertyKey = DependencyProperty.RegisterReadOnly(
@@ -166,8 +167,8 @@ namespace FacebookClient
         {
             if (_photoHost == null)
             {
-                _currentChild.FacebookPhoto = _CurrentPhoto;
-                _oldChild.FacebookPhoto = _NextPhoto;
+                _currentChild.FacebookImage = _CurrentPhoto.Image;
+                _oldChild.FacebookImage = _NextPhoto.Image;
             }
         }
 
@@ -217,12 +218,12 @@ namespace FacebookClient
         /// <summary>
         /// Control hosting the current slide show image.
         /// </summary>
-        private SimplePhotoViewerControl _currentChild;
+        private FacebookImageControl _currentChild;
 
         /// <summary>
         /// Control that temporarily hosts the old slide show image upon transition to the next image.
         /// </summary>
-        private SimplePhotoViewerControl _oldChild;
+        private FacebookImageControl _oldChild;
 
         /// <summary>
         /// Decorator that hosts photo controls.
@@ -315,8 +316,14 @@ namespace FacebookClient
         /// </summary>
         public PhotoSlideShowControl()
         {
-            _currentChild = new SimplePhotoViewerControl();
-            _oldChild = new SimplePhotoViewerControl();
+            _currentChild = new FacebookImageControl
+            {
+                Style = (Style)Application.Current.Resources["SimpleSlideShowImageControlStyle"]
+            };
+            _oldChild = new FacebookImageControl
+            {
+                Style = (Style)Application.Current.Resources["SimpleSlideShowImageControlStyle"]
+            };
 
             _transitionTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(totalAnimationPeriod), DispatcherPriority.Input, this.OnTransitionTimerTick, Dispatcher);
             _transitionTimer.Stop();
@@ -702,8 +709,8 @@ namespace FacebookClient
                         CurrentIndex = _realCurrentIndex.Value;
                     }
 
-                    _currentChild.FacebookPhoto = _CurrentPhoto;
-                    _oldChild.FacebookPhoto = _NextPhoto;
+                    _currentChild.FacebookImage = _CurrentPhoto.Image;
+                    _oldChild.FacebookImage = _NextPhoto.Image;
                 }
             }
             this.Focus();
@@ -722,7 +729,7 @@ namespace FacebookClient
         /// </summary>
         private void SwapChildren()
         {
-            SimplePhotoViewerControl temp = this._currentChild;
+            FacebookImageControl temp = this._currentChild;
             this._currentChild = this._oldChild;
             this._oldChild = temp;
             this._currentChild.Width = double.NaN;
@@ -937,7 +944,7 @@ namespace FacebookClient
         /// <param name="applyTransitionEffect">If true, transition animation and effects are initiated.</param>
         private void ChangePhoto(bool applyTransitionEffect)
         {
-            if (_photos.Count > 0 && !this._oldChild.ImageDownloadInProgress)
+            if (_photos.Count > 0 && !this._oldChild.IsImageUpdating)
             {
                 if (applyTransitionEffect)
                 {
@@ -949,8 +956,8 @@ namespace FacebookClient
                 {
                     // Apply the current slide show content. 
                     // Load the old child with the next photo so it will advance to the next photo if the user resumes play.
-                    this._currentChild.FacebookPhoto = _CurrentPhoto;
-                    this._oldChild.FacebookPhoto = _NextPhoto;
+                    this._currentChild.FacebookImage = _CurrentPhoto.Image;
+                    this._oldChild.FacebookImage = _NextPhoto.Image;
                 }
             }
         }
@@ -963,7 +970,7 @@ namespace FacebookClient
         private void TransitionCompleted(object sender, EventArgs e)
         {
             _currentChild.Effect = null;
-            _oldChild.FacebookPhoto = _NextPhoto;
+            _oldChild.FacebookImage = _NextPhoto.Image;
         }
 
         /// <summary>

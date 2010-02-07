@@ -117,9 +117,9 @@
                 <ComboBox.ItemTemplate>
                   <DataTemplate>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Height="34">
-                      <ClientManagerControls:ImageThumbnailControl Height="30" Width="30" MaxHeight="30" MaxWidth="30" CornerRadius="2" 
-                                                FacebookImage="{Binding Path=CoverPic.Image}" ImageType="Other" HorizontalAlignment="Center" Margin="5"
-                                                ToolTip="{Binding Path=Description}" FacebookImageDimensions="Normal"/>
+                      <ClientManagerControls:LargePhotoThumbnailControl Height="30" Width="30" MaxHeight="30" MaxWidth="30" 
+                                                FacebookImage="{Binding Path=CoverPic.Image}" HorizontalAlignment="Center" Margin="5"
+                                                ToolTip="{Binding Path=Description}" FacebookImageDimensions="Small"/>
                       <TextBlock TextTrimming="CharacterEllipsis" Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
                     </StackPanel>
 

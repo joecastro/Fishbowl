@@ -268,9 +268,6 @@
                         </ClientManagerControls:FacebookImageControl>
                     </Grid>
                 </Viewbox>
-                <!--<Border BorderBrush="{DynamicResource Border_ItemOutline}" BorderThickness="{DynamicResource Border_ItemOutline_Thickness}" Margin="3">
-                    <ClientManagerControls:ImageThumbnailControl FacebookImage="{Binding Path=Image}" ImageType="Other" Width="80" Height="80" RenderTransformOrigin="0.5,0.5" Focusable="False" />
-                </Border>-->
             </Button>
         </ClientManagerControls:FacebookPhotoDragContainer>
     </DataTemplate>
@@ -369,7 +366,7 @@
                     </Grid.Style>
                     <Grid>
                     <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                    <ClientManagerControls:LargePhotoThumbnailControl FacebookPhoto="{Binding Path=ThirdPhoto}" Margin="4,4,6,16" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
+                    <ClientManagerControls:LargePhotoThumbnailControl FacebookImage="{Binding Path=ThirdPhoto.Image}" Margin="4,4,6,16" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
                     </Grid>                               
                 </Grid>
                                     
@@ -394,7 +391,7 @@
                   <RotateTransform Angle="-8"/>
                 </Grid.RenderTransform>
                   <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                  <ClientManagerControls:LargePhotoThumbnailControl Margin="4,4,6,16" FacebookPhoto="{Binding Path=SecondPhoto}" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
+                  <ClientManagerControls:LargePhotoThumbnailControl Margin="4,4,6,16" FacebookImage="{Binding Path=SecondPhoto.Image}" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
               </Grid>
               <Grid
                 Width="92"
@@ -409,7 +406,7 @@
                 <Image Source="pack://application:,,,/Resources/Images/photo_background.png"/>
                 <ClientManagerControls:LargePhotoThumbnailControl
                   Margin="4,4,6,16"
-                  FacebookPhoto="{Binding Path=FirstPhoto}"
+                  FacebookImage="{Binding Path=FirstPhoto.Image}"
                   Focusable="False"
                   RenderTransformOrigin="0.5,0.5"/>
               </Grid>

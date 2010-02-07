@@ -272,7 +272,8 @@
 
   <!-- Large Photo Thumbnail Template -->
   <Style TargetType="{x:Type ClientManagerControls:LargePhotoThumbnailControl}">
-    <Setter Property="Template">
+        <Setter Property="FacebookImageDimensions" Value="Big"/>
+        <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ClientManagerControls:LargePhotoThumbnailControl}">
           <Viewbox Stretch="UniformToFill"

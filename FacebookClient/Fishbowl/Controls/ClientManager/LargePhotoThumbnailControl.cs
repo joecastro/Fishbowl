@@ -17,24 +17,8 @@ namespace ClientManager.Controls
     /// <summary>
     /// Control used to display a photo thumbnail in an album.
     /// </summary>
-    public class LargePhotoThumbnailControl : PhotoBaseControl
+    public class LargePhotoThumbnailControl : FacebookImageControl
     {
-        /// <summary>
-        /// Updates the content of the control to contain the image at Photo.ImageUri.
-        /// </summary>
-        protected override void OnUpdateContent()
-        {
-            FacebookPhoto photo = FacebookPhoto;
-            if (photo != null)
-            {
-                ImageDownloadInProgress = true;
-                photo.Image.GetImageAsync(FacebookImageDimensions.Big, OnGetImageSourceCompleted);
-            }
-            else
-            {
-                ImageSource = null;
-            }
-        }
     }
 }
 

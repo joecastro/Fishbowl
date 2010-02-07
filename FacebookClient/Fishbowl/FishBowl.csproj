@@ -172,10 +172,8 @@
       <DependentUpon>BuddyListControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ClientManager\FacebookImageControl.cs" />
-    <Compile Include="Controls\ClientManager\ImageThumbnailControl.cs" />
     <Compile Include="Controls\ClientManager\LargePhotoThumbnailControl.cs" />
     <Compile Include="Controls\ClientManager\MainContentContainer.cs" />
-    <Compile Include="Controls\ClientManager\NewsFeedItemOverlay.cs" />
     <Compile Include="Controls\ClientManager\PhotoBaseControl.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerAlbumNode.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerBaseNode.cs" />
@@ -263,7 +261,6 @@
     <Compile Include="Main.cs" />
     <Compile Include="Controls\CommandTextBox.cs" />
     <Compile Include="Controls\PhotoSlideShowControl.cs" />
-    <Compile Include="Controls\SimplePhotoViewerControl.cs" />
     <Compile Include="Controls\FilmStripControl.cs" />
     <Compile Include="Controls\FilmStripPanel.cs" />
     <Compile Include="Controls\PhotoDisplayControl.cs" />

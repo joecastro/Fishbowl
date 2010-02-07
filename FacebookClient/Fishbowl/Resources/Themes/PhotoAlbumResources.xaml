@@ -23,7 +23,7 @@
   <FacebookClient:RandomAngleToTransformConverter x:Key="randomAngleToTransformConverter" />
 
   <!-- Template for a thumbnail displayed in the gallery home -->
-  <DataTemplate x:Key="GalleryItemTemplate">
+  <DataTemplate x:Key="AlbumCoverItemTemplate">
     <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
       <Button
           RenderTransformOrigin=".5,.5"
@@ -191,7 +191,7 @@
 
         <FacebookClient:PaginatedItemsControl x:Name="AlbumList" Grid.Row="3" DataContext="{Binding ElementName=AlbumList, Path=ListPager}"
             PaginatedItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos}" 
-            ItemTemplate="{StaticResource GalleryItemTemplate}" 
+            ItemTemplate="{StaticResource AlbumCoverItemTemplate}" 
             Focusable="False">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
