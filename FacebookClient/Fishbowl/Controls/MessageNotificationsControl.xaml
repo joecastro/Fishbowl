@@ -122,6 +122,15 @@
                   CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}"/>-->
             </StackPanel>
             <TextBlock x:Name="NoText" Margin="10, 2" Text="No new messages..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
+            <Button x:Name="ShowInboxButton" 
+                Margin="3,5" 
+                Height="22" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top" 
+                Click="ShowInboxButton_Click"
+                Style="{DynamicResource StandardButtonStyle}">
+              See Inbox
+            </Button>
           </StackPanel>
         </Grid>
       </Border>

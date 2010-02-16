@@ -395,11 +395,6 @@ namespace ClientManager.View
             string proxiedPropertyName = null;
             switch (e.PropertyName)
             {
-#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
-#error remove this
-#else
-                case "UnreadMessageCount": proxiedPropertyName = "UnreadMessageCount"; break;
-#endif
                 case "MeContact": proxiedPropertyName = "MeContact"; break;
                 case "ContactSortOrder": proxiedPropertyName = "ActiveContactSortOrder"; break;
                 case "PhotoAlbumSortOrder": proxiedPropertyName = "ActivePhotoAlbumSortOrder"; break;
@@ -507,7 +502,6 @@ namespace ClientManager.View
             }
         }
 
-#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
 
         public FacebookCollection<MessageNotification> Inbox
         {
@@ -516,15 +510,6 @@ namespace ClientManager.View
                 return ServiceProvider.FacebookService.InboxNotifications;
             }
         }
-#else
-        public int UnreadMessageCount
-        {
-            get
-            {
-                return ServiceProvider.FacebookService.UnreadMessageCount;
-            }
-        }
-#endif
 
         public ActivityPostCollection NewsFeed
         {

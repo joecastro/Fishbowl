@@ -88,22 +88,12 @@
 
         private void _OnIsInboxToggledChanged()
         {
-#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
             // Can't have both of these on at the same time.
             if (IsInboxToggled)
             {
                 AreNotificationsToggled = false;
                 IsBuddyListToggled = false;
             }
-#else
-            if (IsInboxToggled)
-            {
-                // Facebook isn't letting us display the inbox...
-                IsInboxToggled = false;
-                ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowInboxCommand.Execute(Application.Current.MainWindow);
-            }
-#endif
-
         }
 
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(FooterControl));

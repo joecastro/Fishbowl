@@ -40,5 +40,10 @@
         }
 
         public event RequestNavigateEventHandler RequestNavigate;
+
+        private void ShowInboxButton_Click(object sender, RoutedEventArgs e)
+        {
+            ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowInboxCommand.Execute(Application.Current.MainWindow);
+        }
     }
 }

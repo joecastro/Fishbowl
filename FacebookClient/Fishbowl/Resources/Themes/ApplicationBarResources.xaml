@@ -505,7 +505,7 @@
                   <FacebookClient:NotificationCountControl 
                       x:Name="InboxCountControl" 
                       HorizontalAlignment="Right" VerticalAlignment="Center"
-                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=UnreadMessageCount}" >
+                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" >
                     <FacebookClient:NotificationCountControl.Background>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                         <GradientStop Offset="0.000" Color="#FFF9F9" />

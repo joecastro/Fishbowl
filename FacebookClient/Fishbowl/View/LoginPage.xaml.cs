@@ -26,10 +26,7 @@ namespace ClientManager.View
             public override bool IncludeInJournal { get { return false; } }
         }
 
-#if FACEBOOK_HAS_GRANTED_INBOX_PERMISSIONS
-#error Add back Permissions.ReadMailbox.  Don't need this for now since I can't use it :P
-#endif
-        private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.OfflineAccess;
+        private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.OfflineAccess | Permissions.ReadMailbox;
 
         private readonly string _appId;
         private readonly bool _useCachedCredentials;
