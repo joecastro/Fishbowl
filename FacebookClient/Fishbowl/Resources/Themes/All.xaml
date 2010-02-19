@@ -82,6 +82,7 @@
   <SolidColorBrush x:Key="ActivityActionButtonForeground" Color="#3B5998"/>
 
   <SolidColorBrush Color="#253b5998" x:Key="NewsFeedCommentBackgroundBrush" />
+  
   <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NewsFeedItemDividerBrush">
     <GradientStop Offset="0" Color="Transparent" />
     <GradientStop Offset=".05" Color="#d9e2f8" />
@@ -92,7 +93,7 @@
   <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="VerticalDividerBrush">
     <GradientStop Offset="0" Color="Transparent" />
     <GradientStop Offset=".05" Color="#d9e2f8" />
-    <GradientStop Offset=".9" Color="#AAAAAA" />
+    <GradientStop Offset=".9" Color="#d9e2f8" />
     <GradientStop Offset="1" Color="Transparent" />
   </LinearGradientBrush>
 

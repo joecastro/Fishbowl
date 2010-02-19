@@ -29,15 +29,11 @@
               <Grid x:Name="selected" Opacity="0">
                 <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
               </Grid>
-
               <Grid x:Name="hover" Opacity="0">
                 <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
               </Grid>
-
               <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
-
               <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
-
               <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
               <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
@@ -82,27 +78,8 @@
                   <BeginStoryboard>
                     <Storyboard>
                       <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <!--<ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text" Storyboard.TargetProperty="Visibility" >
-                            <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <Visibility>Hidden</Visibility>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames.KeyFrames>
-                        </ObjectAnimationUsingKeyFrames>
-                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text2" Storyboard.TargetProperty="Visibility" >
-                            <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <Visibility>Visible</Visibility>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames.KeyFrames>
-                        </ObjectAnimationUsingKeyFrames>
-
+                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
                     </Storyboard>
                   </BeginStoryboard>
                 </Trigger.ExitActions>

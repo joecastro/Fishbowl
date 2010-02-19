@@ -11,7 +11,6 @@
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   <FacebookClient:AddConverter x:Key="AddConverter" />
-  <FacebookClient:EmptyStringToBooleanConverter x:Key="EmptyStringToBooleanConverter" />
 
   <!-- Foreground brush for text in top chrome -->
   <SolidColorBrush x:Key="Foreground_ChromeText" Color="#FFE5E5E5" />
@@ -447,7 +446,6 @@
     <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}" StartingPhoto="{Binding StartingPhoto, Mode=OneTime}"/>
   </DataTemplate>
 
-
   <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
@@ -456,24 +454,23 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ToolTip">
-          <Border CornerRadius="3" Background="{DynamicResource TooltipBackgroundBrush}" BorderThickness="1" Padding="10,3,10,3" BorderBrush="{DynamicResource TooltipBorderBrush}" SnapsToDevicePixels="True" >
-            <!--<Border.Background>
-                            <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
-                                <GradientStop Color="#DF35528C" Offset="0.25"/>
-                                <GradientStop Color="#8F35528C" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>-->
-            <Grid>
-              <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-            </Grid>
+          <Border 
+              CornerRadius="3"
+              Background="{DynamicResource TooltipBackgroundBrush}" 
+              BorderThickness="1" 
+              Padding="10,3" 
+              BorderBrush="{DynamicResource TooltipBorderBrush}" 
+              SnapsToDevicePixels="True" >
+            <ContentPresenter 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
           </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-
+  
   <Style x:Key="ZoomInOutButtons" TargetType="{x:Type Button}">
     <Setter Property="Width" Value="24" />
     <Setter Property="Height" Value="20" />

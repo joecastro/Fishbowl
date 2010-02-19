@@ -23,7 +23,7 @@
       </StackPanel>
       <DockPanel DockPanel.Dock="Bottom">
         <Button DockPanel.Dock="Right" Margin="5" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Click="_OnClose" />
-        <TextBlock Margin="5" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light" Opacity=".6">
+        <TextBlock Margin="5" FontSize="12" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light">
           <Hyperlink Click="_OnPrivacyWebsiteClicked" Foreground="{DynamicResource SettingsDialogForeground}">Privacy statement</Hyperlink>
         </TextBlock>
       </DockPanel>

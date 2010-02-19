@@ -10,8 +10,48 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    
-    <Style TargetType="{x:Type FacebookClient:FriendButton}">
+
+  <LinearGradientBrush x:Key="ArrowButtonBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+    <GradientStop Color="{StaticResource FacebookLightBlue}" Offset="0" />
+    <GradientStop Color="{StaticResource FacebookBlue}" Offset="0.9" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ArrowButtonBackgroundBrush" Color="#FF4A4E57" />
+
+  <ControlTemplate x:Key="ScrollbarButtonTemplate" TargetType="{x:Type RepeatButton}">
+    <Grid>
+      <Path x:Name="Arrow"
+            Fill="{DynamicResource ArrowButtonBackgroundBrush}"
+            Stroke="{DynamicResource ArrowButtonBorderBrush}"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
+            RenderTransformOrigin="0.5,0.5"
+            Margin="0,6,0,6"
+            Cursor="Hand">
+        <Path.RenderTransform>
+          <RotateTransform Angle="90" />
+        </Path.RenderTransform>
+      </Path>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ArrowButtonBorderBrush}" />
+      </Trigger>
+      <Trigger Property="IsPressed" Value="True">
+        <Setter TargetName="Arrow" Property="Stroke" Value="{DynamicResource ArrowButtonBackgroundBrush}" />
+        <Setter TargetName="Arrow" Property="Fill" Value="{DynamicResource ArrowButtonBackgroundBrush}" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter TargetName="Arrow" Property="Opacity" Value="0.4" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter TargetName="Arrow" Property="Opacity" Value="1.0" />
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type FacebookClient:FriendButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type FacebookClient:FriendButton}">
@@ -572,12 +612,12 @@
                                 <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill" />
                                 <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" />
                                 <StackPanel Grid.Row="1" Grid.Column="1">
-                                    <RepeatButton Template="{DynamicResource ScrollbarButtonTemplate}" Command="{x:Static FacebookClient:SearchContentControl.ScrollUpCommand}" RenderTransformOrigin="0.5,0.5" >
+                                    <RepeatButton Template="{StaticResource ScrollbarButtonTemplate}" Command="{x:Static FacebookClient:SearchContentControl.ScrollUpCommand}" RenderTransformOrigin="0.5,0.5" >
                                         <RepeatButton.RenderTransform>
                                             <RotateTransform Angle="90"/>
                                         </RepeatButton.RenderTransform>
                                     </RepeatButton>
-                                    <RepeatButton Margin="0,25,0,0" Template="{DynamicResource ScrollbarButtonTemplate}" Command="{x:Static FacebookClient:SearchContentControl.ScrollDownCommand}" RenderTransformOrigin="0.5,0.5" >
+                                    <RepeatButton Margin="0,25,0,0" Template="{StaticResource ScrollbarButtonTemplate}" Command="{x:Static FacebookClient:SearchContentControl.ScrollDownCommand}" RenderTransformOrigin="0.5,0.5" >
                                         <RepeatButton.RenderTransform>
                                             <RotateTransform Angle="270"/>
                                         </RepeatButton.RenderTransform>

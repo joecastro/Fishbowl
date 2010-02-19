@@ -37,7 +37,7 @@
   <!-- Just like ToolbarButtonTemplate, but it spins the content a couple times on click. -->
   <ControlTemplate x:Key="SpinningToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
     <Grid x:Name="Root">
-      <Border x:Name="hover" Background="{DynamicResource ButtonHoverBrush}"  CornerRadius="3" Opacity="0" />
+      <Border x:Name="hover" Background="{DynamicResource ButtonHoverBrush}" CornerRadius="3" Opacity="0" />
       <ContentPresenter x:Name="RotatingContentPresenter" RenderTransformOrigin=".5,.5" Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center">
         <ContentPresenter.RenderTransform>
           <RotateTransform />
@@ -521,8 +521,8 @@
             <Rectangle x:Name="Separator1" Fill="{DynamicResource SeparatorBrush}" VerticalAlignment="Center" Margin="8,0" DockPanel.Dock="Right" Width="3" Height="20"/>
 
             <Button x:Name="SignOutButton" Margin="3,1"
-                    DockPanel.Dock="Right"
-                    MinHeight="20"
+                DockPanel.Dock="Right"
+                MinHeight="20"
                 VerticalAlignment="Center" HorizontalAlignment="Right" 
                 VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                 Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" 

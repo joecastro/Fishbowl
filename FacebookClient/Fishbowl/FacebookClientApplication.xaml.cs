@@ -1,3 +1,5 @@
+// #define REENABLE_BLEND_THEME
+
 //-----------------------------------------------------------------------
 // <copyright file="FacebookClientApplication.xaml.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
@@ -42,7 +44,9 @@ namespace FacebookClient
             { "Blue",     new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
             { "Dark",     new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
             { "Facebook", new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
+#if REENABLE_BLEND_THEME
             { "Blend", new Uri(@"Resources\Themes\Blend\Expression.xaml", UriKind.Relative) },
+#endif
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.

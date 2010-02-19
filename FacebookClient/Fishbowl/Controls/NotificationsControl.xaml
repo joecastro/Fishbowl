@@ -6,10 +6,12 @@
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     MinWidth="250" MaxWidth="350">
+  
   <UserControl.Resources>
     <!-- Can't do this directly in the Setter because of a bug in WPF. -->
     <TextBlock x:Key="DescriptionToolTip" Text="{Binding DescriptionText}" TextWrapping="Wrap" MaxWidth="350" />
   </UserControl.Resources>
+  
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:NotificationsControl}">
       <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray">
@@ -20,24 +22,31 @@
               <TextBlock Text="Notifications" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">
-              <ItemsControl x:Name="NotificationList" Background="{DynamicResource PopupListControlBackgroundBrush}" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}">
+              <ItemsControl x:Name="NotificationList"
+                  Background="{DynamicResource PopupListControlBackgroundBrush}"
+                  Padding="5" 
+                  ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type Facebook:Notification}">
                     <DockPanel Margin="0,0,0,5">
-                            <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center" Fill="{DynamicResource NewsFeedItemDividerBrush}" />
-
-                            <Button DockPanel.Dock="Right" 
-                              Content="r"
-                              Foreground="{DynamicResource PopupListControlDeleteItemBrush}" 
-                              FontFamily="Webdings" 
-                              Style="{StaticResource SimpleButtonStyle}" 
-                              VerticalAlignment="Top" 
-                              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAsReadCommand}" 
-                              CommandParameter="{Binding}" 
-                              Margin="10,0,2,0"
-                              ToolTip="Mark as read"
-                              FontWeight="Bold" />
-                      
+                      <Rectangle DockPanel.Dock="Top" 
+                          Height="1"
+                          SnapsToDevicePixels="True" 
+                          Width="240" 
+                          VerticalAlignment="Top" 
+                          HorizontalAlignment="Center" 
+                          Fill="{DynamicResource NewsFeedItemDividerBrush}" />
+                      <Button DockPanel.Dock="Right" 
+                          Content="r"
+                          Foreground="{DynamicResource PopupListControlDeleteItemBrush}" 
+                          FontFamily="Webdings" 
+                          Style="{StaticResource SimpleButtonStyle}" 
+                          VerticalAlignment="Top" 
+                          Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAsReadCommand}" 
+                          CommandParameter="{Binding}" 
+                          Margin="10,0,2,0"
+                          ToolTip="Mark as read"
+                          FontWeight="Bold" />
                       <TextBlock TextWrapping="Wrap">
                         <TextBlock.Style>
                           <Style TargetType="{x:Type TextBlock}">

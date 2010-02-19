@@ -7,18 +7,6 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     Focusable="False">
   <UserControl.Resources>
-    <LinearGradientBrush x:Key="ArrowButtonBorderBrush"
-                         EndPoint="0.5,1"
-                         StartPoint="0.5,0">
-      <GradientStop Color="{StaticResource FacebookLightBlue}"
-                      Offset="0" />
-      <GradientStop Color="{StaticResource FacebookBlue}" 
-                      Offset="0.9" />
-    </LinearGradientBrush>
-
-    <SolidColorBrush x:Key="ArrowButtonBackgroundBrush"
-                     Color="#FF4A4E57" />
-
     <DataTemplate x:Key="ItemTemplate">
       <ClientManagerControls:FacebookContactDragContainer FacebookContact="{Binding}">
         <Button x:Name="ItemButton" 
@@ -68,16 +56,16 @@
               <ContentPresenter Focusable="False" />
               <Border.ToolTip>
                 <TextBlock Text="{Binding Name}" MaxWidth="300" TextTrimming="CharacterEllipsis" >
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Name}" Value="">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
+                  <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                      <Setter Property="Visibility" Value="Visible" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding Name}" Value="">
+                          <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
                 </TextBlock>
               </Border.ToolTip>
             </Border>
@@ -140,170 +128,16 @@
       </Setter>
     </Style>
 
-    <ControlTemplate x:Key="ScrollbarButtonTemplate" TargetType="{x:Type RepeatButton}">
-      <Grid>
-        <Path x:Name="Arrow"
-                  Fill="{DynamicResource ArrowButtonBackgroundBrush}"
-                  Stroke="{DynamicResource ArrowButtonBorderBrush}"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="0,6,0,6"
-                  Cursor="Hand">
-          <Path.RenderTransform>
-            <RotateTransform Angle="90" />
-          </Path.RenderTransform>
-        </Path>
-      </Grid>
-      <ControlTemplate.Triggers>
-        <Trigger Property="IsMouseOver"
-                     Value="True">
-          <Setter TargetName="Arrow"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBorderBrush}" />
-        </Trigger>
-        <Trigger Property="IsPressed"
-                     Value="True">
-          <Setter TargetName="Arrow"
-                        Property="Stroke"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-          <Setter TargetName="Arrow"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-        </Trigger>
-        <Trigger Property="IsEnabled"
-                     Value="False">
-          <Setter TargetName="Arrow"
-                        Property="Opacity"
-                        Value="0.4" />
-        </Trigger>
-        <Trigger Property="IsEnabled"
-                     Value="True">
-          <Setter TargetName="Arrow"
-                        Property="Opacity"
-                        Value="1.0" />
-        </Trigger>
-      </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="DoubleScrollbarButtonTemplate" TargetType="{x:Type RepeatButton}">
-      <Grid>
-        <Path x:Name="Arrow"
-                  Fill="{DynamicResource ArrowButtonBackgroundBrush}"
-                  Stroke="{DynamicResource ArrowButtonBorderBrush}"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="22"
-                  Height="14"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="5,0,0,0"
-                  Cursor="Hand">
-          <Path.RenderTransform>
-            <RotateTransform Angle="90" />
-          </Path.RenderTransform>
-        </Path>
-        <Path x:Name="Arrow2"
-                  Fill="{DynamicResource ArrowButtonBackgroundBrush}"
-                  Stroke="{DynamicResource ArrowButtonBorderBrush}"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="22"
-                  Height="14"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="15,0,0,0"
-                  Cursor="Hand">
-          <Path.RenderTransform>
-            <RotateTransform Angle="90" />
-          </Path.RenderTransform>
-        </Path>
-      </Grid>
-      <ControlTemplate.Triggers>
-        <Trigger Property="IsMouseOver"
-                     Value="True">
-          <Setter TargetName="Arrow"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBorderBrush}" />
-          <Setter TargetName="Arrow2"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBorderBrush}" />
-        </Trigger>
-        <Trigger Property="IsPressed"
-                     Value="True">
-          <Setter TargetName="Arrow"
-                        Property="Stroke"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-          <Setter TargetName="Arrow2"
-                        Property="Stroke"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-          <Setter TargetName="Arrow"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-          <Setter TargetName="Arrow2"
-                        Property="Fill"
-                        Value="{DynamicResource ArrowButtonBackgroundBrush}" />
-        </Trigger>
-        <Trigger Property="IsEnabled"
-                     Value="False">
-          <Setter TargetName="Arrow"
-                        Property="Opacity"
-                        Value="0.4" />
-          <Setter TargetName="Arrow2"
-                        Property="Opacity"
-                        Value="0.4" />
-        </Trigger>
-      </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="ScrollBarStyle"
-           TargetType="{x:Type ScrollBar}">
-      <Setter Property="Stylus.IsPressAndHoldEnabled"
-                Value="false" />
-      <Setter Property="Stylus.IsFlicksEnabled"
-                Value="True" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type ScrollBar}">
-            <Grid />
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Style.Triggers>
-        <Trigger Property="Orientation"
-                     Value="Horizontal">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type ScrollBar}">
-                <Grid x:Name="Bg" SnapsToDevicePixels="true"/>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-
     <ControlTemplate x:Key="FriendsBarScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
       <Grid x:Name="Grid" Background="{TemplateBinding Background}">
         <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
-          Margin="0"
-          VerticalAlignment="Stretch"
-          Content="{TemplateBinding Content}"
-          ContentTemplate="{TemplateBinding ContentTemplate}"
-          CanContentScroll="{TemplateBinding CanContentScroll}"
-          CanHorizontallyScroll="False"
-          CanVerticallyScroll="False" />
-        <ScrollBar x:Name="PART_HorizontalScrollBar"
-                   Cursor="Arrow"
-                   Visibility="Collapsed"
-                   Maximum="{TemplateBinding ScrollableWidth}"
-                   Minimum="0"
-                   Value="{Binding Path=HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                   Orientation="Horizontal"
-                   ViewportSize="{TemplateBinding ViewportWidth}"
-                   Height="{Binding Path=ActualHeight, ElementName=Grid, Mode=Default}"
-                   Style="{DynamicResource ScrollBarStyle}" />
+            Margin="0"
+            VerticalAlignment="Stretch"
+            Content="{TemplateBinding Content}"
+            ContentTemplate="{TemplateBinding ContentTemplate}"
+            CanContentScroll="{TemplateBinding CanContentScroll}"
+            CanHorizontallyScroll="False"
+            CanVerticallyScroll="False" />
       </Grid>
     </ControlTemplate>
 
@@ -346,22 +180,21 @@
 
   </UserControl.Resources>
 
-    <Grid>
-        <Border Margin="0,2,0,0" Background="{DynamicResource FriendBarBackgroundBrush}" />
-        <Rectangle Height="1" SnapsToDevicePixels="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="{DynamicResource FriendBarBorderBrush}" />
-        
-        <Grid x:Name="FilmStripBlurEffectArea">
-            <FacebookClient:FilmStripControl ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Friends}"
-                                   Style="{StaticResource FriendsBarListBoxStyle}"
-                                   ItemContainerStyle="{DynamicResource FriendsBarListBoxItemStyle}"
-                                   ItemsPanel="{StaticResource FilmStripPanel}"
-                                   ItemHeight="74"
-                                   ScrollViewer.CanContentScroll="True"
-                                   ScrollViewer.HorizontalScrollBarVisibility="Visible"
-                                   ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                   Focusable="False"
-                                   Background="Transparent"
-                                   x:Name="FilmStrip"/>
-        </Grid>
-    </Grid>
+  <Grid>
+    <Border Margin="0,2,0,0" Background="{DynamicResource FriendBarBackgroundBrush}" />
+    <Rectangle Height="1" SnapsToDevicePixels="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="{DynamicResource FriendBarBorderBrush}" />
+    <Grid x:Name="FilmStripBlurEffectArea">
+      <FacebookClient:FilmStripControl x:Name="FilmStrip"
+          ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Friends}"
+          Style="{StaticResource FriendsBarListBoxStyle}"
+          ItemContainerStyle="{DynamicResource FriendsBarListBoxItemStyle}"
+          ItemsPanel="{StaticResource FilmStripPanel}"
+          ItemHeight="74"
+          ScrollViewer.CanContentScroll="True"
+          ScrollViewer.HorizontalScrollBarVisibility="Visible"
+          ScrollViewer.VerticalScrollBarVisibility="Hidden"
+          Focusable="False"
+          Background="Transparent" />
+      </Grid>
+  </Grid>
 </UserControl>

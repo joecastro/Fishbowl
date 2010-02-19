@@ -25,19 +25,22 @@
             Chat
           </Button>
 
-          <ScrollViewer Background="{DynamicResource PopupListControlBackgroundBrush}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+          <ScrollViewer
+              Background="{DynamicResource PopupListControlBackgroundBrush}" 
+              VerticalScrollBarVisibility="Auto" 
+              HorizontalScrollBarVisibility="Hidden">
             <FacebookClient:IncrementalLoadListBox x:Name="FriendList" 
                 ScrollViewer.VerticalScrollBarVisibility="Disabled" 
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 MinHeight="40" 
-                Padding="5"  Background="{DynamicResource PopupListControlBackgroundBrush}"
+                Padding="5" 
+                Background="{DynamicResource PopupListControlBackgroundBrush}"
                 ActualItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends}"
                 BorderThickness="0">
               <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                   <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                    <Setter Property="Background" Value="{DynamicResource PopupListControlBackgroundBrush}" />
-                                    <Setter Property="Template">
+                  <Setter Property="Template">
                     <Setter.Value>
                       <ControlTemplate TargetType="ListBoxItem">
                         <ContentPresenter />
@@ -49,23 +52,25 @@
               
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type Facebook:FacebookContact}">
-                  
                   <DockPanel Margin="0,0,0,5">
-                    <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center" Fill="{DynamicResource NewsFeedItemDividerBrush}" />
-
+                    <Rectangle DockPanel.Dock="Top"
+                               Height="1" 
+                               SnapsToDevicePixels="True"
+                               Width="240" 
+                               VerticalAlignment="Top" 
+                               HorizontalAlignment="Center" 
+                               Fill="{DynamicResource NewsFeedItemDividerBrush}" />
                     <Grid>
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="Auto" />
                       </Grid.ColumnDefinitions>
-
                       <Button RenderTransformOrigin="0.5,0.5" Width="38" Height="38" VerticalAlignment="Center" Style="{StaticResource AnimatedItemButton}">
                         <Button.RenderTransform>
                           <TransformGroup>
                             <RotateTransform Angle="-6" />
                           </TransformGroup>
                         </Button.RenderTransform>
-
                         <Grid>
                           <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
                           <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Square">
@@ -79,15 +84,13 @@
                           </ClientManagerControls:FacebookImageControl>
                         </Grid>
                       </Button>
-
                       <StackPanel Margin="6,0,0,0" Grid.Column="1" Orientation="Horizontal">
                         <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Style="{DynamicResource ProfileNameTextBlockStyle}">
                           <Hyperlink 
                               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
                               CommandParameter="{Binding}">
                             <FacebookClient:BindableRun Text="{Binding Name}" />
-                          </Hyperlink>
-                        </TextBlock>
+                          </Hyperlink></TextBlock>
                         <Button 
                           Width="14" 
                           Height="14" 
@@ -114,7 +117,6 @@
                       <Setter TargetName="Away" Property="Visibility" Value="Visible" />
                     </DataTrigger>
                   </DataTemplate.Triggers>
-
                 </DataTemplate>
               </ItemsControl.ItemTemplate>
             </FacebookClient:IncrementalLoadListBox>

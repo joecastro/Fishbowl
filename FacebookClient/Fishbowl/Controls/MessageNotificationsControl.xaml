@@ -16,34 +16,20 @@
               <TextBlock Text="Inbox" Foreground="White" FontWeight="Bold" Margin="5" />
             </DockPanel>
             <StackPanel x:Name="ItemsPanel">
-              <ItemsControl x:Name="MessageList" Background="White" Padding="5" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}">
+              <ItemsControl x:Name="MessageList" 
+                  Background="{DynamicResource PopupListControlBackgroundBrush}"
+                  Padding="5"
+                  ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type Facebook:MessageNotification}">
                     <DockPanel Margin="0,0,0,5">
-                      <Rectangle DockPanel.Dock="Top" Height="1" SnapsToDevicePixels="True" Width="240" VerticalAlignment="Top" HorizontalAlignment="Center">
-                        <Rectangle.Fill>
-                          <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Offset="0" Color="Transparent" />
-                            <GradientStop Offset=".05" Color="#d9e2f8" />
-                            <GradientStop Offset=".9" Color="#d9e2f8" />
-                            <GradientStop Offset="1" Color="Transparent" />
-                          </LinearGradientBrush>
-                        </Rectangle.Fill>
-                      </Rectangle>
-                      
-                      <!-- Can't currently mark messages as read.
-                      <Button DockPanel.Dock="Right" 
-                              Content="r"
-                              Foreground="{DynamicResource FacebookBlueBrush}" 
-                              FontFamily="Webdings" 
-                              Style="{StaticResource SimpleButtonStyle}" 
-                              VerticalAlignment="Top" 
-                              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAsReadCommand}" 
-                              CommandParameter="{Binding}" 
-                              Margin="10,0,2,0"
-                              ToolTip="Mark as read"
-                              FontWeight="Bold" />-->
-
+                      <Rectangle DockPanel.Dock="Top" 
+                          Height="1" 
+                          SnapsToDevicePixels="True" 
+                          Width="240" 
+                          VerticalAlignment="Top" 
+                          HorizontalAlignment="Center" 
+                          Fill="{DynamicResource NewsFeedItemDividerBrush}" />
                       <Grid>
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="50" />
@@ -104,22 +90,13 @@
                         </TextBlock>
                         
                         <TextBlock Grid.Column="2" Grid.Row="2" TextWrapping="Wrap">
-                          <FacebookClient:HyperlinkTextContent Text="{Binding Description}" RequestNavigate="_OnMessageRequestNavigate" />
+                          <FacebookClient:HyperlinkTextContent Text="{Binding Description}" RequestNavigate="_OnMessageRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}" />
                         </TextBlock>
-
                       </Grid>
                     </DockPanel>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <!--<Button Content="Mark all as read"
-                  Margin="5"
-                  FontFamily="{StaticResource SerifFont}"
-                  Foreground="White"
-                  HorizontalAlignment="Left" 
-                  Style="{StaticResource SimpleButtonStyle}" 
-                  Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAllAsReadCommand}" 
-                  CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox}"/>-->
             </StackPanel>
             <TextBlock x:Name="NoText" Margin="10, 2" Text="No new messages..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
             <Button x:Name="ShowInboxButton" 

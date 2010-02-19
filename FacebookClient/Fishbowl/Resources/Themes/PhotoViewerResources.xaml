@@ -6,11 +6,10 @@
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   
-  <!-- Converter to format the application dates consistently -->
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
-  <!-- Converter to convert the ZoomFactor of a photo to the appropriate BitmapScalingMode for best quality -->
   <FacebookClient:PhotoZoomFactorToBitmapScalingModeConverter x:Key="PhotoZoomFactorToBitmapScalingModeConverter"/>
-  
+  <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+
   <!-- Style for buttons (thumbnails) in the film strip -->
   <Style x:Key="FilmStripThumbnailButton" TargetType="{x:Type Button}">
     <Setter Property="Cursor" Value="Hand"/>
@@ -889,23 +888,13 @@
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
 
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Margin="10,4,3,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}}" Margin="10,4,3,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />
                       <Binding ElementName="CommentTextBox" Path="Text" />
                     </MultiBinding>
                   </Button.CommandParameter>
-                  <!--<Button.Style>
-                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
-                      <Setter Property="IsEnabled" Value="True" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=CommentTextBox, Path=Text}" Value="">
-                          <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Button.Style>-->
                 </Button>
 
               </StackPanel>
@@ -1234,7 +1223,7 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource EmptyStringToBooleanConverter}}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />

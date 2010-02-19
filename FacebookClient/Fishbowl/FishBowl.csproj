@@ -231,7 +231,7 @@
     <Compile Include="Converters\AddConverter.cs" />
     <Compile Include="Converters\CityStateConverter.cs" />
     <Compile Include="Converters\ContentVisibilityConverter.cs" />
-    <Compile Include="Converters\EmptyStringToBooleanConverter.cs" />
+    <Compile Include="Converters\IsStringNullOrEmptyConverter.cs" />
     <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\RandomAngleToTransformConverter.cs" />
     <Compile Include="Converters\SexPronounConverter.cs" />

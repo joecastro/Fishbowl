@@ -33,9 +33,7 @@
               <Grid x:Name="hover" Opacity="0">
                 <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
               </Grid>
-        <!--b3c4e9-->
               <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
-
               <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
 
               <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Icon}" FacebookImageDimensions="Normal">
@@ -45,10 +43,9 @@
                   </ControlTemplate>
                 </ClientManagerControls:FacebookImageControl.Template>
               </ClientManagerControls:FacebookImageControl>
-              
-              <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-              <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
+              <TextBlock x:Name="text" Foreground="#4b4b4b" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="text2" Foreground="#4b4b4b" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
               <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SetNewsFeedFilterCommand}" CommandParameter="{Binding}">
                 <Button.Template>
@@ -87,58 +84,18 @@
                 <Trigger.EnterActions>
                   <BeginStoryboard>
                     <Storyboard>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text" Storyboard.TargetProperty="Visibility" >
-                                                <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Hidden</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames.KeyFrames>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text2" Storyboard.TargetProperty="Visibility" >
-                                                <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames.KeyFrames>
-                                            </ObjectAnimationUsingKeyFrames>
-
-                                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <!--<ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
-                      <!--<ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
+                      <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
+                      <ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                      <ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
                     </Storyboard>
                   </BeginStoryboard>
                 </Trigger.EnterActions>
                 <Trigger.ExitActions>
                   <BeginStoryboard>
                     <Storyboard>
-
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text" Storyboard.TargetProperty="Visibility" >
-                                                <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                                    <DiscreteObjectKeyFrame KeyTime="0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Visible</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames.KeyFrames>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="text2" Storyboard.TargetProperty="Visibility" >
-                                                <ObjectAnimationUsingKeyFrames.KeyFrames>
-                                                    <DiscreteObjectKeyFrame KeyTime="0" >
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <Visibility>Hidden</Visibility>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames.KeyFrames>
-                                            </ObjectAnimationUsingKeyFrames>
-                        
-                                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <!--<ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
-                      <!--<ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />-->
+                      <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
+                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
                     </Storyboard>
                   </BeginStoryboard>
                 </Trigger.ExitActions>
@@ -151,7 +108,7 @@
   </UserControl.Resources>
   <Border Style="{DynamicResource SearchAndFilterBarMainBorderStyle}">
     <DockPanel LastChildFill="False">
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Facebook Feeds" Margin="10,17,0,0" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="15px" FontWeight="Medium" FontFamily="../Resources/Fonts/#Gotham" Text="Facebook Feeds" Margin="10,17,0,0" />
       
       <Button x:Name="ShowMoreButton" DockPanel.Dock="Bottom" Margin="10" Height="22" HorizontalAlignment="Right" VerticalAlignment="Top" Content="More" Click="MoreButtonClick">
         <Button.Style>
@@ -186,10 +143,8 @@
       </Button>
 
       <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-       
-          <TabControl x:Name="FilterTabs" Margin="0,6,0,0" VerticalAlignment="Top" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters}" />
-      
-        </ScrollViewer>
+        <TabControl x:Name="FilterTabs" Margin="0,6,0,0" VerticalAlignment="Top" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters}" />
+      </ScrollViewer>
     </DockPanel>
   </Border>
 </UserControl>
