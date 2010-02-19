@@ -74,6 +74,9 @@ namespace Standard
         /// <summary>The operation was canceled by the user.</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly Win32Error ERROR_CANCELLED = new Win32Error(1223);
+        /// <summary>Cannot find window class.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly Win32Error ERROR_CANNOT_FIND_WND_CLASS = new Win32Error(1407);
         /// <summary>The window class was already registered.</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly Win32Error ERROR_CLASS_ALREADY_EXISTS = new Win32Error(1410);

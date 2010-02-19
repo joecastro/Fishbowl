@@ -91,6 +91,7 @@
     <Compile Include="FileWalker.cs" />
     <Compile Include="GlassHelper.cs" />
     <Compile Include="MergeableCollection.cs" />
+    <Compile Include="MessageWindow.cs" />
     <Compile Include="MshtmlProvider.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="NotifyingList.cs" />

@@ -7,6 +7,7 @@ namespace Standard
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
+    using System.Windows;
     using System.Windows.Threading;
 
     // Current issues with this implementation:
@@ -25,12 +26,8 @@ namespace Standard
             AlphaFormat = AC.SRC_ALPHA,
         };
 
-        private static WndProc _DefWindowProcDelegate = NativeMethods.DefWindowProc;
-
-        private IntPtr _hwnd;
-        private IntPtr _hInstance;
+        private MessageWindow _hwndWrapper;
         private SafeHBITMAP _hBitmap;
-        private short _classAtom;
         private DispatcherTimer _dt;
         private DateTime _fadeOutEnd;
         private DateTime _fadeInEnd;
@@ -40,11 +37,9 @@ namespace Standard
         private Assembly _resourceAssembly;
         private bool _isClosed = false;
 
-        private const string CLASSNAME = "WPF Splash Screen";
-
         private void _VerifyMutability()
         {
-            if (_hwnd != IntPtr.Zero)
+            if (_hwndWrapper != null)
             {
                 throw new InvalidOperationException("Splash screen has already been shown.");
             }
@@ -62,7 +57,6 @@ namespace Standard
                 Verify.IsNotNull(value, "value");
 
                 _resourceAssembly = value;
-                _hInstance = Marshal.GetHINSTANCE(_resourceAssembly.ManifestModule);
                 AssemblyName name = new AssemblyName(_resourceAssembly.FullName);
                 _resourceManager = new ResourceManager(name.Name + ".g", _resourceAssembly);
             }
@@ -110,13 +104,43 @@ namespace Standard
                     }
                 }
 
-                SIZE bitmapSize;
+                Size bitmapSize;
                 _hBitmap = _CreateHBITMAPFromImageStream(imageStream, out bitmapSize);
 
-                _hwnd = _CreateWindow(bitmapSize);
+                Point location = new Point(
+                    (NativeMethods.GetSystemMetrics(SM.CXSCREEN) - bitmapSize.Width) / 2,
+                    (NativeMethods.GetSystemMetrics(SM.CYSCREEN) - bitmapSize.Height) / 2);
+
+                // Pass a null WndProc.  Let the MessageWindow use DefWindowProc.
+                _hwndWrapper = new MessageWindow(
+                    CS.HREDRAW | CS.VREDRAW,
+                    WS.POPUP | WS.VISIBLE,
+                    WS_EX.WINDOWEDGE | WS_EX.TOOLWINDOW | WS_EX.LAYERED | (IsTopMost ? WS_EX.TOPMOST : 0),
+                    new Rect(location, bitmapSize),
+                    "Splash Screen",
+                    null);
 
                 byte opacity = (byte)(FadeInDuration > TimeSpan.Zero ? 0 : 255);
-                _ApplyBitmapToLayeredWindow(_hwnd, _hBitmap, opacity);
+
+                using (SafeDC hScreenDC = SafeDC.GetDesktop())
+                {
+                    using (SafeDC memDC = SafeDC.CreateCompatibleDC(hScreenDC))
+                    {
+                        IntPtr hOldBitmap = NativeMethods.SelectObject(memDC, _hBitmap);
+
+                        RECT hwndRect = NativeMethods.GetWindowRect(_hwndWrapper.Handle);
+
+                        POINT hwndPos = hwndRect.Position;
+                        SIZE hwndSize = hwndRect.Size;
+                        POINT origin = new POINT();
+                        BLENDFUNCTION bf = _BaseBlendFunction;
+                        bf.SourceConstantAlpha = opacity;
+
+                        NativeMethods.UpdateLayeredWindow(_hwndWrapper.Handle, hScreenDC, ref hwndPos, ref hwndSize, memDC, ref origin, 0, ref bf, ULW.ALPHA);
+                        NativeMethods.SelectObject(memDC, hOldBitmap);
+                    }
+                }
+
 
                 if (CloseOnMainWindowCreation)
                 {
@@ -148,41 +172,6 @@ namespace Standard
             }
         }
 
-        private IntPtr _CreateWindow(SIZE size)
-        {
-            var wndClass = new WNDCLASSEX
-            {
-                cbSize = Marshal.SizeOf(typeof(WNDCLASSEX)),
-                style = CS.HREDRAW | CS.VREDRAW,
-                hInstance = _hInstance,
-                hCursor = IntPtr.Zero,
-                lpszClassName = CLASSNAME,
-                lpszMenuName = string.Empty,
-                lpfnWndProc = _DefWindowProcDelegate,
-            };
-
-            _classAtom = NativeMethods.RegisterClassEx(ref wndClass);
-
-            int screenWidth = NativeMethods.GetSystemMetrics(SM.CXSCREEN);
-            int screenHeight = NativeMethods.GetSystemMetrics(SM.CYSCREEN);
-            int x = (screenWidth - size.cx) / 2;
-            int y = (screenHeight - size.cy) / 2;
-
-            WS_EX windowCreateFlags = WS_EX.WINDOWEDGE | WS_EX.TOOLWINDOW | WS_EX.LAYERED | (IsTopMost ? WS_EX.TOPMOST : 0);
-
-            IntPtr hWnd = NativeMethods.CreateWindowEx(
-                windowCreateFlags,
-                CLASSNAME, "Splash Screen",
-                WS.POPUP | WS.VISIBLE,
-                x, y,
-                size.cx, size.cy,
-                IntPtr.Zero, 
-                IntPtr.Zero, 
-                _hInstance, IntPtr.Zero);
-
-            return hWnd;
-        }
-
         public void Close()
         {
             if (!_dispatcher.CheckAccess())
@@ -206,7 +195,7 @@ namespace Standard
 
             try
             {
-                NativeMethods.SetActiveWindow(_hwnd);
+                NativeMethods.SetActiveWindow(_hwndWrapper.Handle);
             }
             catch
             {
@@ -239,7 +228,7 @@ namespace Standard
                 double progress = (_fadeOutEnd - dtNow).TotalMilliseconds / FadeOutDuration.TotalMilliseconds;
                 BLENDFUNCTION bf = _BaseBlendFunction;
                 bf.SourceConstantAlpha = (byte)(255 * progress);
-                NativeMethods.UpdateLayeredWindow(_hwnd, 0, ref bf, ULW.ALPHA);
+                NativeMethods.UpdateLayeredWindow(_hwndWrapper.Handle, 0, ref bf, ULW.ALPHA);
             }
         }
 
@@ -256,7 +245,7 @@ namespace Standard
                 progress = Math.Max(0, Math.Min(progress, 1));
                 BLENDFUNCTION bf = _BaseBlendFunction;
                 bf.SourceConstantAlpha = (byte)(int)(255 * progress);
-                NativeMethods.UpdateLayeredWindow(_hwnd, 0, ref bf, ULW.ALPHA);
+                NativeMethods.UpdateLayeredWindow(_hwndWrapper.Handle, 0, ref bf, ULW.ALPHA);
             }
         }
 
@@ -267,21 +256,15 @@ namespace Standard
                 _dt.Stop();
                 _dt = null;
             }
-            Utility.SafeDestroyWindow(ref _hwnd);
+            Utility.SafeDispose(ref _hwndWrapper);
             Utility.SafeDispose(ref _hBitmap);
-            // Currently not releasing the class atom.
-            //if (_classAtom != 0)
-            //{
-            //    NativeMethods.UnregisterClass(_classAtom, _hInstance);
-            //    _classAtom = 0;
-            //}
             if (_resourceManager != null)
             {
                 _resourceManager.ReleaseAllResources();
             }
         }
 
-        private static SafeHBITMAP _CreateHBITMAPFromImageStream(Stream imgStream, out SIZE bitmapSize)
+        private static SafeHBITMAP _CreateHBITMAPFromImageStream(Stream imgStream, out Size bitmapSize)
         {
             IWICImagingFactory pImagingFactory = null;
             IWICBitmapDecoder pDecoder = null;
@@ -316,7 +299,7 @@ namespace Standard
                     int width, height;
                     pBitmapFlipRotator.GetSize(out width, out height);
 
-                    bitmapSize = new SIZE { cx = width, cy = height };
+                    bitmapSize = new Size { Width = width, Height = height };
 
                     var bmi = new BITMAPINFO
                     {
@@ -354,29 +337,6 @@ namespace Standard
                 Utility.SafeRelease(ref pBitmapFlipRotator);
                 Utility.SafeRelease(ref pBitmapSourceFormatConverter);
                 Utility.SafeDispose(ref hbmp);
-            }
-        }
-
-        private static void _ApplyBitmapToLayeredWindow(IntPtr hwnd, SafeHBITMAP bitmap, byte opacity)
-        {
-            using (SafeDC hScreenDC = SafeDC.GetDesktop())
-            {
-                using (SafeDC memDC = SafeDC.CreateCompatibleDC(hScreenDC))
-                {
-                    IntPtr hOldBitmap = NativeMethods.SelectObject(memDC, bitmap);
-
-                    RECT hwndRect;
-                    NativeMethods.GetWindowRect(hwnd, out hwndRect);
-                    
-                    POINT hwndPos = hwndRect.Position;
-                    SIZE hwndSize = hwndRect.Size;
-                    POINT origin = new POINT();
-                    BLENDFUNCTION bf = _BaseBlendFunction;
-                    bf.SourceConstantAlpha = opacity;
-
-                    NativeMethods.UpdateLayeredWindow(hwnd, hScreenDC, ref hwndPos, ref hwndSize, memDC, ref origin, 0, ref bf, ULW.ALPHA);
-                    NativeMethods.SelectObject(memDC, hOldBitmap);
-                }
             }
         }
     }

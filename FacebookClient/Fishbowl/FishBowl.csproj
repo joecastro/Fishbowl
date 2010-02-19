@@ -73,8 +73,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Interop.WIA.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="mscorlib" />
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -84,7 +82,6 @@
     <Reference Include="PresentationFramework.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
@@ -96,7 +93,9 @@
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="UIAutomationProvider, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -129,6 +128,9 @@
     </Compile>
     <Compile Include="..\Standard\FileWalker.cs">
       <Link>Standard\FileWalker.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\MessageWindow.cs">
+      <Link>Standard\MessageWindow.cs</Link>
     </Compile>
     <Compile Include="..\Standard\MshtmlProvider.cs">
       <Link>Standard\MshtmlProvider.cs</Link>

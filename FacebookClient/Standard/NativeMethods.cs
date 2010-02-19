@@ -350,6 +350,22 @@ namespace Standard
         SENDWININICHANGE = 0x02,
     }
 
+    internal enum StockObject : int
+    {
+        WHITE_BRUSH = 0,
+        LTGRAY_BRUSH = 1,
+        GRAY_BRUSH = 2,
+        DKGRAY_BRUSH = 3,
+        BLACK_BRUSH = 4,
+        NULL_BRUSH = 5,
+        HOLLOW_BRUSH = NULL_BRUSH,
+        WHITE_PEN = 6,
+        BLACK_PEN = 7,
+        NULL_PEN = 8,
+        SYSTEM_FONT = 13,
+        DEFAULT_PALETTE = 15,
+    }
+
     /// <summary>
     /// CS_*
     /// </summary>
@@ -435,6 +451,9 @@ namespace Standard
         ERASEBKGND = 0x0014,
         SYSCOLORCHANGE = 0x0015,
         SHOWWINDOW = 0x0018,
+        CTLCOLOR = 0x0019,
+        WININICHANGE = 0x001A,
+        SETTINGCHANGE = 0x001A,
         ACTIVATEAPP = 0x001C,
         SETCURSOR = 0x0020,
         MOUSEACTIVATE = 0x0021,
@@ -495,6 +514,8 @@ namespace Standard
         PARENTNOTIFY = 0x0210,
 
         CAPTURECHANGED = 0x0215,
+        POWERBROADCAST = 0x0218,
+        DEVICECHANGE = 0x0219,
 
         ENTERSIZEMOVE = 0x0231,
         EXITSIZEMOVE = 0x0232,
@@ -510,6 +531,38 @@ namespace Standard
         IME_KEYUP = 0x0291,
 
         NCMOUSELEAVE = 0x02A2,
+
+        TABLET_DEFBASE = 0x02C0,
+        //WM_TABLET_MAXOFFSET = 0x20,
+
+        TABLET_ADDED = TABLET_DEFBASE + 8,
+        TABLET_DELETED = TABLET_DEFBASE + 9,
+        TABLET_FLICK = TABLET_DEFBASE + 11,
+        TABLET_QUERYSYSTEMGESTURESTATUS = TABLET_DEFBASE + 12,
+
+        CUT = 0x0300,
+        COPY = 0x0301,
+        PASTE = 0x0302,
+        CLEAR = 0x0303,
+        UNDO = 0x0304,
+        RENDERFORMAT = 0x0305,
+        RENDERALLFORMATS = 0x0306,
+        DESTROYCLIPBOARD = 0x0307,
+        DRAWCLIPBOARD = 0x0308,
+        PAINTCLIPBOARD = 0x0309,
+        VSCROLLCLIPBOARD = 0x030A,
+        SIZECLIPBOARD = 0x030B,
+        ASKCBFORMATNAME = 0x030C,
+        CHANGECBCHAIN = 0x030D,
+        HSCROLLCLIPBOARD = 0x030E,
+        QUERYNEWPALETTE = 0x030F,
+        PALETTEISCHANGING = 0x0310,
+        PALETTECHANGED = 0x0311,
+        HOTKEY = 0x0312,
+        PRINT = 0x0317,
+        PRINTCLIENT = 0x0318,
+        APPCOMMAND = 0x0319,
+        THEMECHANGED = 0x031A,
 
         DWMCOMPOSITIONCHANGED = 0x031E,
         DWMNCRENDERINGCHANGED = 0x031F,
@@ -1281,6 +1334,23 @@ namespace Standard
         public MSGFLTINFO ExtStatus;
     }
 
+    [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
+    internal struct CREATESTRUCT
+    {
+        public IntPtr lpCreateParams;
+        public IntPtr hInstance;
+        public IntPtr hMenu;
+        public IntPtr hwndParent;
+        public int cy;
+        public int cx;
+        public int y;
+        public int x;
+        public WS style;
+        [MarshalAs(UnmanagedType.LPWStr)] public string lpszName;
+        [MarshalAs(UnmanagedType.LPWStr)] public string lpszClass;
+        public WS_EX dwExStyle;
+    }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
     internal struct SHFILEOPSTRUCT
     {
@@ -1848,6 +1918,22 @@ namespace Standard
     internal static class NativeMethods
     {
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("user32.dll", EntryPoint = "AdjustWindowRectEx", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _AdjustWindowRectEx(ref RECT lpRect, WS dwStyle, [MarshalAs(UnmanagedType.Bool)] bool bMenu, WS_EX dwExStyle);
+
+        public static RECT AdjustWindowRectEx(RECT lpRect, WS dwStyle, bool bMenu, WS_EX dwExStyle)
+        {
+            // Native version modifies the parameter in place.
+            if (!_AdjustWindowRectEx(ref lpRect, dwStyle, bMenu, dwExStyle))
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return lpRect;
+        }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", EntryPoint = "ChangeWindowMessageFilter", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _ChangeWindowMessageFilter(WM message, MSGFLT dwFlag);
@@ -2083,14 +2169,18 @@ namespace Standard
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("dwmapi.dll", EntryPoint = "DwmIsCompositionEnabled", PreserveSig = false)]
-        private static extern void _DwmIsCompositionEnabled([Out, MarshalAs(UnmanagedType.Bool)] out bool pfEnabled);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _DwmIsCompositionEnabled();
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static bool DwmIsCompositionEnabled()
         {
-            bool composited;
-            _DwmIsCompositionEnabled(out composited);
-            return composited;
+            // Make this call safe to make on downlevel OSes...
+            if (!Utility.IsOSVistaOrNewer)
+            {
+                return false;
+            }
+            return _DwmIsCompositionEnabled();
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
@@ -2226,6 +2316,19 @@ namespace Standard
             }
         }
 
+        [DllImport("kernel32.dll", EntryPoint = "GetModuleHandleW", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern IntPtr _GetModuleHandle([MarshalAs(UnmanagedType.LPWStr)] string lpModuleName);
+
+        public static IntPtr GetModuleHandle(string lpModuleName)
+        {
+            IntPtr retPtr = _GetModuleHandle(lpModuleName);
+            if (retPtr == IntPtr.Zero)
+            {
+                HRESULT.ThrowLastError();
+            }
+            return retPtr;
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", EntryPoint = "GetMonitorInfo", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -2240,6 +2343,19 @@ namespace Standard
                 throw new Win32Exception();
             }
             return mi;
+        }
+
+        [DllImport("gdi32.dll", EntryPoint = "GetStockObject", SetLastError = true)]
+        private static extern IntPtr _GetStockObject(StockObject fnObject);
+
+        public static IntPtr GetStockObject(StockObject fnObject)
+        {
+            IntPtr retPtr = _GetStockObject(fnObject);
+            if (retPtr == null)
+            {
+                HRESULT.ThrowLastError();
+            }
+            return retPtr;
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
@@ -2320,9 +2436,19 @@ namespace Standard
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", EntryPoint = "GetWindowRect", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+        private static extern bool _GetWindowRect(IntPtr hWnd, out RECT lpRect);
+
+        public static RECT GetWindowRect(IntPtr hwnd)
+        {
+            RECT rc;
+            if (!_GetWindowRect(hwnd, out rc))
+            {
+                HRESULT.ThrowLastError();
+            }
+            return rc;
+        }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("gdiplus.dll")]
@@ -2590,6 +2716,14 @@ namespace Standard
         public static void UnregisterClass(short atom, IntPtr hinstance)
         {
             if (!_UnregisterClassAtom(new IntPtr(atom), hinstance))
+            {
+                HRESULT.ThrowLastError();
+            }
+        }
+
+        public static void UnregisterClass(string lpClassName, IntPtr hInstance)
+        {
+            if (!_UnregisterClassName(lpClassName, hInstance))
             {
                 HRESULT.ThrowLastError();
             }
