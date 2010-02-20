@@ -129,6 +129,9 @@
     <Compile Include="..\Standard\MergeableCollection.cs">
       <Link>Standard\MergeableCollection.cs</Link>
     </Compile>
+    <Compile Include="..\Standard\MessageWindow.cs">
+      <Link>Standard\MessageWindow.cs</Link>
+    </Compile>
     <Compile Include="..\Standard\MshtmlProvider.cs">
       <Link>Standard\MshtmlProvider.cs</Link>
     </Compile>

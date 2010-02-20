@@ -227,5 +227,37 @@ namespace StandardTests
             UTVerify2.CollectionsAreEqual(sourceList, collection);
         }
 
+        [TestMethod]
+        public void RemoveAndReplaceWithBoundedMerge()
+        {
+            char c = 'A';
+            var sourceList = new List<_UO>();
+            for (int i = 1; i <= 20; ++i)
+            {
+                sourceList.Add(new _UO(c++.ToString(), i));
+            }
+
+            var collection = new MergeableCollection<_UO>(sourceList);
+
+            var zItem = new _UO("Z", 0);
+            collection.Add(zItem);
+
+            sourceList.Insert(0, new _UO("Z", 0));
+
+            UTVerify2.CollectionsAreEqual(sourceList, collection);
+
+            var item = collection.FindFKID("Z");
+            UTVerify2.AreReferenceEqual(item, zItem);
+
+            collection.Remove(item);
+
+            var zItem2 = new _UO("Z", 0);
+            sourceList[0] = zItem2;
+
+            collection.Merge(new _UO[] { zItem2, sourceList[1] }, true, sourceList.Count);
+
+            UTVerify2.CollectionsAreEqual(sourceList, collection);
+        }
+
     }
 }

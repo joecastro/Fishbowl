@@ -105,5 +105,13 @@
                 VSAssert.AreEqual(firstEnumerator.Current, secondEnumerator.Current);
             }
         }
+
+        public static void AreReferenceEqual(object first, object second)
+        {
+            if (!object.ReferenceEquals(first, second))
+            {
+                throw new AssertFailedException("The objects were expected to be the same reference.");
+            }
+        }
     }
 }

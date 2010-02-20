@@ -181,10 +181,13 @@
             {
                 lock (SyncRoot)
                 {
-                    var copyList = new List<T>(_items);
-                    // Clear the list first so we don't bubble-sort just to reorder.
-                    _Merge(null, false, null);
-                    _Merge(copyList, false, null);
+                    if (!_AreItemsSortedUpToIndex(_items.Count))
+                    {
+                        var copyList = new List<T>(_items);
+                        // Clear the list first so we don't bubble-sort just to reorder.
+                        _Merge(null, false, null);
+                        _Merge(copyList, false, null);
+                    }
                 }
             }
         }
@@ -208,6 +211,9 @@
 
         private void _Merge(IEnumerable<T> newCollection, bool add, int? maxCount)
         {
+            // These should never get out of sync.
+            Assert.Implies(_areItemsMergable, () => _items.Count == _fkidLookup.Count);
+
             lock (SyncRoot)
             {
                 // Go-go partial template specialization!
@@ -353,14 +359,14 @@
                         }
                         else if (oldIndex != index)
                         {
-                            var item = _items[oldIndex];
-                            _items.RemoveAt(oldIndex);
-                            _items.Insert(index, item);
+                            _items.Move(oldIndex, index);
                         }
 
                         _suspendNotificationsForMergeableObject = (IMergeable<T>)this[index];
                         _suspendNotificationsForMergeableObject.Merge(newItem);
                         _suspendNotificationsForMergeableObject = null;
+
+                        Assert.IsTrue<object>(unused => _AreItemsSortedUpToIndex(index), null);
                     }
 
                     if (index != -1)
@@ -410,6 +416,21 @@
 
                 //Assert.Implies(_areItemsComparable || _customComparison != null, () => _items.AreSorted(_customComparison));
             }
+        }
+
+        private bool _AreItemsSortedUpToIndex(int index)
+        {
+            if (_itemComparer.CanCompare)
+            {
+                for (int i = 1; i < index; ++i)
+                {
+                    if (_itemComparer.Comparison(_items[i - 1], _items[i]) > 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private void _RemoveRange(int index)
@@ -570,7 +591,12 @@
 
             lock (SyncRoot)
             {
-                return _items.Remove(item);
+                if (_items.Remove(item))
+                {
+                    _SafeRemoveNotifyAndLookup(item);
+                    return true;
+                }
+                return false;
             }
         }
 

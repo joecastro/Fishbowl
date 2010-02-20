@@ -517,7 +517,17 @@
                 delegate
                 {
                     ActivityPost updatedStatus = _facebookApi.UpdateStatus(newStatus);
+                    
+                    // Be careful pushing this into the newsfeed because we don't have a valid PostId.
+                    // I'm switching from stream.publish to status.set because posts, even without
+                    // attachments, aren't showing up as true statuses...
+                    // Since we don't have a PostId with the status.set call, I need to know how to remove it.
+                    // This seems like a bug in Facebook's APIs though, so maybe I can change this back soon.
+                    Assert.AreEqual("FakeStatusId", updatedStatus.PostId);
+
+                    // If there are multiple fake status updates then this will replace the last one.
                     RawNewsFeed.Add(updatedStatus);
+
                     MeContact.StatusMessage = updatedStatus;
                     // If we sync immediately the feed data won't include this update, so try in 5 seconds.
                     System.Threading.Thread.Sleep(TimeSpan.FromSeconds(5));
@@ -1067,6 +1077,16 @@
 
                 if (IsOnline)
                 {
+                    ActivityPost fakeStatusPost = RawNewsFeed.FindFKID("FakeStatusId");
+                    if (fakeStatusPost != null)
+                    {
+                        ActivityPost realStatusPost = posts.FirstOrDefault(post => string.Equals(post.Message, fakeStatusPost.Message, StringComparison.Ordinal));
+                        if (realStatusPost != null)
+                        {
+                            RawNewsFeed.Remove(fakeStatusPost);
+                        }
+                    }
+
                     RawNewsFeed.Merge(posts, true, maxStreamCount);
                 }
             }

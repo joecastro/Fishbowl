@@ -24,7 +24,9 @@
             {
                 _interestMap = new Dictionary<FacebookContact, bool>();
                 _rawCollection = sourceCollection;
-                _filteredCollection = new MergeableCollection<ActivityPost>(from post in sourceCollection where _IsInteresting(post.Actor) select post, false);
+                // Sort this filtered view same as the underlying collection.
+                // If there's ever a custom sort on ActivityPosts, I need to add an INotifyPropertyChanged implementation to keep the sort orders in sync.
+                _filteredCollection = new MergeableCollection<ActivityPost>(from post in sourceCollection where _IsInteresting(post.Actor) select post, true);
                 base.ReplaceSourceCollection(_filteredCollection);
 
                 foreach (var contact in from p in sourceCollection select p.Actor)
@@ -52,40 +54,54 @@
 
         void _OnRawCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            bool needsUpdate = false;
-            if (e.NewItems != null)
+            switch (e.Action)
             {
-                needsUpdate = (from ActivityPost post in e.NewItems where _IsInteresting(post.Actor) select post).Any();
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                foreach (var contact in _interestMap.Keys)
-                {
-                    contact.PropertyChanged -= _OnContactPropertyChanged;
-                    needsUpdate |= _IsInteresting(contact);
-                }
-
-                _interestMap.Clear();
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (var contact in from ActivityPost post in e.OldItems select post.Actor)
-                {
-                    if (_interestMap.ContainsKey(contact))
+                case NotifyCollectionChangedAction.Add:
+                    // If an item got added, was it something we care to see?
+                    Assert.AreEqual(1, e.NewItems.Count);
+                    var newPost = (ActivityPost)e.NewItems[0];
+                    if (_IsInteresting(newPost.Actor))
                     {
-                        _interestMap.Remove(contact);
+                        _filteredCollection.Add(newPost);
+                        _interestMap[newPost.Actor] = true; 
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Move:
+                    _filteredCollection.RefreshSort();
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    // If an item got removed, was it one we were really showing?
+                    Assert.AreEqual(1, e.OldItems.Count);
+                    var oldPost = (ActivityPost)e.OldItems[0];
+                    if (_IsInteresting(oldPost.Actor))
+                    {
+                        if (_filteredCollection.Remove(oldPost))
+                        {
+                            if (!_filteredCollection.Any(post => post.Actor.UserId == oldPost.Actor.UserId))
+                            {
+                                oldPost.Actor.PropertyChanged -= _OnContactPropertyChanged;
+                                _interestMap.Remove(oldPost.Actor);
+                            }
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    // Unsupported
+                    Assert.Fail();
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (var contact in _interestMap.Keys)
+                    {
                         contact.PropertyChanged -= _OnContactPropertyChanged;
                     }
 
-                    needsUpdate = needsUpdate || _IsInteresting(contact);
-                }
-            }
+                    _interestMap.Clear();
+                    _filteredCollection.Clear();
 
-            if (needsUpdate)
-            {
-                _UpdateCollection();
+                    break;
             }
         }
 

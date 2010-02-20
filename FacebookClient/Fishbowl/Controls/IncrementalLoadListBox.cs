@@ -122,15 +122,18 @@
                     switch (change.Type)
                     {
                         case CollectionChangeType.Add:
-                            Assert.IsTrue(change.Index <= _collection.Count);
-                            _collection.Insert(change.Index, change.Item);
+                            Assert.IsTrue(change.NewIndex <= _collection.Count);
+                            _collection.Insert(change.NewIndex, change.Item);
                             break;
                         case CollectionChangeType.Remove:
-                            Assert.IsTrue(change.Index < _collection.Count);
-                            _collection.RemoveAt(change.Index);
+                            Assert.IsTrue(change.NewIndex < _collection.Count);
+                            _collection.RemoveAt(change.NewIndex);
                             break;
                         case CollectionChangeType.Reset:
                             _collection.Clear();
+                            break;
+                        case CollectionChangeType.Move:
+                            _collection.Move(change.OldIndex, change.NewIndex);
                             break;
                         default:
                             Assert.Fail();
@@ -170,7 +173,11 @@
                         _pendingChanges.Enqueue(new CollectionChange(null, 0, CollectionChangeType.Reset));
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        Assert.Fail();
+                        Assert.IsTrue(e.OldItems.Count == 1);
+                        Assert.IsTrue(e.NewItems.Count == 1);
+                        Assert.AreEqual(e.NewItems[0], e.OldItems[0]);
+
+                        _pendingChanges.Enqueue(new CollectionChange(e.OldItems[0], e.OldStartingIndex, e.NewStartingIndex));
                         break;
                     case NotifyCollectionChangedAction.Replace:
                         Assert.Fail();
@@ -183,6 +190,7 @@
         {
             Invalid,
             Add,
+            Move,
             Remove,
             Reset
         }
@@ -192,13 +200,22 @@
             public CollectionChange(object item, int index, CollectionChangeType type)
             {
                 Item = item;
-                Index = index;
+                OldIndex = NewIndex = index;
                 Type = type;
             }
 
+            public CollectionChange(object item, int oldIndex, int newIndex)
+            {
+                Type = CollectionChangeType.Move;
+                Item = item;
+                OldIndex = oldIndex;
+                NewIndex = newIndex;
+            }
+
             public object Item { get; private set; }
-            public int Index { get; private set; }
             public CollectionChangeType Type { get; private set; }
+            public int OldIndex { get; private set; }
+            public int NewIndex { get; private set; }
         }
     }
 }

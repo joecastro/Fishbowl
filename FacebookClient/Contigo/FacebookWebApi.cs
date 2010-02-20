@@ -807,15 +807,18 @@ namespace Contigo
         {
             var statusMap = new METHOD_MAP
             {
-                { "method", "stream.publish" },
-                { "message", newStatus },
+                { "method", "status.set" },
+                { "status", newStatus },
+                { "uid", _UserId },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(statusMap));
-            string postId = _serializer.DeserializeStreamPublishResponse(result);
+            bool success = _serializer.DeserializeStatusSetResponse(result);
+            Assert.IsTrue(success);
 
             // Return a proxy that looks close to what we expect the updated status to look like.
-            // We'll replace it with the real one the next time we sync.
+            // We'll replace it with the real one the next time we sync, unless a feed is being shown
+            // from which this should be excluded.
             return new ActivityPost(_Service)
             {
                 ActorUserId = _UserId,
@@ -829,7 +832,7 @@ namespace Contigo
                 LikedCount = 0,
                 LikeUrl = null,
                 Message = newStatus,
-                PostId = postId,
+                PostId = "FakeStatusId",
                 RawComments = new MergeableCollection<ActivityComment>(),
                 RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
                 TargetUserId = null,

@@ -248,6 +248,15 @@ namespace Standard
             }
         }
 
+        [Conditional("DEBUG")]
+        public static void IsTrue<T>(Predicate<T> predicate, T arg)
+        {
+            if (!predicate(arg))
+            {
+                _Break();
+            }
+        }
+
         /// <summary>
         /// Verifies that the specified condition is true.  The assertion fails if it is not.
         /// </summary>

@@ -1098,6 +1098,12 @@ namespace Contigo
             return xdoc.Root.Value;
         }
 
+        public bool DeserializeStatusSetResponse(string xml)
+        {
+            XDocument xdoc = SafeParseDocument(xml);
+            return xdoc.Root.Value == "1";
+        }
+
         public List<MessageNotification> DeserializeMessageQueryResponse(string xml)
         {
             var messageList = new List<MessageNotification>();
