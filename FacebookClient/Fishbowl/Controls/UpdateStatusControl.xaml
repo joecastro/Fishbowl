@@ -101,7 +101,7 @@
                     </Grid.RowDefinitions>
 
                     <FacebookClient:CommandTextBox Grid.Row="0" x:Name="PART_ShareTextBox" BannerText="What's on your mind?"
-                        Style="{StaticResource StatusTextBoxStyle}" HorizontalAlignment="Left" Margin="5"
+                        Style="{DynamicResource StatusTextBoxStyle}" HorizontalAlignment="Left" Margin="5"
                         CommitCommand="{x:Static FacebookClient:UpdateStatusControl.UpdateStatusCommand}"/>
 
                     <Border Grid.Row="1" Panel.ZIndex="1" x:Name="BottomPanel" BorderBrush="Transparent" BorderThickness="2,0,2,2" Margin="-2,-1,0,0" CornerRadius="0,0,8,8" 
@@ -126,16 +126,16 @@
                                 </DockPanel>
                                 
                                 <StackPanel Grid.Row="1" x:Name="LinkModePanel" Visibility="Collapsed">
-                                    <FacebookClient:CommandTextBox x:Name="PART_LinkTextBox" Style="{StaticResource ApplicationBarShareTextBoxStyle}"
+                                    <FacebookClient:CommandTextBox x:Name="PART_LinkTextBox" Style="{DynamicResource ApplicationBarShareTextBoxStyle}"
                                             Margin="5" CommitCommand="{x:Static FacebookClient:UpdateStatusControl.UpdateStatusCommand}"
                                             SpellCheck.IsEnabled="False" Tag="http://" />
                                     <Button Content="Share" Command="{x:Static FacebookClient:UpdateStatusControl.UpdateStatusCommand}"
-                                            HorizontalAlignment="Right" Margin="0,5,8,5" Style="{StaticResource SubmitButtonStyle}"/>
+                                            HorizontalAlignment="Right" Margin="0,5,8,5" Style="{DynamicResource SubmitButtonStyle}"/>
                                 </StackPanel>
 
                                 <DockPanel Grid.Row="1" x:Name="PhotoModePanel" Visibility="Collapsed">
                                     <Button DockPanel.Dock="Right" Content="Share" Command="{x:Static FacebookClient:UpdateStatusControl.UpdateStatusCommand}"
-                                            HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5,8,5" Style="{StaticResource SubmitButtonStyle}"/>
+                                            HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,5,8,5" Style="{DynamicResource SubmitButtonStyle}"/>
                                     <Image Grid.Row="1" x:Name="PART_PhotoImage" MaxHeight="100" HorizontalAlignment="Left" Margin="10"/>
                                 </DockPanel>
                             </Grid>

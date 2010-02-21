@@ -5,6 +5,7 @@
   <Application.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBaseResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/BaseResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/MainPageResources.xaml" />

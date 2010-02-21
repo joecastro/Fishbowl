@@ -11,6 +11,7 @@
 
   <!-- Converter to clean HTML formatting out of displayed text -->
   <FacebookClient:HtmlToCleanStringConverter x:Key="HtmlToCleanStringConverter" />
+  <FacebookClient:AddConverter x:Key="AddConverter" />
 
   <!-- Converter to format the application dates consistently -->
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
@@ -87,7 +88,7 @@
       </Grid.ColumnDefinitions>
       
       <StackPanel Orientation="Vertical" Width="200" Margin="10">
-        <Button x:Name="ActivityButton" VerticalAlignment="Top" Style="{StaticResource AnimatedItemButton}" 
+        <Button x:Name="ActivityButton" VerticalAlignment="Top" Style="{DynamicResource AnimatedItemButton}" 
                 Margin="10" Click="OnNavigateToContentButtonClicked" HorizontalAlignment="Left" 
                 ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
                 RenderTransformOrigin="0.5,0.5">
@@ -145,11 +146,7 @@
               Command="FacebookClient:PhotoAlbumControl.SaveAlbumCommand" 
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
-              <Image Height="18">
-                <Image.Source>
-                  <DrawingImage Drawing="{Binding Source={StaticResource SaveDiskToolbarDrawingBrush}, Path=Drawing}"/>
-                </Image.Source>
-              </Image>
+              <Rectangle Height="18" Width="18" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}"/>
               <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Save Album</TextBlock>
             </StackPanel>
           </Button>
@@ -160,11 +157,7 @@
               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigatePhotoPlayerCommand}"
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
-              <Image Height="18">
-                <Image.Source>
-                  <DrawingImage Drawing="{Binding Source={StaticResource PlayArrowToolbarDrawingBrush}, Path=Drawing}"/>
-                </Image.Source>
-              </Image>
+              <Rectangle Height="18" Width="18" Fill="{DynamicResource PlayArrowToolbarDrawingBrush}"/>
               <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Play</TextBlock>
             </StackPanel>
           </Button>
@@ -175,11 +168,7 @@
               Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" 
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
-              <Image Height="18">
-                <Image.Source>
-                  <DrawingImage Drawing="{Binding Source={StaticResource SlideShowToolbarDrawingBrush}, Path=Drawing}"/>
-                </Image.Source>
-              </Image>
+              <Rectangle Height="18" Width="18" Fill="{DynamicResource SlideShowToolbarDrawingBrush}"/>
               <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Start Slide Show</TextBlock>
             </StackPanel>
           </Button>
@@ -210,7 +199,7 @@
         </Grid.ColumnDefinitions>
 
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="0"
             Margin="5,1"
             Command="{Binding Path=PreviousCommand}" 
@@ -226,7 +215,7 @@
           </TextBlock.Text>
         </TextBlock>
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="2"
             Margin="5,1"
             Command="{Binding Path=NextCommand}" 
@@ -244,7 +233,7 @@
         </Grid.ColumnDefinitions>
 
         <RepeatButton
-              Style="{StaticResource SimpleButtonBaseStyle}"
+              Style="{DynamicResource SimpleButtonBaseStyle}"
               Grid.Column="0"
               Margin="5,1"
               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToPriorSiblingCommand}"
@@ -253,7 +242,7 @@
         </RepeatButton>
         <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}">Previous album</TextBlock>
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="2"
             Margin="5,1"
             Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToNextSiblingCommand}"

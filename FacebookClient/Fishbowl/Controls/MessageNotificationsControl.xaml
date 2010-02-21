@@ -6,6 +6,10 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     MinWidth="250">
+  <UserControl.Resources>
+    <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
+  </UserControl.Resources>
+  
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:MessageNotificationsControl}">
       <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray">

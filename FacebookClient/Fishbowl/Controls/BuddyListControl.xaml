@@ -11,7 +11,7 @@
       <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray">
         <DockPanel>
           <DockPanel DockPanel.Dock="Top">
-            <Button DockPanel.Dock="Right" Margin="5" Content="0" Style="{StaticResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:BuddyListControl.CloseCommand}" ToolTip="Hide buddy list" />
+            <Button DockPanel.Dock="Right" Margin="5" Content="0" Style="{DynamicResource SimpleButtonStyle}" FontFamily="Webdings" Foreground="White" Command="{x:Static FacebookClient:BuddyListControl.CloseCommand}" ToolTip="Hide buddy list" />
             <TextBlock Text="Who's Online" Foreground="White" FontWeight="Bold" Margin="5" />
           </DockPanel>
           <Button x:Name="StartChatButton" 
@@ -40,6 +40,7 @@
               <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                   <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                  <Setter Property="Background" Value="{DynamicResource PopupListControlBackgroundBrush}" />
                   <Setter Property="Template">
                     <Setter.Value>
                       <ControlTemplate TargetType="ListBoxItem">
@@ -65,7 +66,8 @@
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="Auto" />
                       </Grid.ColumnDefinitions>
-                      <Button RenderTransformOrigin="0.5,0.5" Width="38" Height="38" VerticalAlignment="Center" Style="{StaticResource AnimatedItemButton}">
+
+                      <Button RenderTransformOrigin="0.5,0.5" Width="38" Height="38" VerticalAlignment="Center" Style="{DynamicResource AnimatedItemButton}">
                         <Button.RenderTransform>
                           <TransformGroup>
                             <RotateTransform Angle="-6" />

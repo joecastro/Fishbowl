@@ -7,6 +7,8 @@
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo" 
     xmlns:FacebookClient="clr-namespace:FacebookClient">
 
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
   <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
@@ -199,7 +201,7 @@
       </Grid.ColumnDefinitions>
       <Rectangle Height="2" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
       <ClientManagerControls:FacebookImageDragContainer VerticalAlignment="Top" FacebookImage="{Binding FromUser.Image}">
-        <Button x:Name="NewsfeedProfilePhotoButton" RenderTransformOrigin="0.5,0.5" Width="60" Height="60" Margin="0,5" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" Style="{StaticResource AnimatedItemButton}">
+        <Button x:Name="NewsfeedProfilePhotoButton" RenderTransformOrigin="0.5,0.5" Width="60" Height="60" Margin="0,5" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" Style="{DynamicResource AnimatedItemButton}">
             <Button.RenderTransform>
                 <TransformGroup>
                     <RotateTransform Angle="4.5" />
@@ -256,7 +258,7 @@
         <StackPanel Orientation="Vertical">
           <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}" Text="{Binding Name}" />
           <TextBlock Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
-          <Button HorizontalAlignment="Left" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{StaticResource AnimatedItemButton}">
+          <Button HorizontalAlignment="Left" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
             <Grid MaxHeight="100" Margin="2.5">
               <ClientManagerControls:FacebookImageControl FacebookImage="{Binding VideoPreviewImage}" FacebookImageDimensions="Big">
                 <ClientManagerControls:FacebookImageControl.Template>
@@ -300,7 +302,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{StaticResource AnimatedItemButton}">
+                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
                   <Grid Width="92" Height="92" Margin="2.5">
                     <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png" />
                     <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Small">
@@ -388,7 +390,7 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True" Style="{StaticResource AnimatedItemButton}">
+                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
                   <Grid Width="92" Height="92" Margin="2.5">
                     <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png" />
                     <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Small">
@@ -424,7 +426,7 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Actor.Image}">
-          <Button x:Name="ActivityButton" RenderTransformOrigin="0.5,0.5" Margin="10, 7, 0, 0" VerticalAlignment="Top" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" Style="{StaticResource AnimatedItemButton}">
+          <Button x:Name="ActivityButton" RenderTransformOrigin="0.5,0.5" Margin="10, 7, 0, 0" VerticalAlignment="Top" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" Style="{DynamicResource AnimatedItemButton}">
             <Button.RenderTransform>
                 <TransformGroup>
                     <RotateTransform Angle="-6" />
@@ -542,7 +544,16 @@
               </Border.Style>
               <Grid>
                 <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
-                <ItemsControl Margin="10,0,10,0" ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}" ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource NewsFeedCommentTemplate}" />
+                <ItemsControl 
+                    Margin="10,0,10,0"
+                    ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource NewsFeedCommentTemplate}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  
+                </ItemsControl>
               </Grid>
             </Border>
             <Border HorizontalAlignment="Left" Margin="0,0,0,3" Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="0,0,6,6">

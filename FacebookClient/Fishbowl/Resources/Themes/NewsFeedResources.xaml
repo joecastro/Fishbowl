@@ -58,7 +58,7 @@
               ActualItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed}"
               BorderThickness="0"
               Margin="0,0,0,0" Background="Transparent"
-              ItemTemplate="{StaticResource NewsFeedItemTemplate}" MaxWidth="800">
+              ItemTemplate="{DynamicResource NewsFeedItemTemplate}" MaxWidth="800">
             <ListBox.ItemContainerStyle>
               <Style TargetType="ListBoxItem">
                 <Setter Property="FocusVisualStyle" Value="{x:Null}" />
@@ -82,11 +82,7 @@
               AutomationProperties.AutomationId="ZoomIn" 
               ToolTip="Zoom in"
               Style="{DynamicResource ZoomInOutButtons}" >
-                <Image Height="16" RenderTransformOrigin="0,0">
-                    <Image.Source>
-                        <DrawingImage Drawing="{Binding Source={StaticResource ZoomInDrawingBrush}, Path=Drawing}"/>
-                    </Image.Source>
-                </Image>
+            <Rectangle Height="16" Fill="{DynamicResource ZoomInDrawingBrush}"/>
           </Button>
         </Viewbox>
         <Viewbox Height="22" Width="22" Margin="5,5,0,0">
@@ -96,12 +92,8 @@
               AutomationProperties.AutomationId="ZoomOut" 
               ToolTip="Zoom out"
               Style="{DynamicResource ZoomInOutButtons}" >
-                        <Image Height="16" RenderTransformOrigin="0,0" Margin="4 0">
-                            <Image.Source>
-                                <DrawingImage Drawing="{Binding Source={StaticResource ZoomOutDrawingBrush}, Path=Drawing}"/>
-                            </Image.Source>
-                        </Image>
-                    </Button>
+            <Rectangle Height="16" Margin="4,0" Fill="{DynamicResource ZoomOutDrawingBrush}"/>
+          </Button>
         </Viewbox>
       </StackPanel>
     </Grid>

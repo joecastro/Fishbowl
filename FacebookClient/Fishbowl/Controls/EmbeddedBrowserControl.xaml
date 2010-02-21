@@ -131,7 +131,7 @@
               <Border.Clip>
                 <EllipseGeometry RadiusX="19" RadiusY="19" Center="20, 20" />
               </Border.Clip>
-              <Rectangle Fill="{StaticResource BackArrowDrawingBrush}" Margin="2" />
+              <Rectangle Fill="{DynamicResource BackArrowDrawingBrush}" Margin="2" />
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsFocused" Value="True" />
@@ -235,7 +235,7 @@
     </Style>
   </UserControl.Resources>
 
-  <Border Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{StaticResource ApplicationBarBorderBrush}" BorderThickness="4" Margin="40">
+  <Border Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4" Margin="40">
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />

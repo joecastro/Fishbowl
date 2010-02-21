@@ -7,6 +7,15 @@
     FocusVisualStyle="{x:Null}">
   <UserControl.Resources>
 
+    <!-- Explorer Colors -->
+    <Pen x:Key="Pen_ExplorerNodes" Brush="#403b5998" Thickness="1"/>
+    <SolidColorBrush x:Key="Background_ExplorerNode" Color="#3b5998" />
+    <SolidColorBrush x:Key="Border_ExplorerNode" Color="#666666" />
+    <SolidColorBrush x:Key="Background_ExplorerNodeEnabled" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeEnabled" Color="#333333" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeDefault" Color="#666666" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeMouse" Color="#3b5998" />
+
     <Style x:Key="GalleryAlbumButton2" TargetType="{x:Type Button}">
       <Setter Property="Cursor" Value="Hand"/>
       <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -333,7 +342,7 @@
     <!-- DataTemplate for explorer nodes that display a contact -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerContactNode}">
       <Button x:Name="ItemButton" VerticalAlignment="Top" Margin="5" ClipToBounds="False" 
-                            Style="{StaticResource AnimatedItemButton}"
+                            Style="{DynamicResource AnimatedItemButton}"
                             RenderTransformOrigin="0.5,0.5"
                             Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}">
         <Button.RenderTransform>
@@ -503,7 +512,6 @@
           </MultiTrigger.Conditions>
           <MultiTrigger.Setters>
             <Setter Property="Foreground" Value="{DynamicResource Foreground_ExplorerNodeMouse}"/>
-            <Setter Property="BitmapEffect" Value="{DynamicResource FocusedVisualGlow}"/>
           </MultiTrigger.Setters>
         </MultiTrigger>
         <Trigger Property="IsEnabled" Value="False">

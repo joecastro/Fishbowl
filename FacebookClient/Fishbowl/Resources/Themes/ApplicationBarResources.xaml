@@ -250,7 +250,7 @@
                       <Border.Clip>
                         <EllipseGeometry RadiusX="13" RadiusY="13" Center="12.5,12.5" />
                       </Border.Clip>
-                      <Rectangle Fill="{StaticResource BackArrowDrawingBrush}" />
+                      <Rectangle Fill="{DynamicResource BackArrowDrawingBrush}" />
                     </Border>
                     <ControlTemplate.Triggers>
                       <Trigger Property="IsFocused" Value="True" />
@@ -325,7 +325,7 @@
                   CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" 
                   CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" 
                   IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
-                  Style="{StaticResource SearchTextBoxStyle}" 
+                  Style="{DynamicResource SearchTextBoxStyle}" 
                   Tag="Search" 
                   BannerText="Search" />
               <Button Margin="0,3" 
@@ -335,7 +335,7 @@
                 Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                 Style="{DynamicResource RefreshButtonStyle}"
                 ToolTip="Think you're missing something? Click to refresh now.">
-                <Rectangle Width="16" Height="16" Fill="{StaticResource RefreshArrowDrawingBrush}" />
+                <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
               </Button>
 
               <Button Margin="0,3"
@@ -344,7 +344,7 @@
                   Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                   Style="{DynamicResource MiniModeButtonStyle}"
                   ToolTip="Switch to mini-mode window">
-                <Rectangle Margin="2" Width="18" Height="18" Fill="{StaticResource MiniModeIconDrawingBrush}" />
+                <Rectangle Margin="2" Width="18" Height="18" Fill="{DynamicResource MiniModeIconDrawingBrush}" />
               </Button>
             </StackPanel>
 
@@ -368,30 +368,30 @@
                 <RadioButton x:Name="HomeNavigationButton" Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" IsChecked="True" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See what's new with your friends">
                   <DockPanel>
                     <TextBlock DockPanel.Dock="Bottom" x:Name="HomeNavigationButtonText" Text="Home" />
-                    <Rectangle x:Name="HomeNavigationButtonImage" Fill="{StaticResource Home3DrawingBrush}" Width="23" />
+                    <Rectangle x:Name="HomeNavigationButtonImage" Fill="{DynamicResource Home3DrawingBrush}" Width="23" />
                   </DockPanel>
                 </RadioButton>
                 <RadioButton x:Name="FriendsNavigationButton" Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on your friends">
                   <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{StaticResource StackedBuddies2DrawingBrush}" Width="23" />
+                    <Rectangle Fill="{DynamicResource StackedBuddies2DrawingBrush}" Width="23" />
                     <TextBlock x:Name="FriendsNavigationButtonText" Text="Friends" />
                   </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself">
                   <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{StaticResource SingleBuddy2DrawingBrush}" Width="23" />
+                    <Rectangle Fill="{DynamicResource SingleBuddy2DrawingBrush}" Width="23" />
                     <TextBlock x:Name="ProfileNavigationButtonText" Text="Profile" />
                   </StackPanel>
                 </RadioButton>
                 <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos">
                   <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{StaticResource PhotosDrawingBrush}" Width="36" />
+                    <Rectangle Fill="{DynamicResource PhotosDrawingBrush}" Width="36" />
                     <TextBlock x:Name="PhotoAlbumsNavigationButtonText" Text="Photos" />
                   </StackPanel>
                 </RadioButton>
                 <Button x:Name="FacebookButton" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Go to Facebook">
                   <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{StaticResource FacebookDrawingBrush}" Width="30" />
+                    <Rectangle Fill="{DynamicResource FacebookDrawingBrush}" Width="30" />
                     <TextBlock x:Name="FacebookButtonText" Text="Facebook" />
                   </StackPanel>
                 </Button>
@@ -450,7 +450,7 @@
                 IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Grid Width="38">
-                  <Rectangle Width="26" Height="22" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{StaticResource ChatDrawingBrush}" />
+                  <Rectangle Width="26" Height="22" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource ChatDrawingBrush}" />
                   <FacebookClient:NotificationCountControl 
                       x:Name="ActiveFriendsCountControl" 
                       HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -475,7 +475,7 @@
                 IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}">
               <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                 <Grid Width="30">
-                  <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{StaticResource NotificationsPostDrawingBrush}" />
+                  <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource NotificationsPostDrawingBrush}" />
                   <FacebookClient:NotificationCountControl 
                       x:Name="NotificationControl"
                       HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -501,7 +501,7 @@
                 IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}">
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Grid Width="30">
-                  <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{StaticResource EnvelopeDrawingBrush}" />
+                  <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource EnvelopeDrawingBrush}" />
                   <FacebookClient:NotificationCountControl 
                       x:Name="InboxCountControl" 
                       HorizontalAlignment="Right" VerticalAlignment="Center"
@@ -529,7 +529,7 @@
                 Style="{DynamicResource MiniModeButtonStyle}"
                 ToolTipService.Placement="Top"
                 ToolTip="Sign Out">
-              <Rectangle Margin="0" Width="16" Height="16" Fill="{StaticResource ClosingDoorDrawingBrush}" />
+              <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource ClosingDoorDrawingBrush}" />
             </Button>
 
             <Button Margin="3,1"
@@ -541,7 +541,7 @@
                 Style="{DynamicResource MiniModeButtonStyle}" 
                 ToolTipService.Placement="Top"
                 ToolTip="View and change settings">
-              <Rectangle Margin="0" Width="16" Height="16" Fill="{StaticResource SettingsDrawingBrush}" />
+              <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource SettingsDrawingBrush}" />
             </Button>
           </DockPanel>
         </ControlTemplate>

@@ -371,6 +371,23 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
+  <Style x:Key="SimpleUnderlineFocusVisual">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Control}">
+          <Rectangle 
+              SnapsToDevicePixels="True" 
+              VerticalAlignment="Bottom" 
+              StrokeDashArray="1 3" 
+              Height="1" 
+              StrokeThickness="1" 
+              Stroke="#60FFFFFF" 
+              Margin="10,0,10,0" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Padding" Value="15,0,15,0" />
     <Setter Property="Cursor" Value="Hand" />
@@ -385,7 +402,7 @@
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
     <Setter Property="FontSize" Value="14px" />
-    <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
+    <Setter Property="FocusVisualStyle" Value="{StaticResource SimpleUnderlineFocusVisual}" />
     <Setter Property="Template" Value="{DynamicResource StandardButtonControlTemplate}"/>
   </Style>
 
@@ -403,7 +420,7 @@
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
     <Setter Property="FontSize" Value="14px" />
-    <Setter Property="FocusVisualStyle" Value="{DynamicResource SimpleUnderlineFocusVisual}" />
+    <Setter Property="FocusVisualStyle" Value="{StaticResource SimpleUnderlineFocusVisual}" />
     <Setter Property="Template" Value="{DynamicResource StandardToggleButtonControlTemplate}"/>
   </Style>
 

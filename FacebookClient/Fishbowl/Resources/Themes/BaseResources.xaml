@@ -8,50 +8,6 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
 
-  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
-  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-  <FacebookClient:AddConverter x:Key="AddConverter" />
-
-  <!-- Foreground brush for text in top chrome -->
-  <SolidColorBrush x:Key="Foreground_ChromeText" Color="#FFE5E5E5" />
-
-  <!-- Override the default selection brush -->
-  <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#99777777"/>
-
-  <!-- Default brush for content hightlights -->
-  <SolidColorBrush x:Key="Foreground_ContentHighlight" Color="#0099ff"/>
-
-  <!-- Item outline brush -->
-  <SolidColorBrush x:Key="Border_ItemOutline" Color="#444444" />
-
-  <!-- Item outline brush thickness -->
-  <Thickness x:Key="Border_ItemOutline_Thickness">1</Thickness>
-
-  <!-- Photo Viewer Colors -->
-  <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
-  <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
-  <SolidColorBrush x:Key="Background_PhotoViewerPressed" Color="#909090" />
-  <SolidColorBrush x:Key="Background_PhotoViewerChecked" Color="#555555" />
-
-  <!-- Explorer Colors -->
-  <Pen x:Key="Pen_ExplorerNodes" Brush="#403b5998" Thickness="1"/>
-  <SolidColorBrush x:Key="Background_ExplorerNode" Color="#3b5998" />
-  <SolidColorBrush x:Key="Border_ExplorerNode" Color="#666666" />
-  <SolidColorBrush x:Key="Background_ExplorerNodeEnabled" Color="#BBBBBB" />
-  <SolidColorBrush x:Key="Foreground_ExplorerNodeEnabled" Color="#333333" />
-  <SolidColorBrush x:Key="Foreground_ExplorerNodeDefault" Color="#666666" />
-  <SolidColorBrush x:Key="Foreground_ExplorerNodeMouse" Color="#3b5998" />
-
-  <!-- Glow for keyboard focused visuals -->
-  <OuterGlowBitmapEffect x:Key="FocusedVisualGlow" GlowSize="6" GlowColor="#ffffff" Opacity="0.75"/>
-
-  <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
-  <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
-
-  <ItemsPanelTemplate x:Key="VirtualizedItemsPanelTemplate">
-    <VirtualizingStackPanel />
-  </ItemsPanelTemplate>
-
   <Style x:Key="ToolbarTextBlockStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="VerticalAlignment" Value="Center" />
     <Setter Property="HorizontalAlignment" Value="Center" />
@@ -61,114 +17,10 @@
     <Setter Property="FontSize" Value="14px" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
   </Style>
-
-  <ControlTemplate x:Key="NavigateUpButtonTemplate" TargetType="RepeatButton">
-    <Grid x:Name="Root" >
-      <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
-        <StackPanel Orientation="Horizontal">
-          <Viewbox Height="18" Margin="0,-5,0,0">
-            <Path x:Name="Arrow"
-                  Fill="Gray"
-                  Stroke="Gray"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="25"
-                  Height="25"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="5,0,0,0"
-                  Cursor="Hand">
-              <Path.RenderTransform>
-                <RotateTransform Angle="180" />
-              </Path.RenderTransform>
-            </Path>
-          </Viewbox>
-          <TextBlock Text="Previous Album" FontSize="13" Margin="5,4,0,0" Foreground="{DynamicResource AlbumNavigationTextForeground}"/>
-        </StackPanel>
-      </Border>
-      <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-    </Grid>
-  </ControlTemplate>
-
-  <Style x:Key="NavigateUpButtonStyle" TargetType="RepeatButton">
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="Width" Value="Auto" />
-    <Setter Property="Height" Value="38" />
-    <Setter Property="Template" Value="{StaticResource NavigateUpButtonTemplate}" />
-  </Style>
-
-  <ControlTemplate x:Key="NavigateDownButtonTemplate" TargetType="RepeatButton">
-    <Grid x:Name="Root">
-      <Border BorderThickness="8" BorderBrush="Transparent" Background="Transparent"  >
-        <StackPanel Orientation="Horizontal">
-          <Viewbox Height="18" Margin="0,8,0,0">
-            <Path x:Name="Arrow"
-                  Fill="Gray"
-                  Stroke="Gray"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Center"
-                  Width="25"
-                  Height="25"
-                  Data="M11.4999847412109,12.8989802002909C11.4999847412109,12.8989802002909,1.99993896484352,1.99997448921238,1.99993896484352,1.99997448921238C1.99993896484352,1.99997448921238,20.9999542236326,1.99997448921238,20.9999542236326,1.99997448921238C20.9999542236326,1.99997448921238,11.4999847412109,12.8989802002909,11.4999847412109,12.8989802002909z"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="5,0,0,0"
-                  Cursor="Hand">
-              <Path.RenderTransform>
-                <RotateTransform Angle="0" />
-              </Path.RenderTransform>
-            </Path>
-          </Viewbox>
-          <TextBlock Text="Next Album" FontSize="13" Margin="5,3,0,0" Foreground="{DynamicResource AlbumNavigationTextForeground}" />
-        </StackPanel>
-      </Border>
-      <ContentPresenter Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-    </Grid>
-
-  </ControlTemplate>
-
-  <Style x:Key="NavigateDownButtonStyle" TargetType="RepeatButton">
-    <Setter Property="VerticalAlignment" Value="Top" />
-    <Setter Property="HorizontalAlignment" Value="Left" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Cursor" Value="Hand" />
-    <Setter Property="Width" Value="Auto" />
-    <Setter Property="Height" Value="35" />
-    <Setter Property="Template" Value="{StaticResource NavigateDownButtonTemplate}" />
-  </Style>
-
-  <Style x:Key="SimpleUnderlineFocusVisual">
-    <Setter Property="Control.Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Control}">
-          <Rectangle SnapsToDevicePixels="True" VerticalAlignment="Bottom" StrokeDashArray="1 3" 
-                        Height="1" StrokeThickness="1" Stroke="#60FFFFFF" Margin="10,0,10,0" />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
-  <Style x:Key="SimpleButtonBaseStyle" TargetType="{x:Type ButtonBase}">
-    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="Focusable" Value="False" />
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ButtonBase}">
-          <ContentPresenter />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-    <Style.Triggers>
-      <Trigger Property="IsEnabled" Value="True">
-        <Setter Property="Cursor" Value="Hand" />
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-
-  <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource SimpleButtonBaseStyle}"/>
-
+  
+  <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
+  <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
+  
   <!-- Animated Item -->
   <Style x:Key="AnimatedItemButton" TargetType="{x:Type Button}">
     <Setter Property="Cursor" Value="Hand" />

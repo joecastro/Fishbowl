@@ -4,7 +4,9 @@
                     xmlns:ClientManager="clr-namespace:ClientManager"
                     xmlns:FacebookClient="clr-namespace:FacebookClient">
 
-    <!-- SimplePhotoViewerControl Template -->
+  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
+
+  <!-- SimplePhotoViewerControl Template -->
     <Style x:Key="SimpleSlideShowImageControlStyle" TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
         <Setter Property="FacebookImageDimensions" Value="Big"/>
         <Setter Property="Template">
@@ -47,22 +49,18 @@
               Command="MediaCommands.Stop" 
               VerticalAlignment="Center"
               ToolTip="Stop slide show">
-            <TextBlock>Exit</TextBlock>
+            <TextBlock Foreground="{DynamicResource ToolbarIconForegroundBrush}">Exit</TextBlock>
           </Button>
           <ToggleButton Width="40" Height="30"
               Style="{DynamicResource StandardToggleButtonStyle}"
-              Margin="0"
-              Padding="5,2"
               Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 
               CommandTarget="{Binding}"
+              Margin="5"
+              Padding="5,2"
               IsChecked="{Binding IsShuffled}"
               VerticalAlignment="Center"
               ToolTip="Shuffle">
-            <Image>
-              <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource ShuffleToolbarDrawingBrush}, Path=Drawing}"/>
-              </Image.Source>
-            </Image>
+            <Rectangle Width="30" Height="26" Fill="{DynamicResource ShuffleToolbarDrawingBrush}"/>
           </ToggleButton>
           <Button Width="40" Height="30"
               Style="{DynamicResource StandardButtonStyle}"
@@ -71,11 +69,7 @@
               Command="MediaCommands.PreviousTrack" 
               VerticalAlignment="Center"
               ToolTip="Previous slide">
-            <Image>
-              <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource LeftArrowToolbarDrawingBrush}, Path=Drawing}"/>
-              </Image.Source>
-            </Image>
+            <Rectangle Width="30" Height="30" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
           </Button>
           <Button Width="50" Height="50"
               x:Name="PlayPauseButton"
@@ -84,24 +78,16 @@
               VerticalAlignment="Center"
               ToolTip="Pause slide show"
               Padding="5">
-            <Image x:Name="PlayPauseImage">
-              <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource PauseToolbarDrawingBrush}, Path=Drawing}"/>
-              </Image.Source>
-            </Image>
+            <Rectangle x:Name="PlayPauseRectangle" Width="40" Height="40" Fill="{DynamicResource PauseToolbarDrawingBrush}"/>
           </Button>
           <Button Width="40" Height="30"
               Style="{DynamicResource StandardButtonStyle}"
-              Margin="5,0"
-              Padding="5"
+              Margin="5"
+              Padding="5,0"
               Command="MediaCommands.NextTrack" 
               VerticalAlignment="Center"
               ToolTip="Next slide">
-            <Image>
-              <Image.Source>
-                <DrawingImage Drawing="{Binding Source={StaticResource RightArrowToolbarDrawingBrush}, Path=Drawing}"/>
-              </Image.Source>
-            </Image>
+            <Rectangle Width="30" Height="30" Fill="{DynamicResource RightArrowToolbarDrawingBrush}"/>
           </Button>
         </StackPanel>
       </Border>
@@ -149,11 +135,7 @@
       <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Paused}" Value="True">
         <Setter TargetName="PlayPauseButton" Property="Command" Value="MediaCommands.Play" />
         <Setter TargetName="PlayPauseButton" Property="ToolTip" Value="Resume slide show" />
-        <Setter TargetName="PlayPauseImage" Property="Source">
-          <Setter.Value>
-            <DrawingImage Drawing="{Binding Source={StaticResource PlayArrowToolbarDrawingBrush}, Path=Drawing}"/>
-          </Setter.Value>
-        </Setter>
+        <Setter TargetName="PlayPauseRectangle" Property="Fill" Value="{DynamicResource PlayArrowToolbarDrawingBrush}"/>
       </DataTrigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>

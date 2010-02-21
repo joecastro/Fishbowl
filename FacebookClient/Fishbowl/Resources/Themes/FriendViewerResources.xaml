@@ -2,7 +2,8 @@
 
   <FacebookClient:SexPronounConverter x:Key="SexPronounConverter" />
   <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
-
+  <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
+  
   <Style x:Key="FriendViewerInformationalTextBlock" TargetType="{x:Type TextBlock}">
     <Setter Property="Margin" Value="30, 10" />
     <Setter Property="VerticalAlignment" Value="Center" />
@@ -424,7 +425,7 @@
                 </Style.Triggers>
               </Style>
             </Border.Style>
-            <FacebookClient:FriendInfoDescriptionViewer FacebookContact="{Binding FacebookContact}" MaxZoom="240" MinZoom="80" Style="{StaticResource PhotoFlowViewer}" ZoomIncrement="10" />
+            <FacebookClient:FriendInfoDescriptionViewer FacebookContact="{Binding FacebookContact}" MaxZoom="240" MinZoom="80" Style="{DynamicResource PhotoFlowViewer}" ZoomIncrement="10" />
           </Border>
 
           <!-- Photo template -->
@@ -464,7 +465,9 @@
           <!-- Wall template -->
           <FacebookClient:ScaleScrollViewer x:Name="PART_WallScrollViewer" IsAnimationEnabled="False" MaxScale="2.5" MinScale="0.4" Scale="{Binding Source={x:Static Properties:Settings.Default}, Path=NewsFeedScale, Mode=TwoWay}" MouseWheelScrollDelta="96" Focusable="True">
             <FacebookClient:ScaleScrollViewer.Style>
-              <Style TargetType="{x:Type FacebookClient:ScaleScrollViewer}" BasedOn="{StaticResource MainScaleScrollViewerStyle}">
+              <Style TargetType="{x:Type FacebookClient:ScaleScrollViewer}">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                <Setter Property="Template" Value="{DynamicResource MainScaleScrollViewerTemplate}"/>
                 <Setter Property="Visibility" Value="Collapsed" />
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding WallDisplayIndex}" Value="0">
@@ -516,7 +519,7 @@
                   BorderThickness="0" 
                   ActualItemsSource="{Binding FacebookContact.RecentActivity}" 
                   Background="Transparent" 
-                  ItemTemplate="{StaticResource NewsFeedItemTemplate}" 
+                  ItemTemplate="{DynamicResource NewsFeedItemTemplate}" 
                   HorizontalAlignment="Left">
                 <ListBox.ItemContainerStyle>
                   <Style TargetType="ListBoxItem">

@@ -497,52 +497,45 @@
 
     </Style>
 
-    <Style x:Key="MainScaleScrollViewerStyle"
-           TargetType="{x:Type FacebookClient:ScaleScrollViewer}">
-        <Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type FacebookClient:ScaleScrollViewer}">
-                    <Grid x:Name="Grid"
-                          Background="{TemplateBinding Background}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid>
-                            <!-- Use these rows to pad the opacity mask below, gives the content presenter a dynamically sized margin -->
-                            <!-- by using * values that add up to 100, it's easy to get this to match the mask below -->
+  <ControlTemplate x:Key="MainScaleScrollViewerTemplate" TargetType="{x:Type FacebookClient:ScaleScrollViewer}">
+    <Grid x:Name="Grid" Background="{TemplateBinding Background}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid>
+        <!-- Use these rows to pad the opacity mask below, gives the content presenter a dynamically sized margin -->
+        <!-- by using * values that add up to 100, it's easy to get this to match the mask below -->
 
-                            <ScrollContentPresenter Margin="{TemplateBinding Padding}"
+        <ScrollContentPresenter Margin="{TemplateBinding Padding}"
                                                     x:Name="PART_ScrollContentPresenter"
                                                     CanContentScroll="{TemplateBinding CanContentScroll}"
                                                     CanHorizontallyScroll="False"
                                                     CanVerticallyScroll="False">
-                                <ScrollContentPresenter.Content>
-                                    <StackPanel>
-                                        <Rectangle Fill="Transparent" Height="18" />
-                                        <ContentControl Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
-                                        <Rectangle Fill="Transparent" Height="18" />
-                                    </StackPanel>
-                                </ScrollContentPresenter.Content>
-                            </ScrollContentPresenter>
-                            <Grid.OpacityMask>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="Transparent" Offset="0.0" />
-                                    <GradientStop Color="White" Offset="0.04" />
-                                    <GradientStop Color="White" Offset="0.96" />
-                                    <GradientStop Color="Transparent" Offset="1.0" />
-                                </LinearGradientBrush>
-                            </Grid.OpacityMask>
-                        </Grid>
-                        <Grid Grid.Column="1"
+          <ScrollContentPresenter.Content>
+            <StackPanel>
+              <Rectangle Fill="Transparent" Height="18" />
+              <ContentControl Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
+              <Rectangle Fill="Transparent" Height="18" />
+            </StackPanel>
+          </ScrollContentPresenter.Content>
+        </ScrollContentPresenter>
+        <Grid.OpacityMask>
+          <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="Transparent" Offset="0.0" />
+            <GradientStop Color="White" Offset="0.04" />
+            <GradientStop Color="White" Offset="0.96" />
+            <GradientStop Color="Transparent" Offset="1.0" />
+          </LinearGradientBrush>
+        </Grid.OpacityMask>
+      </Grid>
+      <Grid Grid.Column="1"
                               Grid.Row="0" Margin="0,3,0,0">
-                            <ScrollBar Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" 
+        <ScrollBar Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" 
                                    Cursor="Arrow"
                                    x:Name="PART_VerticalScrollBar"                                 
                                    ViewportSize="{TemplateBinding ViewportHeight}"
@@ -552,7 +545,7 @@
                                    AutomationProperties.AutomationId="VerticalScrollBar"
                                    Background="{x:Null}"
                                    Opacity="0.6"/>
-                            <ScrollBar Cursor="Arrow" 
+        <ScrollBar Cursor="Arrow" 
                                    x:Name="PART_VerticalScrollBar2"              
                                    ViewportSize="{TemplateBinding ViewportHeight}" 
                                    LargeChange="{TemplateBinding ViewportHeight}"
@@ -563,8 +556,8 @@
                                    AutomationProperties.AutomationId="VerticalScrollBar"
                                    Background="{x:Null}"
                                    Opacity="0"/>
-                        </Grid>
-                        <ScrollBar Visibility="Collapsed"
+      </Grid>
+      <ScrollBar Visibility="Collapsed"
                                    Cursor="Arrow"
                                    x:Name="PART_HorizontalScrollBar"
                                    Grid.Column="0"
@@ -576,19 +569,19 @@
                                    Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    AutomationProperties.AutomationId="HorizontalScrollBar"
                                    Opacity="0.6" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver"
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsMouseOver"
                                  Value="True">
-                            <Setter TargetName="PART_VerticalScrollBar"
+        <Setter TargetName="PART_VerticalScrollBar"
                                     Property="Opacity"
                                     Value="1" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+      </Trigger>
+    </ControlTemplate.Triggers>
 
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-    </Style>
+  </ControlTemplate>
+  <Style x:Key="MainScaleScrollViewerStyle" TargetType="{x:Type FacebookClient:ScaleScrollViewer}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template" Value="{StaticResource MainScaleScrollViewerTemplate}"/>
+  </Style>
 </ResourceDictionary>

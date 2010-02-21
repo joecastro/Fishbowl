@@ -26,18 +26,21 @@
       <shell:TaskbarItemInfo.ThumbButtonInfos>
         <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
           <shell:ThumbButtonInfo.ImageSource>
-            <DrawingImage Drawing="{Binding Source={StaticResource LeftArrowToolbarDrawingBrush}, Path=Drawing}"/>
+            <DrawingImage Drawing="{DynamicResource LeftArrowToolbarDrawing}"/>
           </shell:ThumbButtonInfo.ImageSource>
         </shell:ThumbButtonInfo>
         <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
           <shell:ThumbButtonInfo.ImageSource>
-            <DrawingImage Drawing="{Binding Source={StaticResource RightArrowToolbarDrawingBrush}, Path=Drawing}"/>
+            <DrawingImage Drawing="{DynamicResource RightArrowToolbarDrawing}"/>
           </shell:ThumbButtonInfo.ImageSource>
         </shell:ThumbButtonInfo>
       </shell:TaskbarItemInfo.ThumbButtonInfos>
     </shell:TaskbarItemInfo>
   </shell:TaskbarItemInfo.TaskbarItemInfo>
+
   <Window.Resources>
+    <FacebookClient:AddConverter x:Key="AddConverter" />
+
     <Style x:Key="RestoreButtonStyle" TargetType="{x:Type Button}">
       <Setter Property="Template">
         <Setter.Value>
@@ -239,7 +242,6 @@
         </Setter.Value>
       </Setter>
     </Style>
-
   </Window.Resources>
 
   <!-- Tricks with WS_THICKFRAME cause the window's template to not correspond to the true client size.
@@ -402,7 +404,7 @@
                       VerticalAlignment="Top"
                       Click="_OnNavigateToContentButtonClicked" 
                       ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
-                      Style="{StaticResource AnimatedItemButton}">
+                      Style="{DynamicResource AnimatedItemButton}">
                 <Grid Width="70" Height="70">
                   <Grid RenderTransformOrigin="0.5,0.5">
                     <Grid.RenderTransform>
@@ -429,7 +431,7 @@
                   HorizontalAlignment="Right" 
                   Click="_OnNavigateToContentButtonClicked" 
                   ClientManagerView:ViewManager.NavigationContent="{Binding Attachment}"
-                  Style="{StaticResource AnimatedItemButton}">
+                  Style="{DynamicResource AnimatedItemButton}">
                 <Image Width="24" Height="24" Stretch="Uniform">
                   <Image.Style>
                     <Style TargetType="{x:Type Image}">

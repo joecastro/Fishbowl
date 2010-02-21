@@ -12,7 +12,8 @@
   
   <!-- Converter to clean HTML formatting out of displayed text -->
   <FacebookClient:HtmlToCleanStringConverter x:Key="HtmlToCleanStringConverter"/>
-  
+  <FacebookClient:AddConverter x:Key="AddConverter" />
+
   <!-- Converter to format the application dates consistently -->
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
   
@@ -30,7 +31,13 @@
   <ItemsPanelTemplate x:Key="VirtualizingVerticalRowPanel">
     <FacebookClient:RowScrollingPanel ItemHeight="160" ItemWidth="210"/>
   </ItemsPanelTemplate>
-  
+
+  <!-- Item outline brush -->
+  <SolidColorBrush x:Key="Border_ItemOutline" Color="#444444" />
+
+  <!-- Item outline brush thickness -->
+  <Thickness x:Key="Border_ItemOutline_Thickness">1</Thickness>
+
   <!-- Template for a thumbnail displayed in the gallery home -->
   <DataTemplate x:Key="GalleryItemTemplate">
     <Button
@@ -38,7 +45,7 @@
       Click="OnNavigateToContentButtonClicked"
       ClientManagerView:ViewManager.NavigationContent="{Binding}"
       IsEnabled="{Binding HasData, FallbackValue=False}"
-      Style="{StaticResource AnimatedItemButton}">
+      Style="{DynamicResource AnimatedItemButton}">
       <Border Margin="3" BorderBrush="{DynamicResource Border_ItemOutline}" BorderThickness="{DynamicResource Border_ItemOutline_Thickness}">
         <ClientManagerControls:FacebookImageControl Width="70" Height="70" FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
           <ClientManagerControls:FacebookImageControl.Template>
@@ -50,7 +57,10 @@
       </Border>
     </Button>
   </DataTemplate>
-  
+
+  <!-- Default brush for content hightlights -->
+  <SolidColorBrush x:Key="Foreground_ContentHighlight" Color="#0099ff"/>
+
   <!-- Text style for album titles -->
   <Style x:Key="AlbumTitleLink" TargetType="Hyperlink">
     <Setter Property="Foreground" Value="{DynamicResource Foreground_ContentElement}"/>
@@ -58,11 +68,11 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
     <Style.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource Foreground_ContentHighlight}"/>
+        <Setter Property="Foreground" Value="{StaticResource Foreground_ContentHighlight}"/>
         <Setter Property="TextDecorations" Value="Underline"/>
       </Trigger>
       <Trigger Property="IsKeyboardFocused" Value="True">
-        <Setter Property="Foreground" Value="{DynamicResource Foreground_ContentHighlight}"/>
+        <Setter Property="Foreground" Value="{StaticResource Foreground_ContentHighlight}"/>
         <Setter Property="TextDecorations" Value="Underline"/>
       </Trigger>
     </Style.Triggers>
@@ -405,7 +415,7 @@
         </Grid.ColumnDefinitions>
 
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="0"
             Margin="5,1"
             Command="{Binding Path=PreviousCommand}" 
@@ -421,7 +431,7 @@
           </TextBlock.Text>
         </TextBlock>
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="2"
             Margin="5,1"
             Command="{Binding Path=NextCommand}" 

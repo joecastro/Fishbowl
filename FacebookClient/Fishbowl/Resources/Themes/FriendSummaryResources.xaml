@@ -12,6 +12,13 @@
   <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <FacebookClient:CityStateConverter x:Key="CityStateConverter" />
+  <FacebookClient:AddConverter x:Key="AddConverter" />
+
+  <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
+    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+  </Style>
 
   <DataTemplate x:Key="FriendSummaryItemTemplate">
     <Grid>
@@ -20,7 +27,7 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <Button x:Name="ActivityButton" 
-          Style="{StaticResource AnimatedItemButton}" 
+          Style="{DynamicResource AnimatedItemButton}" 
           Click="OnNavigateToContentButtonClicked" 
           ClientManagerView:ViewManager.NavigationContent="{Binding}" 
           IsEnabled="{Binding HasData, FallbackValue=False}" 
@@ -50,7 +57,7 @@
       </Button>
 
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
-        <TextBlock DockPanel.Dock="Top" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
+        <TextBlock DockPanel.Dock="Top" Style="{DynamicResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="{Binding HasData, FallbackValue=False}">
             <FacebookClient:BindableRun Text="{Binding Name}"/>
           </Hyperlink>
@@ -102,10 +109,10 @@
             </Style>
           </TextBlock.Style>
         </TextBlock>
-        <TextBlock DockPanel.Dock="Bottom" Text="{Binding StatusMessage.Created, Converter={StaticResource DateTimeConverter}}" Margin="0,2,0,0" Style="{StaticResource CreatedTextBlockStyle}" Visibility="{Binding StatusMessage.Message, Converter={StaticResource ContentVisibilityConverter}}" />
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding StatusMessage.Created, Converter={StaticResource DateTimeConverter}}" Margin="0,2,0,0" Style="{DynamicResource CreatedTextBlockStyle}" Visibility="{Binding StatusMessage.Message, Converter={StaticResource ContentVisibilityConverter}}" />
         
         <TextBlock Margin="0,9,0,0"
-            Style="{StaticResource MessageTextBlockStyle}" 
+            Style="{DynamicResource MessageTextBlockStyle}" 
             TextTrimming="WordEllipsis"
             TextWrapping="Wrap" 
             Visibility="{Binding StatusMessage.Message, Converter={StaticResource ContentVisibilityConverter}}">
@@ -168,7 +175,7 @@
         </Grid.ColumnDefinitions>
 
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="0"
             Margin="5,1"
             Command="{Binding Path=PreviousCommand}" 
@@ -184,7 +191,7 @@
           </TextBlock.Text>
         </TextBlock>
         <RepeatButton
-            Style="{StaticResource SimpleButtonBaseStyle}"
+            Style="{DynamicResource SimpleButtonBaseStyle}"
             Grid.Column="2"
             Margin="5,1"
             Command="{Binding Path=NextCommand}" 

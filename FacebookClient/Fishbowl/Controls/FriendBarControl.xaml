@@ -11,7 +11,7 @@
       <ClientManagerControls:FacebookContactDragContainer FacebookContact="{Binding}">
         <Button x:Name="ItemButton" 
                 VerticalAlignment="Top" 
-                Style="{StaticResource AnimatedItemButton}"
+                Style="{DynamicResource AnimatedItemButton}"
                 Margin="5"
                 Click="_OnFriendButtonClicked"
                 IsEnabled="{Binding HasData, FallbackValue=False}"
@@ -177,7 +177,6 @@
         </Setter.Value>
       </Setter>
     </Style>
-
   </UserControl.Resources>
 
   <Grid>
@@ -188,13 +187,18 @@
           ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Friends}"
           Style="{StaticResource FriendsBarListBoxStyle}"
           ItemContainerStyle="{DynamicResource FriendsBarListBoxItemStyle}"
-          ItemsPanel="{StaticResource FilmStripPanel}"
           ItemHeight="74"
           ScrollViewer.CanContentScroll="True"
           ScrollViewer.HorizontalScrollBarVisibility="Visible"
           ScrollViewer.VerticalScrollBarVisibility="Hidden"
           Focusable="False"
-          Background="Transparent" />
-      </Grid>
+          Background="Transparent">
+        <FacebookClient:FilmStripControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <FacebookClient:FilmStripPanel ItemHeight="{Binding ElementName=FilmStrip, Path=ItemHeight}"/>
+          </ItemsPanelTemplate>
+        </FacebookClient:FilmStripControl.ItemsPanel>
+      </FacebookClient:FilmStripControl>
+    </Grid>
   </Grid>
 </UserControl>
