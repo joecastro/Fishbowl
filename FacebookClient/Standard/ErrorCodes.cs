@@ -223,6 +223,19 @@ namespace Standard
         /// <summary>STG_E_INVALIDFUNCTION</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT STG_E_INVALIDFUNCTION = new HRESULT(0x80030001);
+
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT OLE_E_ADVISENOTSUPPORTED = new HRESULT(0x80040003);
+
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT DV_E_FORMATETC = new HRESULT(0x80040064);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT DV_E_TYMED = new HRESULT(0x80040069);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT DV_E_CLIPFORMAT = new HRESULT(0x8004006A);
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT DV_E_DVASPECT = new HRESULT(0x8004006B);
+
         /// <summary>REGDB_E_CLASSNOTREG</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT REGDB_E_CLASSNOTREG = new HRESULT(0x80040154);
@@ -368,6 +381,17 @@ namespace Standard
         public HRESULT(uint i)
         {
             _value = i;
+        }
+
+        /// <summary>
+        /// Convert an HRESULT to an int.  Used for COM interface declarations out of our control.
+        /// </summary>
+        public static explicit operator int(HRESULT hr)
+        {
+            unchecked
+            {
+                return (int)hr._value;
+            }
         }
 
         public static HRESULT Make(bool severe, Facility facility, int code)

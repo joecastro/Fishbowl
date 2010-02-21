@@ -22,6 +22,7 @@ namespace FacebookClient
     using ClientManager.Controls;
     using Contigo;
     using EffectLibrary;
+    using Standard;
 
     /// <summary>
     /// Control used to display and animate a photo.
@@ -324,23 +325,10 @@ namespace FacebookClient
             this.FacebookImageControl = photoImage;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct Win32Point
-        {
-            public Int32 X;
-            public Int32 Y;
-        };
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static extern bool GetCursorPos(ref Win32Point pt);
-
-
         public static Point BetterGetCursorPosition(Visual visual)
         {
-            Win32Point _win32mouse = new Win32Point();
-            GetCursorPos(ref _win32mouse);
-            return visual.PointFromScreen(new Point(_win32mouse.X, _win32mouse.Y));
+            POINT win32mouse = NativeMethods.GetCursorPos();
+            return visual.PointFromScreen(new Point(win32mouse.x, win32mouse.y));
         }
 
         /// <summary>
@@ -677,8 +665,6 @@ namespace FacebookClient
         #endregion
 
         #region multi-touch support
-        [DllImport("user32.dll")]
-        public static extern bool SetProp(IntPtr hWnd, string lpString, IntPtr hData);
 
         int _numTouches = 0;
         int[] _touchId = new int[2];
@@ -699,7 +685,9 @@ namespace FacebookClient
 
             // Enable multi-touch input for stylus
             if (hwndSource != null)
-                SetProp(hwndSource.Handle, "MicrosoftTabletPenServiceProperty", new IntPtr(0x01000000));
+            {
+                NativeMethods.SetProp(hwndSource.Handle, "MicrosoftTabletPenServiceProperty", new IntPtr(0x01000000));
+            }
 
             SetValue(Stylus.IsFlicksEnabledProperty, false);
 

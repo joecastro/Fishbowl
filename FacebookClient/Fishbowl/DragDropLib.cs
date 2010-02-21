@@ -152,25 +152,13 @@ namespace System.Runtime.InteropServices.ComTypes
     using System.ComponentModel;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using Standard;
     
     /// <summary>
     /// Provides extended functionality for the COM IDataObject interface.
     /// </summary>
     public static class ComDataObjectExtensions
     {
-        #region DLL imports
-
-        [DllImport("user32.dll")]
-        private static extern uint RegisterClipboardFormat(string lpszFormatName);
-
-        [DllImport("ole32.dll")]
-        private static extern void ReleaseStgMedium(ref ComTypes.STGMEDIUM pmedium);
-
-        [DllImport("ole32.dll")]
-        private static extern int CreateStreamOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease, out IStream ppstm);
-
-        #endregion // DLL imports
-
         #region Native constants
 
         // CFSTR_DROPDESCRIPTION
@@ -234,7 +222,7 @@ namespace System.Runtime.InteropServices.ComTypes
                 }
                 finally
                 {
-                    ReleaseStgMedium(ref medium);
+                    NativeMethods.ReleaseStgMedium(ref medium);
                 }
             }
 
@@ -280,7 +268,7 @@ namespace System.Runtime.InteropServices.ComTypes
         /// <param name="formatETC">The structure to fill.</param>
         private static void FillFormatETC(string format, TYMED tymed, out FORMATETC formatETC)
         {
-            formatETC.cfFormat = (short)RegisterClipboardFormat(format);
+            formatETC.cfFormat = (short)NativeMethods.RegisterClipboardFormat(format);
             formatETC.dwAspect = DVASPECT.DVASPECT_CONTENT;
             formatETC.lindex = -1;
             formatETC.ptd = IntPtr.Zero;
@@ -317,7 +305,7 @@ namespace System.Runtime.InteropServices.ComTypes
             catch
             {
                 // On exceptions, release the medium
-                ReleaseStgMedium(ref medium);
+                NativeMethods.ReleaseStgMedium(ref medium);
                 throw;
             }
         }
@@ -340,15 +328,15 @@ namespace System.Runtime.InteropServices.ComTypes
             IStream nativeStream;
             try
             {
-                int hr = CreateStreamOnHGlobal(medium.unionmember, true, out nativeStream);
-                if (hr != 0)
+                HRESULT hr = NativeMethods.CreateStreamOnHGlobal(medium.unionmember, true, out nativeStream);
+                if (hr.Failed)
                 {
                     return null;
                 }
             }
             finally
             {
-                ReleaseStgMedium(ref medium);
+                NativeMethods.ReleaseStgMedium(ref medium);
             }
 
 
@@ -502,6 +490,7 @@ namespace DragDropLib
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using System.Runtime.InteropServices.ComTypes;
+    using Standard;
 
     /// <summary>
     /// Implements the COM version of IDataObject including SetData.
@@ -523,17 +512,6 @@ namespace DragDropLib
     [ComVisible(true)]
     public class DataObject : IDataObject, IDisposable
     {
-        #region Unmanaged functions
-
-        // These are helper functions for managing STGMEDIUM structures
-
-        [DllImport("urlmon.dll")]
-        private static extern int CopyStgMedium(ref STGMEDIUM pcstgmedSrc, ref STGMEDIUM pstgmedDest);
-        [DllImport("ole32.dll")]
-        private static extern void ReleaseStgMedium(ref STGMEDIUM pmedium);
-
-        #endregion // Unmanaged functions
-
         // Our internal storage is a simple list
         private IList<KeyValuePair<FORMATETC, STGMEDIUM>> storage;
 
@@ -587,7 +565,7 @@ namespace DragDropLib
             foreach (KeyValuePair<FORMATETC, STGMEDIUM> pair in storage)
             {
                 STGMEDIUM medium = pair.Value;
-                ReleaseStgMedium(ref medium);
+                NativeMethods.ReleaseStgMedium(ref medium);
             }
             storage.Clear();
         }
@@ -619,28 +597,19 @@ namespace DragDropLib
 
         #region COM IDataObject Members
 
-        #region COM constants
-
-        private const int OLE_E_ADVISENOTSUPPORTED = unchecked((int)0x80040003);
-
-        private const int DV_E_FORMATETC = unchecked((int)0x80040064);
-        private const int DV_E_TYMED = unchecked((int)0x80040069);
-        private const int DV_E_CLIPFORMAT = unchecked((int)0x8004006A);
-        private const int DV_E_DVASPECT = unchecked((int)0x8004006B);
-
-        #endregion // COM constants
-
         #region Unsupported functions
 
         public int EnumDAdvise(out IEnumSTATDATA enumAdvise)
         {
-            throw Marshal.GetExceptionForHR(OLE_E_ADVISENOTSUPPORTED);
+            enumAdvise = null;
+            HRESULT.OLE_E_ADVISENOTSUPPORTED.ThrowIfFailed();
+            return 0;
         }
 
         public int GetCanonicalFormatEtc(ref FORMATETC formatIn, out FORMATETC formatOut)
         {
             formatOut = formatIn;
-            return DV_E_FORMATETC;
+            return (int)HRESULT.DV_E_FORMATETC;
         }
 
         #endregion // Unsupported functions
@@ -660,7 +629,7 @@ namespace DragDropLib
             if ((int)((advf | ADVF_ALLOWED) ^ ADVF_ALLOWED) != 0)
             {
                 connection = 0;
-                return OLE_E_ADVISENOTSUPPORTED;
+                return (int)HRESULT.OLE_E_ADVISENOTSUPPORTED;
             }
 
             // Create and insert an entry for the connection list
@@ -678,8 +647,7 @@ namespace DragDropLib
                     RaiseDataChanged(connection, ref dataEntry);
             }
 
-            // S_OK
-            return 0;
+            return (int)HRESULT.S_OK;
         }
 
         /// <summary>
@@ -736,7 +704,7 @@ namespace DragDropLib
 
             // Didn't find it. Return an empty data medium.
             //medium = default(STGMEDIUM);
-            throw Marshal.GetExceptionForHR(DV_E_FORMATETC);
+            HRESULT.DV_E_FORMATETC.ThrowIfFailed();
         }
 
         /// <summary>
@@ -749,9 +717,9 @@ namespace DragDropLib
         {
             // We only support CONTENT aspect
             if ((DVASPECT.DVASPECT_CONTENT & format.dwAspect) == 0)
-                return DV_E_DVASPECT;
+                return (int)HRESULT.DV_E_DVASPECT;
 
-            int ret = DV_E_TYMED;
+            HRESULT hr = HRESULT.DV_E_TYMED;
 
             // Try to locate the data
             // TODO: The ret, if not S_OK, is only relevant to the last item
@@ -767,17 +735,17 @@ namespace DragDropLib
                     else
                     {
                         // Found the medium type, but wrong format
-                        ret = DV_E_CLIPFORMAT;
+                        hr = HRESULT.DV_E_CLIPFORMAT;
                     }
                 }
                 else
                 {
                     // Mismatch on medium type
-                    ret = DV_E_TYMED;
+                    hr = HRESULT.DV_E_TYMED;
                 }
             }
 
-            return ret;
+            return (int)hr;
         }
 
         /// <summary>
@@ -798,7 +766,7 @@ namespace DragDropLib
                     && pair.Key.cfFormat == formatIn.cfFormat)
                 {
                     STGMEDIUM releaseMedium = pair.Value;
-                    ReleaseStgMedium(ref releaseMedium);
+                    NativeMethods.ReleaseStgMedium(ref releaseMedium);
                     storage.Remove(pair);
                     break;
                 }
@@ -825,10 +793,7 @@ namespace DragDropLib
         private STGMEDIUM CopyMedium(ref STGMEDIUM medium)
         {
             STGMEDIUM sm = new STGMEDIUM();
-            int hr = CopyStgMedium(ref medium, ref sm);
-            if (hr != 0)
-                throw Marshal.GetExceptionForHR(hr);
-
+            NativeMethods.CopyStgMedium(ref medium, ref sm).ThrowIfFailed();
             return sm;
         }
 
@@ -1095,25 +1060,19 @@ namespace System.Windows
     using System.Windows.Media.Imaging;
     using DragDropLib;
     using ComTypes = System.Runtime.InteropServices.ComTypes;
+    using Standard;
 
     /// <summary>
     /// Provides helper methods for working with the Shell drag image manager.
     /// </summary>
     public static class DragSourceHelper
     {
-        #region DLL imports
-
-        [DllImport("user32.dll")]
-        private static extern void PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        #endregion // DLL imports
-
         #region Native constants
 
         // This is WM_USER + 3. The window controlled by the drag image manager
         // looks for this message (WM_USER + 2 seems to work, too) to invalidate
         // the drag image.
-        private const uint WM_INVALIDATEDRAGIMAGE = 0x403;
+        private const WM WM_INVALIDATEDRAGIMAGE = WM.USER + 3;
 
         // CFSTR_DROPDESCRIPTION
         private const string DropDescriptionFormat = "DropDescription";
@@ -1478,7 +1437,7 @@ namespace System.Windows
             if (dataObject.GetDataPresent("DragWindow"))
             {
                 IntPtr hwnd = GetIntPtrFromData(dataObject.GetData("DragWindow"));
-                PostMessage(hwnd, WM_INVALIDATEDRAGIMAGE, IntPtr.Zero, IntPtr.Zero);
+                NativeMethods.PostMessage(hwnd, WM_INVALIDATEDRAGIMAGE, IntPtr.Zero, IntPtr.Zero);
             }
         }
 
@@ -1910,6 +1869,7 @@ namespace System.Windows
     using DrawingPixelFormat = System.Drawing.Imaging.PixelFormat;
     using DrawingRectangle = System.Drawing.Rectangle;
     using PixelFormat = System.Windows.Media.PixelFormat;
+    using Standard;
 
     public enum DropImageType
     {
@@ -1927,16 +1887,6 @@ namespace System.Windows
     /// </summary>
     public static class WpfDataObjectExtensions
     {
-        #region DLL imports
-
-        [DllImport("gdiplus.dll")]
-        private static extern bool DeleteObject(IntPtr hgdi);
-
-        [DllImport("ole32.dll")]
-        private static extern void ReleaseStgMedium(ref ComTypes.STGMEDIUM pmedium);
-
-        #endregion // DLL imports
-
         /// <summary>
         /// Sets the drag image by rendering the specified UIElement.
         /// </summary>
@@ -2019,7 +1969,7 @@ namespace System.Windows
             {
                 // We failed to initialize the drag image, so the DragDropHelper
                 // won't be managing our memory. Release the HBITMAP we allocated.
-                DeleteObject(hbmp);
+                NativeMethods.DeleteObject(hbmp);
             }
         }
 
@@ -2098,7 +2048,7 @@ namespace System.Windows
                 catch
                 {
                     // On exceptions, release the medium
-                    ReleaseStgMedium(ref medium);
+                    NativeMethods.ReleaseStgMedium(ref medium);
                     throw;
                 }
             }

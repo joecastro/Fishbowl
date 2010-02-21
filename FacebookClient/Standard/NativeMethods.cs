@@ -2281,6 +2281,21 @@ namespace Standard
             return rc;
         }
 
+        [DllImport("user32.dll", EntryPoint="GetCursorPos", SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _GetCursorPos(out POINT lpPoint);
+
+        public static POINT GetCursorPos()
+        {
+            POINT pt;
+            if (!_GetCursorPos(out pt))
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return pt;
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [Obsolete("Use SafeDC.GetDC instead.", true)]
         public static void GetDC() { }
@@ -2384,6 +2399,19 @@ namespace Standard
                 throw new Win32Exception();
             }
             return ret;
+        }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("user32.dll", EntryPoint="SetProp", CharSet=CharSet.Unicode, SetLastError=true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _SetProp(IntPtr hWnd, [MarshalAs(UnmanagedType.LPWStr)] string lpString, IntPtr hData);
+
+        public static void SetProp(IntPtr hwnd, string lpString, IntPtr hData)
+        {
+            if (!_SetProp(hwnd, lpString, hData))
+            {
+                HRESULT.ThrowLastError();
+            }
         }
 
         /// <summary>
@@ -2787,6 +2815,19 @@ namespace Standard
                 HRESULT.ThrowLastError();
             }
         }
+
+        [DllImport("user32.dll", SetLastError=true)]
+        public static extern uint RegisterClipboardFormat(string lpszFormatName);
+
+        [DllImport("ole32.dll")]
+        public static extern void ReleaseStgMedium(ref STGMEDIUM pmedium);
+
+        [DllImport("ole32.dll")]
+        public static extern HRESULT CreateStreamOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease, out IStream ppstm);
+
+        [DllImport("urlmon.dll")]
+        public static extern HRESULT CopyStgMedium(ref STGMEDIUM pcstgmedSrc, ref STGMEDIUM pstgmedDest);
+
 
         #region Win7 declarations
 
