@@ -11,6 +11,7 @@ namespace Standard
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
@@ -538,7 +539,6 @@ namespace Standard
         {
             if (!string.IsNullOrEmpty(path))
             {
-
                 File.Delete(path);
             }
         }
@@ -1024,5 +1024,32 @@ namespace Standard
             Assert.Fail("Invalid hex character " + h);
             return -1;
         }
+
+        public static void AddDependencyPropertyChangeListener(object component, DependencyProperty property, EventHandler listener)
+        {
+            if (component == null)
+            {
+                return;
+            }
+            Assert.IsNotNull(property);
+            Assert.IsNotNull(listener);
+
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(property, component.GetType());
+            dpd.AddValueChanged(component, listener);
+        }
+
+        public static void RemoveDependencyPropertyChangeListener(object component, DependencyProperty property, EventHandler listener)
+        {
+            if (component == null)
+            {
+                return;
+            }
+            Assert.IsNotNull(property);
+            Assert.IsNotNull(listener);
+
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(property, component.GetType());
+            dpd.RemoveValueChanged(component, listener);
+        }
+
     }
 }

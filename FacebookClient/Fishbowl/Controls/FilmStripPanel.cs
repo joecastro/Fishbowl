@@ -8,17 +8,16 @@
 // </summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Generic;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
-using System.Windows.Input;
-
 namespace FacebookClient
 {
     using System;
+    using System.Collections.Generic;
     using System.Windows;
+    using System.Windows.Automation.Peers;
+    using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
+    using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using ClientManager.Controls;
@@ -34,11 +33,12 @@ namespace FacebookClient
     public class FilmStripPanel : Panel, IScrollInfo
     {
         #region Fields
-        /// <summary>
-        /// DependencyProperty backing store for ItemHeight.
-        /// </summary>
-        public static readonly DependencyProperty ItemHeightProperty =
-            DependencyProperty.Register("ItemHeight", typeof(double), typeof(FilmStripPanel), new UIPropertyMetadata(0.0));
+
+        public static readonly DependencyProperty ItemHeightProperty = DependencyProperty.Register(
+            "ItemHeight",
+            typeof(double), 
+            typeof(FilmStripPanel), 
+            new UIPropertyMetadata(0.0));
 
         /// <summary>
         /// The duration of a "standard" slide; that is, the amount of time the animation should take, regardless of the number of items moved.
@@ -57,16 +57,6 @@ namespace FacebookClient
         /// The ScrollViewer displaying this panel.
         /// </summary>
         private ScrollViewer owner;
-
-        /// <summary>
-        /// A value indicating whether the content of this panel can scroll horizontally.
-        /// </summary>
-        private bool canHorizontallyScroll;
-
-        /// <summary>
-        /// A value indicating whether the content of this panel can scroll vertically.
-        /// </summary>
-        private bool canVerticallyScroll;
 
         /// <summary>
         /// The size of the entire RowScrollingPanel.
@@ -94,20 +84,24 @@ namespace FacebookClient
         private DoubleAnimation _transformAnimation = new DoubleAnimation();
 
         private double[] _itemOffsets, _itemWidths;
+
+        private bool _testForDrag;
+        private bool _inDrag;
+        private Point _initialDragPosition;
+        private UIElement _initialElement;
+        private Point _initialMouseDown;
+        private Point _lastMousePosition;
+        private List<KeyValuePair<int, double>> _mousePositions;
+        private bool _inPromotion;
+
         #endregion
 
-        #region Constructor
-        /// <summary>
-        /// Initializes a new instance of the FilmStripPanel class.
-        /// </summary>
         public FilmStripPanel()
         {
-            this.RenderTransform = this._transform;
+            this.RenderTransform = _transform;
             this.Background = Brushes.Transparent;
         } 
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Gets or sets a value that specifies the height of all items that are contained within a RowScrollingPanel. This is a dependency property.
         /// </summary>
@@ -125,10 +119,10 @@ namespace FacebookClient
             get { return this.owner; }
             set 
             { 
-                this.owner = value;
-                if (this.owner != null)
+                owner = value;
+                if (owner != null)
                 {
-                    this.owner.PreviewMouseWheel += new System.Windows.Input.MouseWheelEventHandler(owner_PreviewMouseWheel);
+                    owner.PreviewMouseWheel += owner_PreviewMouseWheel;
                 }
             }
         }
@@ -141,20 +135,12 @@ namespace FacebookClient
         /// <summary>
         /// Gets or sets a value indicating whether the content of this panel can scroll horizontally.
         /// </summary>
-        public bool CanHorizontallyScroll
-        {
-            get { return this.canHorizontallyScroll; }
-            set { this.canHorizontallyScroll = value; }
-        }
+        public bool CanHorizontallyScroll { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the content of this panel can scroll vertically.
         /// </summary>
-        public bool CanVerticallyScroll
-        {
-            get { return this.canVerticallyScroll; }
-            set { this.canVerticallyScroll = value; }
-        }
+        public bool CanVerticallyScroll { get; set; }
 
         /// <summary>
         /// Gets the height of the entire RowScrollingPanel.
@@ -203,7 +189,6 @@ namespace FacebookClient
         {
             get { return this._offset.Y; }
         } 
-        #endregion
 
         #region Public Methods
         /// <summary>
@@ -433,6 +418,8 @@ namespace FacebookClient
         /// <returns>The amount of space the panel wants for layout.</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
+            Assert.IsFalse(double.IsInfinity(availableSize.Width));
+
             _itemOffsets = new double[this.InternalChildren.Count];
             _itemWidths = new double[this.InternalChildren.Count];
 
@@ -546,15 +533,6 @@ namespace FacebookClient
 
         #endregion
 
-        private bool _testForDrag;
-        private bool _inDrag;
-        private Point _initialDragPosition;
-        private UIElement _initialElement;
-        private Point _initialMouseDown;
-        private Point _lastMousePosition;
-        private List<KeyValuePair<int, double>> _mousePositions;
-        private bool _inPromotion;
-
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
             if ( _inPromotion)
@@ -647,8 +625,7 @@ namespace FacebookClient
                 if (_inDrag)
                 {
                     Point pos = e.GetPosition(Application.Current.MainWindow.Content as UIElement);
-                    _initialElement.RaiseEvent(
-                        new DragContainerEventArgs(DragContainer.DragCompletedEvent, _initialDragPosition, pos));
+                    _initialElement.RaiseEvent(new DragContainerEventArgs(DragContainer.DragCompletedEvent, _initialDragPosition, pos));
                 }
                 else
                 {
@@ -669,13 +646,8 @@ namespace FacebookClient
 
                                 if (button != null)
                                 {
-                                    ButtonAutomationPeer peer =
-                                        new ButtonAutomationPeer(button);
-
-                                    IInvokeProvider invokeProv =
-                                        peer.GetPattern(PatternInterface.Invoke)
-                                        as IInvokeProvider;
-
+                                    var peer = new ButtonAutomationPeer(button);
+                                    var invokeProv = (IInvokeProvider)peer.GetPattern(PatternInterface.Invoke);
                                     invokeProv.Invoke();
                                 }
                             }

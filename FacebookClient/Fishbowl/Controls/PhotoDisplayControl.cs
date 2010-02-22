@@ -7,239 +7,33 @@
 // </summary>
 //-----------------------------------------------------------------------
 
-using System.Windows.Interop;
-
 namespace FacebookClient
 {
     using System;
-    using System.ComponentModel;
-    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Windows.Interop;
     using System.Windows.Media;
-    using System.Windows.Media.Animation;
     using ClientManager.Controls;
     using Contigo;
-    using EffectLibrary;
     using Standard;
 
-    /// <summary>
-    /// Control used to display and animate a photo.
-    /// </summary>
-    [TemplatePart(Name = "PART_PhotoViewbox", Type = typeof(Viewbox)),
-     TemplatePart(Name = "PART_PhotoImage", Type = typeof(FacebookImageControl))]
+    [
+        TemplatePart(Name = "PART_PhotoImage", Type = typeof(FacebookImageControl)),
+        TemplatePart(Name = "PART_ManipulationCanvas", Type = typeof(Canvas)),
+        TemplatePart(Name = "PART_PhotoFrameControl", Type = typeof(ContentControl)),
+    ]
     public class PhotoDisplayControl : Control
     {
-        #region Fields
-        public static readonly DependencyProperty FacebookPhotoProperty =
-            DependencyProperty.Register("FacebookPhoto", typeof(FacebookPhoto), typeof(PhotoDisplayControl));
+        private Canvas _canvas;
+        private ContentControl _frameControl;
+        private bool _isImageFit;
 
-        /// <summary>
-        /// Dependency Property backing store for PhotoZoomFactor.
-        /// </summary>
-        public static readonly DependencyProperty PhotoZoomFactorProperty =
-            DependencyProperty.Register("PhotoZoomFactor", typeof(double), typeof(PhotoDisplayControl), new UIPropertyMetadata(1.0));
-
-        /// <summary>
-        /// DependencyProperty backing store for FittingPhotoToWindow.
-        /// </summary>
-        public static readonly DependencyProperty FittingPhotoToWindowProperty =
-            DependencyProperty.Register("FittingPhotoToWindow", typeof(bool), typeof(PhotoDisplayControl), new UIPropertyMetadata(true, new PropertyChangedCallback(OnFittingPhotoToWindowChanged)));
-
-        public static readonly DependencyProperty CommentsVisibleProperty =
-            DependencyProperty.Register("CommentsVisible", typeof(bool), typeof(PhotoDisplayControl), new UIPropertyMetadata(false));
-
-        /// <summary>
-        /// RoutedCommand to zoom the displayed photo in.
-        /// </summary>
-        public static readonly RoutedCommand ZoomPhotoInCommand = new RoutedCommand("ZoomPhotoIn", typeof(PhotoDisplayControl));
-
-        /// <summary>
-        /// RoutedCommand to zoom the displayed photo out.
-        /// </summary>
-        public static readonly RoutedCommand ZoomPhotoOutCommand = new RoutedCommand("ZooomPhotoOut", typeof(PhotoDisplayControl));
-
-        /// <summary>
-        /// RoutedCommand to fit the displayed photo to the window size.
-        /// </summary>
-        public static readonly RoutedCommand FitPhotoToWindowCommand = new RoutedCommand("FitPhotoToWindow", typeof(PhotoDisplayControl));
-
-        /// <summary>
-        /// Whether the current animation results in a fit-to-window upon completion.
-        /// </summary>
-        private bool switchFittingMode;
-
-        /// <summary>
-        /// The Viewbox displaying the photo.
-        /// </summary>
-        private Viewbox photoViewbox;
-
-        /// <summary>
-        /// The ScrollViewer that hosts this control.
-        /// </summary>
-        private ScrollViewer scrollHost;
-
-        /// <summary>
-        /// Last MouseDown position.
-        /// </summary>
-        private Point lastPosition;
-
-        public static readonly DependencyProperty FacebookImageControlProperty = DependencyProperty.Register(
-            "FacebookImageControl", 
-            typeof(FacebookImageControl), 
-            typeof(PhotoDisplayControl),
-                new FrameworkPropertyMetadata(null,
-                    (d, e) => ((PhotoDisplayControl)d)._OnFacebookImageChanged(e)));
-
-        private void _OnImageSourceChanged(object sender, EventArgs e)
-        {
-            this.DoInitialFit();
-            if (this.PhotoStateChanged != null)
-            {
-                this.PhotoStateChanged(this, EventArgs.Empty);
-            }
-        }
-
-        private void _OnFacebookImageChanged(DependencyPropertyChangedEventArgs e)
-        {
-            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(FacebookImageControl.ImageSourceProperty, typeof(FacebookImageControl));
-
-            var oldControl = (FacebookImageControl)e.OldValue;
-            var newControl = (FacebookImageControl)e.NewValue;
-            if (oldControl != null)
-            {
-                dpd.RemoveValueChanged(oldControl, _OnImageSourceChanged);
-            }
-
-            if (!this.IsLoaded)
-            {
-                return;
-            }
-
-            if (newControl != null)
-            {
-                dpd.AddValueChanged(newControl, _OnImageSourceChanged);
-            }
-        }
-
-        public FacebookImageControl FacebookImageControl
-        {
-            get { return (FacebookImageControl)GetValue(FacebookImageControlProperty); }
-            set { SetValue(FacebookImageControlProperty, value); }
-        }
-
-
-        /// <summary>
-        /// The FacebookImageControl containing the photo.
-        /// </summary>
-        private FacebookImageControl photoImage;
-
-        /// <summary>
-        /// Animation on the ZoomBlurEffect used when a photo's zoomPhotoAnimation is active.
-        /// </summary>
-        private DoubleAnimation zoomPhotoBlurEffectAnimation;
-
-        /// <summary>
-        /// The Effect applied to the photo when it is being zoomed.
-        /// </summary>
-        private ZoomBlurEffect zoomPhotoBlurEffect;
-
-        /// <summary>
-        /// Transform used to zoom the displayed photo.
-        /// </summary>
-        private ScaleTransform photoZoomTransform;
-
-        /// <summary>
-        /// The total size of all borders around the photo (to be excluded when calculating the fit-to-window zoom factor).
-        /// </summary>
-        private double photoBorderWidth = 65;
-
-        /// <summary>
-        /// The factor to scale by when zooming.
-        /// </summary>
-        private double baseZoomFactor = 0.20;
-
-        /// <summary>
-        /// The zoom factor for the current that causes a change in size by baseZoomFactor percent.
-        /// </summary>
-        private double scaledZoomFactor;
-
-        /// <summary>
-        /// Relative viewport position, coordinates should be between 0.0 and 1.0.
-        /// </summary>
-        private Point zoomCenter = new Point(0.5, 0.5); 
-
-        /// <summary>
-        /// The event that is raised when photo state has changed.s
-        /// </summary>
-        public event PhotoStateChangedEventHandler PhotoStateChanged;
-
-        #endregion
-
-        #region Constructor
-        /// <summary>
-        /// Initializes a new instance of the PhotoDisplayControl class.
-        /// </summary>
-        public PhotoDisplayControl()
-        {
-            this.CommandBindings.Add(new CommandBinding(ZoomPhotoInCommand, new ExecutedRoutedEventHandler(OnZoomPhotoInCommand)));
-            this.CommandBindings.Add(new CommandBinding(ZoomPhotoOutCommand, new ExecutedRoutedEventHandler(OnZoomPhotoOutCommand), new CanExecuteRoutedEventHandler(OnZoomPhotoOutCanExecute)));
-            this.CommandBindings.Add(new CommandBinding(FitPhotoToWindowCommand, new ExecutedRoutedEventHandler(OnFitPhotoToWindow)));
-            this.Loaded += (sender, e) =>
-            {
-                InitializeMultiTouch();
-                this.DoInitialFit();
-
-                if (FacebookImageControl != null)
-                {
-                    DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(FacebookImageControl.ImageSourceProperty, typeof(FacebookImageControl));
-                    dpd.AddValueChanged(FacebookImageControl, _OnImageSourceChanged);
-                }
-            };
-
-            this.Unloaded += (sender, e) =>
-            {
-                if (FacebookImageControl != null)
-                {
-                    DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(FacebookImageControl.ImageSourceProperty, typeof(FacebookImageControl));
-                    dpd.RemoveValueChanged(FacebookImageControl, _OnImageSourceChanged);
-                }
-            };
-        }
-        #endregion
-
-        #region Enums
-        /// <summary>
-        /// How we're fitting the photo to the window size.
-        /// </summary>
-        protected enum FitToWindowType
-        {
-            /// <summary>
-            /// Zoom the photo in (initial display).
-            /// </summary>
-            InitialFit,
-
-            /// <summary>
-            /// Animate the change in size.
-            /// </summary>
-            AnimatedFit,
-
-            /// <summary>
-            /// Snap the change in size.
-            /// </summary>
-            ImmediateFit
-        }
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Gets the FacebookImageControl containing the photo.
-        /// </summary>
-        public FacebookImageControl PhotoImage
-        {
-            get { return this.photoImage; }
-        }
+        public static readonly DependencyProperty FacebookPhotoProperty = DependencyProperty.Register(
+            "FacebookPhoto",
+            typeof(FacebookPhoto),
+            typeof(PhotoDisplayControl));
 
         public FacebookPhoto FacebookPhoto
         {
@@ -247,466 +41,333 @@ namespace FacebookClient
             set { SetValue(FacebookPhotoProperty, value); }
         }
 
-        /// <summary>
-        /// Gets a value by which to scale the displayed photo.
-        /// </summary>
-        public double PhotoZoomFactor
+        public static readonly DependencyProperty FitControlProperty = DependencyProperty.Register(
+            "FitControl",
+            typeof(Control),
+            typeof(PhotoDisplayControl),
+            new FrameworkPropertyMetadata(
+                null,
+                (d, e) => ((PhotoDisplayControl)d)._OnFitControlChanged(e)));
+
+        private void _OnFitControlChanged(DependencyPropertyChangedEventArgs e)
         {
-            get { return (double)GetValue(PhotoZoomFactorProperty); }
-            protected set { SetValue(PhotoZoomFactorProperty, value); }
+            var oldControl = (Control)e.OldValue;
+            var newControl = (Control)e.NewValue;
+
+            Utility.RemoveDependencyPropertyChangeListener(oldControl, Control.ActualWidthProperty, _OnFitControlSizeChanged);
+            Utility.RemoveDependencyPropertyChangeListener(oldControl, Control.ActualHeightProperty, _OnFitControlSizeChanged);
+
+            if (!IsLoaded)
+            {
+                return;
+            }
+
+            Utility.AddDependencyPropertyChangeListener(newControl, Control.ActualWidthProperty, _OnFitControlSizeChanged);
+            Utility.AddDependencyPropertyChangeListener(newControl, Control.ActualHeightProperty, _OnFitControlSizeChanged);
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether we are fitting the photo to the window size or resizing it independently.
-        /// </summary>
-        public bool FittingPhotoToWindow
+        private void _OnFitControlSizeChanged(object sender, EventArgs e)
         {
-            get { return (bool)GetValue(FittingPhotoToWindowProperty); }
-            set { SetValue(FittingPhotoToWindowProperty, value); }
+            if (_isImageFit || !_IsPhotoOnScreen())
+            {
+                FitToWindow();
+            }
         }
 
-        public bool CommentsVisible
+        public Control FitControl
         {
-            get { return (bool)GetValue(CommentsVisibleProperty); }
-            set { SetValue(CommentsVisibleProperty, value); }
+            get { return (Control)GetValue(FitControlProperty); }
+            set { SetValue(FitControlProperty, value); }
         }
 
-        #endregion
+        private static readonly DependencyProperty FacebookImageControlProperty = DependencyProperty.Register(
+            "FacebookImageControl", 
+            typeof(FacebookImageControl), 
+            typeof(PhotoDisplayControl),
+                new FrameworkPropertyMetadata(null,
+                    (d, e) => ((PhotoDisplayControl)d)._OnFacebookImageChanged(e)));
 
-        #region Public Methods
-        /// <summary>
-        /// Sets up the rotation animations once the control template has been applied.
-        /// </summary>
+        private void _OnFacebookImageChanged(DependencyPropertyChangedEventArgs e)
+        {
+            var oldControl = (FacebookImageControl)e.OldValue;
+            var newControl = (FacebookImageControl)e.NewValue;
+
+            Utility.RemoveDependencyPropertyChangeListener(oldControl, FacebookImageControl.ImageSourceProperty, _OnImageSourceChanged);
+
+            if (!IsLoaded)
+            {
+                return;
+            }
+
+            Utility.AddDependencyPropertyChangeListener(newControl, FacebookImageControl.ImageSourceProperty, _OnImageSourceChanged);
+        }
+
+        private void _OnImageSourceChanged(object sender, EventArgs e)
+        {
+            _NotifyStateChanged();
+            FitToWindow();
+        }
+
+        private FacebookImageControl FacebookImageControl
+        {
+            get { return (FacebookImageControl)GetValue(FacebookImageControlProperty); }
+            set { SetValue(FacebookImageControlProperty, value); }
+        }
+
+        /// <summary>Event that's raised when there has been some change to the way that the photo is being displayed.</summary>
+        public event PhotoStateChangedEventHandler PhotoStateChanged;
+
+        public static readonly RoutedCommand ZoomPhotoInCommand = new RoutedCommand("ZoomPhotoIn", typeof(PhotoDisplayControl));
+        public static readonly RoutedCommand ZoomPhotoOutCommand = new RoutedCommand("ZooomPhotoOut", typeof(PhotoDisplayControl));
+        public static readonly RoutedCommand FitPhotoToWindowCommand = new RoutedCommand("FitPhotoToWindow", typeof(PhotoDisplayControl));
+
+        public PhotoDisplayControl()
+        {
+            CommandBindings.Add(new CommandBinding(ZoomPhotoInCommand, (sender, e) => _ZoomPhotoIn()));
+            CommandBindings.Add(new CommandBinding(ZoomPhotoOutCommand, (sender, e) => _ZoomPhotoOut()));
+            CommandBindings.Add(new CommandBinding(FitPhotoToWindowCommand, (sender, e) => FitToWindow()));
+
+            Loaded += (sender, e) =>
+            {
+                FitPhotoToWindow();
+
+                Utility.AddDependencyPropertyChangeListener(FitControl, Control.ActualWidthProperty, _OnFitControlSizeChanged);
+                Utility.AddDependencyPropertyChangeListener(FitControl, Control.ActualHeightProperty, _OnFitControlSizeChanged);
+
+                Utility.AddDependencyPropertyChangeListener(FacebookImageControl, FacebookImageControl.ImageSourceProperty, _OnImageSourceChanged);
+            };
+
+            Unloaded += (sender, e) =>
+            {
+                Utility.RemoveDependencyPropertyChangeListener(FitControl, Control.ActualWidthProperty, _OnFitControlSizeChanged);
+                Utility.RemoveDependencyPropertyChangeListener(FitControl, Control.ActualHeightProperty, _OnFitControlSizeChanged);
+
+                Utility.RemoveDependencyPropertyChangeListener(FacebookImageControl, FacebookImageControl.ImageSourceProperty, _OnImageSourceChanged);
+            };
+        }
+
+
+        public FacebookImageControl PhotoImage { get; private set; }
+
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            
+            PhotoImage = this.Template.FindName("PART_PhotoImage", this) as FacebookImageControl;
+            Assert.IsNotNull(PhotoImage);
 
-            zoomPhotoBlurEffectAnimation = new DoubleAnimation
-            { 
-                AccelerationRatio = .4,
-                DecelerationRatio = .2
-            };
+            _frameControl = this.Template.FindName("PART_PhotoFrameControl", this) as ContentControl;
+            Assert.IsNotNull(_frameControl);
 
-            photoZoomTransform = this.Template.FindName("PART_PhotoZoomFactorTransform", this) as ScaleTransform;
-            photoViewbox = this.Template.FindName("PART_PhotoViewbox", this) as Viewbox;
-            photoImage = this.Template.FindName("PART_PhotoImage", this) as FacebookImageControl;
+            _canvas = this.Template.FindName("PART_ManipulationCanvas", this) as Canvas;
+            Assert.IsNotNull(_canvas);
 
-            DependencyObject element = this;
-            while (element != null)
-            {
-                if (element is ScrollViewer)
-                {
-                    scrollHost = (ScrollViewer)element;
-                    break;
-                }
-
-                element = VisualTreeHelper.GetParent(element);
-            }
-
-            if (element == null)
-            {
-                throw new InvalidOperationException("This control must be hosted in a ScrollViewer.");
-            }
-
-            this.scrollHost.ScrollChanged += new ScrollChangedEventHandler((sender, e) =>
-            {
-                if (!this.FittingPhotoToWindow && (e.ExtentWidthChange != 0.0 || e.ExtentHeightChange != 0.0))
-                {
-                    double previousExtentWidth = e.ExtentWidth - e.ExtentWidthChange;
-                    double previousExtentHeight = e.ExtentHeight - e.ExtentHeightChange;
-
-                    this.scrollHost.ScrollToHorizontalOffset(e.ExtentWidth / previousExtentWidth * (e.HorizontalOffset - e.HorizontalChange + e.ViewportWidth * zoomCenter.X) -
-                        e.ViewportWidth * zoomCenter.X);
-                    this.scrollHost.ScrollToVerticalOffset(e.ExtentHeight / previousExtentHeight * (e.VerticalOffset - e.VerticalChange + e.ViewportHeight * zoomCenter.Y) -
-                        e.ViewportHeight * zoomCenter.Y);
-                }
-            });
-
-            this.FacebookImageControl = photoImage;
+            this.FacebookImageControl = PhotoImage;
         }
 
-        public static Point BetterGetCursorPosition(Visual visual)
-        {
-            POINT win32mouse = NativeMethods.GetCursorPos();
-            return visual.PointFromScreen(new Point(win32mouse.x, win32mouse.y));
-        }
-
-        /// <summary>
-        /// Does initial animated fit after image source has been set.
-        /// </summary>
-        public void DoInitialFit()
-        {
-            this.FitPhotoToWindow(FitToWindowType.InitialFit);
-            this.scaledZoomFactor = this.PhotoZoomFactor * this.baseZoomFactor;
-        }
-
-        #endregion
-
-        #region Protected Methods
         /// <summary>
         /// Fits the currently displayed photo to the window size.
         /// </summary>
         /// <param name="initialFit">Whether this is the initial fit-to-window pass, or as a response to a user click.</param>
-        protected void FitPhotoToWindow(FitToWindowType initialFit)
+        private void FitPhotoToWindow()
         {
+            _isImageFit = true;
             if (this.PhotoImage != null && this.PhotoImage.ImageSource != null)
             {
-                double oldPhotoZoomFactor = this.PhotoZoomFactor;
+                Assert.IsNotNull(FitControl);
+                var mt = (MatrixTransform)FitControl.TransformToVisual(_canvas);
+                var boundingRect = new Rect(mt.Matrix.OffsetX, mt.Matrix.OffsetY, FitControl.ActualWidth, FitControl.ActualHeight);
 
-                this.CalculateStandardZoom();
-
-                if (initialFit == FitToWindowType.InitialFit)
+                bool tooTall = false;
+                if (boundingRect.Width * PhotoImage.ImageSource.Height > boundingRect.Height * PhotoImage.ImageSource.Width)
                 {
-                    // Reset the scaling value
-                    if (this.photoZoomTransform != null)
-                    {
-                        this.photoZoomTransform.ScaleX = this.PhotoZoomFactor;
-                        this.photoZoomTransform.ScaleY = this.PhotoZoomFactor;
-                    }
-
-                    this.FittingPhotoToWindow = true;
+                    tooTall = true;
                 }
-                else if (initialFit == FitToWindowType.AnimatedFit)
+
+                double aspectRatio = PhotoImage.ImageSource.Width / PhotoImage.ImageSource.Height;
+
+                Matrix matrix = Matrix.Identity;
+
+                if (tooTall)
                 {
-                    if (this.photoZoomTransform != null)
-                    {
-                        this.photoZoomTransform.ScaleX = this.PhotoZoomFactor;
-                        this.photoZoomTransform.ScaleY = this.PhotoZoomFactor;
+                    // Center horizontally.
+                    PhotoImage.Width = aspectRatio * boundingRect.Height;
+                    PhotoImage.Height = boundingRect.Height;
 
-                        if (this.switchFittingMode && this.photoViewbox != null)
-                        {
-                            this.photoViewbox.Stretch = Stretch.Uniform;
-                            this.switchFittingMode = false;
-                        }
-
-                        this.BeginZoomPhotoBlurEffectAnimationOnPhotoImage();
-                    }
+                    matrix.OffsetX = boundingRect.Left + ((boundingRect.Width - PhotoImage.Width) / 2);
+                    matrix.OffsetY = boundingRect.Top;
+                    //Canvas.SetLeft(_frameControl, boundingRect.Left + ((boundingRect.Width - PhotoImage.Width) / 2));
+                    //Canvas.SetTop(_frameControl, boundingRect.Top);
                 }
                 else
                 {
-                    if (this.photoZoomTransform != null)
-                    {
-                        this.photoZoomTransform.ScaleX = this.PhotoZoomFactor;
-                        this.photoZoomTransform.ScaleY = this.PhotoZoomFactor;
+                    // Center vertically.
+                    PhotoImage.Height = boundingRect.Width / aspectRatio;
+                    PhotoImage.Width = boundingRect.Width;
 
-                        if (this.switchFittingMode && this.photoViewbox != null)
-                        {
-                            this.photoViewbox.Stretch = Stretch.Uniform;
-                            this.switchFittingMode = false;
-                        }
-
-                        this.BeginZoomPhotoBlurEffectAnimationOnPhotoImage();
-                    }
+                    matrix.OffsetX = boundingRect.Left;
+                    matrix.OffsetY = boundingRect.Top  + ((boundingRect.Height - PhotoImage.Height) / 2);
+                    //Canvas.SetLeft(_frameControl, boundingRect.Left);
+                    //Canvas.SetTop(_frameControl, boundingRect.Top  + ((boundingRect.Height - PhotoImage.Height) / 2));
                 }
+
+                _frameControl.RenderTransform = new MatrixTransform(matrix);
             }
         }
 
         /// <summary>
         /// Zooms the currently displayed photo in. 
         /// </summary>
-        protected void ZoomPhotoIn()
+        private void _ZoomPhotoIn()
         {
-            this.zoomCenter.X = 0.5;
-            this.zoomCenter.Y = 0.5;
-
-            if (this.FittingPhotoToWindow)
-            {
-                this.FittingPhotoToWindow = false;
-                this.CalculateStandardZoom();
-            }
-
-            this.PhotoZoomFactor += this.scaledZoomFactor;
-
-            if (this.photoZoomTransform != null)
-            {
-                this.photoZoomTransform.ScaleX = this.PhotoZoomFactor;
-                this.photoZoomTransform.ScaleY = this.PhotoZoomFactor;
-
-                if (this.switchFittingMode && this.photoViewbox != null)
-                {
-                    this.photoViewbox.Stretch = Stretch.Uniform;
-                    this.switchFittingMode = false;
-                }
-            }
+            _NotifyStateChanged();
+            _ResizePhoto(1.25);
         }
 
         /// <summary>
         /// Zooms the currently displayed photo out.
         /// </summary>
-        protected void ZoomPhotoOut()
+        private void _ZoomPhotoOut()
         {
-            this.zoomCenter.X = 0.5;
-            this.zoomCenter.Y = 0.5;
+            _NotifyStateChanged();
+            _ResizePhoto(.8);
+        }
 
-            if (this.CanZoomPhotoOut())
+        public void FitToWindow()
+        {
+            _NotifyStateChanged();
+            FitPhotoToWindow();
+        }
+
+        private bool _IsPhotoOnScreen()
+        {
+            // Get axis aligned bounds of the element
+            var elementBounds = _frameControl.RenderTransform.TransformBounds(VisualTreeHelper.GetDescendantBounds(_frameControl));
+
+            // Check to see which bouncing from which boundary
+            if (elementBounds.Left >= _canvas.ActualWidth)
             {
-                if (this.FittingPhotoToWindow)
-                {
-                    this.FittingPhotoToWindow = false;
-                    this.CalculateStandardZoom();
-                }
+                return false;
+            }
 
-                this.PhotoZoomFactor -= this.scaledZoomFactor;
+            if (elementBounds.Right <= 0)
+            {
+                return false;
+            }
 
-                if (this.photoZoomTransform != null)
-                {
-                    this.photoZoomTransform.ScaleX = PhotoZoomFactor;
-                    this.photoZoomTransform.ScaleY = PhotoZoomFactor;
+            if (elementBounds.Top >= _canvas.ActualHeight)
+            {
+                return false;
+            }
 
-                    if (this.switchFittingMode && this.photoViewbox != null)
-                    {
-                        this.photoViewbox.Stretch = Stretch.Uniform;
-                        this.switchFittingMode = false;
-                    }
-                }
+            if (elementBounds.Bottom <= 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void _NotifyStateChanged()
+        {
+            var handler = PhotoStateChanged;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 
-        /// <summary>
-        /// Determines whether the currently displayed photo can be zoomed out any further.
-        /// </summary>
-        /// <returns>A value indicating whether the currently displayed photo can be zoomed out any further.</returns>
-        protected bool CanZoomPhotoOut()
+        private void _MovePhoto(Vector movement)
         {
-            if ((this.PhotoZoomFactor - this.scaledZoomFactor) > 0.2)
+            _isImageFit = false;
+
+            Transform transform = _frameControl.RenderTransform;
+            var matrix = transform == null ? Matrix.Identity : transform.Value;
+
+            matrix.OffsetX += movement.X;
+            matrix.OffsetY += movement.Y;
+
+            _frameControl.RenderTransform = new MatrixTransform(matrix);
+        }
+
+        private void _ResizePhoto(double scale)
+        {
+            _isImageFit = false;
+
+            UIElement element = _frameControl;
+            Transform transform = element.RenderTransform;
+            var matrix = transform == null ? Matrix.Identity : transform.Value;
+
+            // Prevent the image from getting too small or too big.
+            if (matrix.M11 < .3 && scale < 1)
             {
-                return true;
+                return;
             }
 
-            return false;
-        }
-
-        /// <summary>
-        /// Sets and beings and element's ZoomPhotoBlurEffectAnimation if the client
-        /// has the right hardware capabilities to run the Effect.
-        /// </summary>
-        protected void BeginZoomPhotoBlurEffectAnimationOnPhotoImage()
-        {
-            if (FacebookClientApplication.IsShaderEffectSupported)
+            if (matrix.M11 > 10 && scale > 1)
             {
-                if (!(this.photoImage.Effect is ZoomBlurEffect))
-                {
-                    this.zoomPhotoBlurEffect = new ZoomBlurEffect();
-                    this.zoomPhotoBlurEffect.CenterX = 0.5;
-                    this.zoomPhotoBlurEffect.CenterY = 0.5;
-                    this.photoImage.Effect = this.zoomPhotoBlurEffect;
-                }
-
-                // The amount of blur is relative to the zoomed factor of the photo
-                double blurAmount = .2 * this.PhotoZoomFactor;
-
-                this.zoomPhotoBlurEffectAnimation.Duration = TimeSpan.FromMilliseconds(100);
-                this.zoomPhotoBlurEffectAnimation.From = blurAmount;
-                this.zoomPhotoBlurEffectAnimation.To = 0;
-
-                this.photoImage.Effect.BeginAnimation(ZoomBlurEffect.BlurAmountProperty, this.zoomPhotoBlurEffectAnimation, HandoffBehavior.SnapshotAndReplace);
-            }
-        }
-
-        /// <summary>
-        /// Handler to change the control layout when FittingPhotoToWindow changes so that
-        /// fit to window does indeed cause the photo to fit to window.
-        /// </summary>
-        /// <param name="newValue">The new FittingPhotoToWindow value.</param>
-        protected void OnFittingPhotoToWindowChanged(bool newValue)
-        {
-            if (this.photoViewbox != null)
-            {
-                // Stop tagging
-                this.RestoreInitialState();
-
-                if (newValue)
-                {
-                    this.FitPhotoToWindow(FitToWindowType.AnimatedFit);
-                    this.switchFittingMode = true;
-
-                    // Viewbox setting is changed at the end of the zoom animation.
-                }
-                else
-                {
-                    this.photoViewbox.Stretch = Stretch.None;
-                }
-            }
-        }
-        
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            lastPosition = e.GetPosition(this.scrollHost);
-        }
-
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Point newPosition = e.GetPosition(this.scrollHost);
-                double dx = newPosition.X - lastPosition.X;
-                double dy = newPosition.Y - lastPosition.Y;
-
-                double horizontalOffset = Math.Min(Math.Max(this.scrollHost.HorizontalOffset - dx, 0.0), this.scrollHost.ScrollableWidth);
-                double verticalOffset = Math.Min(Math.Max(this.scrollHost.VerticalOffset - dy, 0.0), this.scrollHost.ScrollableHeight);
-
-                this.scrollHost.ScrollToHorizontalOffset(horizontalOffset);
-                this.scrollHost.ScrollToVerticalOffset(verticalOffset);
-
-                lastPosition = newPosition;
-            }
-        }
-        
-
-        #endregion
-
-        #region Private Methods
-        /// <summary>
-        /// Command to zoom the displayed photo in.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnZoomPhotoInCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            PhotoDisplayControl photoDisplay = sender as PhotoDisplayControl;
-            if (photoDisplay != null)
-            {
-                // Stop tagging
-                photoDisplay.RestoreInitialState();
-
-                photoDisplay.ZoomPhotoIn();
-            }
-        }
-
-        /// <summary>
-        /// Command to zoom the displayed photo out.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnZoomPhotoOutCommand(object sender, ExecutedRoutedEventArgs e)
-        {
-            PhotoDisplayControl photoDisplay = sender as PhotoDisplayControl;
-            if (photoDisplay != null)
-            {
-                // Stop tagging
-                photoDisplay.RestoreInitialState();
-
-                photoDisplay.ZoomPhotoOut();
-            }
-        }
-
-        /// <summary>
-        /// Determines whether the photo can be zoomed out any further.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnZoomPhotoOutCanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            PhotoDisplayControl photoDisplay = sender as PhotoDisplayControl;
-            if (photoDisplay != null)
-            {
-                e.CanExecute = photoDisplay.CanZoomPhotoOut();
-            }
-        }
-
-        /// <summary>
-        /// Command to fit the displayed photo to the window size.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnFitPhotoToWindow(object sender, ExecutedRoutedEventArgs e)
-        {
-            PhotoDisplayControl photoDisplay = sender as PhotoDisplayControl;
-
-            if (photoDisplay != null)
-            {
-                photoDisplay.FittingPhotoToWindow = !photoDisplay.FittingPhotoToWindow;
-            }
-        }
-
-        /// <summary>
-        /// Handler for FittingPhotoToWindow changes.
-        /// </summary>
-        /// <param name="element">The element that changed.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private static void OnFittingPhotoToWindowChanged(DependencyObject element, DependencyPropertyChangedEventArgs e)
-        {
-            ((PhotoDisplayControl)element).OnFittingPhotoToWindowChanged((bool)e.NewValue);
-        }
-
-        /// <summary>
-        /// Close the tagging and comments controls and bring album to initial state.
-        /// </summary>
-        private void RestoreInitialState()
-        {
-            // Close commenting function
-            if (this.CommentsVisible)
-            {
-                this.CommentsVisible = false;
+                return;
             }
 
-            // Raise photo state changed event
-            if (this.PhotoStateChanged != null)
-            {
-                this.PhotoStateChanged(this, EventArgs.Empty);
-            }
+            // TODO: When this is coming from the mouse or a command then should make the scaling happen centered
+            // based on the cursor position if it's over the frame.
+            matrix.ScaleAtPrepend(scale, scale, _frameControl.ActualWidth / 2, _frameControl.ActualHeight / 2);
+
+            element.RenderTransform = new MatrixTransform(matrix);
         }
 
-        /// <summary>
-        /// Calculates the zoom factor for a fit-to-window zoom.
-        /// </summary>
-        private void CalculateStandardZoom()
-        {
-            double widthZoom;
-            double heightZoom;
+        #region Multi-touch and mouse interaction logic
 
-            if (this.PhotoImage.ImageSource != null)
-            {
-                widthZoom = (this.scrollHost.ViewportWidth - this.photoBorderWidth) / this.PhotoImage.ImageSource.Width;
-                heightZoom = (this.scrollHost.ViewportHeight - this.photoBorderWidth) / this.PhotoImage.ImageSource.Height;
-                this.PhotoZoomFactor = Math.Abs(Math.Min(widthZoom, heightZoom));
-            }
-        }
-        #endregion
-
-        #region multi-touch support
-
+        Point? _lastMousePosition;
         int _numTouches = 0;
         int[] _touchId = new int[2];
         Point[] _touchInitialPts = new Point[2];
         Point[] _touchLastPts = new Point[2];
-        double _initialZoomFactor;
         bool _inZooming = false;
 
-        private IInputElement GetContainer()
+        private void _InitializeMultiTouch()
         {
-           
-            return (IInputElement)this.scrollHost;
+            var hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+            // Enable multi-touch input for stylus
+            NativeMethods.SetProp(hwndSource.Handle, "MicrosoftTabletPenServiceProperty", new IntPtr(0x01000000));
+            SetValue(Stylus.IsFlicksEnabledProperty, false);
         }
 
-        private void InitializeMultiTouch()
+        protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+            _lastMousePosition = e.GetPosition(_canvas);
+        }
 
-            // Enable multi-touch input for stylus
-            if (hwndSource != null)
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            // The additonal null check helps with preventing an accidental drag when
+            // double-clicking the caption bar to maximize the window.
+            if (e.LeftButton == MouseButtonState.Pressed && _lastMousePosition != null)
             {
-                NativeMethods.SetProp(hwndSource.Handle, "MicrosoftTabletPenServiceProperty", new IntPtr(0x01000000));
+                Point newPosition = e.GetPosition(_canvas);
+                _MovePhoto(new Vector(newPosition.X - _lastMousePosition.Value.X, newPosition.Y - _lastMousePosition.Value.Y));
+                _lastMousePosition = newPosition;
             }
+        }
 
-            SetValue(Stylus.IsFlicksEnabledProperty, false);
-
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseUp(e);
+            _lastMousePosition = null;
         }
 
         protected override void OnPreviewStylusDown(StylusDownEventArgs e)
         {
-            //Debug.WriteLine("Down");
             if (_numTouches == 0)
             {
-                this.CaptureStylus();
+                CaptureStylus();
                 _inZooming = false;
             }
-            if (_numTouches == 1 )
-                _initialZoomFactor = this.PhotoZoomFactor;
+
             if (_numTouches < 2)
             {
                 _touchId[_numTouches] = e.StylusDevice.Id;
-                _touchInitialPts[_numTouches] = e.GetPosition(GetContainer());
+                _touchInitialPts[_numTouches] = e.GetPosition(_canvas);
                 _touchLastPts[_numTouches] = _touchInitialPts[_numTouches];
 
                 ++_numTouches;
@@ -720,48 +381,21 @@ namespace FacebookClient
 
             if (_numTouches == 1 && _touchId[0] == e.StylusDevice.Id && !_inZooming)
             {
-                Point p0 = e.GetPosition(GetContainer());
-                double dx = p0.X - _touchLastPts[0].X;
-                double dy = p0.Y - _touchLastPts[0].Y;
-
-                double horizontalOffset = Math.Min(Math.Max(this.scrollHost.HorizontalOffset - dx, 0.0), this.scrollHost.ScrollableWidth);
-                double verticalOffset = Math.Min(Math.Max(this.scrollHost.VerticalOffset - dy, 0.0), this.scrollHost.ScrollableHeight);
-
-                this.scrollHost.ScrollToHorizontalOffset(horizontalOffset);
-                this.scrollHost.ScrollToVerticalOffset(verticalOffset);
-
-                _touchLastPts[0] = p0;
+                Point newTouchPosition = e.GetPosition(_canvas);
+                _MovePhoto(new Vector(newTouchPosition.X - _touchLastPts[0].X, newTouchPosition.Y - _touchLastPts[0].Y));
+                _touchLastPts[0] = newTouchPosition;
             }
             else if (_numTouches == 2 && (_touchId[0] == e.StylusDevice.Id || _touchId[1] == e.StylusDevice.Id))
             {
                 int index = _touchId[0] == e.StylusDevice.Id ? 0 : 1;
-                Point p0 = e.GetPosition(GetContainer());
+                Point p0 = e.GetPosition(_canvas);
                 Point p1 = _touchLastPts[1 - index];
                 double distance = (p0 - p1).Length;
                 double scale = distance / (_touchInitialPts[0] - _touchInitialPts[1]).Length;
                 if (scale > 0.1 && scale < 20)
                 {
-
-                    this.FittingPhotoToWindow = false;
-                    this.PhotoZoomFactor = _initialZoomFactor * scale;
-
-                    if (this.photoZoomTransform != null)
-                    {
-                        this.photoZoomTransform.ScaleX = this.PhotoZoomFactor;
-                        this.photoZoomTransform.ScaleY = this.PhotoZoomFactor;
-                    }
+                    _ResizePhoto(scale);
                 }
-                /*
-                double dx = ((p0.X + p1.X) - (_touchLastPts[0].X + _touchLastPts[1].X)) / 2;
-                double dy = ((p0.Y + p1.Y) - (_touchLastPts[0].Y + _touchLastPts[1].Y)) / 2;
-
-                double horizontalOffset = Math.Min(Math.Max(this.scrollHost.HorizontalOffset - dx, 0.0), this.scrollHost.ScrollableWidth);
-                double verticalOffset = Math.Min(Math.Max(this.scrollHost.VerticalOffset - dy, 0.0), this.scrollHost.ScrollableHeight);
-
-                this.scrollHost.ScrollToHorizontalOffset(horizontalOffset);
-                this.scrollHost.ScrollToVerticalOffset(verticalOffset);
-                */
-
 
                 _touchLastPts[index] = p0;
                 _inZooming = true;
@@ -787,19 +421,20 @@ namespace FacebookClient
                     _numTouches--;
                 }
             }
+
             if (_numTouches == 0)
             {
-                this.ReleaseStylusCapture();
+                ReleaseStylusCapture();
             }
             e.Handled = true;
         }
+
         protected override void OnStylusSystemGesture(StylusSystemGestureEventArgs e)
         {
             e.Handled = true;
         }
 
         #endregion
-
     }
 
     /// <summary>
