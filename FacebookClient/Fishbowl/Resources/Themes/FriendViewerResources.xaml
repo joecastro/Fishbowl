@@ -493,7 +493,7 @@
                 <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="7,5,0,7">
                   <Button 
                     Style="{DynamicResource StandardButtonStyle}"
-                    IsEnabled="{Binding ElementName=PART_WriteOnWallTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}}" 
+                    IsEnabled="{Binding ElementName=PART_WriteOnWallTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" 
                     Content="Share" 
                     DockPanel.Dock="Right"
                     Height="22" 

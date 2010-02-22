@@ -11,7 +11,14 @@ namespace FacebookClient
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.IsNullOrEmpty(value as string);
+            bool ret = string.IsNullOrEmpty(value as string);
+
+            if ((string)parameter == "Inverse")
+            {
+                ret = !ret;
+            }
+
+            return ret;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

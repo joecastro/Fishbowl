@@ -858,7 +858,7 @@
                       </MultiBinding>
                     </FacebookClient:CommandTextBox.CommitCommandParameter>
                   </FacebookClient:CommandTextBox>
-                  <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                  <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                     <Button.CommandParameter>
                       <MultiBinding Converter="{StaticResource MultiAggregator}">
                         <Binding Path="FacebookPhoto" />
@@ -996,7 +996,7 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />
