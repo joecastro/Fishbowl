@@ -6,6 +6,8 @@ namespace Standard
 {
     internal static partial class IID
     {
+        /// <summary>IID_IApplicationAssociationRegistration</summary>
+        public const string ApplicationAssociationRegistration = "4e530b0a-e611-4c77-a3ac-9031d022281b";
         /// <summary>IID_IConnectionPoint</summary>
         public const string ConnectionPoint = "B196B286-BAB4-101A-B69C-00AA00341D07";
         /// <summary>IID_IConnectionPointContainer</summary>
@@ -114,6 +116,9 @@ namespace Standard
             return (T)System.Activator.CreateInstance(System.Type.GetTypeFromCLSID(new System.Guid(clsid)));
         }
 
+        /// <summary>CLSID_ApplicationAssociationRegistration</summary>
+        /// <remarks>IID_IApplicationAssociationRegistration</remarks>
+        public const string ApplicationAssociationRegistration = "591209c7-767b-42b2-9fba-44ee4615f2c7";
         /// <summary>CLSID_FileOpenDialog</summary>
         /// <remarks>IID_IFileOpenDialog</remarks>
         public const string FileOpenDialog = "DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7";
