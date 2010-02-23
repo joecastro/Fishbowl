@@ -6,7 +6,6 @@
     xmlns:ClientManager="clr-namespace:ClientManager"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
-    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
     x:Name="MainWindow"
     FacebookClient:MiniModeWindow.NonGlassBackground="{DynamicResource FacebookBlueBrush}"
     Title="fishbowl" 
@@ -19,24 +18,24 @@
     PreviewKeyDown="Grid_PreviewKeyDown" 
     MouseWheel="OnWindow_MouseWheel"
     IsVisibleChanged="_IsVisibleChanged">
-  <shell:TaskbarItemInfo.TaskbarItemInfo>
-    <shell:TaskbarItemInfo 
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo 
         Overlay="{Binding ElementName=NotificationCountControl, Path=ImageSource}"
         Description="{Binding ElementName=PART_ZapScroller2, Path=CurrentItem.Message}" ThumbnailClipMargin="0,0,0,33">
-      <shell:TaskbarItemInfo.ThumbButtonInfos>
-        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
-          <shell:ThumbButtonInfo.ImageSource>
+      <TaskbarItemInfo.ThumbButtonInfos>
+        <ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
+          <ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource LeftArrowToolbarDrawing}"/>
-          </shell:ThumbButtonInfo.ImageSource>
-        </shell:ThumbButtonInfo>
-        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
-          <shell:ThumbButtonInfo.ImageSource>
+          </ThumbButtonInfo.ImageSource>
+        </ThumbButtonInfo>
+        <ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
+          <ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource RightArrowToolbarDrawing}"/>
-          </shell:ThumbButtonInfo.ImageSource>
-        </shell:ThumbButtonInfo>
-      </shell:TaskbarItemInfo.ThumbButtonInfos>
-    </shell:TaskbarItemInfo>
-  </shell:TaskbarItemInfo.TaskbarItemInfo>
+          </ThumbButtonInfo.ImageSource>
+        </ThumbButtonInfo>
+      </TaskbarItemInfo.ThumbButtonInfos>
+    </TaskbarItemInfo>
+  </Window.TaskbarItemInfo>
 
   <Window.Resources>
     <FacebookClient:AddConverter x:Key="AddConverter" />

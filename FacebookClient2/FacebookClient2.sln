@@ -7,57 +7,52 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectLibrary.Dev10", "EffectLibrary\EffectLibrary.Dev10.csproj", "{66271E3C-0725-4B49-B62B-910562AF4954}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectLibrary", "EffectLibrary\EffectLibrary.csproj", "{66271E3C-0725-4B49-B62B-910562AF4954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitionEffects.Dev10", "TransitionEffects\TransitionEffects.Dev10.csproj", "{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitionEffects", "TransitionEffects\TransitionEffects.csproj", "{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contigo.Dev10", "Contigo\Contigo.Dev10.csproj", "{92EF4985-F377-4707-B156-10A8D197B666}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contigo", "Contigo\Contigo.csproj", "{92EF4985-F377-4707-B156-10A8D197B666}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard.Dev10", "Standard\Standard.Dev10.csproj", "{A1326555-AD64-4A93-A95C-B68ABD5672D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard", "Standard\Standard.csproj", "{A1326555-AD64-4A93-A95C-B68ABD5672D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Windows.Shell.Dev10", "Microsoft.Windows.Shell\Microsoft.Windows.Shell.Dev10.csproj", "{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishBowl", "Fishbowl\FishBowl.csproj", "{77308CBC-E2FF-4224-B115-FD28D80B3B38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishBowl.Dev10", "Fishbowl\FishBowl.Dev10.csproj", "{77308CBC-E2FF-4224-B115-FD28D80B3B38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Json", "Microsoft.Json\Microsoft.Json\Microsoft.Json.csproj", "{2E12ED56-6501-43A5-85C7-64255241D60E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Json.Dev10", "Microsoft.Json\Microsoft.Json\Microsoft.Json.Dev10.csproj", "{2E12ED56-6501-43A5-85C7-64255241D60E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bing", "Microsoft.Bing\Microsoft.Bing.csproj", "{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bing.Dev10", "Microsoft.Bing\Microsoft.Bing.Dev10.csproj", "{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardTests.Dev10", "StandardTests\StandardTests.Dev10.csproj", "{FDF91D01-913B-45D6-AC2E-6418D198E185}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardTests", "StandardTests\StandardTests.csproj", "{FDF91D01-913B-45D6-AC2E-6418D198E185}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs03.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Fishbowl\\FishBowl.Dev10.csproj
+		SccProjectUniqueName1 = Fishbowl\\FishBowl.csproj
 		SccProjectName1 = Fishbowl
 		SccLocalPath1 = Fishbowl
-		SccProjectUniqueName2 = TransitionEffects\\TransitionEffects.Dev10.csproj
+		SccProjectUniqueName2 = TransitionEffects\\TransitionEffects.csproj
 		SccProjectName2 = TransitionEffects
 		SccLocalPath2 = TransitionEffects
-		SccProjectUniqueName3 = EffectLibrary\\EffectLibrary.Dev10.csproj
+		SccProjectUniqueName3 = EffectLibrary\\EffectLibrary.csproj
 		SccProjectName3 = EffectLibrary
 		SccLocalPath3 = EffectLibrary
-		SccProjectUniqueName4 = Contigo\\Contigo.Dev10.csproj
+		SccProjectUniqueName4 = Contigo\\Contigo.csproj
 		SccProjectName4 = Contigo
 		SccLocalPath4 = Contigo
-		SccProjectUniqueName5 = Standard\\Standard.Dev10.csproj
+		SccProjectUniqueName5 = Standard\\Standard.csproj
 		SccProjectName5 = Standard
 		SccLocalPath5 = Standard
-		SccProjectUniqueName6 = Microsoft.Windows.Shell\\Microsoft.Windows.Shell.Dev10.csproj
-		SccProjectName6 = Microsoft.Windows.Shell
-		SccLocalPath6 = Microsoft.Windows.Shell
-		SccProjectUniqueName7 = Microsoft.Json\\Microsoft.Json\\Microsoft.Json.Dev10.csproj
-		SccProjectName7 = Microsoft.Json/Microsoft.Json
-		SccLocalPath7 = Microsoft.Json\\Microsoft.Json
-		SccProjectUniqueName8 = Microsoft.Bing\\Microsoft.Bing.Dev10.csproj
-		SccProjectName8 = Microsoft.Bing
-		SccLocalPath8 = Microsoft.Bing
-		SccProjectUniqueName9 = StandardTests\\StandardTests.Dev10.csproj
-		SccProjectName9 = StandardTests
-		SccLocalPath9 = StandardTests
+		SccProjectUniqueName6 = Microsoft.Json\\Microsoft.Json\\Microsoft.Json.csproj
+		SccProjectName6 = Microsoft.Json/Microsoft.Json
+		SccLocalPath6 = Microsoft.Json\\Microsoft.Json
+		SccProjectUniqueName7 = Microsoft.Bing\\Microsoft.Bing.csproj
+		SccProjectName7 = Microsoft.Bing
+		SccLocalPath7 = Microsoft.Bing
+		SccProjectUniqueName8 = StandardTests\\StandardTests.csproj
+		SccProjectName8 = StandardTests
+		SccLocalPath8 = StandardTests
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = FacebookClient.vsmdi
@@ -82,10 +77,7 @@ Global
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|x86.ActiveCfg = Debug|x86
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|x86.Build.0 = Debug|x86
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Release|x86.ActiveCfg = Release|x86
-		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Debug|x86.ActiveCfg = Debug|x86
-		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Debug|x86.Build.0 = Debug|x86
-		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.ActiveCfg = Release|x86
-		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.Build.0 = Release|x86
+		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Release|x86.Build.0 = Release|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Debug|x86.ActiveCfg = Debug|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Debug|x86.Build.0 = Debug|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Release|x86.ActiveCfg = Release|x86
@@ -101,6 +93,7 @@ Global
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.ActiveCfg = Debug|x86
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.Build.0 = Debug|x86
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|x86.ActiveCfg = Release|x86
+		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

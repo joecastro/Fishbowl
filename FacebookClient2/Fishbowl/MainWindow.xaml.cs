@@ -16,12 +16,12 @@ namespace FacebookClient
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Navigation;
+    using System.Windows.Shell;
     using ClientManager;
     using ClientManager.Controls;
     using ClientManager.View;
     using Contigo;
     using Standard;
-    using Microsoft.Windows.Shell;
 
     /// <summary>
     /// The ScePhoto view mode; regular or full-screen with options.
@@ -292,15 +292,14 @@ namespace FacebookClient
 
         private void _UpdateClipMargin()
         {
-            TaskbarItemInfo tbii = TaskbarItemInfo.GetTaskbarItemInfo(this);
             if (ServiceProvider.ViewManager.Dialog == null)
             {
                 Thickness margin = new Thickness(0, Header.ActualHeight, 0, Footer.ActualHeight);
-                tbii.ThumbnailClipMargin = margin;
+                TaskbarItemInfo.ThumbnailClipMargin = margin;
             }
             else
             {
-                tbii.ThumbnailClipMargin = default(Thickness);
+                TaskbarItemInfo.ThumbnailClipMargin = default(Thickness);
             }
         }
 
