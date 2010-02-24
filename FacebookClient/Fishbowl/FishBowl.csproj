@@ -281,6 +281,14 @@
     <Compile Include="Converters\PhotoZoomFactorToBitmapScalingModeConverter.cs" />
     <Compile Include="Converters\RotationAngleToSimplePositiveAngleConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="Standard\HighlightAdorner.cs" />
+    <Compile Include="Standard\PhysicalCharInfo.cs" />
+    <Compile Include="Standard\PhysicalLineInfo.cs" />
+    <Compile Include="Standard\SelectionRange.cs" />
+    <Compile Include="Standard\TextPointerOperations.cs" />
+    <Compile Include="Standard\TextSelection.cs" />
+    <Compile Include="Standard\TextSelectionSettings.cs" />
+    <Compile Include="Standard\TextView.cs" />
     <Compile Include="View\ActionCommands.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

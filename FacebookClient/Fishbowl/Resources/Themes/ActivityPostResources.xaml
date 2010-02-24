@@ -6,14 +6,15 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View" 
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo" 
-    xmlns:FacebookClient="clr-namespace:FacebookClient">
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:TextSelection="clr-namespace:Microsoft.Wpf.Samples.Documents" >
 
   <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
   <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
-
+  
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
@@ -159,7 +160,7 @@
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="Margin" Value="0,5,0,0" />
     <Setter Property="Visibility" Value="Visible" />
-    <Setter Property="Foreground" Value="{DynamicResource AttachmentDescriptionTextBlockForeground}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AttachmentDescriptionTextBlockForeground}"/>
   </Style>
   <Style x:Key="AttachmentCaptionTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
@@ -168,7 +169,7 @@
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="Margin" Value="0,0,0,5" />
     <Setter Property="Visibility" Value="Visible" />
-    <Setter Property="Foreground" Value="{DynamicResource AttachmentCaptionTextBlockForeground}"/>
+      <Setter Property="Foreground" Value="{DynamicResource AttachmentCaptionTextBlockForeground}"/>
     <Style.Triggers>
       <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
         <Setter Property="Visibility" Value="Collapsed" />
@@ -193,6 +194,7 @@
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontSize" Value="13" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+    <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
   </Style>
   <DataTemplate x:Key="NewsFeedCommentTemplate" DataType="{x:Type Facebook:ActivityComment}">
     <Grid x:Name="CommentPanel" MinHeight="65" Margin="0,0,0,5">
@@ -544,7 +546,7 @@
                 </Style>
               </Border.Style>
               <Grid>
-                <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
+              <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
                 <ItemsControl 
                     Margin="10,0,10,0"
                     ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource NewsFeedCommentTemplate}">
