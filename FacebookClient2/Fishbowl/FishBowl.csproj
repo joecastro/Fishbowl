@@ -250,7 +250,6 @@
     <Compile Include="DragDropLib.cs" />
     <Compile Include="HyperlinkTextContent.cs" />
     <Compile Include="Controls\AnimatingTilePanel.cs" />
-    <Compile Include="BindableRun.cs" />
     <Compile Include="ListPager.cs" />
     <Compile Include="MainWindowCommands.cs" />
     <Compile Include="Controls\GalleryHomeControl.cs" />

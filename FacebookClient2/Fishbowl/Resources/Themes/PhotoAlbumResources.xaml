@@ -114,7 +114,7 @@
         </Button>
         <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="22px" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
-            <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
+            <Run Text="{Binding Owner.Name, Mode=OneWay}"/>
           </Hyperlink>
         </TextBlock>
         <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light" TextWrapping="Wrap">

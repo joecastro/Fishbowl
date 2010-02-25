@@ -18,37 +18,36 @@
 
   <TextBlock x:Key="InterestingYetNoPhotosTextBlock" Style="{StaticResource FriendViewerInformationalTextBlock}">
     <Run>Fishbowl is trying to get photo albums by</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.Name}" />
+    <Run Text="{Binding Path=FacebookContact.Name, Mode=OneWay}" />
     <Run>but so far hasn't found any.  This might take a little while, or maybe</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.FirstName}" />
+    <Run Text="{Binding Path=FacebookContact.FirstName, Mode=OneWay}" />
     <Run>has privacy settings such that this application can't see</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact,  Converter={StaticResource SexPronounConverter}, ConverterParameter=Possessive}" />
+    <Run Text="{Binding Path=FacebookContact, Converter={StaticResource SexPronounConverter}, ConverterParameter=Possessive, Mode=OneWay}" />
     <Run>photos.</Run>
     <LineBreak />
     <Run>You can click on the Facebook button in the toolbar to see</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact, Converter={StaticResource SexPronounConverter}, ConverterParameter=Possessive}" />
+    <Run Text="{Binding Path=FacebookContact, Converter={StaticResource SexPronounConverter}, ConverterParameter=Possessive, Mode=OneWay}" />
     <Run>real Facebook page in a browser.</Run>
   </TextBlock>
 
   <TextBlock x:Key="NeutrallyInterestingYetNoPhotosTextBlock" Style="{StaticResource FriendViewerInformationalTextBlock}">
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.Name}" />
+    <Run Text="{Binding Path=FacebookContact.Name, Mode=OneWay}" />
     <Run>either hasn't updated any albums recently or may not allow this application to see them.  If you want to see all the albums posted by</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.FirstName}" />
+    <Run Text="{Binding Path=FacebookContact.FirstName, Mode=OneWay}" />
     <Run>try increasing the interest level slider.</Run>
   </TextBlock>
 
   <TextBlock x:Key="UninterestingTextBlock" Style="{StaticResource FriendViewerInformationalTextBlock}">
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.Name}" />
+    <Run Text="{Binding Path=FacebookContact.Name, Mode=OneWay}" />
     <Run>isn't interesting to you right now.</Run>
     <LineBreak />
     <Run>If you change your mind and want to see information about</Run>
-    <FacebookClient:BindableRun Text="{Binding Path=FacebookContact.FirstName}" />
+    <Run Text="{Binding Path=FacebookContact.FirstName, Mode=OneWay}" />
     <Run>again just move the "Interest Level" slider to the right.</Run>
   </TextBlock>
 
   <ControlTemplate x:Key="FriendRadioButtonTemplate" TargetType="{x:Type RadioButton}">
     <Grid Cursor="Hand">
-
       <Rectangle x:Name="bevel1" Fill="{DynamicResource FriendViewerCategoryTabsBevel1}" Height="1" SnapsToDevicePixels="True" Margin="0,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
       <Rectangle x:Name="bevel2" Fill="{DynamicResource FriendViewerCategoryTabsBevel2}" Height="1" SnapsToDevicePixels="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
       <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />

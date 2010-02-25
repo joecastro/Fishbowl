@@ -91,7 +91,7 @@
                           <Hyperlink 
                               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
                               CommandParameter="{Binding}">
-                            <FacebookClient:BindableRun Text="{Binding Name}" />
+                            <Run Text="{Binding Name, Mode=OneWay}" />
                           </Hyperlink></TextBlock>
                         <Button 
                           Width="14" 

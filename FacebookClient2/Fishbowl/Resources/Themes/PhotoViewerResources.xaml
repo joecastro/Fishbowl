@@ -776,7 +776,7 @@
               Style="{StaticResource ProfileNameTextBlockStyle}"
               TextWrapping="Wrap">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" >
-              <FacebookClient:BindableRun Text="{Binding Name}"/>
+              <Run Text="{Binding Name, Mode=OneWay}"/>
             </Hyperlink>
             <InlineUIContainer>
               <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
@@ -940,12 +940,12 @@
           </Button>
           <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="22px" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
-            <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
+            <Run Text="{Binding Owner.Name, Mode=OneWay}"/>
           </Hyperlink>
           </TextBlock>
           <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Regular" FontSize="22px" Foreground="{DynamicResource PhotoViewerAlbumNameForeground}" TextWrapping="Wrap">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}">
-              <FacebookClient:BindableRun Text="{Binding Title}"/>
+              <Run Text="{Binding Title, Mode=OneWay}"/>
             </Hyperlink>
           </TextBlock>
 

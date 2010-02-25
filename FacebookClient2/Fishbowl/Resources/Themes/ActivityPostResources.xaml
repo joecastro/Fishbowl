@@ -462,7 +462,7 @@
           <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
             <TextBlock Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
-              <FacebookClient:BindableRun Text="{Binding Actor.Name}" />
+              <Run Text="{Binding Actor.Name, Mode=OneWay}" />
             </Hyperlink>
             <InlineUIContainer>
               <Grid x:Name="Status" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
@@ -474,7 +474,7 @@
               <Run FontFamily="Webdings" Foreground="{DynamicResource ActivityPostPersonToPersonArrowBrush}">4
               </Run>
               <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Target}">
-                <FacebookClient:BindableRun Text="{Binding Target.Name}" />
+                <Run Text="{Binding Target.Name, Mode=OneWay}" />
               </Hyperlink>
               <Run>:
               </Run>

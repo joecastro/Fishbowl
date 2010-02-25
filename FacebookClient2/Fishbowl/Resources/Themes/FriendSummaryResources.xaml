@@ -59,7 +59,7 @@
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
         <TextBlock DockPanel.Dock="Top" Style="{DynamicResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="{Binding HasData, FallbackValue=False}">
-            <FacebookClient:BindableRun Text="{Binding Name}"/>
+            <Run Text="{Binding Name, Mode=OneWay}"/>
           </Hyperlink>
           <InlineUIContainer>
             <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
