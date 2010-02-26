@@ -108,6 +108,7 @@ namespace Microsoft.Wpf.Samples.Documents
             TextRange range = this.Selection;
             string text = range.Text;
 
+            // TODO: It would be more efficient to defer copying to the data object until a paste was requested
             DataObject data = new DataObject();
             data.SetData(DataFormats.Text, text);
             data.SetData(DataFormats.UnicodeText, text);
@@ -328,12 +329,8 @@ namespace Microsoft.Wpf.Samples.Documents
 
         private static void HandleCanSelectAllCommand(object sender, CanExecuteRoutedEventArgs e)
         {
-            TextSelection selection = FromHostEventArgs(sender);
-            if (selection != null)
-            {
-                e.CanExecute = true;
-                e.Handled = true;
-            }
+            e.CanExecute = true;
+            e.Handled = true;
         }
 
         private static void HandleCopyCommand(object sender, ExecutedRoutedEventArgs e)
@@ -371,7 +368,7 @@ namespace Microsoft.Wpf.Samples.Documents
                     if (service == null)
                     {
                         uiElementSender.AddHandler(UIElement.PreviewMouseLeftButtonDownEvent, (MouseButtonEventHandler)HandlePreviewMouseLeftButtonDownStatic, true);
-                        uiElementSender.AddHandler(FrameworkElement.ContextMenuOpeningEvent, (RoutedEventHandler)HandleContextMenuOpeningStatic, true);
+                        uiElementSender.AddHandler(FrameworkElement.ContextMenuOpeningEvent, (ContextMenuEventHandler)HandleContextMenuOpeningStatic, true);
                         uiElementSender.CommandBindings.Add(CopyCommandBinding);
                         uiElementSender.CommandBindings.Add(SelectAllCommandBinding);
                     }
@@ -387,7 +384,7 @@ namespace Microsoft.Wpf.Samples.Documents
 
                         uiElementSender.CommandBindings.Remove(SelectAllCommandBinding);
                         uiElementSender.CommandBindings.Remove(CopyCommandBinding);
-                        uiElementSender.RemoveHandler(FrameworkElement.ContextMenuOpeningEvent, (RoutedEventHandler)HandleContextMenuOpeningStatic);
+                        uiElementSender.RemoveHandler(FrameworkElement.ContextMenuOpeningEvent, (ContextMenuEventHandler)HandleContextMenuOpeningStatic);
                         uiElementSender.RemoveHandler(UIElement.PreviewMouseLeftButtonDownEvent, (MouseButtonEventHandler)HandlePreviewMouseLeftButtonDownStatic);
                     }
                 }
@@ -404,32 +401,50 @@ namespace Microsoft.Wpf.Samples.Documents
             }
         }
 
-        private static void HandleContextMenuOpeningStatic(object sender, RoutedEventArgs e)
+        private static void HandleContextMenuOpeningStatic(object sender, ContextMenuEventArgs e)
         {
             DependencyObject dObjSender = sender as DependencyObject;
-            if (dObjSender != null)
+            IInputElement inputElementSender = sender as IInputElement;
+
+            if (dObjSender != null && inputElementSender != null)
             {
                 ContextMenu contextMenu = (ContextMenu)(dObjSender.GetValue(FrameworkElement.ContextMenuProperty));
+
                 if (contextMenu == null)
                 {
                     TextSelectionSettings settings = TextSelection.GetSettings(dObjSender);
-                    IEnumerable<RoutedUICommand> commands = 
-                        (settings != null) ? settings.ContextMenuCommands : TextSelectionSettings.DefaultContextMenuCommands;
+                    IEnumerable<RoutedUICommand> commands = null;
 
-                    contextMenu = CreateContextMenu(dObjSender as IInputElement, commands);
-                }
-
-                if (contextMenu != null)
-                {
-                    RoutedEventHandler handleContextMenuClosed = null;
-                    handleContextMenuClosed = (closedSender, closedArgs) =>
+                    if (settings != null && settings.HasContextMenuCommands)
                     {
-                        contextMenu.Closed -= handleContextMenuClosed;
-                        dObjSender.ClearValue(FrameworkElement.ContextMenuProperty);
-                    };
-                    contextMenu.Closed += handleContextMenuClosed;
+                        commands = settings.ContextMenuCommands;
+                    }
+                    else
+                    {
+                        commands = TextSelectionSettings.DefaultContextMenuCommands;
+                    }
 
-                    dObjSender.SetValue(FrameworkElement.ContextMenuProperty, contextMenu);
+                    contextMenu = CreateContextMenu(inputElementSender, commands);
+
+                    if (contextMenu != null)
+                    {                    
+                        // We are repacing a null ContextMenu with our built from scratch ContextMenu.
+                        // Mark the event as handled so that the built in context menu service does not
+                        // try to open the null Context menu and we can open our built from scratch menu 
+                        // ourselves
+                        e.Handled = true;
+
+                        RoutedEventHandler handleContextMenuClosed = null;
+                        handleContextMenuClosed = (closedSender, closedArgs) =>
+                        {
+                            inputElementSender.RemoveHandler(FrameworkElement.ContextMenuClosingEvent, handleContextMenuClosed);
+                            dObjSender.ClearValue(FrameworkElement.ContextMenuProperty);
+                        };
+
+                        inputElementSender.AddHandler(FrameworkElement.ContextMenuClosingEvent, handleContextMenuClosed);
+                        dObjSender.SetValue(FrameworkElement.ContextMenuProperty, contextMenu);
+                        contextMenu.IsOpen = true;
+                    }
                 }
             }
         }

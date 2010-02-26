@@ -76,6 +76,14 @@
             }
         }
 
+        /// <summary>
+        /// True of the the ContextMenuCommands property has never been accessed
+        /// </summary>
+        public bool HasContextMenuCommands
+        {
+            get { return this.contextMenuCommands != null; }
+        }
+
         private static Brush CreateBrush(Color color)
         {
             Brush result = new SolidColorBrush(color);
