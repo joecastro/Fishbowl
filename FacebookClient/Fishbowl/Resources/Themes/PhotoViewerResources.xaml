@@ -9,7 +9,7 @@
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
   <FacebookClient:PhotoZoomFactorToBitmapScalingModeConverter x:Key="PhotoZoomFactorToBitmapScalingModeConverter"/>
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
-  <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+  <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
   
   <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
   <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
@@ -858,7 +858,7 @@
                       </MultiBinding>
                     </FacebookClient:CommandTextBox.CommitCommandParameter>
                   </FacebookClient:CommandTextBox>
-                  <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                  <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                     <Button.CommandParameter>
                       <MultiBinding Converter="{StaticResource MultiAggregator}">
                         <Binding Path="FacebookPhoto" />
@@ -996,7 +996,7 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" Margin="10,4,4,0" Height="22" HorizontalAlignment="Right" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13.333">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding Path="FacebookPhoto" />

@@ -13,7 +13,7 @@
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
-  <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+  <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
   
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
@@ -585,7 +585,7 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding />

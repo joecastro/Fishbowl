@@ -1,7 +1,7 @@
 ﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.FriendViewerEventResourceDictionary" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:ClientManager="clr-namespace:ClientManager" xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" xmlns:ClientManagerView="clr-namespace:ClientManager.View" xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo" xmlns:Properties="clr-namespace:FacebookClient.Properties" xmlns:FacebookClient="clr-namespace:FacebookClient">
 
   <FacebookClient:SexPronounConverter x:Key="SexPronounConverter" />
-  <FacebookClient:IsStringNullOrEmptyConverter x:Key="IsStringNullOrEmptyConverter" />
+  <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   
   <Style x:Key="FriendViewerInformationalTextBlock" TargetType="{x:Type TextBlock}">
@@ -493,7 +493,7 @@
                 <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="7,5,0,7">
                   <Button 
                     Style="{DynamicResource StandardButtonStyle}"
-                    IsEnabled="{Binding ElementName=PART_WriteOnWallTextBox, Path=Text, Converter={StaticResource IsStringNullOrEmptyConverter}, ConverterParameter=Inverse}" 
+                    IsEnabled="{Binding ElementName=PART_WriteOnWallTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" 
                     Content="Share" 
                     DockPanel.Dock="Right"
                     Height="22" 
