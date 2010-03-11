@@ -189,9 +189,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Json\Microsoft.Json\Microsoft.Json.csproj">
+    <ProjectReference Include="..\Microsoft.Json\Microsoft.Json\Microsoft.Json.Dev10.csproj">
       <Project>{2E12ED56-6501-43A5-85C7-64255241D60E}</Project>
-      <Name>Microsoft.Json</Name>
+      <Name>Microsoft.Json.Dev10</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,18 +1,10 @@
 // #define REENABLE_BLEND_THEME
 
-//-----------------------------------------------------------------------
-// <copyright file="FacebookClientApplication.xaml.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-//     Code behind file for the FacebookClient Application XAML.
-// </summary>
-//-----------------------------------------------------------------------
-
 namespace FacebookClient
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Media;
@@ -24,13 +16,18 @@ namespace FacebookClient
     /// <summary>
     /// Code behind file for the FacebookClient Application XAML.
     /// </summary>
-    public partial class FacebookClientApplication : Application
+    public partial class FacebookClientApplication : Application, INotifyPropertyChanged
     {
         private enum _WindowMode
         {
             Normal,
             SlideShow,
             MiniMode,
+        }
+
+        public static FacebookClientApplication Current2
+        {
+            get { return (FacebookClientApplication)Application.Current; }
         }
 
         internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
@@ -65,17 +62,25 @@ namespace FacebookClient
 
         public static IEnumerable<string> AvailableThemes { get { return _ThemeNames.AsReadOnly(); } }
 
-        public static Uri SupportWebsite { get { return _SupportUri; } }
+        public Uri SupportWebsite { get { return _SupportUri; } }
 
-        public static Uri PrivacyWebsite { get { return _PrivacyUri; } }
+        public Uri PrivacyWebsite { get { return _PrivacyUri; } }
 
-        public static bool IsFirstRun
+        public bool IsFirstRun
         {
             get { return Settings.Default.IsFirstRun; }
-            set { Settings.Default.IsFirstRun = value; }
+            set
+            {
+                if (Settings.Default.IsFirstRun != value)
+                {
+                    Settings.Default.IsFirstRun = value;
+                    _NotifyPropertyChanged("IsFirstRun");
+                }
+
+            }
         }
 
-        public static string ThemeName
+        public string ThemeName
         {
             get { return Settings.Default.ThemeName; }
             set
@@ -84,40 +89,79 @@ namespace FacebookClient
                 {
                     Settings.Default.ThemeName = value;
                     ((FacebookClientApplication)Application.Current).SwitchTheme(value);
+                    _NotifyPropertyChanged("ThemeName");
                 }
             }
         }
 
-        public static bool AreUpdatesEnabled
+        public bool AreUpdatesEnabled
         {
             get { return Settings.Default.AreUpdatesEnabled; }
-            set { Settings.Default.AreUpdatesEnabled = value; }
+            set
+            {
+                if (Settings.Default.AreUpdatesEnabled != value)
+                {
+                    Settings.Default.AreUpdatesEnabled = value;
+                    _NotifyPropertyChanged("AreUpdatesEnabled");
+                }
+            }
         }
 
-        public static bool DeleteCacheOnShutdown { get; set; }
+        public bool DeleteCacheOnShutdown { get; set; }
 
-        public static bool OpenWebContentInExternalBrowser
+        public bool OpenWebContentInExternalBrowser
         {
             get { return Settings.Default.OpenWebContentExternally; }
-            set { Settings.Default.OpenWebContentExternally = value; }
+            set
+            {
+                if (Settings.Default.OpenWebContentExternally != value)
+                {
+                    Settings.Default.OpenWebContentExternally = value;
+                    _NotifyPropertyChanged("OpenWebContentInExternalBrowser");
+                }
+            }
         }
 
-        public static bool ShowMoreNewsfeedFilters
+        public bool ShowMoreNewsfeedFilters
         {
             get { return Settings.Default.ShowMoreNewsfeedFilters; }
-            set { Settings.Default.ShowMoreNewsfeedFilters = value; }
+            set
+            {
+                if (Settings.Default.ShowMoreNewsfeedFilters != value)
+                {
+                    Settings.Default.ShowMoreNewsfeedFilters = value;
+                    _NotifyPropertyChanged("ShowMoreNewsfeedFilters");
+                }
+            }
         }
 
-        public static bool KeepMiniModeWindowOnTop
+        public bool KeepMeLoggedIn
+        {
+            get { return Settings.Default.KeepMeLoggedIn; }
+            set 
+            {
+                if (Settings.Default.KeepMeLoggedIn != value)
+                {
+                    Settings.Default.KeepMeLoggedIn = value;
+                    _NotifyPropertyChanged("KeepMeLoggedIn");
+                }
+            }
+        }
+
+        public bool KeepMiniModeWindowOnTop
         {
             get { return Settings.Default.KeepMiniModeWindowOnTop; }
             set
             {
-                Settings.Default.KeepMiniModeWindowOnTop = value;
-                Window window = (((FacebookClientApplication)Application.Current)._minimodeWindow);
-                if (null != window)
+                if (Settings.Default.KeepMiniModeWindowOnTop != value)
                 {
-                    window.Topmost = value;
+                    Settings.Default.KeepMiniModeWindowOnTop = value;
+                    Window window = (((FacebookClientApplication)Application.Current)._minimodeWindow);
+                    if (null != window)
+                    {
+                        window.Topmost = value;
+                    }
+                    _NotifyPropertyChanged("KeepMiniModeWindowOnTop");
                 }
             }
         }
@@ -128,22 +172,19 @@ namespace FacebookClient
             get { return RenderCapability.Tier == 0x00020000 && RenderCapability.IsPixelShaderVersionSupported(2, 0); }
         }
 
-        private string _GetNextTheme()
-        {
-            int index = _ThemeNames.IndexOf(ThemeName);
-            if (index == -1)
-            {
-                return _DefaultThemeName;
-            }
-
-            return _ThemeNames[(index+1) % _ThemeNames.Count];
-        }
-
-        public void SwitchTheme(string themeName)
+        internal void SwitchTheme(string themeName)
         {
             if (themeName == null)
             {
-                themeName = _GetNextTheme();
+                int index = _ThemeNames.IndexOf(ThemeName);
+                if (index == -1)
+                {
+                    themeName = _DefaultThemeName;
+                }
+                else
+                {
+                    themeName = _ThemeNames[(index + 1) % _ThemeNames.Count];
+                }
             }
 
             Uri resourceUri = null;
@@ -209,8 +250,7 @@ namespace FacebookClient
 
             _mainWindow.Show();
 
-            SingleInstance.SingleInstanceActivated += SignalExternalCommandLineArgs;
-
+            SingleInstance.SingleInstanceActivated += _SignalExternalCommandLineArgs;
 
             base.OnStartup(e);
         }
@@ -221,6 +261,11 @@ namespace FacebookClient
             FacebookClient.Properties.Settings.Default.MiniModeWindowBounds = new Rect(_minimodeWindow.Left, _minimodeWindow.Top, _minimodeWindow.Width, _minimodeWindow.Height);
 
             FacebookClient.Properties.Settings.Default.Save();
+
+            if (!KeepMeLoggedIn)
+            {
+                ClearUserState();
+            }
             
             // By explicitly setting this list we'll remove the notifications items.
             var jumpList = (JumpList)Resources["SignedOutJumpList"];
@@ -231,7 +276,7 @@ namespace FacebookClient
 
         private ResourceDictionary _currentThemeDictionary;
 
-        private void SignalExternalCommandLineArgs(object sender, SingleInstanceEventArgs e)
+        private void _SignalExternalCommandLineArgs(object sender, SingleInstanceEventArgs e)
         {
             bool handledByWindow = false;
             if (_viewMode == _WindowMode.MiniMode)
@@ -383,5 +428,27 @@ namespace FacebookClient
             }
         }
 
+        internal static void ClearUserState()
+        {
+            FacebookLoginService.ClearCachedCredentials(FacebookClientApplication.FacebookApiKey);
+            SplashScreenOverlay.DeleteCustomSplashScreen();
+        }
+
+        #region INotifyPropertyChanged Members
+
+        private void _NotifyPropertyChanged(string propertyName)
+        {
+            Assert.IsNeitherNullNorWhitespace(propertyName);
+
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }

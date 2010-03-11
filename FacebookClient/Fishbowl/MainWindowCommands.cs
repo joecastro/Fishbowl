@@ -63,13 +63,9 @@ namespace FacebookClient
 
         protected override void ExecuteInternal(object parameter)
         {
-            // Remove the custom generated splash screen so the next user can generate their own
-            SplashScreenOverlay.DeleteCustomSplashScreen();
-
             // Turn off the single instance-ness of the app before initiating the restart.
             SingleInstance.Cleanup();
 
-            FacebookLoginService.ClearCachedCredentials(ViewManager.FacebookAppId);
             System.Windows.Forms.Application.Restart();
             System.Windows.Application.Current.Shutdown();
         }

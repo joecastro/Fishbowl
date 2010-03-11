@@ -1,21 +1,22 @@
 ﻿
-namespace ClientManager.View
+namespace FacebookClient
 {
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Windows;
-    using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Navigation;
     using System.Windows.Threading;
+    using ClientManager.View;
     using Contigo;
     using Standard;
+    using ClientManager;
 
     /// <summary>
     /// The Facebook login page as a ContentControl.
     /// </summary>
-    public partial class LoginPage : ContentControl
+    public partial class LoginPage
     {
         private class _Navigator : Navigator
         {
@@ -29,7 +30,6 @@ namespace ClientManager.View
         private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.OfflineAccess | Permissions.ReadMailbox;
 
         private readonly string _appId;
-        private readonly bool _useCachedCredentials;
 
         private FacebookLoginService _service;
         private Navigator _nextPage;
@@ -44,7 +44,7 @@ namespace ClientManager.View
         private const string _GrantedPermissionUri = "http://www.facebook.com/connect/login_success.html";
         private const string _DeniedPermissionUri = "http://www.facebook.com/connect/login_failure.html";
 
-        public LoginPage(string appId, Navigator next, bool useCachedCredentials)
+        public LoginPage(string appId, Navigator next)
         {
             InitializeComponent();
 
@@ -52,7 +52,6 @@ namespace ClientManager.View
             Unloaded += (sender, e) => _OnUnloaded();
 
             _nextPage = next;
-            _useCachedCredentials = useCachedCredentials;
             _appId = appId;
             Navigator = new _Navigator(this, this.Dispatcher);
         }
@@ -119,7 +118,7 @@ namespace ClientManager.View
             try
             {
                 service = new FacebookLoginService(_appId);
-                if (!_useCachedCredentials)
+                if (!FacebookClientApplication.Current2.KeepMeLoggedIn)
                 {
                     service.ClearCachedCredentials();
                 }
@@ -140,7 +139,7 @@ namespace ClientManager.View
                     }
                 }
 
-                _loginBrowser.Navigate(_service.GetLoginUri(_GrantedPermissionUri, _DeniedPermissionUri, _RequiredPermissions));
+                LoginBrowser.Navigate(_service.GetLoginUri(_GrantedPermissionUri, _DeniedPermissionUri, _RequiredPermissions));
             }
             catch (Exception ex)
             {
@@ -203,13 +202,13 @@ namespace ClientManager.View
 
             // After we've navigated away, dispose the fields.
             Utility.SafeDispose(ref _service);
-            Utility.SafeDispose(ref _loginBrowser);
+            Utility.SafeDispose(ref LoginBrowser);
             _nextPage = null;
         }
 
         private void _OnBrowserNavigated(object sender, NavigationEventArgs e)
         {
-            Utility.SuppressJavaScriptErrors(_loginBrowser);
+            Utility.SuppressJavaScriptErrors(LoginBrowser);
             if (!_isLoggedIn)
             {
                 // This will be contained in the page once the user has accepted the app.
@@ -260,7 +259,7 @@ namespace ClientManager.View
                 LoginBorder.Visibility = Visibility.Visible;
                 ErrorBorder.Visibility = Visibility.Collapsed;
                 _service.ClearCachedCredentials();
-                _loginBrowser.Navigate(_service.GetLoginUri(_GrantedPermissionUri, _DeniedPermissionUri, _RequiredPermissions));
+                LoginBrowser.Navigate(_service.GetLoginUri(_GrantedPermissionUri, _DeniedPermissionUri, _RequiredPermissions));
             }
         }
     }

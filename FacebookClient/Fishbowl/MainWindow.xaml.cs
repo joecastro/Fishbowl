@@ -160,9 +160,9 @@ namespace FacebookClient
             {
                 ServiceProvider.ViewManager.NavigationCommands.NavigateLoginCommand.Execute(null);
 
-                if (FacebookClientApplication.IsFirstRun)
+                if (FacebookClientApplication.Current2.IsFirstRun)
                 {
-                    FacebookClientApplication.IsFirstRun = false;
+                    FacebookClientApplication.Current2.IsFirstRun = false;
                 }
             };
 
@@ -259,7 +259,7 @@ namespace FacebookClient
 
         private void _OnExternalNavigationRequested(object sender, RequestNavigateEventArgs e)
         {
-            if (FacebookClientApplication.OpenWebContentInExternalBrowser)
+            if (FacebookClientApplication.Current2.OpenWebContentInExternalBrowser)
             {
                 if (e.Uri != null)
                 {
@@ -368,7 +368,12 @@ namespace FacebookClient
         private void _OnApplicationUpdated(object sender, EventArgs e)
         {
             var restartLink = new Hyperlink(new Run("Click here"));
-            restartLink.Click += (sender2, e2) => ApplicationCommands.InitiateRestartCommand.Execute(this);
+            restartLink.Click += (sender2, e2) =>
+            {
+                FacebookClientApplication.ClearUserState();
+                ApplicationCommands.InitiateRestartCommand.Execute(this);
+            };
+
             _ShowGoldBar(true, new Inline[]
             { 
                 new Run("Fishbowl has been updated. "),
@@ -382,13 +387,13 @@ namespace FacebookClient
             Assert.IsNotNull(e);
             
             var websiteLink = new Hyperlink(new Run("website"));
-            websiteLink.Click += (sender2, e2) => Process.Start(new ProcessStartInfo(FacebookClientApplication.SupportWebsite.OriginalString));
+            websiteLink.Click += (sender2, e2) => Process.Start(new ProcessStartInfo(FacebookClientApplication.Current2.SupportWebsite.OriginalString));
 
             if (e.WasUpdateDetected)
             {
                 _ShowGoldBar(false, new Inline[]
                 {
-                    new Run("An update to Fishbowl was unable to install successfully.  To complete the update please visit "),
+                    new Run("An update to Fishbowl was unable to install successfully.  To complete the update please visit the "),
                     websiteLink,
                     new Run(" and run setup manually."),
                 });
@@ -412,11 +417,11 @@ namespace FacebookClient
             }
             else
             {
-                Properties.Settings.Default.MainWindowBounds = new Rect(0, 0, Width, Height);
+                Properties.Settings.Default.MainWindowBounds = RestoreBounds;
             }
 
             Action<string> deleteCallback = null;
-            if (FacebookClientApplication.DeleteCacheOnShutdown)
+            if (FacebookClientApplication.Current2.DeleteCacheOnShutdown)
             {
                 deleteCallback = dir =>
                 {
@@ -834,9 +839,7 @@ namespace FacebookClient
 
         public void SignOut()
         {
-            // we need to delete the cookie if it exists; otherwise we'll log right back into the other user.
-            FacebookLoginService.ClearCachedCredentials(FacebookClientApplication.FacebookApiKey);
-
+            FacebookClientApplication.ClearUserState();
             ApplicationCommands.InitiateRestartCommand.Execute(this);
         }
 

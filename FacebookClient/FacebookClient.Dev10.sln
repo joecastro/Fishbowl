@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard.Dev10", "Standard\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Windows.Shell.Dev10", "Microsoft.Windows.Shell\Microsoft.Windows.Shell.Dev10.csproj", "{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishBowl.Dev10", "Fishbowl\FishBowl.Dev10.csproj", "{77308CBC-E2FF-4224-B115-FD28D80B3B38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fishbowl.Dev10", "Fishbowl\Fishbowl.Dev10.csproj", "{77308CBC-E2FF-4224-B115-FD28D80B3B38}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Json.Dev10", "Microsoft.Json\Microsoft.Json\Microsoft.Json.Dev10.csproj", "{2E12ED56-6501-43A5-85C7-64255241D60E}"
 EndProject

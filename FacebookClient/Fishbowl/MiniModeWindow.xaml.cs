@@ -368,7 +368,7 @@ namespace FacebookClient
         {
             Uri externalUri;
             bool internalNavigation = ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.CanFindInternalNavigator(content, out externalUri);
-            if (internalNavigation || !FacebookClientApplication.OpenWebContentInExternalBrowser)
+            if (internalNavigation || !FacebookClientApplication.Current2.OpenWebContentInExternalBrowser)
             {
                 ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(content);
                 this.Close();

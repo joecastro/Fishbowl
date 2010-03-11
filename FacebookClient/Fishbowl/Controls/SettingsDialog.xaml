@@ -14,7 +14,7 @@
           <LineBreak />
           <Run>Find out more at </Run>
           <Hyperlink Foreground="White" Click="_OnSupportWebsiteClicked">
-            <FacebookClient:BindableRun Text="{Binding Source={x:Static FacebookClient:FacebookClientApplication.SupportWebsite}, Path=OriginalString}" />
+            <FacebookClient:BindableRun Text="{Binding Source={x:Static FacebookClient:FacebookClientApplication.Current}, Path=SupportWebsite.OriginalString, Mode=OneWay}" />
           </Hyperlink>
         </TextBlock>
         <!-- Set in code behind. -->
@@ -38,6 +38,7 @@
           <CheckBox x:Name="DisableUpdatesCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Disable automatic updates</CheckBox>
           <CheckBox x:Name="OpenPagesInBrowserCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Open web content in external browser</CheckBox>
           <CheckBox x:Name="KeepMiniModeOnTopCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep the mini-mode window on top of all others.</CheckBox>
+          <CheckBox x:Name="KeepMeLoggedInCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep me logged in.</CheckBox>
         </StackPanel>
       </ScrollViewer>
     </DockPanel>

@@ -184,7 +184,6 @@
     <Compile Include="Controls\ClientManager\FacebookImageControl.cs" />
     <Compile Include="Controls\ClientManager\LargePhotoThumbnailControl.cs" />
     <Compile Include="Controls\ClientManager\MainContentContainer.cs" />
-    <Compile Include="Controls\ClientManager\PhotoBaseControl.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerAlbumNode.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerBaseNode.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerCommentNode.cs" />
@@ -338,11 +337,11 @@
     <Compile Include="UIListPager.cs" />
     <Compile Include="View\EventResourceDictionary.cs" />
     <Compile Include="View\HomePage.cs" />
+    <Compile Include="Controls\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LoadingPage.xaml.cs">
       <DependentUpon>LoadingPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MasterNavigator.cs" />
     <Compile Include="View\NavigationCommands.cs" />
@@ -356,6 +355,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Properties\app.manifest" />
+    <Page Include="View\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Resource Include="Resources\Fonts\GOTHAM-BLACK.OTF" />
     <Resource Include="Resources\Fonts\GOTHAM-BLACKITA.OTF" />
     <Resource Include="Resources\Fonts\GOTHAM-BOLD.OTF" />
@@ -709,6 +712,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\Themes\TextResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Themes\Zap.Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -721,13 +728,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\LoadingPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\LoginPage.xaml">
+    <Page Include="Controls\LoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -768,25 +769,25 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contigo\Contigo.csproj">
+    <ProjectReference Include="..\Contigo\Contigo.Dev10.csproj">
       <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
-      <Name>Contigo</Name>
+      <Name>Contigo.Dev10</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EffectLibrary\EffectLibrary.csproj">
+    <ProjectReference Include="..\EffectLibrary\EffectLibrary.Dev10.csproj">
       <Project>{66271E3C-0725-4B49-B62B-910562AF4954}</Project>
-      <Name>EffectLibrary</Name>
+      <Name>EffectLibrary.Dev10</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
+    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.Dev10.csproj">
       <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
-      <Name>Microsoft.Bing</Name>
+      <Name>Microsoft.Bing.Dev10</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
+    <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.Dev10.csproj">
       <Project>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</Project>
-      <Name>Microsoft.Windows.Shell</Name>
+      <Name>Microsoft.Windows.Shell.Dev10</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TransitionEffects\TransitionEffects.csproj">
+    <ProjectReference Include="..\TransitionEffects\TransitionEffects.Dev10.csproj">
       <Project>{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}</Project>
-      <Name>TransitionEffects</Name>
+      <Name>TransitionEffects.Dev10</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
