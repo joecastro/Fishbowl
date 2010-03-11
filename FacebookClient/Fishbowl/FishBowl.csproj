@@ -176,7 +176,6 @@
     <Compile Include="Controls\ClientManager\FacebookImageControl.cs" />
     <Compile Include="Controls\ClientManager\LargePhotoThumbnailControl.cs" />
     <Compile Include="Controls\ClientManager\MainContentContainer.cs" />
-    <Compile Include="Controls\ClientManager\PhotoBaseControl.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerAlbumNode.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerBaseNode.cs" />
     <Compile Include="Controls\ClientManager\PhotoExplorerCommentNode.cs" />
@@ -200,6 +199,9 @@
     <Compile Include="Controls\FriendButton.cs" />
     <Compile Include="Controls\FriendSummaryControl.cs" />
     <Compile Include="Controls\IncrementalLoadListBox.cs" />
+    <Compile Include="Controls\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MainHeaderControl.cs" />
     <Compile Include="Controls\MessageNotificationsControl.xaml.cs">
       <DependentUpon>MessageNotificationsControl.xaml</DependentUpon>
@@ -333,9 +335,6 @@
     <Compile Include="View\LoadingPage.xaml.cs">
       <DependentUpon>LoadingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\LoginPage.xaml.cs">
-      <DependentUpon>LoginPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\MasterNavigator.cs" />
     <Compile Include="View\NavigationCommands.cs" />
     <Compile Include="View\Navigator.cs" />
@@ -394,6 +393,10 @@
     <Page Include="Controls\FacebookPhotoTagControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\MessageNotificationsControl.xaml">
       <SubType>Designer</SubType>
@@ -600,10 +603,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\LoadingPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\LoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
