@@ -133,12 +133,6 @@
             }
             _UpdateCaptionText(e.Uri.OriginalString);
 
-            // There's an issue with the web-browser control and showing videos on Facebook.
-            // Not sure of a viable fix, so try to detect it and notify the user.
-            GoldBar.Visibility = e.Uri.Host.ToLower().Contains("facebook") && e.Uri.AbsoluteUri.ToLower().Contains("video.php")
-                ? Visibility.Visible
-                : Visibility.Collapsed;
-
             _HookNativeBrowserWindow();
         }
 
