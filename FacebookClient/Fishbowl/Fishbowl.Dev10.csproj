@@ -239,9 +239,9 @@
     <Compile Include="Controls\ZapScroller.cs" />
     <Compile Include="Converters\AddConverter.cs" />
     <Compile Include="Converters\CityStateConverter.cs" />
+    <Compile Include="Converters\CollapseWhenZeroConverter.cs" />
     <Compile Include="Converters\ContentVisibilityConverter.cs" />
     <Compile Include="Converters\IsStringNullOrWhitespaceConverter.cs" />
-    <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\RandomAngleToTransformConverter.cs" />
     <Compile Include="Converters\SexPronounConverter.cs" />
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
@@ -284,8 +284,6 @@
       <DependentUpon>SearchViewControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\DateTimeToStringConverter.cs" />
-    <Compile Include="Converters\HtmlToCleanStringConverter.cs" />
-    <Compile Include="Converters\PhotoZoomFactorToBitmapScalingModeConverter.cs" />
     <Compile Include="Converters\RotationAngleToSimplePositiveAngleConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Standard\HighlightAdorner.cs" />
@@ -711,10 +709,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Themes\TextResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Themes\Zap.Generic.xaml">
       <Generator>MSBuild:Compile</Generator>

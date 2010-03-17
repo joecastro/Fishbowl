@@ -1,12 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{98812BAB-D158-4B66-8465-10E8668CBFEB}"
-	ProjectSection(SolutionItems) = preProject
-		FacebookClient.vsmdi = FacebookClient.vsmdi
-		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectLibrary.Dev10", "EffectLibrary\EffectLibrary.Dev10.csproj", "{66271E3C-0725-4B49-B62B-910562AF4954}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitionEffects.Dev10", "TransitionEffects\TransitionEffects.Dev10.csproj", "{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}"
@@ -31,7 +25,7 @@ Global
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs03.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Fishbowl\\FishBowl.Dev10.csproj
+		SccProjectUniqueName1 = Fishbowl\\Fishbowl.Dev10.csproj
 		SccProjectName1 = Fishbowl
 		SccLocalPath1 = Fishbowl
 		SccProjectUniqueName2 = TransitionEffects\\TransitionEffects.Dev10.csproj
