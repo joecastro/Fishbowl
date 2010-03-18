@@ -11,11 +11,10 @@ namespace Microsoft.Wpf.Samples.Documents
     using System.Windows;
     using System.Windows.Documents;
 
-    /* A BRIEF BACKGROUND ON TextPointers
+    /* A BRIEF BACKGROUND on TextPointers (Ifeanyi Echeruo)
      * =================================================================================
      * 
-     * TextPointers are positions between elements, 
-     * sort of like the way a caret sits between characters in a text box.
+     * TextPointers are positions between elements, sort of like the way a caret sits between characters in a text box.
      * 
      * TextPointer terms and concepts
      * 
@@ -44,23 +43,30 @@ namespace Microsoft.Wpf.Samples.Documents
      * Physical Bounding box: Near Edge, Far Edge
      *  TextPointers can return information about the characters surrounding them
      *  TextPointers can return the position and height of the characters bounding box
-     *  More specifically they return the position and height of the boxes near and far edges.
+     *  More specifically they return the position and height of the box's near edge and far edge.
      *  The near edge of the box is the edge that would be occupied by a caret
      *  The far edge of the box is the edge opposite the near edge.
-     *  Note that if a TextPointer is between two identical characters of different font size
+     *  Note that if a TextPointer is between two identical characters of different font size the near edge
+     *  and the far edge will be of different heights
      *  
      * Line Start\End Positions
      *  Every position at the start of a line is the position at the end of the previous line depending 
-     *  on its logical direction. (Line start positon + Forward = start of a line), (Line start position + Backward = End of previous line)
+     *  on its logical direction. 
+     *  (Line start positon = start of a line), 
+     *  (Line start position + Next Backward Insertion Position = End of previous line)
      *  
      * 
      * Non-obvious but important corner cases
      *  TextPointers at the egdes of a document border only one element.
-     *      A line
+     *      consider the document consisting only the text "A line"
      *      The TextPointer to the left of 'A' only has one element which is to its right.
      *      It has no backward facing far edge. 
      *      The TextPointer on the right of 'e' similarly has no forward facing far edge
      * 
+     *  There may be several consecutive TextPointer positions at the start\end of a line that will return true
+     *      for this.IsAtLineStartPosition. Some of them are special in that their near backward edge will be at 
+     *      the end of one line but their near forward edge will be at the start of another line.
+     *  
      *  The same text pointer may not occupy the same physical position.
      *      A text pointer at the end of a line or at a bidi-boundary may have several different
      *      physical locations. Consider the below physical layout which has 3 examples of where
