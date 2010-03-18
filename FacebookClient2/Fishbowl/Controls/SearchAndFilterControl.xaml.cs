@@ -20,7 +20,7 @@
             typeof(SearchAndFilterControl),
             new FrameworkPropertyMetadata(
                 false,
-                (d, e) => FacebookClientApplication.ShowMoreNewsfeedFilters = (bool)e.NewValue));
+                (d, e) => FacebookClientApplication.Current2.ShowMoreNewsfeedFilters = (bool)e.NewValue));
 
         public static readonly DependencyProperty ShowMoreProperty = ShowMorePropertyKey.DependencyProperty;
 
@@ -40,7 +40,7 @@
                 ServiceProvider.ViewManager.NewsFeedFilters.CollectionChanged += OnNewsFeedFiltersCollectionChanged;
             };
 
-            ShowMore = FacebookClientApplication.ShowMoreNewsfeedFilters;
+            ShowMore = FacebookClientApplication.Current2.ShowMoreNewsfeedFilters;
 
             Unloaded += (sender, e) => ServiceProvider.ViewManager.NewsFeedFilters.CollectionChanged -= OnNewsFeedFiltersCollectionChanged;
         }

@@ -5,13 +5,19 @@ namespace FacebookClient
     using System.Windows.Data;
     using System.Globalization;
 
-    public class IsStringNullOrEmptyConverter : IValueConverter
+    public class IsStringNullOrWhitespaceConverter : IValueConverter
     {
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            bool ret = string.IsNullOrEmpty(value as string);
+            var str = (string)value;
+            bool ret = string.IsNullOrEmpty(str);
+            if (!ret)
+            {
+                str = str.Trim();
+                ret = string.IsNullOrEmpty(str);
+            }
 
             if ((string)parameter == "Inverse")
             {

@@ -40,11 +40,12 @@
 
         private void _OnLoaded(object sender, RoutedEventArgs e)
         {
-            DisableUpdatesCheckBox.IsChecked = !FacebookClientApplication.AreUpdatesEnabled;
-            OpenPagesInBrowserCheckBox.IsChecked = FacebookClientApplication.OpenWebContentInExternalBrowser;
-            KeepMiniModeOnTopCheckBox.IsChecked = FacebookClientApplication.KeepMiniModeWindowOnTop;
-            ClearCacheButton.IsEnabled = !FacebookClientApplication.DeleteCacheOnShutdown;
-            ClearCacheInfoTextBlock.Visibility = FacebookClientApplication.DeleteCacheOnShutdown
+            KeepMeLoggedInCheckBox.IsChecked = FacebookClientApplication.Current2.KeepMeLoggedIn;
+            DisableUpdatesCheckBox.IsChecked = !FacebookClientApplication.Current2.AreUpdatesEnabled;
+            OpenPagesInBrowserCheckBox.IsChecked = FacebookClientApplication.Current2.OpenWebContentInExternalBrowser;
+            KeepMiniModeOnTopCheckBox.IsChecked = FacebookClientApplication.Current2.KeepMiniModeWindowOnTop;
+            ClearCacheButton.IsEnabled = !FacebookClientApplication.Current2.DeleteCacheOnShutdown;
+            ClearCacheInfoTextBlock.Visibility = FacebookClientApplication.Current2.DeleteCacheOnShutdown
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
@@ -52,29 +53,30 @@
             {
                 VisualStyleBox.Items.Add(theme);
             }
-            VisualStyleBox.SelectedItem = FacebookClientApplication.ThemeName;
+            VisualStyleBox.SelectedItem = FacebookClientApplication.Current2.ThemeName;
         }
 
         private void _OnUnloaded(object sender, RoutedEventArgs e)
         {
-            FacebookClientApplication.AreUpdatesEnabled = (bool)!DisableUpdatesCheckBox.IsChecked;
-            FacebookClientApplication.OpenWebContentInExternalBrowser = (bool)OpenPagesInBrowserCheckBox.IsChecked;
-            FacebookClientApplication.KeepMiniModeWindowOnTop = (bool)KeepMiniModeOnTopCheckBox.IsChecked;
-            FacebookClientApplication.DeleteCacheOnShutdown = !ClearCacheButton.IsEnabled;
-            FacebookClientApplication.ThemeName = VisualStyleBox.SelectedItem.ToString();
+            FacebookClientApplication.Current2.KeepMeLoggedIn = (bool)KeepMeLoggedInCheckBox.IsChecked;
+            FacebookClientApplication.Current2.AreUpdatesEnabled = (bool)!DisableUpdatesCheckBox.IsChecked;
+            FacebookClientApplication.Current2.OpenWebContentInExternalBrowser = (bool)OpenPagesInBrowserCheckBox.IsChecked;
+            FacebookClientApplication.Current2.KeepMiniModeWindowOnTop = (bool)KeepMiniModeOnTopCheckBox.IsChecked;
+            FacebookClientApplication.Current2.DeleteCacheOnShutdown = !ClearCacheButton.IsEnabled;
+            FacebookClientApplication.Current2.ThemeName = VisualStyleBox.SelectedItem.ToString();
         }
 
         private void _OnSupportWebsiteClicked(object sender, RoutedEventArgs e)
         {
             // Don't open these within the app.  Always open external.
-            Process.Start(new ProcessStartInfo(FacebookClientApplication.SupportWebsite.OriginalString));
+            Process.Start(new ProcessStartInfo(FacebookClientApplication.Current2.SupportWebsite.OriginalString));
             e.Handled = true;
         }
 
         private void _OnPrivacyWebsiteClicked(object sender, RoutedEventArgs e)
         {
             // Don't open these within the app.  Always open external.
-            Process.Start(new ProcessStartInfo(FacebookClientApplication.PrivacyWebsite.OriginalString));
+            Process.Start(new ProcessStartInfo(FacebookClientApplication.Current2.PrivacyWebsite.OriginalString));
             e.Handled = true;
         }
 

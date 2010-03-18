@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Specialized;
-    using System.Windows.Threading;
     using ClientManager.View;
     using Contigo;
+    using FacebookClient;
     using Standard;
 
     /// <summary>
@@ -68,7 +68,7 @@
                 _loadingPage.Signal();
             }
 
-            _loginPage = new LoginPage(facebookService.ApplicationId, _loadingPage.GetNavigator(), true);
+            _loginPage = new LoginPage(facebookService.ApplicationId, _loadingPage.GetNavigator());
             LoginPageNavigator = _loginPage.Navigator;
         }
 

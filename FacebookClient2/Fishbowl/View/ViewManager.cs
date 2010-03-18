@@ -551,8 +551,6 @@ namespace ClientManager.View
             }
         }
 
-        #region Public Methods
-
         /// <summary>
         /// Displays dialogPage and blocks input to the main application until EndDialog is called.
         /// </summary>
@@ -616,11 +614,23 @@ namespace ClientManager.View
 
         public void UpdateStatus(string newStatus)
         {
+            if (string.IsNullOrEmpty(newStatus) || string.IsNullOrEmpty(newStatus.Trim()))
+            {
+                // Nothing to do.
+                return;
+            }
+
             ServiceProvider.FacebookService.UpdateStatus(newStatus);
         }
 
         public void UpdateStatus(string newStatus, string uri)
         {
+            if (string.IsNullOrEmpty(newStatus) || string.IsNullOrEmpty(newStatus.Trim()))
+            {
+                // Nothing to do.
+                return;
+            }
+
             ServiceProvider.FacebookService.UpdateStatus(newStatus, uri);
         }
 
@@ -724,8 +734,6 @@ namespace ClientManager.View
                 }
             }
         }
-
-        #endregion
 
         /// <summary>
         /// Raise property changed event.

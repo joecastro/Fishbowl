@@ -10,7 +10,6 @@
     xmlns:ClientManagerView="clr-namespace:ClientManager.View">
 
   <!-- Converter to clean HTML formatting out of displayed text -->
-  <FacebookClient:HtmlToCleanStringConverter x:Key="HtmlToCleanStringConverter" />
   <FacebookClient:AddConverter x:Key="AddConverter" />
 
   <!-- Converter to format the application dates consistently -->

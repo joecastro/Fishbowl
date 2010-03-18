@@ -8,6 +8,8 @@
     <UserControl.Template>
         <ControlTemplate TargetType="{x:Type FacebookClient:UpdateStatusControl}">
             <ControlTemplate.Resources>
+                <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
+
                 <Style x:Key="GlowButtonStyle" TargetType="{x:Type ButtonBase}">
                     <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
                     <Setter Property="FontSize" Value="12" />
@@ -82,7 +84,7 @@
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding ElementName=PART_ShareTextBox, Path=Text}" Value=""/>
+                                <Condition Binding="{Binding ElementName=PART_ShareTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}}" Value="True"/>
                                 <!--<Condition Binding="{Binding ElementName=UpdateStatusControlRoot, Path=DisplayMode}" Value="Base"/>-->
                             </MultiDataTrigger.Conditions>
                             <Setter Property="IsEnabled" Value="False" />

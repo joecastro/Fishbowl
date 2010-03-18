@@ -14,6 +14,23 @@ namespace Standard
 
     #region Enums and Static Property Classes
 
+    /// <summary>ASSOCIATIONLEVEL, AL_*</summary>
+    internal enum AL
+    {
+        MACHINE,
+        EFFECTIVE,
+        USER,
+    }
+
+    /// <summary>ASSOCIATIONTYPE, AT_*</summary>
+    internal enum AT
+    {
+        FILEEXTENSION,
+        URLPROTOCOL,
+        STARTMENUCLIENT,
+        MIMETYPE,
+    }
+
     /// <summary>FileDialog AddPlace options.  FDAP_*</summary>
     internal enum FDAP : uint
     {
@@ -426,6 +443,42 @@ namespace Standard
     #endregion
 
     #region Interfaces
+
+    // Application File Extension and URL Protocol Registration
+    [
+        ComImport,
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+        Guid(IID.ApplicationAssociationRegistration),
+    ]
+    internal interface IApplicationAssociationRegistration
+    {
+        [return: MarshalAs(UnmanagedType.LPWStr)]
+        string QueryCurrentDefault(
+            [MarshalAs(UnmanagedType.LPWStr)] string pszQuery,
+            AT atQueryType,
+            AL alQueryLevel);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        bool QueryAppIsDefault(
+            [MarshalAs(UnmanagedType.LPWStr)] string pszQuery,
+            AT atQueryType,
+            AL alQueryLevel,
+            [MarshalAs(UnmanagedType.LPWStr)] string pszAppRegistryName);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        bool QueryAppIsDefaultAll(
+            AL alQueryLevel,
+            [MarshalAs(UnmanagedType.LPWStr)] string pszAppRegistryName);
+
+        void SetAppAsDefault(
+            [MarshalAs(UnmanagedType.LPWStr)] string pszAppRegistryName,
+            [MarshalAs(UnmanagedType.LPWStr)] string pszSet,
+            AT atSetType);
+
+        void SetAppAsDefaultAll([MarshalAs(UnmanagedType.LPWStr)] string pszAppRegistryName);
+
+        void ClearUserAssociations();
+    }
 
     [
         ComImport,
