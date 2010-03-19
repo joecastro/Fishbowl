@@ -99,7 +99,7 @@
                           Margin="6,0,0,0" 
                           HorizontalAlignment="Left" 
                           VerticalAlignment="Center" 
-                          Style="{StaticResource SimpleButtonStyle}"
+                          Style="{DynamicResource SimpleButtonStyle}"
                           Click="StartChatButton_Click">
                           <Grid>
                             <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
