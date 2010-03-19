@@ -53,7 +53,6 @@ namespace ClientManager.View
         public NavigateFriendsCommand NavigateFriendsCommand { get; private set; }
         public NavigatePhotoAlbumsCommand NavigatePhotoAlbumsCommand { get; private set; }
         public NavigateSearchCommand NavigateSearchCommand { get; private set; }
-        public NavigatePhotoPlayerCommand NavigatePhotoPlayerCommand { get; private set; }
     }
 
     public abstract class NavigationCommand : ViewCommand
@@ -841,32 +840,6 @@ namespace ClientManager.View
                 SearchNavigator navigator = new SearchNavigator(searchResults);
                 ViewManager.NavigateByCommand(navigator);
             }
-        }
-    }
-
-    public sealed class NavigatePhotoPlayerCommand : NavigationCommand
-    {
-        public NavigatePhotoPlayerCommand(ViewManager viewManager)
-            : base(viewManager)
-        { }
-
-        protected override bool CanExecuteInternal(object parameter)
-        {
-            return parameter is FacebookPhoto || parameter is FacebookPhotoAlbum;
-        }
-
-        protected override void PerformNavigate(object parameter)
-        {
-            var photo = parameter as FacebookPhoto;
-            var album = parameter as FacebookPhotoAlbum;
-
-            if (photo != null)
-            {
-                album = photo.Album;
-            }
-
-            var player = new PhotoPlayer(album, photo);
-            ViewManager.NavigateByCommand(player.GetNavigator());
         }
     }
 }

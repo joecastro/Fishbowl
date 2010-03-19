@@ -294,10 +294,6 @@
     <FacebookClient:SearchViewControl DataContext="{Binding}"/>
   </DataTemplate>
 
-  <DataTemplate DataType="{x:Type ClientManagerView:PhotoPlayer}">
-    <FacebookClient:PhotoSlideShowControl FacebookPhotoCollection="{Binding FacebookPhotoAlbum.Photos}" StartingPhoto="{Binding StartingPhoto, Mode=OneTime}"/>
-  </DataTemplate>
-
   <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
