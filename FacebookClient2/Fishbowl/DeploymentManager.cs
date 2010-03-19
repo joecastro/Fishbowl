@@ -33,7 +33,7 @@ namespace FacebookClient
             // Only do this once.
             Assert.IsNull(_updateTimer);
 
-            if (FacebookClientApplication.AreUpdatesEnabled && ApplicationDeployment.IsNetworkDeployed)
+            if (FacebookClientApplication.Current2.AreUpdatesEnabled && ApplicationDeployment.IsNetworkDeployed)
             {
                 _updateTimer = new DispatcherTimer(_firstUpdateInterval, DispatcherPriority.ApplicationIdle, _TimerTick, Application.Current.Dispatcher);
                 _updateTimer.Start();
