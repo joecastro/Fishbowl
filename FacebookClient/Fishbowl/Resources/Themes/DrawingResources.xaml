@@ -60,26 +60,12 @@
 
   <GeometryGroup x:Key="BuddyGeometry">
     <EllipseGeometry Center="50,20" RadiusX="25" RadiusY="25" />
-    <CombinedGeometry GeometryCombineMode="Exclude">
-      <CombinedGeometry.Geometry1>
-        <PathGeometry>
-          <PathFigure StartPoint="0, 100" IsClosed="True">
-            <ArcSegment Point="100,100" SweepDirection="Clockwise" IsLargeArc="False" Size="55,90" IsSmoothJoin="True" />
-            <LineSegment IsSmoothJoin="True" Point="0,100"/>
-          </PathFigure>
-        </PathGeometry>
-      </CombinedGeometry.Geometry1>
-      <CombinedGeometry.Geometry2>
-        <CombinedGeometry>
-          <CombinedGeometry.Geometry1>
-            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="15,80,25,40"/>
-          </CombinedGeometry.Geometry1>
-          <CombinedGeometry.Geometry2>
-            <RectangleGeometry RadiusX="10" RadiusY="10" Rect="65,80,25,40"/>
-          </CombinedGeometry.Geometry2>
-        </CombinedGeometry>
-      </CombinedGeometry.Geometry2>
-    </CombinedGeometry>
+    <PathGeometry>
+      <PathFigure StartPoint="0, 100" IsClosed="True">
+        <ArcSegment Point="100,100" SweepDirection="Clockwise" IsLargeArc="False" Size="55,90" IsSmoothJoin="True" />
+        <LineSegment IsSmoothJoin="True" Point="0,100"/>
+      </PathFigure>
+    </PathGeometry>
   </GeometryGroup>
 
   <CombinedGeometry x:Key="PrinterGeometry" GeometryCombineMode="Exclude">
@@ -159,7 +145,7 @@
     </CombinedGeometry.Geometry2>
   </CombinedGeometry>
 
-  <DrawingBrush x:Key="StatusOnlineDrawingBrush">
+  <DrawingBrush x:Key="StatusOnlineDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <GeometryDrawing>
@@ -195,7 +181,7 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="StatusAwayDrawingBrush">
+  <DrawingBrush x:Key="StatusAwayDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <GeometryDrawing>
@@ -279,9 +265,21 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="PlayArrowLightToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource PlayArrowGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <DrawingBrush x:Key="PauseToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource PauseGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="PauseLightToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource PauseGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
@@ -291,8 +289,16 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
+  <DrawingBrush x:Key="ShuffleLightToolbarDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource ShuffleGeometry}" />
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
   <GeometryDrawing x:Key="RightArrowToolbarDrawing" Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
-  
+
+  <GeometryDrawing x:Key="RightArrowLightToolbarDrawing" Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
+
   <DrawingGroup x:Key="LeftArrowToolbarDrawing">
     <DrawingGroup.Transform>
       <ScaleTransform ScaleX="-1"/>
@@ -300,9 +306,20 @@
     <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
   </DrawingGroup>
 
+  <DrawingGroup x:Key="LeftArrowLightToolbarDrawing">
+    <DrawingGroup.Transform>
+      <ScaleTransform ScaleX="-1"/>
+    </DrawingGroup.Transform>
+    <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource RightArrowGeometry}" />
+  </DrawingGroup>
+
   <DrawingBrush x:Key="RightArrowToolbarDrawingBrush" Stretch="Uniform" Drawing="{StaticResource RightArrowToolbarDrawing}"/>
 
+  <DrawingBrush x:Key="RightArrowLightToolbarDrawingBrush" Stretch="Uniform" Drawing="{StaticResource RightArrowLightToolbarDrawing}"/>
+
   <DrawingBrush x:Key="LeftArrowToolbarDrawingBrush" Stretch="Uniform" Drawing="{StaticResource LeftArrowToolbarDrawing}"/>
+
+  <DrawingBrush x:Key="LeftArrowLightToolbarDrawingBrush" Stretch="Uniform" Drawing="{StaticResource LeftArrowLightToolbarDrawing}"/>
 
   <DrawingBrush x:Key="UpArrowToolbarDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
