@@ -151,17 +151,6 @@
           </Button>
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
-              Height="26"
-              Margin="3,0"
-              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigatePhotoPlayerCommand}"
-              CommandParameter="{Binding}">
-            <StackPanel Orientation="Horizontal">
-              <Rectangle Height="18" Width="18" Fill="{DynamicResource PlayArrowToolbarDrawingBrush}"/>
-              <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Play</TextBlock>
-            </StackPanel>
-          </Button>
-          <Button 
-              Style="{DynamicResource StandardButtonStyle}"
               Margin="3,0"
               Height="26"
               Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" 

@@ -280,31 +280,39 @@
           <RadioButton Grid.Row="2" x:Name="PhotosRadioButton" Command="FacebookClient:FriendViewerControl.DisplayPhotosCommand" Template="{StaticResource FriendRadioButtonTemplate}" Tag="False">Photos</RadioButton>
         </Grid>
 
-        <ClientManagerControls:FacebookImageControl DockPanel.Dock="Top" FacebookImage="{Binding FacebookContact.Image}" FacebookImageDimensions="Big">
-          <ClientManagerControls:FacebookImageControl.Template>
-            <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-              <Grid Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top" MaxHeight="400">
-                <ContentControl Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="8">
-                  <Image x:Name="PART_PhotoImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                </ContentControl>
-              </Grid>
-            </ControlTemplate>
-          </ClientManagerControls:FacebookImageControl.Template>
-        </ClientManagerControls:FacebookImageControl>
-        <Slider x:Name="InterestSlider" LargeChange=".5" Maximum="1" Minimum="0" TickFrequency=".5" TickPlacement="BottomRight" Value="{Binding FacebookContact.InterestLevel, Mode=TwoWay}" Margin="0,0,0,10">
-          <!-- We don't want to show the interest slider for the MeContact. -->
-          <Slider.Style>
-            <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource InterestSlider}">
-              <Setter Property="Visibility" Value="Visible" />
-              <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMeContact}" Value="True">
-                  <Setter Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-              </Style.Triggers>
-            </Style>
-          </Slider.Style>
-        </Slider>
+        <Grid DockPanel.Dock="Top" VerticalAlignment="Top">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
 
+          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding FacebookContact.Image}" FacebookImageDimensions="Big">
+            <ClientManagerControls:FacebookImageControl.Template>
+              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                <Grid Margin="5" HorizontalAlignment="Center" VerticalAlignment="Top" MaxHeight="400">
+                  <ContentControl Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="8">
+                    <Image x:Name="PART_PhotoImage" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                  </ContentControl>
+                </Grid>
+              </ControlTemplate>
+            </ClientManagerControls:FacebookImageControl.Template>
+          </ClientManagerControls:FacebookImageControl>
+
+          <Slider x:Name="InterestSlider" Grid.Row="1" LargeChange=".5" Maximum="1" Minimum="0" TickFrequency=".5" TickPlacement="BottomRight" Value="{Binding FacebookContact.InterestLevel, Mode=TwoWay}" Margin="0,0,0,10">
+            <!-- We don't want to show the interest slider for the MeContact. -->
+            <Slider.Style>
+              <Style TargetType="{x:Type Slider}" BasedOn="{StaticResource InterestSlider}">
+                <Setter Property="Visibility" Value="Visible" />
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding IsMeContact}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Slider.Style>
+          </Slider>
+
+        </Grid>
       </DockPanel>
 
       <StackPanel x:Name="HeaderArea" MinHeight="50" Margin="10,6,0,0" VerticalAlignment="Top" DockPanel.Dock="Top">

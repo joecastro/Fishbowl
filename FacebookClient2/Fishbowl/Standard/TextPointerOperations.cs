@@ -10,6 +10,7 @@ namespace Microsoft.Wpf.Samples.Documents
     using System.Linq;
     using System.Windows;
     using System.Windows.Documents;
+    using Standard;
 
     /* A BRIEF BACKGROUND on TextPointers (Ifeanyi Echeruo)
      * =================================================================================
@@ -188,7 +189,10 @@ namespace Microsoft.Wpf.Samples.Documents
                         TextPointer firstLineBreak = lineBreakEnumerator.Current;
                         if (range.Start.CompareTo(firstLineBreak) < 0)
                         {
-                            yield return GetRangeToEndOfLine(range.Start);
+                            TextRange result = GetRangeToEndOfLine(range.Start);
+                            DebugAssertIsSingleLine(result);
+
+                            yield return result;
                         }
 
                         // Body
@@ -196,7 +200,10 @@ namespace Microsoft.Wpf.Samples.Documents
                         while (lineBreakEnumerator.MoveNext())
                         {
                             TextPointer next = lineBreakEnumerator.Current;
-                            yield return GetRangeToEndOfLine(prev);
+                            TextRange result = GetRangeToEndOfLine(prev);
+                            DebugAssertIsSingleLine(result);
+
+                            yield return result;
                             prev = next;
                         }
 
@@ -204,13 +211,19 @@ namespace Microsoft.Wpf.Samples.Documents
                         TextPointer lastLineBreak = prev;
                         if (range.End.CompareTo(lastLineBreak) > 0)
                         {
-                            yield return new TextRange(lastLineBreak, range.End);
+                            TextRange result = new TextRange(lastLineBreak, range.End);
+                            DebugAssertIsSingleLine(result);
+
+                            yield return result;
                         }
                     }
                     else
                     {
                         // Single line without line breaks corner case
-                        yield return new TextRange(range.Start, range.End);
+                        TextRange result = new TextRange(range.Start, range.End);
+                        DebugAssertIsSingleLine(result);
+
+                        yield return result;
                     }
                 }
                 finally
@@ -477,8 +490,8 @@ namespace Microsoft.Wpf.Samples.Documents
             Func<TextRange, IEnumerable<Rect>> getHilightRectFromLineRange
             )
         {
-            Debug.Assert(range != null);
-            Debug.Assert(getHilightRectFromLineRange != null);
+            Assert.IsNotNull(range);
+            Assert.IsNotNull(getHilightRectFromLineRange);
 
             IEnumerable<Rect[]> rectsPerLine = 
                 from lineRange in TextPointerOperations.GetLineRanges(range)
@@ -667,12 +680,15 @@ namespace Microsoft.Wpf.Samples.Documents
         [Conditional("DEBUG")]
         public static void DebugAssertIsSingleLine(TextRange range)
         {
-            var lineStarts = GetLineStartPositionsInRange(range, LogicalDirection.Forward).Take(2).ToArray();
-            Debug.Assert(lineStarts.Length < 2, "Range must not span more than 1 line");
+            // If range.Start and range.End are on the same line the GetLineStartPosition(0)
+            // should return the same value for both range.Start and range.End
+            TextPointer lineStartFromRangeStart = range.Start.GetLineStartPosition(0);
+            TextPointer lineStartFromRangeEnd = range.End.GetLineStartPosition(0);
 
-            if(lineStarts.Length == 1)
+            if (lineStartFromRangeStart != null && lineStartFromRangeEnd != null)
             {
-                Debug.Assert(range.Start.CompareTo(lineStarts[0]) == 0, "Line break must be at beginning of range");
+                // Range must not span more than 1 line
+                Assert.AreEqual(0, lineStartFromRangeStart.GetOffsetToPosition(lineStartFromRangeEnd));
             }
         }
     }

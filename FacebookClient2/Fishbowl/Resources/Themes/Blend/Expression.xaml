@@ -19,7 +19,15 @@
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
 
+  <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="White" Offset="0"/>
+      <GradientStop Color="Silver" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
   <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="White"/>
+  <SolidColorBrush x:Key="ToolbarLightTextBlockForegroundBrush" Color="White"/>
 
   <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF333333" />
     
@@ -186,25 +194,6 @@
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
     <Setter Property="FontSize" Value="14px" />
-  </Style>
-
-  <Style x:Key="StandardToolbarHostStyle" TargetType="{x:Type ContentControl}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type ContentControl}">
-          <Grid>
-            <Border Background="{DynamicResource NormalBrush}" BorderBrush="{DynamicResource NormalBorderBrush}" BorderThickness="1" CornerRadius="3" />
-            <Border BorderBrush="{DynamicResource NormalBorderBrush}" BorderThickness="1" CornerRadius="3" Background="{StaticResource ShineBrush}" Opacity="1" />
-
-            <ContentPresenter x:Name="Content"
-              Content="{TemplateBinding Content}" 
-              Margin="{TemplateBinding Padding}" 
-              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-          </Grid>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
   </Style>
 
   <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="Red"/>

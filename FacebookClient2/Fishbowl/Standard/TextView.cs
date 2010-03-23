@@ -11,6 +11,7 @@ namespace Microsoft.Wpf.Samples.Documents
     using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Media;
+    using Standard;
 
     /// <summary>
     /// Abstraction that maps TextPointer positions to physical x,y coordinates and vice versa
@@ -93,10 +94,7 @@ namespace Microsoft.Wpf.Samples.Documents
 
             TextPointer result = GetPositionFromPoint(point, contentRange, snapToText);
 
-            if (snapToText)
-            {
-                Debug.Assert(result != null);
-            }
+            Assert.Implies(snapToText, result != null);
 
             return result;
         }
@@ -159,11 +157,7 @@ namespace Microsoft.Wpf.Samples.Documents
                 result = GetPositionFromPointByLinearScan(point, range, snapToText);
             }
 
-            if (snapToText)
-            {
-                Debug.Assert(result != null);
-            }
-
+            Assert.Implies(snapToText, result != null);
             return result;
         }
 
@@ -318,7 +312,8 @@ namespace Microsoft.Wpf.Samples.Documents
             }
 
 #if DEBUG
-            Debug.Assert(GetSpan(range) <= span, "Bisection must not increase the span of the range");
+            // Bisection must not increase the span of the range
+            Assert.IsTrue(GetSpan(range) <= span); 
 #endif
 
             return true;
@@ -366,10 +361,7 @@ namespace Microsoft.Wpf.Samples.Documents
                 }
             }
 
-            if (snapToText)
-            {
-                Debug.Assert(result != null);
-            }
+            Assert.Implies(snapToText, result != null);
 
             return (result != null) ? result.NearPosition : null;
         }

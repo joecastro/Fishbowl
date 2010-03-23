@@ -15,6 +15,7 @@ namespace Microsoft.Wpf.Samples.Documents
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Media;
+    using Standard;
 
     public class TextSelection : DependencyObject
     {
@@ -496,11 +497,11 @@ namespace Microsoft.Wpf.Samples.Documents
         /// <param name="textBlock">Element to initialize selection for</param>
         private void ConnectTo(TextBlock textBlock)
         {
-            Debug.Assert(this.textBlock == null);
-            Debug.Assert(this.adorner == null);
-            Debug.Assert(this.adornerLayer == null);
-            Debug.Assert(this.view == null);
-            Debug.Assert(this.selection == null);
+            Assert.IsNull(this.textBlock);
+            Assert.IsNull(this.adorner);
+            Assert.IsNull(this.adornerLayer);
+            Assert.IsNull(this.view);
+            Assert.IsNull(this.selection);
 
             this.textBlock = textBlock;
 
@@ -572,12 +573,12 @@ namespace Microsoft.Wpf.Samples.Documents
 
             this.mouseDownHyperlink = null;
 
-            Debug.Assert(this.textBlock == null);
-            Debug.Assert(this.adorner == null);
-            Debug.Assert(this.adornerLayer == null);
-            Debug.Assert(this.view == null);
-            Debug.Assert(this.selection == null);
-            Debug.Assert(this.mouseDownHyperlink == null);
+            Assert.IsNull(this.textBlock);
+            Assert.IsNull(this.adorner);
+            Assert.IsNull(this.adornerLayer);
+            Assert.IsNull(this.view);
+            Assert.IsNull(this.selection);
+            Assert.IsNull(this.mouseDownHyperlink);
         }
 
         private bool TryStartUISelection(bool inMouseHandler)
@@ -676,9 +677,9 @@ namespace Microsoft.Wpf.Samples.Documents
 
         private bool TrySetDataObject(DataObject data, TextRange range, string dataFormat, Stream scratchSpace)
         {
-            Debug.Assert(scratchSpace.CanSeek);
-            Debug.Assert(scratchSpace.CanWrite);
-            Debug.Assert(scratchSpace.CanRead);
+            Assert.IsTrue(scratchSpace.CanSeek);
+            Assert.IsTrue(scratchSpace.CanWrite);
+            Assert.IsTrue(scratchSpace.CanRead);
 
             if (!range.CanSave(dataFormat))
             {

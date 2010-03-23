@@ -8,6 +8,7 @@
     using System.Windows;
     using System.Windows.Documents;
     using System.Windows.Media;
+    using Standard;
 
     public class HighlightRange
     {
@@ -208,10 +209,7 @@
 
                 default:
                 {
-                    Debug.Assert(
-                        false,
-                        string.Format("Unknown enum value '{1}' for {0}", (int)e.Action, typeof(NotifyCollectionChangedAction))
-                        );
+                    Assert.Fail(string.Format("Unknown enum value '{1}' for {0}", (int)e.Action, typeof(NotifyCollectionChangedAction)));
                     break;
                 }
             }

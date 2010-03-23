@@ -14,6 +14,7 @@ namespace FacebookClient
     using System.Windows.Data;
     using System.Windows.Input;
     using System.Windows.Threading;
+    using Standard;
 
     #region ActionICommand
 
@@ -521,7 +522,7 @@ namespace FacebookClient
                 }
                 else
                 {
-                    Debug.Assert(parentItemsCount < m_commandItems.Count);
+                    Assert.IsTrue(parentItemsCount < m_commandItems.Count);
                     int delta = m_commandItems.Count - parentItemsCount;
                     for (int i = 0; i < delta; i++)
                     {
@@ -530,7 +531,7 @@ namespace FacebookClient
                 }
             }
 
-            Debug.Assert(Items.Count == m_commandItems.Count);
+            Assert.AreEqual(Items.Count, m_commandItems.Count);
 
             for (int i = 0; i < parentItemsCount; i++)
             {
@@ -540,7 +541,7 @@ namespace FacebookClient
 #if DEBUG
             for (int i = 0; i < m_commandItems.Count; i++)
             {
-                Debug.Assert(((ZapCommandItem)m_commandItems[i]).Index == i);
+                Assert.AreEqual(((ZapCommandItem)m_commandItems[i]).Index, i);
             }
 #endif
         }

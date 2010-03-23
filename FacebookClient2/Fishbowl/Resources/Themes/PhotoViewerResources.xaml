@@ -644,13 +644,6 @@
                 SnapsToDevicePixels="True"
                 Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
             <Button 
-                Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigatePhotoPlayerCommand}"
-                CommandParameter="{Binding Path=FacebookPhoto}" 
-                Style="{DynamicResource TopToolbarButton}" 
-                ToolTip="Start Playing">
-              <Rectangle Height="16" Width="16" Fill="{DynamicResource PlayArrowToolbarDrawingBrush}"/>
-            </Button>
-            <Button 
                 Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" 
                 CommandParameter="{Binding}" 
                 Style="{DynamicResource TopToolbarButton}" 

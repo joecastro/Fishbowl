@@ -342,7 +342,6 @@
     <Compile Include="View\MasterNavigator.cs" />
     <Compile Include="View\NavigationCommands.cs" />
     <Compile Include="View\Navigator.cs" />
-    <Compile Include="View\PhotoPlayer.cs" />
     <Compile Include="View\ViewCommand.cs" />
     <Compile Include="View\ViewManager.cs" />
     <None Include="app.config" />
