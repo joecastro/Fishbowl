@@ -8,6 +8,7 @@
     Focusable="False"
     x:Name="TopControl">
   <UserControl.Resources>
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     <Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}">
       <Setter Property="Template">
         <Setter.Value>
@@ -99,17 +100,9 @@
               Height="22" 
               HorizontalAlignment="Left" 
               VerticalAlignment="Top" 
-              Click="_OnUploadWizardButtonClicked">
-        <Button.Style>
-          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
-            <Setter Property="Visibility" Value="Collapsed"/>
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding SortOrderMode, ElementName=TopControl}" Value="Albums">
-                <Setter Property="Visibility" Value="Visible"/>
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </Button.Style>
+              Click="_OnUploadWizardButtonClicked"
+              Visibility="{Binding ElementName=TopControl, Path=IsAlbumMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Style="{DynamicResource StandardButtonStyle}">
         Add more photos
       </Button>
 

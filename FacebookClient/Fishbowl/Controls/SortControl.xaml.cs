@@ -79,10 +79,12 @@ namespace FacebookClient
             if (SortOrderMode.Contacts == sortOrderMode)
             {
                 SortTabs.ItemsSource = _FriendSortOrders;
+                IsAlbumMode = false;
             }
             else
             {
                 SortTabs.ItemsSource = _AlbumSortOrders;
+                IsAlbumMode = true;
             }
             _SelectActiveSortOrder();
         }
@@ -91,6 +93,20 @@ namespace FacebookClient
         {
             get { return (SortOrderMode)GetValue(SortOrderModeProperty); }
             set { SetValue(SortOrderModeProperty, value); }
+        }
+
+        private static readonly DependencyPropertyKey IsAlbumModePropertyKey = DependencyProperty.RegisterReadOnly(
+            "IsAlbumMode",
+            typeof(bool), 
+            typeof(SortControl),
+            new FrameworkPropertyMetadata(false));
+
+        public static readonly DependencyProperty IsAlbumModeProperty = IsAlbumModePropertyKey.DependencyProperty;
+
+        public bool IsAlbumMode
+        {
+            get { return (bool)GetValue(IsAlbumModeProperty); }
+            private set { SetValue(IsAlbumModePropertyKey, value); }
         }
 
         public SortControl()

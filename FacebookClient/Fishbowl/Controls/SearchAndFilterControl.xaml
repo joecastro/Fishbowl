@@ -8,13 +8,13 @@
              Focusable="False" 
              x:Name="TopControl">
   <UserControl.Resources>
+    <FacebookClient:CollapseWhenZeroConverter x:Key="CollapseWhenZeroConverter"/>
+    
     <Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}">
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="TabControl">
-            <Grid>
-              <StackPanel IsItemsHost="True" />
-            </Grid>
+            <StackPanel IsItemsHost="True" />
           </ControlTemplate>
         </Setter.Value>
       </Setter>
@@ -108,43 +108,35 @@
   </UserControl.Resources>
   <Border Style="{DynamicResource SearchAndFilterBarMainBorderStyle}">
     <DockPanel LastChildFill="False">
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="15px" FontWeight="Medium" FontFamily="../Resources/Fonts/#Gotham" Text="Facebook Feeds" Margin="10,17,0,0" />
-      
-      <Button x:Name="ShowMoreButton" DockPanel.Dock="Bottom" Margin="10" Height="22" HorizontalAlignment="Right" VerticalAlignment="Top" Content="More" Click="MoreButtonClick">
-        <Button.Style>
-          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
-            <Setter Property="Visibility" Value="Visible" />
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters.Count}" Value="0">
-                <Setter Property="Visibility" Value="Collapsed" />
-              </DataTrigger>
-              <DataTrigger Binding="{Binding ShowMore, ElementName=TopControl}" Value="True">
-                <Setter Property="Visibility" Value="Collapsed" />
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </Button.Style>
-      </Button>
+      <TextBlock DockPanel.Dock="Top"
+        Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="15px" FontWeight="Medium" FontFamily="../Resources/Fonts/#Gotham" Text="Facebook Feeds" Margin="10,17,0,0" />
 
-      <Button x:Name="ShowLessButton" DockPanel.Dock="Bottom" Margin="10" Height="22" HorizontalAlignment="Right" VerticalAlignment="Top" Content="Less" Click="MoreButtonClick">
-        <Button.Style>
-          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButtonStyle}">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-              <DataTrigger Binding="{Binding ShowMore, ElementName=TopControl}" Value="True">
-                <Setter Property="Visibility" Value="Visible" />
-              </DataTrigger>
-              <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters.Count}" Value="0">
-                <Setter Property="Visibility" Value="Collapsed" />
-              </DataTrigger>
-            </Style.Triggers>
-          </Style>
-        </Button.Style>
+      <Button DockPanel.Dock="Bottom"
+          Margin="10" 
+          Height="22" 
+          HorizontalAlignment="Right" 
+          VerticalAlignment="Top" 
+          Click="MoreButtonClick"
+          Style="{DynamicResource StandardButtonStyle}"
+          Visibility="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters.Count, Converter={StaticResource CollapseWhenZeroConverter}}">
+        <TextBlock>
+          <TextBlock.Style>
+            <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Text" Value="More"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ShowMore, ElementName=TopControl}" Value="True">
+                  <Setter Property="Text" Value="Less" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </TextBlock.Style>
+        </TextBlock>
       </Button>
 
       <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <TabControl x:Name="FilterTabs" Margin="0,6,0,0" VerticalAlignment="Top" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeedFilters}" />
       </ScrollViewer>
+
     </DockPanel>
   </Border>
 </UserControl>
