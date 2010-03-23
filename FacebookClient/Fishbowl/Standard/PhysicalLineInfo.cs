@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Windows;
     using System.Windows.Documents;
+    using Standard;
 
     /// <summary>
     /// Exposes physical hit testing information for text ranges within a line
@@ -73,9 +74,8 @@
                         }
                         else
                         {
-                            Debug.Assert(
-                                   prevChar != null
-                                && candidate.GetOffsetToPosition(prevChar.NearPosition) == 0);
+                            Assert.IsNotNull(prevChar);
+                            Assert.AreEqual(0, candidate.GetOffsetToPosition(prevChar.NearPosition));
 
                             xResult = prevChar;
                         }
@@ -117,7 +117,7 @@
             }
             else
             {
-                Debug.Assert(bounds.Contains(point));
+                Assert.IsTrue(bounds.Contains(point));
             }
 
             return result;

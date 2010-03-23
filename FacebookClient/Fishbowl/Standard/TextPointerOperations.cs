@@ -10,6 +10,7 @@ namespace Microsoft.Wpf.Samples.Documents
     using System.Linq;
     using System.Windows;
     using System.Windows.Documents;
+    using Standard;
 
     /* A BRIEF BACKGROUND on TextPointers (Ifeanyi Echeruo)
      * =================================================================================
@@ -489,8 +490,8 @@ namespace Microsoft.Wpf.Samples.Documents
             Func<TextRange, IEnumerable<Rect>> getHilightRectFromLineRange
             )
         {
-            Debug.Assert(range != null);
-            Debug.Assert(getHilightRectFromLineRange != null);
+            Assert.IsNotNull(range);
+            Assert.IsNotNull(getHilightRectFromLineRange);
 
             IEnumerable<Rect[]> rectsPerLine = 
                 from lineRange in TextPointerOperations.GetLineRanges(range)
@@ -686,10 +687,8 @@ namespace Microsoft.Wpf.Samples.Documents
 
             if (lineStartFromRangeStart != null && lineStartFromRangeEnd != null)
             {
-                Debug.Assert(
-                    0 == lineStartFromRangeStart.GetOffsetToPosition(lineStartFromRangeEnd),
-                    "Range must not span more than 1 line"
-                    );
+                // Range must not span more than 1 line
+                Assert.AreEqual(0, lineStartFromRangeStart.GetOffsetToPosition(lineStartFromRangeEnd));
             }
         }
     }
