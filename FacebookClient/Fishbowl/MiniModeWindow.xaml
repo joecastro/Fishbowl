@@ -257,7 +257,7 @@
 
           <ToggleButton
               DockPanel.Dock="Right"
-              IsChecked="{Binding ElementName=PART_ZapScroller2, Path=IsPlaying, Mode=OneWay}" 
+              IsChecked="{Binding ElementName=PART_ZapScroller2, Path=IsPlaying, Mode=TwoWay}" 
               Style="{DynamicResource SimpleButtonBaseStyle}"
               Command="MediaCommands.TogglePlayPause"
               VerticalAlignment="Center">
