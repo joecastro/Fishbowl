@@ -48,7 +48,7 @@
             <Grid Height="18">
               <Border x:Name="CloseButtonBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="0,0,0,2" Height="Auto" Width="22" Background="Transparent">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" FontFamily="Webdings" Foreground="Black" Text="5" />
+                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{DynamicResource LargeFontSize2}" FontFamily="Webdings" Foreground="Black" Text="5" />
                 </StackPanel>
               </Border>
             </Grid>
@@ -105,7 +105,7 @@
             <Grid Height="18">
               <Border x:Name="CloseButtonBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="0,0,2,0" Height="Auto" Width="22" Background="Transparent">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="18" FontFamily="Webdings" Foreground="Black" Text="6" />
+                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{DynamicResource LargeFontSize2}" FontFamily="Webdings" Foreground="Black" Text="6" />
                 </StackPanel>
               </Border>
             </Grid>
@@ -298,7 +298,7 @@
               VerticalAlignment="Stretch"
               TextAlignment="Center"
               Margin="3" 
-              FontSize="14"
+              FontSize="{DynamicResource MiddleFontSize}"
               FontWeight="Medium"
               Foreground="White"
               FontFamily="Resources/Fonts/#Gotham" >
@@ -332,7 +332,7 @@
                 <Rectangle x:Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusAwayDrawingBrush}" Visibility="Collapsed" />
                 <Rectangle x:Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusOnlineDrawingBrush}" Visibility="Collapsed" />
 
-                <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="14" FontWeight="Bold" TextTrimming="CharacterEllipsis" Foreground="White" />
+                <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold" TextTrimming="CharacterEllipsis" Foreground="White" />
               </DockPanel>
 
               <Button Grid.Row="1" Grid.Column="0" Margin="5,3,0,0"
@@ -393,7 +393,7 @@
                 <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,2,2" MinHeight="40" Background="#FFE3E7F0" CornerRadius="10" Padding="0">
                   <DockPanel>
                     <TextBlock DockPanel.Dock="Bottom" Margin="10,2" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-                    <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="13px" Foreground="Black" FontFamily="../Fonts/#Gotham">
+                    <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="../Fonts/#Gotham">
                       <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                           <Setter Property="Visibility" Value="Visible" />

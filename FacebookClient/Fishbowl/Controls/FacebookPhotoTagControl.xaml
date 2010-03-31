@@ -5,7 +5,7 @@
      xmlns:ClientManagerView="clr-namespace:ClientManager.View">
   <Grid>
     <TextBlock
-        FontSize="12"
+        FontSize="{DynamicResource SmallFontSize1}"
         Foreground="#AAAAAA"  
         TextWrapping="Wrap"
         Margin="0,0,4,0"

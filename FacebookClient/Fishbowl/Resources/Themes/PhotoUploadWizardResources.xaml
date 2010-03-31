@@ -140,7 +140,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Background" Value="#000000"/>
@@ -184,7 +184,7 @@
                         <TextBlock x:Name="HelpText" Margin="7,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" FontStyle="Italic"
                                    Foreground="White" Text="{TemplateBinding ToolTip}" 
-                                   Visibility="Collapsed" FontSize="12px" />
+                                   Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}" />
                        
                         <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Medium" Foreground="White" />
                     </Grid>

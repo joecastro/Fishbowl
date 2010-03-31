@@ -55,7 +55,7 @@
 
     <Style x:Key="SearchAndFilterTextStyle"
            TargetType="{x:Type TextBlock}">
-        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
         <Setter Property="FontWeight" Value="Light" />
         <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
         <Setter Property="TextBlock.Foreground" Value="#4a4a4a" />
@@ -70,7 +70,7 @@
 
     <Style x:Key="SearchAndFilterTreeViewItemHeaderStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="#4B4B4B" />
-        <Setter Property="FontSize" Value="13px" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
         <Setter Property="FontStyle" Value="Italic" />
         <Setter Property="FontWeight" Value="Light" />
         <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
@@ -108,7 +108,7 @@
         <Setter Property="Focusable" Value="False" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="TextBlock.Foreground" Value="#4a4a4a" />
-        <Setter Property="TextBlock.FontSize" Value="13px" />
+        <Setter Property="TextBlock.FontSize" Value="{DynamicResource MiddleFontSize}" />
         <Setter Property="TextBlock.FontFamily" Value="../Fonts/#Gotham" />
         <Setter Property="TextBlock.FontWeight" Value="Light" />
         <Setter Property="Template">

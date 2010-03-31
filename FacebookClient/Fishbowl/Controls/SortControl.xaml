@@ -35,8 +35,8 @@
               </Grid>
               <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
               <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
-              <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-              <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="14px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
               <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Tag="{Binding}">
                 <Button.Template>
@@ -106,8 +106,8 @@
         Add more photos
       </Button>
 
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="15px" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="13px" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontStyle="Italic" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold" FontFamily="../Resources/Fonts/#Gotham" Text="Sort by" Margin="10,17,0,0" />
       <TabControl x:Name="SortTabs" Margin="0,6,0,0" />
     </DockPanel>
   </Border>

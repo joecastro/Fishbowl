@@ -15,6 +15,7 @@
     <FontFamily x:Key="SerifFont">./../../Fonts/#Pescadero</FontFamily>
     <FontFamily x:Key="SansSerifFont">./../../Fonts/#Miramonte</FontFamily>
 
+    <!-- TODO: Should we use this or default to values from CommonFontResources? -->
     <System:Double x:Key="FontSize">16</System:Double>
 
     <LinearGradientBrush x:Key="ShareTextBoxLightBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
@@ -132,7 +133,6 @@
                 Value="Left" />
         <Setter Property="SpellCheck.IsEnabled"
                 Value="True" />
-        <!--Setter Property="Opacity" Value=".4" /-->
     </Style>
 
     <ControlTemplate x:Key="ShareButtonTemplate"
@@ -498,7 +498,7 @@
     <ControlTemplate x:Key="UpdateBoxButtonTemplate" TargetType="{x:Type ButtonBase}">
         <Grid x:Name="Root">
             <TextBlock x:Name="Glow"
-          FontSize="14"
+          FontSize="{DynamicResource MiddleFontSize}"
           FontFamily="Segoe UI"
           FontWeight="Semibold"
           Text="{TemplateBinding Content}"
@@ -509,7 +509,7 @@
         </TextBlock.Effect>
             </TextBlock>
             <TextBlock x:Name="Main"
-          FontSize="14"
+          FontSize="{DynamicResource MiddleFontSize}"
           FontFamily="Segoe UI"
           FontWeight="Semibold"
           Text="{TemplateBinding Content}"
@@ -601,7 +601,7 @@
     <Style x:Key="ApplicationBarShareTextBoxStyle" TargetType="TextBox">
         <Setter Property="SpellCheck.IsEnabled" Value="True" />
         <Setter Property="Template" Value="{StaticResource UpdateTextBoxTemplate}" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
         <Setter Property="MinHeight" Value="20" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Margin" Value="20,20,0,20" />
@@ -615,7 +615,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
         <Setter Property="Background" Value="#000000"/>
         <Setter Property="MaxLines" Value="1"/>
@@ -662,7 +662,7 @@
                         <TextBlock x:Name="HelpText" Margin="30,1,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" 
                                    Foreground="#FFFFFF" FontStyle="Italic" Text="{TemplateBinding BannerText}" 
-                                   Visibility="Collapsed" FontSize="13px" />
+                                   Visibility="Collapsed" FontSize="{DynamicResource MiddleFontSize}" />
 
                         <ScrollViewer x:Name="PART_ContentHost" Margin="26,2,25,0" FontWeight="Medium"
                                       VerticalAlignment="Center" />
@@ -731,7 +731,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
         <Setter Property="Foreground" Value="#FFFFFF"/>
         <Setter Property="Background" Value="#000000"/>
         <Setter Property="MinHeight" Value="23"/>
@@ -777,7 +777,7 @@
                         <TextBlock x:Name="HelpText" Margin="10,5,0,0" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" 
                                    Foreground="#FFFFFF" Text="{TemplateBinding BannerText}" 
-                                   Visibility="Collapsed" FontSize="12px" />
+                                   Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}"/>
 
                         <ScrollViewer x:Name="PART_ContentHost" Margin="25,2,5,0" FontWeight="Medium" />
                     </Grid>
@@ -846,7 +846,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
         <Setter Property="Foreground" Value="#35528c"/>
         <Setter Property="Background" Value="#FFFFFF"/>
         <Setter Property="MinHeight" Value="23"/>
@@ -887,7 +887,7 @@
                         <TextBlock x:Name="HelpText" Margin="15,3,0,0" HorizontalAlignment="Left" 
                                    FontFamily="../Fonts/#Gotham" FontWeight="Light" Opacity=".7" 
                                    Foreground="#35528c" Text="{TemplateBinding ToolTip}" VerticalAlignment="Center" 
-                                   Visibility="Collapsed" FontSize="12px" />
+                                   Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}"/>
 
                         <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Light" VerticalAlignment="Center" />
                     </Grid>

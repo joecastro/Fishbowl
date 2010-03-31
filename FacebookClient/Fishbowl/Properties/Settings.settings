@@ -15,7 +15,7 @@
       <Value Profile="(Default)">Dark</Value>
     </Setting>
     <Setting Name="NewsFeedScale" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">1.3</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="IsFirstRun" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

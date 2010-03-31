@@ -88,7 +88,7 @@
   
   <Style x:Key="AlbumTitleStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
-    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
     <Setter Property="FontWeight" Value="Light"/>
     <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
     <Setter Property="Foreground" Value="{DynamicResource AlbumTitleForeground}"/>
@@ -96,7 +96,7 @@
   
   <Style x:Key="AlbumInfoStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
-    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
     <Setter Property="FontWeight" Value="Light"/>
     <Setter Property="Foreground" Value="{DynamicResource AlbumInfoForeground}"/>
   </Style>
@@ -400,7 +400,11 @@
         </ItemsControl.ItemsPanel>
       </FacebookClient:PaginatedItemsControl>
 
-      <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5" DataContext="{Binding ElementName=GalleryPreviewListBox, Path=ListPager}">
+      <Grid Grid.Column="1" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom" 
+            Margin="0,0,0,5" 
+            DataContext="{Binding ElementName=GalleryPreviewListBox, Path=ListPager}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" MinWidth="75" />

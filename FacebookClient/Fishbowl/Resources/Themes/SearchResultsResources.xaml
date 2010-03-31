@@ -102,17 +102,6 @@
     <DataTemplate x:Key="FriendResultTemplate" DataType="{x:Type Facebook:FacebookContact}">
         <Grid x:Name="RootGrid">
             <FacebookClient:FriendButton Friend="{Binding}" IsClickable="True" ToolTip="{Binding Name}"/>
-            <!--<Popup IsOpen="{Binding ElementName=RootGrid, Path=IsMouseOver, Mode=OneWay}" Placement="Center"
-                   PlacementTarget="{Binding ElementName=ItemButton}" PopupAnimation="Fade"
-                   AllowsTransparency="True">
-                <Border BorderBrush="Black" BorderThickness="1" Background="LightGray" CornerRadius="12" Padding="10">
-                    <StackPanel>
-                        <FacebookClient:SearchTextBlock InputText="{Binding Name}" FontSize="12" HorizontalAlignment="Center"/>
-                        <FacebookClient:FriendButton Friend="{Binding}" Margin="5"/>
-                        <TextBlock Text="{Binding Birthday, StringFormat=Birthday: \{0\}}" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Popup>-->
         </Grid>
     </DataTemplate>
 
@@ -125,37 +114,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="FriendGrid">
                 <FacebookClient:FriendButton x:Name="FriendButton" Friend="{Binding FromUser}" IsClickable="True" ToolTip="{Binding FromUser.Name}"/>
-                <!--<Popup IsOpen="{Binding ElementName=FriendGrid, Path=IsMouseOver, Mode=OneWay}" Placement="Center"
-                   PlacementTarget="{Binding ElementName=FriendButton}" PopupAnimation="Fade"
-                   AllowsTransparency="True">
-                    <Border BorderBrush="Black" BorderThickness="1" Background="LightGray" CornerRadius="12" Padding="10">
-                        <StackPanel>
-                            <FacebookClient:SearchTextBlock InputText="{Binding FromUser.Name}" FontSize="12" HorizontalAlignment="Center"/>
-                            <FacebookClient:FriendButton Friend="{Binding FromUser}" Margin="5"/>
-                            <TextBlock Text="{Binding FromUser.Birthday, StringFormat=Birthday: \{0\}}" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                </Popup>-->
             </Grid>
-            <!--<Path Grid.Column="1" Fill="{StaticResource CommentBinNewCommentBackground}" Stretch="Fill" Stroke="{DynamicResource CommentBinNewCommentBorder}" 
-                  HorizontalAlignment="Right" Margin="0,5,0,0" Width="15" Data="M22.166642,154.45381 L29.999666,187.66699 40.791059,154.54395" StrokeThickness="3" 
-                  d:LayoutOverrides="GridBox" VerticalAlignment="Top" Height="25" RenderTransformOrigin="0.5,0.5">
-                <Path.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="90"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Path.RenderTransform>
-            </Path>-->
             <Grid Grid.Column="2" x:Name="CommentGrid">
                 <Button x:Name="CommentButton" Style="{StaticResource SimpleButtonStyle}" 
                     Click="OnNavigateToContentButtonClicked"
                     ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}"
                     IsEnabled="{Binding FromUser.HasData, FallbackValue=False}">
-                    <!--<Border Margin="0" VerticalAlignment="Top" Background="{DynamicResource CommentBinNewCommentBackground}" 
-                        BorderBrush="{DynamicResource CommentBinNewCommentBorder}" BorderThickness="3" CornerRadius="10" Padding="5">-->
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -174,37 +138,7 @@
                                        Margin="0,3,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
                                        Style="{StaticResource CreatedTextBlockStyle}" />
                     </Grid>
-                    <!--</Border>-->
                 </Button>
-                <!--<Popup IsOpen="{Binding ElementName=CommentGrid, Path=IsMouseOver, Mode=OneWay}" Placement="Relative"
-                   PlacementTarget="{Binding ElementName=CommentButton}" PopupAnimation="Fade"
-                   AllowsTransparency="True">
-                    <Button Style="{StaticResource SimpleButtonStyle}" MinWidth="{Binding ElementName=CommentButton, Path=ActualWidth}" 
-                            MinHeight="{Binding ElementName=CommentButton, Path=ActualHeight}" MaxWidth="500" 
-                        Click="OnNavigateToContentButtonClicked"
-                        ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}"
-                        IsEnabled="{Binding FromUser.HasData, FallbackValue=False}">
-                        <Border Margin="0" VerticalAlignment="Top" Background="{DynamicResource CommentBinNewCommentBackground}" 
-                            BorderBrush="{DynamicResource CommentBinNewCommentBorder}" BorderThickness="3" CornerRadius="10" Padding="5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <FacebookClient:SearchTextBlock Grid.Row="0" InputText="{Binding FromUser.Name}" Margin="0" TextWrapping="Wrap" 
-                                    Foreground="{DynamicResource CommendWriterNameFontColor}" d:LayoutOverrides="Width" 
-                                    HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Calibri" FontSize="16"/>
-                                <FacebookClient:SearchTextBlock Grid.Row="1" InputText="{Binding Text}" TextWrapping="Wrap" 
-                                    Foreground="{DynamicResource CommendWriterCommentFontColor}" 
-                                    FontFamily="Calibri" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="16"/>
-                                <TextBlock Grid.Row="2" Text="{Binding Time, StringFormat=\{0:MMMM d\, yyyy h:mm tt\}}" 
-                                    Margin="3,0,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                    FontFamily="Calibri" Foreground="{DynamicResource CommendWriterDateTimeFontColor}" FontSize="16"/>
-                            </Grid>
-                        </Border>
-                    </Button>
-                </Popup>-->
             </Grid>
         </Grid>
     </DataTemplate>
@@ -218,24 +152,12 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Column="0" x:Name="FriendGrid">
                 <FacebookClient:FriendButton x:Name="FriendButton" Friend="{Binding Actor}" IsClickable="True" ToolTip="{Binding Actor.Name}"/>
-                <!--<Popup IsOpen="{Binding ElementName=FriendGrid, Path=IsMouseOver, Mode=OneWay}" Placement="Center"
-                   PlacementTarget="{Binding ElementName=FriendButton}" PopupAnimation="Fade"
-                   AllowsTransparency="True">
-                    <Border BorderBrush="Black" BorderThickness="1" Background="LightGray" CornerRadius="12" Padding="10">
-                        <StackPanel>
-                            <FacebookClient:SearchTextBlock InputText="{Binding Actor.Name}" FontSize="12" HorizontalAlignment="Center"/>
-                            <FacebookClient:FriendButton Friend="{Binding Actor}" Margin="5"/>
-                            <TextBlock Text="{Binding Actor.Birthday, StringFormat=Birthday: \{0\}}" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                </Popup>-->
             </Grid>
             <Grid Grid.Column="2" x:Name="PostGrid">
                 <Button x:Name="PostButton" Style="{StaticResource SimpleButtonStyle}" 
                         Click="OnNavigateToContentButtonClicked"
                         ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
                         IsEnabled="{Binding Actor.HasData, FallbackValue=False}">
-                    <!--<Border BorderBrush="DarkGray" BorderThickness="2" Background="LightGray" CornerRadius="6" Padding="5">-->
                     <Grid Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -253,38 +175,7 @@
                                         Margin="0,3,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
                                         Style="{StaticResource CreatedTextBlockStyle}" />
                     </Grid>
-                    <!--</Border>-->
                 </Button>
-                <!--<Popup IsOpen="{Binding ElementName=PostGrid, Path=IsMouseOver, Mode=OneWay}" Placement="Relative"
-                   PlacementTarget="{Binding ElementName=PostButton}" PopupAnimation="Fade"
-                   AllowsTransparency="True">
-                    <Button Style="{StaticResource SimpleButtonStyle}" 
-                        Click="OnNavigateToContentButtonClicked"
-                        ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
-                        IsEnabled="{Binding Actor.HasData, FallbackValue=False}"
-                        MinWidth="{Binding ElementName=PostButton, Path=ActualWidth}"
-                        MinHeight="{Binding ElementName=PostButton, Path=ActualHeight}"
-                        MaxWidth="500">
-                        <Border BorderBrush="DarkGray" BorderThickness="2" Background="LightGray" CornerRadius="6" Padding="5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <FacebookClient:SearchTextBlock Grid.Row="0" InputText="{Binding Actor.Name}" Margin="0" TextWrapping="Wrap" 
-                                        Foreground="DimGray" d:LayoutOverrides="Width" 
-                                        HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Calibri" FontSize="16"/>
-                                <FacebookClient:SearchTextBlock Grid.Row="1" InputText="{Binding Message}" TextWrapping="Wrap" 
-                                Foreground="{DynamicResource CommendWriterCommentFontColor}" 
-                                FontFamily="Calibri" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="16"/>
-                                <TextBlock Grid.Row="2" Text="{Binding Created, StringFormat=\{0:MMMM d\, yyyy h:mm tt\}}" 
-                                        Margin="3,0,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
-                                        FontFamily="Calibri" Foreground="{DynamicResource CommendWriterDateTimeFontColor}" FontSize="16"/>
-                            </Grid>
-                        </Border>
-                    </Button>
-                </Popup>-->
             </Grid>
         </Grid>
     </DataTemplate>
@@ -560,7 +451,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type FacebookClient:SearchContentControl}">
                     <StackPanel x:Name="RootPanel" Margin="0,5,0,0">
-                        <StackPanel Orientation="Horizontal" TextElement.FontSize="12" TextElement.FontWeight="Bold" Margin="0,0,0,0">
+                        <StackPanel Orientation="Horizontal" TextElement.FontSize="{DynamicResource SmallFontSize1}" TextElement.FontWeight="Bold" Margin="0,0,0,0">
                             <TextBlock Text="{TemplateBinding Title}"/>
                             <TextBlock Margin="5,0,0,0" Foreground="DimGray">
                                 <TextBlock.Text>

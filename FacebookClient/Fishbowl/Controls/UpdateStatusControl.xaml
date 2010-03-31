@@ -12,7 +12,7 @@
 
         <Style x:Key="GlowButtonStyle" TargetType="{x:Type ButtonBase}">
           <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
-          <Setter Property="FontSize" Value="12" />
+          <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}" />
           <Setter Property="Foreground" Value="White" />
           <Setter Property="FontWeight" Value="Bold" />
           <Setter Property="Margin" Value="5"/>
@@ -42,7 +42,7 @@
         <ControlTemplate x:Key="UpdateBoxAttachmentButtonTemplate" TargetType="{x:Type ButtonBase}">
           <Grid x:Name="Root">
             <TextBlock x:Name="Glow"
-                FontSize="11"
+                FontSize="{DynamicResource SmallFontSize1}"
                 FontFamily="Segoe UI"
                 FontWeight="Semibold"
                 Text="{TemplateBinding Content}"
@@ -52,7 +52,7 @@
               </TextBlock.Effect>
             </TextBlock>
             <TextBlock x:Name="Main"
-                FontSize="11"
+                FontSize="{DynamicResource SmallFontSize1}"
                 FontFamily="Segoe UI"
                 FontWeight="Semibold"
                 Text="{TemplateBinding Content}"

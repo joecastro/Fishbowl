@@ -14,7 +14,7 @@
     <Setter Property="Foreground" Value="{DynamicResource ToolbarTextBlockForegroundBrush}" />
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
   </Style>
   
@@ -297,7 +297,7 @@
   <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
     <Setter Property="OverridesDefaultStyle" Value="true"/>
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="12px"/>
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
     <Setter Property="Foreground" Value="White"/>
     <Setter Property="Template">
       <Setter.Value>

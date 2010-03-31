@@ -16,7 +16,7 @@
 
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
   </Style>
 

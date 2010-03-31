@@ -52,7 +52,7 @@
         <Viewbox>
           <ContentControl Width="160" Height="160" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="4" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <DockPanel>
-              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="10" FontFamily="Lucida Handwriting Italic" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
+              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="{DynamicResource SmallFontSize2}" FontFamily="Lucida Handwriting Italic" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
               <ClientManagerControls:FacebookImageControl
                   FacebookImage="{Binding Image}" 
                   FacebookImageDimensions="Normal">
@@ -111,17 +111,17 @@
             </ClientManagerControls:FacebookImageControl>
           </Grid>
         </Button>
-        <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="22px" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
+        <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
             <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
           </Hyperlink>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light" TextWrapping="Wrap">
+        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="../Fonts/#Gotham" FontWeight="Light" TextWrapping="Wrap">
           <TextBlock.Text>
             <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
           </TextBlock.Text>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="12px" FontFamily="../Fonts/#Gotham" FontWeight="Light">
+        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="../Fonts/#Gotham" FontWeight="Light">
           <TextBlock.Text>
             <Binding StringFormat="{}{0} photos" Path="Photos.Count" />
           </TextBlock.Text>
@@ -136,7 +136,7 @@
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="42px" FontFamily="../Fonts/#Gohtam" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
+        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="../Fonts/#Gohtam" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Left">
           <Button 
@@ -152,7 +152,7 @@
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
               Margin="3,0"
-              Height="26"
+              Height="{DynamicResource LargeFontSize3}"
               Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" 
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
@@ -162,7 +162,7 @@
           </Button>
         </StackPanel>
 
-        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontSize="16" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
+        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontSize="{DynamicResource LargeFontSize1}" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
           <FacebookClient:HyperlinkTextContent Text="{Binding Path=Description, Mode=OneWay}" />
         </TextBlock>
 

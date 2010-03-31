@@ -148,7 +148,7 @@
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerBaseNode}">
       <Grid x:Name="Root">
         <Ellipse Fill="#666666" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        <TextBlock Text="{Binding Path=Name}" Margin="13" Foreground="#FFFFFF" FontSize="14" FontWeight="Bold"/>
+        <TextBlock Text="{Binding Path=Name}" Margin="13" Foreground="#FFFFFF" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold"/>
             </Grid>
     </DataTemplate>
 
@@ -452,10 +452,10 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Column="1" Margin="10,10,10,0"  MaxHeight="215" VerticalAlignment="Top">
               <StackPanel Orientation="Horizontal">
-                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="42" FontFamily="Cambria" TextWrapping="Wrap" Text="Search: "/>
-                                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="42" FontFamily="Cambria" TextWrapping="Wrap" Text="{Binding Path=Title}"/>
+                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="Cambria" TextWrapping="Wrap" Text="Search: "/>
+                                <TextBlock Foreground="{DynamicResource Foreground_ContentElement}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="Cambria" TextWrapping="Wrap" Text="{Binding Path=Title}"/>
                             </StackPanel>
-              <TextBlock Foreground="{DynamicResource Foreground_ContentElement}"  FontSize="14">
+              <TextBlock Foreground="{DynamicResource Foreground_ContentElement}"  FontSize="{DynamicResource MiddleFontSize}">
                     <TextBlock Text="{Binding Path=ChangeDate, Converter={StaticResource DateTimeConverter}}"/> |
                     <TextBlock Text="{Binding Path=Photos.Count}"/> Photos
                   </TextBlock>
@@ -482,7 +482,7 @@
           <ControlTemplate TargetType="{x:Type Button}">
             <Grid Margin="8,2" Background="Transparent">
               <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" 
-                                       FontSize="14px">
+                                       FontSize="{DynamicResource MiddleFontSize}">
                                 <TextBlock.TextDecorations>
                                     <TextDecoration Location="Underline" PenOffset="2">
                                         <TextDecoration.Pen>
@@ -533,7 +533,7 @@
             <RowDefinition Height="*" />
           </Grid.RowDefinitions>
           <StackPanel Orientation="Horizontal">
-            <TextBlock Grid.Row="0" FontSize="20" FontWeight="Bold">
+            <TextBlock Grid.Row="0" FontSize="{DynamicResource LargeFontSize3}" FontWeight="Bold">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}Search Results for &quot;{0}&quot;: {1} items">
                                     <Binding Path="SearchText"/>
