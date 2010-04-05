@@ -400,7 +400,7 @@
                         <!-- Toolbar -->
                         <Grid DockPanel.Dock="Bottom" 
                               HorizontalAlignment="Stretch"
-                              Background="Transparent">
+                              Background="Transparent"> 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
@@ -413,102 +413,45 @@
                                     x:Name="PART_FindToolBarHost" 
                                     Visibility="Collapsed"/>
                             <!-- Page count and Nav buttons -->
-                            <StackPanel Grid.Column="1" 
-                                        Orientation="Horizontal"
-                                        HorizontalAlignment="Center" 
-                                        VerticalAlignment="Center">
+                            <Grid Grid.Column="2" 
+                                  HorizontalAlignment="Right" 
+                                  VerticalAlignment="Bottom"
+                                  Margin="0,0,0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" MinWidth="75" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
                                 <!-- Previous Page -->
-                                <RepeatButton Style="{StaticResource FlowViewer_GrowShrinkOpacityRepeatButton}"
+                                <RepeatButton Grid.Column="0" 
+                                              Style="{DynamicResource SimpleButtonBaseStyle}"
+                                              Margin="5,1"
                                               ToolTip="Previous Page"
                                               Command="NavigationCommands.PreviousPage"
                                               IsEnabled="{TemplateBinding CanGoToPreviousPage}"
-                                              Focusable="False">
-                                    <Viewbox Width="{TemplateBinding FontSize}">
-                                        <Path Fill="{TemplateBinding Foreground}">
-                                            <Path.Data>
-                                                <StaticResource ResourceKey="FlowViewer_UpArrowIcon"/>
-                                            </Path.Data>
-                                        </Path>
-                                    </Viewbox>
+                                              Focusable="False" >
+                                    <Rectangle Height="25" Width="25" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
                                 </RepeatButton>
                                 <!-- Page Count -->
-                                <TextBlock VerticalAlignment="Center" 
-                                           HorizontalAlignment="Center">
-                                    <Run xml:space="preserve"> </Run>
-                                    <TextBlock Text="{Binding Path=MasterPageNumber, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                    <Run xml:space="preserve"> of </Run>
-                                    <TextBlock Text="{Binding Path=PageCount, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                    <Run xml:space="preserve"> </Run>
+                                <TextBlock Grid.Column="1" 
+                                           Style="{DynamicResource ToolbarTextBlockStyle}" 
+                                           MinWidth="80">
+                                  <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}Page {0} of {1}">
+                                      <Binding Path="MasterPageNumber" RelativeSource="{RelativeSource TemplatedParent}" />
+                                      <Binding Path="PageCount" RelativeSource="{RelativeSource TemplatedParent}"  />
+                                    </MultiBinding>
+                                  </TextBlock.Text>
                                 </TextBlock>
                                 <!-- Next Page -->
-                                <RepeatButton Style="{StaticResource FlowViewer_GrowShrinkOpacityRepeatButton}"
+                                <RepeatButton Grid.Column="2" 
+                                              Style="{DynamicResource SimpleButtonBaseStyle}"
                                               ToolTip="Next Page" 
                                               Command="NavigationCommands.NextPage" 
                                               IsEnabled="{TemplateBinding CanGoToNextPage}"
-                                              Focusable="False">
-                                    <Viewbox Width="{TemplateBinding FontSize}">
-                                        <Path Fill="{TemplateBinding Foreground}">
-                                            <Path.Data>
-                                                <StaticResource ResourceKey="FlowViewer_DownArrowIcon"/>
-                                            </Path.Data>
-                                        </Path>
-                                    </Viewbox>
-                                </RepeatButton>
-                            </StackPanel>
-                            <!-- Zoom control -->
-                            <Grid Grid.Column="2" 
-                                  HorizontalAlignment="Right" 
-                                  VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <!-- Zoom out -->
-                                <RepeatButton Grid.Column="0" 
-                                              Command="NavigationCommands.DecreaseZoom" 
-                                              ToolTip="Decrease Zoom"
-                                              Style="{StaticResource FlowViewer_ZoomOutButton}"
-                                              IsEnabled="{TemplateBinding CanDecreaseZoom}"
-                                              Foreground="{TemplateBinding Foreground}"
-                                              BorderBrush="{TemplateBinding BorderBrush}"
-                                              Width="{TemplateBinding FontSize}" 
-                                              Height="{TemplateBinding FontSize}" 
-                                              Focusable="False">
-                                    <RepeatButton.LayoutTransform>
-                                        <ScaleTransform ScaleX="2.2" 
-                                                        ScaleY="2.2"/>
-                                    </RepeatButton.LayoutTransform>
-                                </RepeatButton>
-                                <!-- Zoom slider -->
-                                <Slider HorizontalAlignment="Stretch" 
-                                        VerticalAlignment="Center"
-                                        Grid.Column="1" 
-                                        Width="100" 
-                                        Focusable="False"
-                                        Value="{Binding Path=Zoom,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
-                                        Minimum="{TemplateBinding MinZoom}"
-                                        Maximum="{TemplateBinding MaxZoom}"
-                                        LargeChange="{TemplateBinding ZoomIncrement}"
-                                        SmallChange="{TemplateBinding ZoomIncrement}"
-                                        TickFrequency="{TemplateBinding ZoomIncrement}"
-                                        FontSize="{TemplateBinding FontSize}"
-                                        Style="{StaticResource FlowViewer_Slider}"/>
-                                <!-- Zoom in -->
-                                <RepeatButton Grid.Column="2" 
-                                              Command="NavigationCommands.IncreaseZoom" 
-                                              ToolTip="Increase Zoom"
-                                              Style="{StaticResource FlowViewer_ZoomInButton}"
-                                              IsEnabled="{TemplateBinding CanIncreaseZoom}"
-                                              Foreground="{TemplateBinding Foreground}"
-                                              BorderBrush="{TemplateBinding BorderBrush}"
-                                              Width="{TemplateBinding FontSize}" 
-                                              Height="{TemplateBinding FontSize}" 
-                                              Focusable="False">
-                                    <RepeatButton.LayoutTransform>
-                                        <ScaleTransform ScaleX="2.2" 
-                                                        ScaleY="2.2"/>
-                                    </RepeatButton.LayoutTransform>
+                                              Focusable="False"
+                                              Margin="5,1">
+                                    <Rectangle Height="25" Width="25" Fill="{DynamicResource RightArrowToolbarDrawingBrush}"/>
                                 </RepeatButton>
                             </Grid>
                         </Grid>
@@ -518,13 +461,31 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <AdornerDecorator ClipToBounds="True">
-                                <DocumentPageView PageNumber="0" 
-                                                  DocumentViewerBase.IsMasterPage="True"
-                                                  KeyboardNavigation.TabIndex="1" 
-                                                  KeyboardNavigation.TabNavigation="Local"
-                                                  KeyboardNavigation.IsTabStop="False"/>
-                            </AdornerDecorator>
+                            <Grid>
+                                <AdornerDecorator ClipToBounds="True">
+                                    <DocumentPageView PageNumber="0" 
+                                                      DocumentViewerBase.IsMasterPage="True"
+                                                      KeyboardNavigation.TabIndex="1" 
+                                                      KeyboardNavigation.TabNavigation="Local"
+                                                      KeyboardNavigation.IsTabStop="False"/>
+                                </AdornerDecorator>
+                                <StackPanel Height="24" Width="50" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,35,0" Opacity=".9" >
+                                    <Button Command="NavigationCommands.DecreaseZoom"
+                                          AutomationProperties.AutomationId="ZoomOut" 
+                                          ToolTip="Zoom out"
+                                          Style="{DynamicResource ZoomInOutButtons}" 
+                                          Height="22" Width="22">
+                                        <Rectangle Margin="2" Height="18" Width="18"  Fill="{DynamicResource ZoomOutDrawingBrush}"/>
+                                    </Button>
+                                    <Button Command="NavigationCommands.IncreaseZoom" 
+                                          AutomationProperties.AutomationId="ZoomIn" 
+                                          ToolTip="Zoom in"
+                                          Style="{DynamicResource ZoomInOutButtons}"
+                                          Height="22" Width="22" Margin="5,0,0,0" >
+                                        <Rectangle Margin="2" Height="18" Width="18"  Fill="{DynamicResource ZoomInDrawingBrush}"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
                         </Border>
                     </DockPanel>
                 </ControlTemplate>

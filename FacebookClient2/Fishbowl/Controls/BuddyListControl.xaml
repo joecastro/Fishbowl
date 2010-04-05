@@ -50,7 +50,7 @@
                   </Setter>
                 </Style>
               </ListBox.ItemContainerStyle>
-              
+
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type Facebook:FacebookContact}">
                   <DockPanel Margin="0,0,0,5">
@@ -87,12 +87,13 @@
                         </Grid>
                       </Button>
                       <StackPanel Margin="6,0,0,0" Grid.Column="1" Orientation="Horizontal">
-                        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Style="{DynamicResource ProfileNameTextBlockStyle}">
+                        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Style="{DynamicResource ProfileNameTextBlockStyle}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Semibold">
                           <Hyperlink 
                               Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
                               CommandParameter="{Binding}">
                             <Run Text="{Binding Name, Mode=OneWay}" />
-                          </Hyperlink></TextBlock>
+                          </Hyperlink>
+                        </TextBlock>
                         <Button 
                           Width="14" 
                           Height="14" 

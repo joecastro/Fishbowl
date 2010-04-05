@@ -328,17 +328,11 @@ namespace FacebookClient
             {
                 if (DoubleUtilities.LessThan(e.Delta, 0))
                 {
-                    if (this.PART_ZapScroller2.NextCommand.CanExecute(null))
-                    {
-                        this.PART_ZapScroller2.NextCommand.Execute(null);
-                    }
+                    MediaCommands.NextTrack.Execute(null, this);
                 }
                 else if (DoubleUtilities.GreaterThan(e.Delta, 0))
                 {
-                    if (this.PART_ZapScroller2.PreviousCommand.CanExecute(null))
-                    {
-                        this.PART_ZapScroller2.PreviousCommand.Execute(null);
-                    }
+                    MediaCommands.PreviousTrack.Execute(null, this);
                 }
 
                 e.Handled = true;
@@ -469,7 +463,10 @@ namespace FacebookClient
 
         private void _OnPlayPauseCommandExecuted(object sender, RoutedEventArgs e)
         {
-            if (PART_ZapScroller2.IsPlaying)
+            // When we get here, the IsPlaying value has already finished toggling here.
+            // So while it's a little counterintuitive, this is the correct way
+            // This was hidden previously using a OneWay binding and manual updating in another order.
+            if (!PART_ZapScroller2.IsPlaying)
             {
                 MediaCommands.Pause.Execute(sender, null);
             }

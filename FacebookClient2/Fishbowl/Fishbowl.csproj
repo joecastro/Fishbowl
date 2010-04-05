@@ -533,6 +533,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\Themes\CommonFontResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Themes\DrawingResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

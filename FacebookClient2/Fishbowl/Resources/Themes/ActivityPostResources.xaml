@@ -18,7 +18,7 @@
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityActionButtonForeground}" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>
@@ -137,14 +137,14 @@
   </ControlTemplate>
   <Style x:Key="CopyItemButtonStyle" BasedOn="{StaticResource CommentButtonStyle}" TargetType="ButtonBase">
     <Setter Property="Template" Value="{DynamicResource CopyItemButtonTemplate}" />
-    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="Margin" Value="10,0,0,0" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>
   <Style x:Key="AttachmentTitleTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontWeight" Value="Medium" />
-    <Setter Property="FontSize" Value="14" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="Visibility" Value="Visible" />
     <Setter Property="Foreground" Value="{DynamicResource AttachmentTitleTextBlockForeground}"/>
@@ -156,7 +156,7 @@
   </Style>
   <Style x:Key="AttachmentDescriptionTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="Margin" Value="0,5,0,0" />
     <Setter Property="Visibility" Value="Visible" />
@@ -165,7 +165,7 @@
   <Style x:Key="AttachmentCaptionTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="Foreground" Value="#8F8F8F" />
-    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="Margin" Value="0,0,0,5" />
     <Setter Property="Visibility" Value="Visible" />
@@ -180,19 +180,19 @@
     <Setter Property="VerticalAlignment" Value="Bottom" />
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="Foreground" Value="#8F8F8F" />
-    <Setter Property="FontSize" Value="11" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="Margin" Value="0,0,0,6" />
   </Style>
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontWeight" Value="Bold" />
-    <Setter Property="FontSize" Value="15px" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
   </Style>
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
     <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
   </Style>
@@ -225,15 +225,15 @@
         </Button>
       </ClientManagerControls:FacebookImageDragContainer>
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">
-        <TextBlock MaxWidth="550" FontSize="14" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
+        <TextBlock MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
             <TextBlock Text="{Binding FromUser.Name}" />
           </Hyperlink>
-          <TextBlock FontSize="11"> at 
+          <TextBlock FontSize="{DynamicResource MiddleFontSize}"> at 
           </TextBlock>
           <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Time, Converter={StaticResource DateTimeConverter}}" />
         </TextBlock>
-        <TextBlock Margin="0,-3,0,0" FontSize="13" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
+        <TextBlock Margin="0,-3,0,0" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
           <FacebookClient:HyperlinkTextContent Text="{Binding Text}" />
           <Button x:Name="RemoveCommentButton" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveCommentCommand}" CommandParameter="{Binding}" Content="Remove" Style="{StaticResource RemoveCommentButtonStyle}" Visibility="Collapsed" />
         </TextBlock>
@@ -420,7 +420,6 @@
   <FacebookClient:ContentVisibilityConverter x:Key="contentVisibilityConverter" />
   <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
     <Grid x:Name="Root" MinHeight="130" MinWidth="400" Background="Transparent" HorizontalAlignment="Stretch">
-      <!--<ClientManagerControls:NewsFeedItemOverlay Margin="0,0,0,0" SnapsToDevicePixels="True" />-->
       <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}"/>
 
       <Grid MaxWidth="800" HorizontalAlignment="Stretch" Margin="10, 5">
@@ -435,7 +434,7 @@
                     <RotateTransform Angle="-6" />
                 </TransformGroup>
             </Button.RenderTransform>
-            <Grid Width="106" Height="106">
+            <Grid Width="126" Height="126">
               <Grid>
                 <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
                 <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Actor.Image}" FacebookImageDimensions="Big">
@@ -448,7 +447,6 @@
                   </ClientManagerControls:FacebookImageControl.Template>
                 </ClientManagerControls:FacebookImageControl>
               </Grid>
-              <!--<Image Width="19" Height="27" Source="pack://application:,,,/Resources/Images/thumbtack.png" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,-9,-40,0" />-->
             </Grid>
           </Button>
         </ClientManagerControls:FacebookImageDragContainer>
@@ -577,7 +575,7 @@
                 </Style>
               </Border.Style>
               <StackPanel Margin="7,5,0,7">
-                <FacebookClient:CommandTextBox x:Name="CommentTextBox" HorizontalAlignment="Left" Margin="10,5" Panel.ZIndex="1" BannerText="Add to the conversation" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager},                                Path=ActionCommands.AddCommentCommand}" FontSize="13" SpellCheck.IsEnabled="True" Style="{DynamicResource CommentTextBoxStyle}" TextWrapping="Wrap">
+                <FacebookClient:CommandTextBox x:Name="CommentTextBox" HorizontalAlignment="Left" Margin="10,5" Panel.ZIndex="1" BannerText="Add to the conversation" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddCommentCommand}" FontSize="{DynamicResource LargeFontSize1}" SpellCheck.IsEnabled="True" Style="{DynamicResource CommentTextBoxStyle}" TextWrapping="Wrap">
                   <FacebookClient:CommandTextBox.CommitCommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding />
@@ -585,7 +583,7 @@
                     </MultiBinding>
                   </FacebookClient:CommandTextBox.CommitCommandParameter>
                 </FacebookClient:CommandTextBox>
-                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="13">
+                <Button Style="{DynamicResource StandardButtonStyle}" IsEnabled="{Binding ElementName=CommentTextBox, Path=Text, Converter={StaticResource IsStringNullOrWhitespaceConverter}, ConverterParameter=Inverse}" Height="22" HorizontalAlignment="Right" Margin="10,4,10,0" Panel.ZIndex="0" Command="{x:Static FacebookClient:CommandTextBox.DoCommitCommand}" CommandTarget="{Binding ElementName=CommentTextBox}" Content="Comment" FontSize="{DynamicResource LargeFontSize1}">
                   <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource MultiAggregator}">
                       <Binding />
@@ -629,7 +627,7 @@
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="AllowDrop" Value="true" />
-    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
     <Setter Property="Foreground" Value="{DynamicResource CommentTextBoxForeground}" />
     <Setter Property="Background" Value="#FFFFFF" />
     <Setter Property="MinHeight" Value="23" />
@@ -662,7 +660,7 @@
               <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill" />
               <Image Grid.Column="2" Grid.Row="2" Margin="-0.1,0,0,0" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" />
             </Grid>
-            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="12px" FontWeight="Light" Foreground="{DynamicResource CommentTextBoxForeground}" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
+            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Foreground="{DynamicResource CommentTextBoxForeground}" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
             <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" VerticalAlignment="Center" FontWeight="Medium" />
           </Grid>
           <ControlTemplate.Triggers>

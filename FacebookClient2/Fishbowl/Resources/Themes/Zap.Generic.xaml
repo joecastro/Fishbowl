@@ -98,7 +98,7 @@
                             <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" 
                                        Text="More..." 
                                        FontWeight="Bold" 
-                                       FontSize="14" 
+                                       FontSize="{DynamicResource MiddleFontSize}" 
                                        Foreground="#FFFFFFFF"/>
                         </Button>-->
 

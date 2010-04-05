@@ -141,13 +141,13 @@
                 Foreground="{Binding GoldBarBorderBrush, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"
                 Content="r"
                 FontFamily="Webdings"
-                FontSize="16"
+                FontSize="{DynamicResource LargeFontSize1}"
                 FontWeight="Bold"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 ToolTip="Close information bar"
                 Click="_CloseGoldBar"/>
-            <TextBlock x:Name="GoldBarTextBlock" Margin="8,4" VerticalAlignment="Center" Foreground="Navy" FontSize="12px" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" TextWrapping="Wrap"/>
+            <TextBlock x:Name="GoldBarTextBlock" Margin="8,4" VerticalAlignment="Center" Foreground="Navy" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" TextWrapping="Wrap"/>
           </DockPanel>
         </Border>
 

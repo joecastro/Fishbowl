@@ -10,14 +10,14 @@
           Foreground="{DynamicResource SpinnerTextForeground}" 
           FontFamily="Fonts/#Gotham" 
           FontWeight="Light" 
-          FontSize="32" 
+          FontSize="{DynamicResource LargeFontSize4}" 
           HorizontalAlignment="Center" 
           Text="Loading..." />
       <TextBlock 
           Foreground="{DynamicResource SpinnerTextForeground}" 
           FontFamily="Fonts/#Gotham" 
           FontWeight="Light" 
-          FontSize="13" 
+          FontSize="{DynamicResource MiddleFontSize}" 
           HorizontalAlignment="Center" 
           Margin="0,5,0,0" 
           Text="Please wait" />

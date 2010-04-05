@@ -18,7 +18,7 @@
             FontWeight="Light"
             FontFamily="../Resources/Fonts/#Gotham"
             Foreground="Maroon"
-            FontSize="18"
+            FontSize="{DynamicResource LargeFontSize2}"
             Text=""
             TextAlignment="Center"
             VerticalAlignment="Stretch" 
@@ -45,12 +45,12 @@
             FontWeight="Light"
             FontFamily="../Resources/Fonts/#Gotham"
             Foreground="{DynamicResource FacebookBlueBrush}"
-            FontSize="32"
+            FontSize="{DynamicResource LargeFontSize4}"
             Text=""
             TextAlignment="Center"
             VerticalAlignment="Stretch" 
             HorizontalAlignment="Stretch"/>
-        <TextBlock Foreground="{DynamicResource FacebookBlueBrush}" FontFamily="Fonts/#Gotham" FontWeight="Light" Opacity="1" FontSize="13" HorizontalAlignment="Center" Margin="0,5,0,0" Text="Please wait" />
+        <TextBlock Foreground="{DynamicResource FacebookBlueBrush}" FontFamily="Fonts/#Gotham" FontWeight="Light" Opacity="1" FontSize="{DynamicResource MiddleFontSize}" HorizontalAlignment="Center" Margin="0,5,0,0" Text="Please wait" />
         <ClientManagerControls:Spinner Margin="0,20,0,0">
           <ClientManagerControls:Spinner.Style>
             <Style TargetType="{x:Type ClientManagerControls:Spinner}">

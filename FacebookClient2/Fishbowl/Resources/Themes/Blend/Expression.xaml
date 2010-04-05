@@ -164,7 +164,7 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-        <Setter Property="FontSize" Value="14px" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     </Style>
 
   <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
@@ -193,7 +193,7 @@
     <Setter Property="Margin" Value="0" />
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-    <Setter Property="FontSize" Value="14px" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
   </Style>
 
   <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="Red"/>
@@ -212,7 +212,7 @@
             <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
             <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
 
-            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="14px" FontWeight="Light" Text="{TemplateBinding Content}" />
+            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
     </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">
@@ -258,7 +258,7 @@
             <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
             <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
 
-            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="14px" FontWeight="Light" Text="{TemplateBinding Content}" />
+            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
     </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">

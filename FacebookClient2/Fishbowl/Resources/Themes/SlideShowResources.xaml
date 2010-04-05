@@ -95,38 +95,38 @@
       <StackPanel x:Name="PART_AlbumInfo" Margin="0,8,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
         <Grid Margin="0,0,0,4">
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
-                               FontFamily="./Fonts/#Gotham" Opacity="1" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
+                               FontFamily="./Fonts/#Gotham" Opacity="1" FontSize="{DynamicResource LargeFontSize2}" VerticalAlignment="Top" HorizontalAlignment="Right"
                                Foreground="White" FontWeight="Medium" TextWrapping="Wrap">
             <TextBlock.Effect>
                 <BlurEffect KernelType="Gaussian" Radius="15" />
             </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
-                               FontFamily="./Fonts/#Gotham" Opacity=".8" FontSize="17" VerticalAlignment="Top" HorizontalAlignment="Right"
+                               FontFamily="./Fonts/#Gotham" Opacity=".8" FontSize="{DynamicResource LargeFontSize2}" VerticalAlignment="Top" HorizontalAlignment="Right"
                                Foreground="White" FontWeight="Medium" TextWrapping="Wrap"/>
         </Grid>
         <Grid Margin="0,0,0,4">
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
-                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
+                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="{DynamicResource MiddleFontSize}" VerticalAlignment="Top"
                                Foreground="White" Opacity="1" FontWeight="Light" TextWrapping="Wrap">
             <TextBlock.Effect>
               <BlurEffect KernelType="Gaussian" Radius="15" />
             </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
-                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="13" VerticalAlignment="Top"
+                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="{DynamicResource MiddleFontSize}" VerticalAlignment="Top"
                                Foreground="White" Opacity=".7" FontWeight="Light" TextWrapping="Wrap"/>
         </Grid>
         <Grid>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
-                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity="1" FontWeight="Light"
+                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="{DynamicResource SmallFontSize1}" Opacity="1" FontWeight="Light"
                                Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap">
             <TextBlock.Effect>
               <BlurEffect KernelType="Gaussian" Radius="15" />
             </TextBlock.Effect>
           </TextBlock>
           <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
-                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="12" Opacity=".5" FontWeight="Light"
+                               FontFamily="./Fonts/#Gotham" HorizontalAlignment="Right" FontSize="{DynamicResource SmallFontSize1}" Opacity=".5" FontWeight="Light"
                                Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap"/>
         </Grid>
       </StackPanel>
