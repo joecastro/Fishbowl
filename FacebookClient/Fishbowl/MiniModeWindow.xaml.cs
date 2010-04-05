@@ -332,11 +332,11 @@ namespace FacebookClient
             {
                 if (DoubleUtilities.LessThan(e.Delta, 0))
                 {
-                    MediaCommands.PreviousTrack.Execute(null, this);
+                    MediaCommands.NextTrack.Execute(null, this);
                 }
                 else if (DoubleUtilities.GreaterThan(e.Delta, 0))
                 {
-                    MediaCommands.NextTrack.Execute(null, this);
+                    MediaCommands.PreviousTrack.Execute(null, this);
                 }
 
                 e.Handled = true;
