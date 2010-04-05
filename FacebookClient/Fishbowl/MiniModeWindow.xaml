@@ -24,12 +24,12 @@
         Overlay="{Binding ElementName=NotificationCountControl, Path=ImageSource}"
         Description="{Binding ElementName=PART_ZapScroller2, Path=CurrentItem.Message}" ThumbnailClipMargin="0,0,0,33">
       <shell:TaskbarItemInfo.ThumbButtonInfos>
-        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=PreviousCommand}">
+                <shell:ThumbButtonInfo Command="MediaCommands.PreviousTrack" CommandTarget="{Binding ElementName=RootPanel}">
           <shell:ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource LeftArrowLightToolbarDrawing}"/>
           </shell:ThumbButtonInfo.ImageSource>
         </shell:ThumbButtonInfo>
-        <shell:ThumbButtonInfo Command="{Binding ElementName=PART_ZapScroller2, Path=NextCommand}">
+                <shell:ThumbButtonInfo Command="MediaCommands.NextTrack"  CommandTarget="{Binding ElementName=RootPanel}">
           <shell:ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource RightArrowLightToolbarDrawing}"/>
           </shell:ThumbButtonInfo.ImageSource>
