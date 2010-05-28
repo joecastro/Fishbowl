@@ -741,9 +741,16 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void EnsureDirectory(string path)
         {
-            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            if (!path.EndsWith(@"\"))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                path += @"\";
+            }
+
+            path = Path.GetDirectoryName(path);
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
             }
         }
 
