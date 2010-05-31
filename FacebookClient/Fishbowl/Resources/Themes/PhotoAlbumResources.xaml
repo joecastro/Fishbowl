@@ -142,22 +142,27 @@
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
               Height="26"
+              Margin="2"
               Command="FacebookClient:PhotoAlbumControl.SaveAlbumCommand" 
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
               <Rectangle Height="18" Width="18" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}"/>
-              <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Save Album</TextBlock>
+              <TextBlock Margin="5,0,0,0"
+                         FontSize="{DynamicResource LargeFontSize1}"
+                         VerticalAlignment="Center">Save Album</TextBlock>
             </StackPanel>
           </Button>
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
-              Margin="3,0"
-              Height="{DynamicResource LargeFontSize3}"
+              Height="26"
+              Margin="2"
               Command="FacebookClient:PhotoAlbumControl.StartSlideShowCommand" 
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
               <Rectangle Height="18" Width="18" Fill="{DynamicResource SlideShowToolbarDrawingBrush}"/>
-              <TextBlock Margin="5,0,0,0" VerticalAlignment="Center">Start Slide Show</TextBlock>
+              <TextBlock Margin="5,0,0,0"
+                         FontSize="{DynamicResource LargeFontSize1}"
+                         VerticalAlignment="Center">Start Slide Show</TextBlock>
             </StackPanel>
           </Button>
         </StackPanel>
