@@ -105,7 +105,7 @@ namespace Contigo
             Verify.IsNotNull(dispatcher, "dispatcher");
 
             _callbackDispatcher = dispatcher;
-            _cachePath = Path.Combine(settingsPath, "ImageCache") + "\\";
+            _cachePath = Path.Combine(settingsPath, "ImageCache");
             Utility.EnsureDirectory(_cachePath);
 
             _asyncPhotoPool = new DispatcherPool("Photo Fetching Thread", 1);

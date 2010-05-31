@@ -2,16 +2,17 @@
 namespace FacebookClient
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Windows;
     using System.Windows.Documents;
     using System.Windows.Navigation;
     using System.Windows.Threading;
+    using ClientManager;
     using ClientManager.View;
     using Contigo;
     using Standard;
-    using ClientManager;
 
     /// <summary>
     /// The Facebook login page as a ContentControl.
@@ -27,8 +28,64 @@ namespace FacebookClient
             public override bool IncludeInJournal { get { return false; } }
         }
 
-        private const Permissions _RequiredPermissions = Permissions.ReadStream | Permissions.PublishStream | Permissions.OfflineAccess | Permissions.ReadMailbox;
+        private static readonly IList<Permissions> _RequiredPermissions = new List<Permissions>
+        {
+            //Permissions.CreateEvent,
+            //Permissions.Email,
+            Permissions.FriendsAboutMe,
+            Permissions.FriendsActivities, 
+            Permissions.FriendsBirthday,
+            Permissions.FriendsEducationHistory,
+            Permissions.FriendsEvents,
+            Permissions.FriendsGroups,
+            Permissions.FriendsHometown,
+            Permissions.FriendsInterests,
+            Permissions.FriendsLikes,
+            Permissions.FriendsLocation,
+            Permissions.FriendsNotes,
+            Permissions.FriendsOnlinePresence,
+            Permissions.FriendsPhotos,
+            Permissions.FriendsPhotoVideoTags,
+            Permissions.FriendsRelationships,
+            Permissions.FriendsReligionPolitics,
+            Permissions.FriendsStatus,
+            Permissions.FriendsVideos,
+            Permissions.FriendsWebsite,
+            Permissions.FriendsWorkHistory,
+            Permissions.OfflineAccess,
+            Permissions.PhotoUpload,
+            Permissions.PublishStream,
+            Permissions.ReadFriendLists,
+            Permissions.ReadInsights,
+            Permissions.ReadMailbox,
+            Permissions.ReadRequests,
+            Permissions.ReadStream,
+            //Permissions.RsvpEvent,
+            //Permissions.Sms,
+            Permissions.UserAboutMe,
+            Permissions.UserActivities,
+            Permissions.UserBirthday,
+            Permissions.UserBirthday,
+            Permissions.UserEducationHistory,
+            Permissions.UserEvents,
+            Permissions.UserGroups,
+            Permissions.UserHometown,
+            Permissions.UserInterests,
+            Permissions.UserLikes,
+            Permissions.UserLocation,
+            Permissions.UserNotes,
+            Permissions.UserOnlinePresence,
+            Permissions.UserPhotos,
+            Permissions.UserPhotoVideoTags,
+            Permissions.UserRelationships,
+            Permissions.UserReligionPolitics,
+            Permissions.UserStatus,
+            Permissions.UserVideos,
+            Permissions.UserWebsite,
+            Permissions.UserWorkHistory,
+        }.AsReadOnly();
 
+        private readonly string _appKey;
         private readonly string _appId;
 
         private FacebookLoginService _service;
@@ -44,15 +101,20 @@ namespace FacebookClient
         private const string _GrantedPermissionUri = "http://www.facebook.com/connect/login_success.html";
         private const string _DeniedPermissionUri = "http://www.facebook.com/connect/login_failure.html";
 
-        public LoginPage(string appId, Navigator next)
+        public LoginPage(string appId, string appKey, Navigator next)
         {
             InitializeComponent();
+
+            Verify.IsNeitherNullNorWhitespace(appKey, "appKey");
+            Verify.IsNeitherNullNorWhitespace(appId, "appId");
 
             Loaded += (sender, e) => _OnLoaded();
             Unloaded += (sender, e) => _OnUnloaded();
 
             _nextPage = next;
             _appId = appId;
+            _appKey = appKey;
+
             Navigator = new _Navigator(this, this.Dispatcher);
         }
 
@@ -117,7 +179,7 @@ namespace FacebookClient
             FacebookLoginService service = null;
             try
             {
-                service = new FacebookLoginService(_appId);
+                service = new FacebookLoginService(_appKey, _appId);
                 if (!FacebookClientApplication.Current2.KeepMeLoggedIn)
                 {
                     service.ClearCachedCredentials();
@@ -164,8 +226,8 @@ namespace FacebookClient
 
         private void _OnGetMissingPermissionsCallback(object sender, AsyncCompletedEventArgs e)
         {
-            Action<Permissions> callback = null;
-            Permissions missingPermissions = Permissions.None;
+            Action<IList<Permissions>> callback = null;
+            IList<Permissions> missingPermissions = null;
 
             if (e.Error != null)
             {
@@ -174,16 +236,16 @@ namespace FacebookClient
             else
             {
                 callback = _OnMissingPermissionsVerified;
-                missingPermissions = (Permissions)e.UserState;
+                missingPermissions = (IList<Permissions>)e.UserState;
             }
 
             this.Dispatcher.Invoke(DispatcherPriority.Normal, callback, missingPermissions);
         }
 
-        private void _OnMissingPermissionsVerified(Permissions missingPermissions)
+        private void _OnMissingPermissionsVerified(IList<Permissions> missingPermissions)
         {
             Assert.IsTrue(Dispatcher.CheckAccess());
-            if (missingPermissions != Permissions.None)
+            if (missingPermissions.Count != 0)
             {
                 _SwitchToErrorPage("Fishbowl requires additional permissions to work properly.", false, true);
             }
@@ -208,6 +270,12 @@ namespace FacebookClient
 
         private void _OnBrowserNavigated(object sender, NavigationEventArgs e)
         {
+            // Stop the browser from initiating actions if we displayed the error dialog...
+            if (ErrorBorder.Visibility != Visibility.Collapsed)
+            {
+                return;
+            }
+
             Utility.SuppressJavaScriptErrors(LoginBrowser);
             if (!_isLoggedIn)
             {
@@ -232,8 +300,12 @@ namespace FacebookClient
                 }
             }
 
-            if (e.Uri.PathAndQuery.Contains(_service.AppId)
+            // This list is getting unruly and has potential to need to be added to without actually pushing an app update.
+            // Consider making this list augmentable through an external file.
+            if (e.Uri.PathAndQuery.Contains(_service.ApplicationKey)
+                || e.Uri.PathAndQuery.Contains(_service.ApplicationId)
                 || e.Uri.PathAndQuery.Contains("tos.php")
+                || e.Uri.PathAndQuery.Contains("uiserver.php")
                 || e.Uri.PathAndQuery.Contains("login_attempt"))
             {
                 // Keep in this browser as long as it appears that we're in the context of this app.
@@ -242,13 +314,13 @@ namespace FacebookClient
             else
             {
                 // User did something other than log into the application.
-                // Spawn a new webpage with the nevigated URI and close this browser session.
+                // Spawn a new webpage with the navigated URI and close this browser session.
                 Process.Start(e.Uri.ToString());
                 _service.ClearCachedCredentials();
 
-                // User canceled.  For now that means exit the application.  
-                // I can't reliably get the browser back to home in this case.
-                Environment.Exit(0);
+                // User canceled (or something).  I can't reliably get the browser back to home in this case.
+                _SwitchToErrorPage("An attempt was made to navigate to an unexpected URL.  Please restart Fishbowl to login", false, false);
+                return;
             }
         }
 

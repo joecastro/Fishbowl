@@ -3,6 +3,7 @@ namespace Contigo
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -21,7 +22,7 @@ namespace Contigo
 
         private static readonly Uri _FacebookApiUri = new Uri(@"http://api.facebook.com/restserver.php");
 
-        private const string _ExtendedPermissionColumns = "create_event, create_note, email, offline_access, photo_upload, publish_stream, read_mailbox, read_stream, rsvp_event, share_item, sms, status_update, video_upload";
+        private static readonly string _ExtendedPermissionsColumns;
         // affiliations: type: [college | high school | work | region], year, name, nid, status
         // current_location: city, state, country (well defined), zip (may be zero)
         // education_history: year (4 digit, may be blank), name, concentration (list), degree
@@ -43,7 +44,7 @@ namespace Contigo
 
         private const string _SelectFriendsClause = "(SELECT uid2 FROM friend WHERE uid1={0})";
 
-        private const string _GetPermissionsQueryString = "SELECT " + _ExtendedPermissionColumns + " FROM permissions WHERE uid={0}";
+        private const string _GetPermissionsQueryString = "SELECT {0} FROM permissions WHERE uid={1}";
 
         // Use the orderby clause to ensure consistent ordering with _GetPr9ofilesMultiQueryString.
         private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause + " ORDER BY uid DESC";
@@ -72,6 +73,8 @@ namespace Contigo
 
         private readonly DataSerialization _serializer;
 
+        private static readonly Dictionary<string, Permissions> _ReversePermissionLookup;
+
         /// <summary>
         /// A mapping of the Permissions enum to the extended permissions strings that we need to request from the server.
         /// </summary>
@@ -81,21 +84,60 @@ namespace Contigo
         private static readonly Dictionary<Permissions, string> _PermissionLookup = new Dictionary<Permissions, string>
         {
             { Permissions.CreateEvent, "create_event" },
-            { Permissions.CreateNote, "create_note" },
             { Permissions.Email, "email" },
-            { Permissions.ReadMailbox, "read_mailbox" },
+            { Permissions.FriendsAboutMe, "friends_about_me" },
+            { Permissions.FriendsActivities, "friends_activities" },
+            { Permissions.FriendsBirthday, "friends_birthday" },
+            { Permissions.FriendsEducationHistory, "friends_education_history" },
+            { Permissions.FriendsEvents, "friends_events" },
+            { Permissions.FriendsGroups, "friends_groups" },
+            { Permissions.FriendsHometown, "friends_hometown" },
+            { Permissions.FriendsInterests, "friends_interests" },
+            { Permissions.FriendsLikes, "friends_likes" },
+            { Permissions.FriendsLocation, "friends_location" },
+            { Permissions.FriendsNotes, "friends_notes" },
+            { Permissions.FriendsOnlinePresence, "friends_online_presence" },
+            { Permissions.FriendsPhotos, "friends_photos" },
+            { Permissions.FriendsPhotoVideoTags, "friends_photo_video_tags" },
+            { Permissions.FriendsRelationships, "friends_relationships" },
+            { Permissions.FriendsReligionPolitics, "friends_religion_politics" },
+            { Permissions.FriendsStatus, "friends_status" },
+            { Permissions.FriendsVideos, "friends_videos" },
+            { Permissions.FriendsWebsite, "friends_website" },
+            { Permissions.FriendsWorkHistory, "friends_work_history" },
             { Permissions.OfflineAccess, "offline_access" },
             { Permissions.PhotoUpload, "photo_upload" },
             { Permissions.PublishStream, "publish_stream" },
+            { Permissions.ReadFriendLists, "read_friendlists" },
+            { Permissions.ReadInsights, "read_insights" },
+            { Permissions.ReadMailbox, "read_mailbox" },
+            { Permissions.ReadRequests, "read_requests" },
             { Permissions.ReadStream, "read_stream" },
             { Permissions.RsvpEvent, "rsvp_event" },
-            { Permissions.ShareItem, "share_item" },
             { Permissions.Sms, "sms" },
-            { Permissions.StatusUpdate, "status_update" },
-            { Permissions.VideoUpload, "video_upload" },
+            { Permissions.UserAboutMe, "user_about_me" },
+            { Permissions.UserActivities, "user_activities" },
+            { Permissions.UserBirthday, "user_birthday" },
+            { Permissions.UserEducationHistory, "user_education_history" },
+            { Permissions.UserEvents, "user_events" },
+            { Permissions.UserGroups, "user_groups" },
+            { Permissions.UserHometown, "user_hometown" },
+            { Permissions.UserInterests, "user_interests" },
+            { Permissions.UserLikes, "user_likes" },
+            { Permissions.UserLocation, "user_location" },
+            { Permissions.UserNotes, "user_notes" },
+            { Permissions.UserOnlinePresence, "user_online_presence" },
+            { Permissions.UserPhotos, "user_photos" },
+            { Permissions.UserPhotoVideoTags, "user_photo_video_tags" },
+            { Permissions.UserRelationships, "user_relationships" },
+            { Permissions.UserReligionPolitics, "user_religion_politics" },
+            { Permissions.UserStatus, "user_status" },
+            { Permissions.UserVideos, "user_videos" },
+            { Permissions.UserWebsite, "user_website" },
+            { Permissions.UserWorkHistory, "user_work_history" },
         };
 
-        private readonly string _ApplicationId;
+        private readonly string _ApplicationKey;
         private readonly string _SessionKey;
         private readonly string _Secret;
         private readonly string _UserId;
@@ -119,36 +161,28 @@ namespace Contigo
 
         #region Methods that don't require a session key
 
-        public static Uri GetLoginUri(string appId, string successUri, string deniedUri, Permissions requiredPermissions)
+        public static Uri GetLoginUri(string appId, string successUri, string deniedUri, IEnumerable<Permissions> requiredPermissions)
         {
             string permissionsPart = "";
 
-            if (requiredPermissions != Permissions.None)
+            bool isFirst = true;
+            StringBuilder permBuilder = new StringBuilder();
+            foreach (var permission in requiredPermissions)
             {
-                bool isFirst = true;
-                StringBuilder permBuilder = new StringBuilder();
-                foreach (var pair in _PermissionLookup)
+                if (!isFirst)
                 {
-                    if (Permissions.None == (pair.Key & requiredPermissions))
-                    {
-                        continue;
-                    }
-
-                    if (!isFirst)
-                    {
-                        // read_stream,publish_stream,offline_access
-                        permBuilder.Append(",");
-                    }
-                    else
-                    {
-                        isFirst = false;
-                    }
-
-                    permBuilder.Append(pair.Value);
+                    // read_stream,publish_stream,offline_access
+                    permBuilder.Append(",");
                 }
-                permissionsPart = permBuilder.ToString();
-                Assert.IsNeitherNullNorEmpty(permissionsPart);
+                else
+                {
+                    isFirst = false;
+                }
+
+                permBuilder.Append(_PermissionLookup[permission]);
             }
+
+            permissionsPart = permBuilder.ToString();
 
             return new Uri(string.Format("http://www.facebook.com/login.php?api_key={0}&connect_display=popup&v=1.0&next={1}&cancel_url={2}&fbconnect=true&return_session=true{3}{4}",
                 appId, 
@@ -192,6 +226,30 @@ namespace Contigo
 
         static FacebookWebApi()
         {
+            // Verify that duplicated static data is constructed properly.
+            _VerifyExtendedPermissionIntegrity();
+
+            bool isFirst = true;
+            var columnBuilder = new StringBuilder();
+            _ReversePermissionLookup = new Dictionary<string, Permissions>();
+            foreach (var pair in _PermissionLookup)
+            {
+                _ReversePermissionLookup.Add(pair.Value, pair.Key);
+
+                if (!isFirst)
+                {
+                    columnBuilder.Append(", ");
+                }
+                else
+                {
+                    isFirst = false;
+                }
+
+                columnBuilder.Append(pair.Value);
+            }
+
+            _ExtendedPermissionsColumns = columnBuilder.ToString();
+
             /*
             ServicePointManager.MaxServicePoints = 16;
             ServicePointManager.MaxServicePointIdleTime = new TimeSpan(0, 10, 0).Milliseconds;
@@ -201,9 +259,17 @@ namespace Contigo
             */
         }
 
+        [Conditional("DEBUG")]
+        private static void _VerifyExtendedPermissionIntegrity()
+        {
+            int knownPermissionCount = Enum.GetValues(typeof(Permissions)).Length;
+
+            Assert.AreEqual(knownPermissionCount, _PermissionLookup.Count);
+        }
+
         public FacebookWebApi(string applicationId, string sessionKey, string userId, string secret)
         {
-            _ApplicationId = applicationId;
+            _ApplicationKey = applicationId;
             _SessionKey = sessionKey;
             _UserId = userId;
             _Secret = secret;
@@ -212,7 +278,7 @@ namespace Contigo
 
         public FacebookWebApi(FacebookService service, string secret)
         {
-            _ApplicationId = service.ApplicationId;
+            _ApplicationKey = service.ApplicationKey;
             _SessionKey = service.SessionKey;
             _UserId = service.UserId;
             _Secret = secret;
@@ -338,7 +404,7 @@ namespace Contigo
 
             if (!requestPairs.ContainsKey("api_key"))
             {
-                requestPairs.Add("api_key", _ApplicationId);
+                requestPairs.Add("api_key", _ApplicationKey);
                 requestPairs.Add("v", "1.0");
                 requestPairs.Add("session_key", _SessionKey);
                 // Need to signal that we're using the session secret instead.
@@ -367,7 +433,7 @@ namespace Contigo
 
             if (!requestPairs.ContainsKey("api_key"))
             {
-                requestPairs.Add("api_key", _ApplicationId);
+                requestPairs.Add("api_key", _ApplicationKey);
                 requestPairs.Add("v", "1.0");
                 requestPairs.Add("session_key", _SessionKey);
                 // Need to signal that we're using the session secret instead.
@@ -518,36 +584,31 @@ namespace Contigo
 
         #region Methods that don't require a FacebookService/SessionKey
 
-        public Permissions GetMissingPermissions(Permissions extendedPermissions)
+        public IEnumerable<Permissions> GetMissingPermissions(IEnumerable<Permissions> extendedPermissions)
         {
             var queryMap = new METHOD_MAP
             {
                 { "method", "facebook.fql.query" },
-                { "query", string.Format(_GetPermissionsQueryString, _UserId) },
-                { "api_key", _ApplicationId },
+                { "query", string.Format(_GetPermissionsQueryString, _ExtendedPermissionsColumns, _UserId) },
+                { "api_key", _ApplicationKey },
                 { "v", "1.0" },
                 { "ss", "1" },
                 { "session_key", _SessionKey },
             };
 
+            Permissions[] extendedPermissionsList = extendedPermissions.ToArray();
+
             string result = Utility.FailableFunction(() => SendRequest(queryMap, _Secret));
 
             XDocument document = XDocument.Parse(result);
 
-            Permissions deniedPermissions = Permissions.None;
-            foreach (var pair in from pair in _PermissionLookup
-                                 where (pair.Key & extendedPermissions) != Permissions.None
-                                 select pair)
+            foreach (var permissionName in from XElement xelt in document.Root.Elements().Nodes<XElement>()
+                                           where xelt.Value == "0"
+                                           where extendedPermissionsList.Contains(_ReversePermissionLookup[xelt.Name.LocalName])
+                                           select xelt.Name.LocalName)
             {
-                var permissionNode = (XElement)document.Root.Elements().Nodes<XElement>().First(node => ((XElement)node).Name.LocalName == pair.Value);
-                Assert.Implies(permissionNode.Value != "0", permissionNode.Value == "1");
-                if (permissionNode.Value == "0")
-                {
-                    deniedPermissions |= pair.Key;
-                }
+                yield return _ReversePermissionLookup[permissionName];
             }
-
-            return deniedPermissions;
         }
 
         #endregion

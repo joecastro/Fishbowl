@@ -14,6 +14,8 @@ namespace FacebookClient
     using Contigo;
     using Standard;
 
+    using IOPath = System.IO.Path;
+
     public static class SplashScreenOverlay
     {
         private static bool _hasGeneratedSplash = false;
@@ -29,8 +31,15 @@ namespace FacebookClient
             new Rect(193, 245,  53,  53),  // Bottom Right
         };
 
-        // Path to the custom splash screen 
-        public static readonly string CustomSplashPath = Environment.ExpandEnvironmentVariables("%APPDATA%\\fishbowl_customsplash.png");
+        // Path to the custom splash screen.
+        // TODO: This is known to be the place where other settings are stored, 
+        // but it would be better to not have this path duplicated multiple places...
+        public static readonly string CustomSplashPath =
+            IOPath.Combine(
+                IOPath.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "Fishbowl"),
+                FacebookClientApplication.FacebookApiId +  @"\splash.png");
 
         // Don't make this statically initialized because the pack:// uri may not yet have been registered.
         //private static readonly Uri _SplashResourceUri = new Uri("pack://application:,,,/Resources/Images/splash.png");

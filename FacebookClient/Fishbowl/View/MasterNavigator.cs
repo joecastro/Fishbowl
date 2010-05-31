@@ -68,7 +68,7 @@
                 _loadingPage.Signal();
             }
 
-            _loginPage = new LoginPage(facebookService.ApplicationId, _loadingPage.GetNavigator());
+            _loginPage = new LoginPage(facebookService.ApplicationId, facebookService.ApplicationKey, _loadingPage.GetNavigator());
             LoginPageNavigator = _loginPage.Navigator;
         }
 
