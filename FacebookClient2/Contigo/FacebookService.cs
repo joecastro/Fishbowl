@@ -59,6 +59,8 @@
 
         /// <summary>The Application's ID key provided by Facebook.</summary>
         public string ApplicationId { get; private set; }
+        public string ApplicationKey { get; private set; }
+
         public Dispatcher Dispatcher { get; private set; }
         /// <summary>Once logged in, the key provided by the Facebook servers that identifies this session.</summary>
         public string SessionKey { get; private set; }
@@ -113,16 +115,24 @@
         /// </summary>
         /// <param name="appId">The application id to use when communicating with Facebook.</param>
         /// <param name="dispatcher">The Dispatcher which thread is to be used for updating collections retrieved from this object.</param>
-        public FacebookService(string appId, Dispatcher dispatcher)
+        public FacebookService(string appId, string appKey, Dispatcher dispatcher)
         {
             Verify.IsNeitherNullNorEmpty(appId, "appId");
+            Verify.IsNeitherNullNorEmpty(appKey, "appKey");
             Verify.IsNotNull(dispatcher, "dispatcher");
 
-            _settingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft") + "\\" + this.GetType().Namespace + "\\" + appId + @"\";
-            _settings = new ServiceSettings(_settingsPath);
-
-            Dispatcher = dispatcher;
             ApplicationId = appId;
+            ApplicationKey = appKey;
+            Dispatcher = dispatcher;
+
+            _settingsPath = 
+                Path.Combine(
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "Fishbowl"),
+                    ApplicationId);
+
+            _settings = ServiceSettings.Load(_settingsPath);
 
             MeContact = new FacebookContact(this)
             {
@@ -191,7 +201,11 @@
 
             if (e.Cancelled || e.Error != null)
             {
-                // TODO: Something is really messed up.  We need a way to surface this error to the user.
+                string message = e.Cancelled ? "Request was canceled." : e.Error.Message;
+
+                // TODO: Something is really messed up.  We need a better way to surface this error to the user.
+                MessageBox.Show(message, "An error ocurred in Fishbowl", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.DisconnectSession(null);
                 return; // ...
             }
 
@@ -246,8 +260,6 @@
 
             _SendRequest(expireMap, true);
             */
-
-            _settings.SaveSessionInfo(SessionKey, UserId);
 
             SessionKey = null;
             UserId = null;
@@ -1341,7 +1353,7 @@
         {
             Verify.IsNotNull(contact, "contact");
 
-            _settings.AddInterestLevel(contact.UserId, contact.InterestLevel);
+            _settings.SetInterestLevel(contact.UserId, contact.InterestLevel);
 
             if (contact.InterestLevel >= .75)
             {

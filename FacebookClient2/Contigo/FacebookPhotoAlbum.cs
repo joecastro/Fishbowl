@@ -362,11 +362,6 @@ namespace Contigo
         /// </remarks>
         public void SaveToFolder(string path)
         {
-            if (!path.EndsWith("\\"))
-            {
-                path = path + "\\";
-            }
-
             Utility.EnsureDirectory(path);
 
             for (int i = 0; i < this.Photos.Count; i++)

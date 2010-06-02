@@ -4,6 +4,7 @@ namespace Contigo
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.IO;
     using System.Windows;
     using Microsoft.Json.Serialization;
@@ -14,98 +15,130 @@ namespace Contigo
     /// </summary>
     /// <remarks>
     /// According to facebook some of these are supersets of of others.  This relationship isn't reflected in the enum values.
+    /// Last updated 5/27/2010 from http://developers.facebook.com/docs/authentication/permissions
     /// </remarks>
-    [Flags]
+    // There are actually so many nuanced flags now that they aren't flaggable with an Int32!
+    // Possible that it will be augmented to have too many for an Int64, so not even bothering with making it flaggable.
+    // I think this privacy model is broken.  It's unlikely to stay this way so I don't want to build too much infrastructure
+    // directly on top of it nor too much abstraction to insulate it.  This will need to be updated if/when Facebook changes this again.
+    //[Flags]
     public enum Permissions
     {
-        None = 0,
+        //None = 0,
+        PublishStream,
+        CreateEvent,
+        RsvpEvent,
+        Sms,
+        OfflineAccess,
 
-        // PublishStream is a superset of status_update, photo_upload, video_upload, create_note, and share_item extended permissions.
-        PublishStream   = 0x0001,
-        
-        ReadStream      = 0x0002,
-        Email           = 0x0004,
-        ReadMailbox     = 0x0008,
-        OfflineAccess   = 0x0010,
-        CreateEvent     = 0x0020,
-        RsvpEvent       = 0x0040,
-        Sms             = 0x0080,
-        StatusUpdate    = 0x0100,
-        PhotoUpload     = 0x0200,
-        VideoUpload     = 0x0400,
-        CreateNote      = 0x0800,
-        ShareItem       = 0x1000,
+        Email,
+        ReadInsights,
+        ReadStream,
+
+        UserAboutMe,
+        FriendsAboutMe,
+        UserActivities,
+        FriendsActivities,
+        UserBirthday,
+        FriendsBirthday,
+        UserEducationHistory,
+        FriendsEducationHistory,
+        UserEvents,
+        FriendsEvents,
+        UserGroups,
+        FriendsGroups,
+        UserHometown,
+        FriendsHometown,
+        UserInterests,
+        FriendsInterests,
+        UserLikes,
+        FriendsLikes,
+        UserLocation,
+        FriendsLocation,
+        UserNotes,
+        FriendsNotes,
+        UserOnlinePresence,
+        FriendsOnlinePresence,
+        UserPhotoVideoTags,
+        FriendsPhotoVideoTags,
+        UserPhotos,
+        FriendsPhotos,
+        UserRelationships,
+        FriendsRelationships,
+        UserReligionPolitics,
+        FriendsReligionPolitics,
+        UserStatus,
+        FriendsStatus,
+        UserVideos,
+        FriendsVideos,
+        UserWebsite,
+        FriendsWebsite,
+        UserWorkHistory,
+        FriendsWorkHistory,
+        ReadFriendLists,
+        ReadRequests,
+
+        // Old permissions, no longer documented, but still required by apps.
+        ReadMailbox,
+        PhotoUpload,
     }
-    
-    public delegate void GetPermissionsAsyncCallback(object sender, GetImageSourceCompletedEventArgs e);
 
     public class FacebookLoginService : IDisposable
     {
         private DispatcherPool _requestDispatcher = new DispatcherPool("LoginService WebRequests", 1);
-        private readonly string _cachePath;
+        private readonly ServiceSettings _settings;
 
         private FacebookWebApi _facebookApi;
 
-        public string SessionKey { get; private set; }
-        public string UserId { get; private set; }
-        public string AppId { get; private set; }
-        public string SessionSecret { get; private set; }
+        public string ApplicationId { get; private set; }
+        public string ApplicationKey { get; private set; }
+
+        public string SessionKey { get { return _settings.SessionKey; } }
+        public string SessionSecret { get { return _settings.SessionSecret; } }
+        public string UserId { get { return _settings.UserId; } }
 
         public bool HasCachedSessionInfo { get; private set; }
 
-        public FacebookLoginService(string appId)
+        public FacebookLoginService(string applicationKey, string applicationId)
         {
-            Verify.IsNeitherNullNorEmpty(appId, "appId");
-            AppId = appId;
+            // The difference between these two strings is mostly arbitrary.
+            // Callers need to be careful to ensure that they're using the correct one in the appropriate place.
+            Verify.IsNeitherNullNorEmpty(applicationKey, "applicationKey");
+            Verify.IsNeitherNullNorEmpty(applicationId, "applicationId");
+            ApplicationKey = applicationKey;
+            ApplicationId = applicationId;
 
-            _cachePath = _GenerateCachePath(AppId);
+            string settingPath = 
+                Path.Combine(
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "Fishbowl"),
+                    ApplicationId);
+
+            _settings = ServiceSettings.Load(settingPath);
             _TryGetCachedSession();
-        }
-
-        private static string _GenerateCachePath(string appId)
-        {
-            Assert.IsNeitherNullNorEmpty(appId);
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Microsoft\Facebook\") + appId + @"\SESSION_CACHE";
-        }
-
-        public static void ClearCachedCredentials(string appId)
-        {
-            _DeleteUserLoginCookie();
-            string cachePath = _GenerateCachePath(appId);
-            if (File.Exists(cachePath))
-            {
-                File.Delete(cachePath);
-            }
         }
 
         public void ClearCachedCredentials()
         {
-            ClearCachedCredentials(AppId);
-            SessionKey = null;
-            UserId = null;
+            _DeleteUserLoginCookie();
+            _settings.ClearSessionInfo();
+            _settings.Save();
         }
 
         private bool _TryGetCachedSession()
         {
-            if (File.Exists(_cachePath))
+            if (!_settings.HasSessionInfo)
             {
-                string[] sessionInfo = File.ReadAllLines(_cachePath);
-                if (sessionInfo.Length != 3)
-                {
-                    return false;
-                }
-
-                this.UserId = sessionInfo[0];
-                this.SessionKey = sessionInfo[1];
-                this.SessionSecret = sessionInfo[2];
-
-                _facebookApi = new FacebookWebApi(AppId, SessionKey, UserId, SessionSecret);
-
-                HasCachedSessionInfo = true;
-                return true;
+                HasCachedSessionInfo = false;
+                return false;
             }
-            HasCachedSessionInfo = false;
-            return false;
+
+            // Properties are gotten from _settings.
+            _facebookApi = new FacebookWebApi(ApplicationKey, SessionKey, UserId, SessionSecret);
+
+            HasCachedSessionInfo = true;
+            return true;
         }
 
         /// <summary>
@@ -115,7 +148,7 @@ namespace Contigo
         public void InitiateNewSession(Uri sessionResponse)
         {
             string sessionPrefix = "session=";
-            var badSessionInfo = new ArgumentException("The session response does not contain connection information.", "sessionResponse");
+            var badSessionInfoException = new ArgumentException("The session response does not contain connection information.", "sessionResponse");
 
             Verify.IsNotNull(sessionResponse, "sessionResponse");
 
@@ -129,13 +162,13 @@ namespace Contigo
             int startIndex = jsonSessionInfo.IndexOf(sessionPrefix);
             if (-1 == startIndex)
             {
-                throw badSessionInfo;
+                throw badSessionInfoException;
             }
 
             jsonSessionInfo = jsonSessionInfo.Substring(startIndex + sessionPrefix.Length);
             if (jsonSessionInfo.Length == 0 || jsonSessionInfo[0] != '{')
             {
-                throw badSessionInfo;
+                throw badSessionInfoException;
             }
 
             int curlyCount = 1;
@@ -159,7 +192,7 @@ namespace Contigo
 
             if (curlyCount != 0)
             {
-                throw badSessionInfo;
+                throw badSessionInfoException;
             }
 
             var serializer = new JsonSerializer(typeof(object));
@@ -173,31 +206,22 @@ namespace Contigo
                 || !sessionMap.TryGetValue("uid", out userId)
                 || !sessionMap.TryGetValue("secret", out secret))
             {
-                throw badSessionInfo;
+                throw badSessionInfoException;
             }
 
-            SessionKey = sessionKey.ToString();
-            UserId = userId.ToString();
-            SessionSecret = secret.ToString();
+            _settings.SetSessionInfo(sessionKey.ToString(), secret.ToString(), userId.ToString());
+            _settings.Save();
 
-            Utility.EnsureDirectory(_cachePath);
-            using (TextWriter tw = new StreamWriter(_cachePath, false))
-            {
-                tw.WriteLine(UserId);
-                tw.WriteLine(SessionKey);
-                tw.WriteLine(SessionSecret);
-            }
-
-            _facebookApi = new FacebookWebApi(AppId, SessionKey, UserId, SessionSecret);
+            _facebookApi = new FacebookWebApi(ApplicationKey, SessionKey, UserId, SessionSecret);
             HasCachedSessionInfo = true;
         }
 
         /// <summary>Get the URI to host in a WebBrowser to allow a Facebook user to log into this application.</summary>
         /// <param name="authenticationToken"></param>
         /// <returns></returns>
-        public Uri GetLoginUri(string successUri, string deniedUri, Permissions requiredPermissions)
+        public Uri GetLoginUri(string successUri, string deniedUri, IEnumerable<Permissions> requiredPermissions)
         {
-            return FacebookWebApi.GetLoginUri(AppId, successUri, deniedUri, requiredPermissions);
+            return FacebookWebApi.GetLoginUri(ApplicationKey, successUri, deniedUri, requiredPermissions);
         }
 
         #region IDisposable Members
@@ -209,21 +233,21 @@ namespace Contigo
 
         #endregion
 
-        public void GetMissingPermissionsAsync(Permissions permissions, AsyncCompletedEventHandler callback)
+        public void GetMissingPermissionsAsync(IEnumerable<Permissions> permissions, AsyncCompletedEventHandler callback)
         {
+            Verify.IsNotNull(permissions, "permisions");
+            Verify.IsNotNull(callback, "callback");
+
             Assert.IsNotNull(_facebookApi);
             Assert.IsNotNull(callback);
-
-            // Otherwise, why bother calling this?
-            Assert.AreNotEqual(Permissions.None, permissions);
 
             _requestDispatcher.QueueRequest((arg) =>
             {
                 Exception ex = null;
-                Permissions missingPermissions = Permissions.None;
+                Permissions[] missingPermissions = null;
                 try
                 {
-                    missingPermissions = _facebookApi.GetMissingPermissions(permissions);
+                    missingPermissions = _facebookApi.GetMissingPermissions(permissions).ToArray();
                 }
                 catch (Exception e)
                 {
@@ -235,8 +259,8 @@ namespace Contigo
 
         // For signout, we need to delete all cookies for these Urls.
         // (Based on empirical observation; there may be more later we need to clean to ensure logout)
-        static readonly Uri FaceBookLoginUrl1 = new Uri("https://ssl.facebook.com/desktopapp.php");
-        static readonly Uri FaceBookLoginUrl2 = new Uri("https://login.facebook.com/login.php");
+        private static readonly Uri FaceBookLoginUrl1 = new Uri("https://ssl.facebook.com/desktopapp.php");
+        private static readonly Uri FaceBookLoginUrl2 = new Uri("https://login.facebook.com/login.php");
 
         private static void _DeleteUserLoginCookie()
         {

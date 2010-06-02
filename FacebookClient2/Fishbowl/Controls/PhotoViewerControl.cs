@@ -189,7 +189,7 @@ namespace FacebookClient
 
                     // Delete the old wallpaper if it exists
                     Utility.SafeDeleteFile(wallpaperPath);
-                    Utility.EnsureDirectory(wallpaperPath);
+                    Utility.EnsureDirectory(Path.GetDirectoryName(wallpaperPath));
 
                     File.Copy(photoLocalPath, wallpaperPath);
                     NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, wallpaperPath, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);

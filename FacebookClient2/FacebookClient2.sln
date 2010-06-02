@@ -23,7 +23,7 @@ Global
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs03.codeplex.com/
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Fishbowl\\FishBowl.csproj
+		SccProjectUniqueName1 = Fishbowl\\Fishbowl.csproj
 		SccProjectName1 = Fishbowl
 		SccLocalPath1 = Fishbowl
 		SccProjectUniqueName2 = TransitionEffects\\TransitionEffects.csproj
@@ -71,7 +71,6 @@ Global
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|x86.ActiveCfg = Debug|x86
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|x86.Build.0 = Debug|x86
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Release|x86.ActiveCfg = Release|x86
-		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Release|x86.Build.0 = Release|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Debug|x86.ActiveCfg = Debug|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Debug|x86.Build.0 = Debug|x86
 		{77308CBC-E2FF-4224-B115-FD28D80B3B38}.Release|x86.ActiveCfg = Release|x86
@@ -87,7 +86,6 @@ Global
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.ActiveCfg = Debug|x86
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.Build.0 = Debug|x86
 		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|x86.ActiveCfg = Release|x86
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

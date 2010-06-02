@@ -41,11 +41,11 @@ namespace ClientManager
             ViewManager = null;
         }
 
-        public static void Initialize(string facebookAppId, string bingAppId, string[] parameters, Dispatcher dispatcher)
+        public static void Initialize(string facebookAppId, string facebookAppKey, string bingAppId, string[] parameters, Dispatcher dispatcher)
         {
             try
             {
-                var facebook = new FacebookService(facebookAppId, dispatcher);
+                var facebook = new FacebookService(facebookAppId, facebookAppKey, dispatcher);
                 var view = new ViewManager(facebook, parameters);
                 FacebookService = facebook;
                 ViewManager = view;

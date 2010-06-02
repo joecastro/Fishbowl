@@ -146,7 +146,7 @@ namespace FacebookClient
 
         public MainWindow()
         {
-            ServiceProvider.Initialize(FacebookClientApplication.FacebookApiKey, FacebookClientApplication.BingApiKey, Environment.GetCommandLineArgs(), Dispatcher);
+            ServiceProvider.Initialize(FacebookClientApplication.FacebookApiId, FacebookClientApplication.FacebookApiKey, FacebookClientApplication.BingApiKey, Environment.GetCommandLineArgs(), Dispatcher);
             ServiceProvider.GoneOnline += (sender, e) =>
             {
                 IsOnline = true;

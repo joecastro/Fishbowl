@@ -190,7 +190,7 @@ namespace Microsoft.Wpf.Samples.Documents
                         if (range.Start.CompareTo(firstLineBreak) < 0)
                         {
                             TextRange result = GetRangeToEndOfLine(range.Start);
-                            DebugAssertIsSingleLine(result);
+                            //DebugAssertIsSingleLine(result);
 
                             yield return result;
                         }
@@ -201,7 +201,7 @@ namespace Microsoft.Wpf.Samples.Documents
                         {
                             TextPointer next = lineBreakEnumerator.Current;
                             TextRange result = GetRangeToEndOfLine(prev);
-                            DebugAssertIsSingleLine(result);
+                            //DebugAssertIsSingleLine(result);
 
                             yield return result;
                             prev = next;
@@ -212,7 +212,7 @@ namespace Microsoft.Wpf.Samples.Documents
                         if (range.End.CompareTo(lastLineBreak) > 0)
                         {
                             TextRange result = new TextRange(lastLineBreak, range.End);
-                            DebugAssertIsSingleLine(result);
+                            //DebugAssertIsSingleLine(result);
 
                             yield return result;
                         }
@@ -221,7 +221,7 @@ namespace Microsoft.Wpf.Samples.Documents
                     {
                         // Single line without line breaks corner case
                         TextRange result = new TextRange(range.Start, range.End);
-                        DebugAssertIsSingleLine(result);
+                        //DebugAssertIsSingleLine(result);
 
                         yield return result;
                     }
@@ -516,7 +516,7 @@ namespace Microsoft.Wpf.Samples.Documents
 
         private static IEnumerable<Rect> GetApproximatLineHighlightRectangles(TextRange range)
         {
-            DebugAssertIsSingleLine(range);
+            //DebugAssertIsSingleLine(range);
 
             Rect result;
             if (!range.IsEmpty && (!range.Start.IsAtLineStartPosition || !range.End.IsAtLineStartPosition))

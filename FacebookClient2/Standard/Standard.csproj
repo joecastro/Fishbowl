@@ -131,7 +131,6 @@
     <Compile Include="SplashScreen.cs" />
     <Compile Include="StreamHelper.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="UTVerify.cs" />
     <Compile Include="Verify.cs" />
     <Compile Include="WicProvider.cs" />
     <Compile Include="WindowExtensions.cs" />

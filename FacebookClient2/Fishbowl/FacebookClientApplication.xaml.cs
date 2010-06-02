@@ -28,6 +28,7 @@ namespace FacebookClient
             get { return (FacebookClientApplication)Application.Current; }
         }
 
+        internal const string FacebookApiId = "149486762639";
         internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
         internal const string BingApiKey = "63F02036684DE7BEA0FDE713C0D1653056727276";
 
@@ -426,7 +427,8 @@ namespace FacebookClient
 
         internal static void ClearUserState()
         {
-            FacebookLoginService.ClearCachedCredentials(FacebookClientApplication.FacebookApiKey);
+            new FacebookLoginService(FacebookClientApplication.FacebookApiKey, FacebookClientApplication.FacebookApiId)
+                .ClearCachedCredentials();
             SplashScreenOverlay.DeleteCustomSplashScreen();
         }
 
