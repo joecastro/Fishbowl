@@ -21,6 +21,11 @@ namespace FacebookClient
 
         private class _IpcRemoteService : MarshalByRefObject
         {
+            public int GetProcessId()
+            {
+                return System.Diagnostics.Process.GetCurrentProcess().Id;
+            }
+
             /// <summary>Activate the first instance of the application.</summary>
             /// <param name="args">Command line arguemnts to proxy.</param>
             public void InvokeFirstInstance(IList<string> args)
@@ -103,6 +108,11 @@ namespace FacebookClient
             // Pass along the current arguments to the first instance if it's up and accepting requests.
             if (firstInstanceRemoteServiceReference != null)
             {
+                // Allow the first instance to give itself user focus.
+                // This could be done with ASFW_ANY if the IPC call is expensive.
+                int procId = firstInstanceRemoteServiceReference.GetProcessId();
+                NativeMethods.AllowSetForegroundWindow(procId);
+
                 firstInstanceRemoteServiceReference.InvokeFirstInstance(args);
             }
         }

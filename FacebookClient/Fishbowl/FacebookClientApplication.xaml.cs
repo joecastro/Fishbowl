@@ -278,13 +278,10 @@ namespace FacebookClient
             bool handledByWindow = false;
             if (_viewMode == _WindowMode.MiniMode)
             {
-                _minimodeWindow.Activate();
-
                 handledByWindow = _minimodeWindow.ProcessCommandLineArgs(e.Args);
             }
             else
             {
-                _mainWindow.Activate();
                 handledByWindow = _mainWindow.ProcessCommandLineArgs(e.Args);
             }
 

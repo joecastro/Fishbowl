@@ -404,38 +404,46 @@ namespace FacebookClient
 
         internal bool ProcessCommandLineArgs(IList<string> commandLineArgs)
         {
-            if (commandLineArgs != null && commandLineArgs.Count > 0)
+            if (commandLineArgs == null || commandLineArgs.Count < 2)
             {
-                int argIndex = 0;
-                while (argIndex < commandLineArgs.Count)
-                {
-                    string commandSwitch = commandLineArgs[argIndex].ToLowerInvariant();
-                    if (commandSwitch.StartsWith("-uri:") || commandSwitch.StartsWith("/uri:"))
-                    {
-                        Uri uri;
-                        if (Uri.TryCreate(commandSwitch.Substring("-uri:".Length), UriKind.Absolute, out uri))
-                        {
-                            _DoNavigate(uri);
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        switch (commandSwitch)
-                        {
-                            case "-exitminimode":
-                            case "/exitminimode":
-                                this.Close();
-                                return true;
-                            case "-exit":
-                            case "/exit":
-                                Application.Current.MainWindow.Close();
-                                return true;
-                        }
-                    }
-                    ++argIndex;
-                }
+                commandLineArgs = new[] { null, "-exitminimode" };
             }
+
+            int argIndex = 1;
+            while (argIndex < commandLineArgs.Count)
+            {
+                string commandSwitch = commandLineArgs[argIndex].ToLowerInvariant();
+                if (commandSwitch.StartsWith("-uri:") || commandSwitch.StartsWith("/uri:"))
+                {
+                    Uri uri;
+                    if (Uri.TryCreate(commandSwitch.Substring("-uri:".Length), UriKind.Absolute, out uri))
+                    {
+                        _DoNavigate(uri);
+                        return true;
+                    }
+                }
+                else
+                {
+                    switch (commandSwitch)
+                    {
+                        case "-exitminimode":
+                        case "/exitminimode":
+                            this.Close();
+                            return true;
+                        case "-exit":
+                        case "/exit":
+                            Application.Current.MainWindow.Close();
+                            return true;
+                    }
+                }
+                ++argIndex;
+            }
+
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+
             return false;
         }
 

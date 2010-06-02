@@ -1933,6 +1933,24 @@ namespace Standard
             return lpRect;
         }
 
+        [DllImport("user32.dll", EntryPoint="AllowSetForegroundWindow", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _AllowSetForegroundWindow(int dwProcessId);
+
+        public static void AllowSetForegroundWindow()
+        {
+            int ASFW_ANY = -1;
+            AllowSetForegroundWindow(ASFW_ANY);
+        }
+
+        public static void AllowSetForegroundWindow(int dwProcessId)
+        {
+            if (!_AllowSetForegroundWindow(dwProcessId))
+            {
+                HRESULT.ThrowLastError();
+            }
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", EntryPoint = "ChangeWindowMessageFilter", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

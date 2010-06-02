@@ -914,6 +914,11 @@ namespace FacebookClient
                 }
             }
 
+            if (!ret)
+            {
+                this.Activate();
+            }
+
             return ret;
         }
 
