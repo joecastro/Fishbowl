@@ -9,6 +9,7 @@
     using ClientManager.Controls;
     using Standard;
     using System.Threading;
+    using Contigo;
 
     /// <summary>
     /// Interaction logic for UpdateStatusControl.xaml
@@ -142,7 +143,7 @@
 
                 if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    this.imageFile = DragContainer.ConstrainImage(fileDialog.FileName, PhotoUploadWizard.MaxPhotoDimension);
+                    this.imageFile = DragContainer.ConstrainImage(fileDialog.FileName, FacebookImage.GetDimensionSize(FacebookImageDimensions.Big));
 
                     BitmapImage image = new BitmapImage(new Uri(this.imageFile));
                     image.Freeze();

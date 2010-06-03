@@ -62,8 +62,6 @@
             Upload
         }
 
-        public const int MaxPhotoDimension = 600;
-
         private Panel _addPhotosPage;
         private Panel _albumPickerPage;
         private Panel _uploadProgressPage;
@@ -269,7 +267,7 @@
                             _nextPhotoImage.Source = image;
                         }));
 
-                        string path = DragContainer.ConstrainImage(file.Path, MaxPhotoDimension);
+                        string path = DragContainer.ConstrainImage(file.Path, FacebookImage.GetDimensionSize(FacebookImageDimensions.Big));
                         ServiceProvider.ViewManager.AddPhotoToAlbum(album, file.Description, path);
                         count++;
 

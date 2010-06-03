@@ -243,8 +243,10 @@ namespace ClientManager.Controls
             }
         }
 
-        public static string ConstrainImage(string path, int max)
+        public static string ConstrainImage(string path, Size constraint)
         {
+            int max = (int)constraint.Width;
+
             BitmapImage image = new BitmapImage();
             image.BeginInit();
             image.CacheOption = BitmapCacheOption.OnLoad;

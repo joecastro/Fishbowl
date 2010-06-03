@@ -12,7 +12,7 @@ namespace Contigo
     {
         /// <summary>Photo with a max width of 130px and max height of 130px.</summary>
         Normal,
-        /// <summary>Photo with a max width of 604px and max height of 604px.</summary>
+        /// <summary>Photo with a max width of 720px and max height of 720px.</summary>
         Big,
         /// <summary>Photo with a max width of 75px and max height of 225px.</summary>
         Small,
@@ -31,10 +31,21 @@ namespace Contigo
         private static readonly Dictionary<FacebookImageDimensions, Size> _DimensionLookup = new Dictionary<FacebookImageDimensions, Size>
         {
             { FacebookImageDimensions.Normal, new Size(130, 130) },
-            { FacebookImageDimensions.Big,    new Size(604, 604) },
+            { FacebookImageDimensions.Big,    new Size(720, 720) },
             { FacebookImageDimensions.Small,  new Size(75,  225) },
             { FacebookImageDimensions.Square, new Size(50,   50) },
         };
+
+        public static Size GetDimensionSize(FacebookImageDimensions dimensions)
+        {
+            Size size;
+            if (_DimensionLookup.TryGetValue(dimensions, out size))
+            {
+                return size;
+            }
+
+            throw new ArgumentException("Invalid enum value", "dimensions");
+        }
 
         private Thickness? _margin;
         private SmallUri? _normal;
