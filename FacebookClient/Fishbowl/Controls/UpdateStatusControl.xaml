@@ -43,8 +43,8 @@
           <Grid x:Name="Root">
             <TextBlock x:Name="Glow"
                 FontSize="{DynamicResource SmallFontSize1}"
-                FontFamily="Segoe UI"
-                FontWeight="Semibold"
+                FontFamily="{DynamicResource SansSerifFont}"
+                FontWeight="Medium"
                 Text="{TemplateBinding Content}"
                 Foreground="White" Opacity="0">
               <TextBlock.Effect>
@@ -53,8 +53,8 @@
             </TextBlock>
             <TextBlock x:Name="Main"
                 FontSize="{DynamicResource SmallFontSize1}"
-                FontFamily="Segoe UI"
-                FontWeight="Semibold"
+                FontFamily="{DynamicResource SansSerifFont}"
+                FontWeight="Medium"
                 Text="{TemplateBinding Content}"
                 Foreground="White"/>
           </Grid>

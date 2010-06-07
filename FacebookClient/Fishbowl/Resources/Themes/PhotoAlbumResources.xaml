@@ -52,7 +52,7 @@
         <Viewbox>
           <ContentControl Width="160" Height="160" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="4" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <DockPanel>
-              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="{DynamicResource SmallFontSize2}" FontFamily="Lucida Handwriting Italic" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
+              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="{DynamicResource SmallFontSize2}" FontFamily="{DynamicResource ScriptFont}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
               <ClientManagerControls:FacebookImageControl
                   FacebookImage="{Binding Image}" 
                   FacebookImageDimensions="Normal">
@@ -111,17 +111,17 @@
             </ClientManagerControls:FacebookImageControl>
           </Grid>
         </Button>
-        <TextBlock FontFamily="../Fonts/#Gotham" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
+        <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
             <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
           </Hyperlink>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="../Fonts/#Gotham" FontWeight="Light" TextWrapping="Wrap">
+        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" TextWrapping="Wrap">
           <TextBlock.Text>
             <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
           </TextBlock.Text>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="../Fonts/#Gotham" FontWeight="Light">
+        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
           <TextBlock.Text>
             <Binding StringFormat="{}{0} photos" Path="Photos.Count" />
           </TextBlock.Text>

@@ -387,10 +387,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="Segoe, Tahoma" />
-        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize3}" />
-        <Setter Property="FontStyle" Value="Normal" />
-        <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Foreground" Value="#44453F" />
         <Setter Property="Template">
             <Setter.Value>

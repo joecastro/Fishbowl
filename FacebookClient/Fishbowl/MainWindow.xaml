@@ -148,7 +148,7 @@
                 HorizontalAlignment="Right"
                 ToolTip="Close information bar"
                 Click="_CloseGoldBar"/>
-            <TextBlock x:Name="GoldBarTextBlock" Margin="8,4" VerticalAlignment="Center" Foreground="Navy" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" TextWrapping="Wrap"/>
+            <TextBlock x:Name="GoldBarTextBlock" Margin="8,4" VerticalAlignment="Center" Foreground="Navy" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" TextWrapping="Wrap"/>
           </DockPanel>
         </Border>
 

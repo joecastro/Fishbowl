@@ -22,6 +22,7 @@
     <Setter Property="Foreground" Value="{DynamicResource ActivityActionButtonForeground}" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>
+  
   <ControlTemplate x:Key="LikeButtonTemplate" TargetType="{x:Type Button}">
     <StackPanel Orientation="Horizontal">
       <Image x:Name="Like" Width="13" Height="13" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
@@ -418,6 +419,7 @@
     </Grid>
   </DataTemplate>
   <FacebookClient:ContentVisibilityConverter x:Key="contentVisibilityConverter" />
+  
   <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
     <Grid x:Name="Root" MinHeight="130" MinWidth="400" Background="Transparent" HorizontalAlignment="Stretch">
       <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}"/>
@@ -430,9 +432,9 @@
         <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Actor.Image}">
           <Button x:Name="ActivityButton" RenderTransformOrigin="0.5,0.5" Margin="10, 7, 0, 0" VerticalAlignment="Top" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" Style="{DynamicResource AnimatedItemButton}">
             <Button.RenderTransform>
-                <TransformGroup>
-                    <RotateTransform Angle="-6" />
-                </TransformGroup>
+              <TransformGroup>
+                <RotateTransform Angle="-6" />
+              </TransformGroup>
             </Button.RenderTransform>
             <Grid Width="126" Height="126">
               <Grid>
@@ -523,7 +525,7 @@
               </ToggleButton.Style>
             </ToggleButton>
             <ToggleButton x:Name="MoreCommentsButton" Margin="12,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBlock Margin="15,-2,0,0" VerticalAlignment="Top" FontFamily="../Fonts/#Gotham" FontStyle="Italic" FontWeight="Light" Opacity=".6">
+            <TextBlock Margin="15,-2,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource SansSerifFont}" FontStyle="Italic" FontWeight="Light" Opacity=".6">
               <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
             </TextBlock>
           </StackPanel>
@@ -634,7 +636,7 @@
     <Setter Property="MaxLines" Value="8" />
     <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="AcceptsReturn" Value="True" />
-    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:CommandTextBox}">
@@ -660,7 +662,7 @@
               <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill" />
               <Image Grid.Column="2" Grid.Row="2" Margin="-0.1,0,0,0" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" />
             </Grid>
-            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Foreground="{DynamicResource CommentTextBoxForeground}" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
+            <TextBlock x:Name="HelpText" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Foreground="{DynamicResource CommentTextBoxForeground}" Opacity=".7" Text="{TemplateBinding BannerText}" Visibility="Collapsed" />
             <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" VerticalAlignment="Center" FontWeight="Medium" />
           </Grid>
           <ControlTemplate.Triggers>

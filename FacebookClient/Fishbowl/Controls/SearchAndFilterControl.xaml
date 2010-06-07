@@ -44,8 +44,8 @@
                                 </ClientManagerControls:FacebookImageControl.Template>
                             </ClientManagerControls:FacebookImageControl>
 
-                            <TextBlock x:Name="text" Foreground="{DynamicResource FilterItemTextBrush}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                            <TextBlock x:Name="text2" Foreground="{DynamicResource FilterItemTextBrush}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="../Resources/Fonts/#Gotham" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            <TextBlock x:Name="text" Foreground="{DynamicResource FilterItemTextBrush}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                            <TextBlock x:Name="text2" Foreground="{DynamicResource FilterItemTextBrush}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="37,0,5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
                             <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SetNewsFeedFilterCommand}" CommandParameter="{Binding}">
                                 <Button.Template>
@@ -109,7 +109,7 @@
     <Border Style="{DynamicResource SearchAndFilterBarMainBorderStyle}">
         <DockPanel LastChildFill="False">
             <TextBlock DockPanel.Dock="Top"
-        Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Medium" FontFamily="../Resources/Fonts/#Gotham" Text="Facebook Feeds" Margin="10,17,0,0" />
+        Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Medium" FontFamily="{DynamicResource SansSerifFont}" Text="Facebook Feeds" Margin="10,17,0,0" />
 
             <Button DockPanel.Dock="Bottom"
           Margin="10" 

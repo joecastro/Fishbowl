@@ -79,14 +79,14 @@
               </ItemsControl>
               <Button Content="Mark all as read"
                   Margin="5"
-                  FontFamily="{StaticResource SerifFont}"
+                  FontFamily="{DynamicResource SerifFont}"
                   Foreground="White"
                   HorizontalAlignment="Left" 
                   Style="{StaticResource SimpleButtonStyle}" 
                   Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MarkAllAsReadCommand}" 
                   CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications}"/>
             </StackPanel>
-            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new notifications..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
+            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new notifications..." Foreground="White" FontFamily="{DynamicResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
           </StackPanel>
         </Grid>
       </Border>

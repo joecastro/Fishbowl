@@ -153,7 +153,7 @@
         <Setter Property="Height" Value="40" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
         <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     </Style>
 
@@ -171,23 +171,22 @@
         </Grid>
     </ControlTemplate>
 
-    <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource BlendToggleButtonStyle}">
-        <Setter Property="Padding" Value="15,0,15,0" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="MinWidth" Value="41" />
-        <Setter Property="Height" Value="40" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
-    </Style>
+  <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource BlendToggleButtonStyle}">
+    <Setter Property="Padding" Value="15,0,15,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="MinWidth" Value="41" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Margin" Value="0" />
+    <Setter Property="FontWeight" Value="Medium" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+  </Style>
 
-
-    <ControlTemplate x:Key="FriendRadioButtonTemplate" TargetType="{x:Type RadioButton}">
+  <ControlTemplate x:Key="FriendRadioButtonTemplate" TargetType="{x:Type RadioButton}">
         <Grid Cursor="Hand">
 
             <Rectangle x:Name="bevel1" Fill="{DynamicResource FriendViewerCategoryTabsBevel1}" Height="1" SnapsToDevicePixels="True" Margin="0,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
@@ -195,7 +194,7 @@
             <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
             <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
 
-            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
+            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">
@@ -241,7 +240,7 @@
             <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
             <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
 
-            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
+            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
     </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">

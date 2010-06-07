@@ -29,15 +29,6 @@
                 Value="0,0,1,0" />
     </Style>
 
-    <Style x:Key="SearchAndFilterBarSearchTextBoxStyle"
-           TargetType="TextBox"
-           BasedOn="{StaticResource ShareTextBoxDarkStyle}">
-        <Setter Property="FontFamily"
-                Value="{DynamicResource SansSerifFont}" />
-        <Setter Property="Width"
-                Value="190" />
-    </Style>
-
     <Style x:Key="SearchAndFilterTopGridStyle"
            TargetType="Grid">
         <Setter Property="Margin"
@@ -46,18 +37,15 @@
                 Value="60" />
     </Style>
 
-    <Style x:Key="SearchAndFilterHyperlinkStyle"
-           TargetType="Hyperlink">
-        <Setter Property="TextDecorations"
-                Value="{x:Null}" />
+    <Style x:Key="SearchAndFilterHyperlinkStyle" TargetType="Hyperlink">
+        <Setter Property="TextDecorations" Value="{x:Null}" />
         <Setter Property="TextBlock.Foreground" Value="Black" />
     </Style>
 
-    <Style x:Key="SearchAndFilterTextStyle"
-           TargetType="{x:Type TextBlock}">
+    <Style x:Key="SearchAndFilterTextStyle" TargetType="{x:Type TextBlock}">
         <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
         <Setter Property="FontWeight" Value="Light" />
-        <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
         <Setter Property="TextBlock.Foreground" Value="#4a4a4a" />
     </Style>
 
@@ -68,13 +56,13 @@
                 Value="0.75" />
     </Style>
 
-    <Style x:Key="SearchAndFilterTreeViewItemHeaderStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="#4B4B4B" />
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
-        <Setter Property="FontStyle" Value="Italic" />
-        <Setter Property="FontWeight" Value="Light" />
-        <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
-    </Style>
+  <Style x:Key="SearchAndFilterTreeViewItemHeaderStyle" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="#4B4B4B" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+    <Setter Property="FontStyle" Value="Italic" />
+    <Setter Property="FontWeight" Value="Light" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+  </Style>
 
     <Style x:Key="SearchAndFilterTreeViewStyle" TargetType="{x:Type TreeView}">
         <Style.Resources>
@@ -109,7 +97,7 @@
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="TextBlock.Foreground" Value="#4a4a4a" />
         <Setter Property="TextBlock.FontSize" Value="{DynamicResource MiddleFontSize}" />
-        <Setter Property="TextBlock.FontFamily" Value="../Fonts/#Gotham" />
+        <Setter Property="TextBlock.FontFamily" Value="{DynamicResource SansSerifFont}" />
         <Setter Property="TextBlock.FontWeight" Value="Light" />
         <Setter Property="Template">
             <Setter.Value>
@@ -168,10 +156,4 @@
         </Setter>
     </Style>
 
-    <DataTemplate x:Key="SearchAndFilterItemTemplate">
-        <ToggleButton Style="{DynamicResource FilterButtonStyle}" Width="150"
-                 Command="{Binding Command}" CommandParameter="{Binding CommandParameter}">
-            <TextBlock Text="{Binding Name}" />
-        </ToggleButton>
-    </DataTemplate>
 </ResourceDictionary>

@@ -9,7 +9,7 @@
     <DockPanel>
       <StackPanel DockPanel.Dock="Top" Background="{DynamicResource ApplicationBarBackground}" >
         <Image Width="129" Height="19" Margin="4,6,4,0" Source="pack://application:,,,/Resources/Images/logo.png" VerticalAlignment="Center" HorizontalAlignment="Left" />
-        <TextBlock Margin="6,0,10,0" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light">
+        <TextBlock Margin="6,0,10,0" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
           <Run>An experiment application by uxLabs@microsoft.</Run>
           <LineBreak />
           <Run>Find out more at </Run>
@@ -18,12 +18,12 @@
           </Hyperlink>
         </TextBlock>
         <!-- Set in code behind. -->
-        <TextBlock x:Name="VersionInfoTextBlock" Margin="6,0,10,10" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light" />
-        <TextBlock Margin="6" Foreground="White" FontSize="{DynamicResource LargeFontSize2}" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Bold">Settings</TextBlock>
+        <TextBlock x:Name="VersionInfoTextBlock" Margin="6,0,10,10" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" />
+        <TextBlock Margin="6" Foreground="White" FontSize="{DynamicResource LargeFontSize2}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold">Settings</TextBlock>
       </StackPanel>
       <DockPanel DockPanel.Dock="Bottom">
         <Button DockPanel.Dock="Right" Margin="5" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Click="_OnClose" />
-        <TextBlock Margin="5" FontSize="{DynamicResource SmallFontSize1}" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="../Resources/Fonts/#Gotham" FontWeight="Light">
+        <TextBlock Margin="5" FontSize="{DynamicResource SmallFontSize1}" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
           <Hyperlink Click="_OnPrivacyWebsiteClicked" Foreground="{DynamicResource SettingsDialogForeground}">Privacy statement</Hyperlink>
         </TextBlock>
       </DockPanel>

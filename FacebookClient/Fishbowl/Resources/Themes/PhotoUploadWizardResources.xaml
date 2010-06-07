@@ -135,84 +135,84 @@
         <Setter Property="Template" Value="{StaticResource NavigatePhotoRightButtonTemplate}" />
     </Style>
 
-    <Style x:Key="CaptionTextBoxStyle" TargetType="{x:Type TextBox}">
-        <Setter Property="SpellCheck.IsEnabled" Value="True" />
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontWeight" Value="Normal"/>
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="MinHeight" Value="23"/>
-        <Setter Property="MaxHeight" Value="23"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="AcceptsReturn" Value="True"/>
-        <Setter Property="FontFamily" Value="../Fonts/#Gotham"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Grid x:Name="RootContainer">
+  <Style x:Key="CaptionTextBoxStyle" TargetType="{x:Type TextBox}">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="AllowDrop" Value="true"/>
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="Background" Value="Black"/>
+    <Setter Property="MinHeight" Value="23"/>
+    <Setter Property="MaxHeight" Value="23"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="AcceptsReturn" Value="True"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type TextBox}">
+          <Grid x:Name="RootContainer">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="15" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="15" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="9" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="9" />
-                            </Grid.RowDefinitions>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="9" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="9" />
+              </Grid.RowDefinitions>
 
-                            <Border CornerRadius="6.5" x:Name="CaptionTextBoxBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
-                            <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
+              <Border CornerRadius="6.5" x:Name="CaptionTextBoxBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+              <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
 
-                            <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
 
-                            <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
+              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
 
-                            <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-                        </Grid>
+              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+            </Grid>
 
-                        <TextBlock x:Name="HelpText" Margin="7,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
-                                   FontFamily="../Fonts/#Gotham" FontWeight="Light" FontStyle="Italic"
+            <TextBlock x:Name="HelpText" Margin="7,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                   FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" FontStyle="Italic"
                                    Foreground="White" Text="{TemplateBinding ToolTip}" 
                                    Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}" />
-                       
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Medium" Foreground="White" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsFocused" Value="False" />
-                                <Condition Property="Text" Value="" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="Foreground" Value="Black" />
-                            <Setter Property="Background" Value="White" />
-                            <Setter TargetName="CaptionTextBoxBorder" Property="Background" Value="White" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="False">
-                            <Setter Property="Foreground" Value="#FFFFFF" />
-                            <Setter Property="Background" Value="#000000" />
-                        </Trigger>
 
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+            <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Medium" Foreground="White" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsFocused" Value="False" />
+                <Condition Property="Text" Value="" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter Property="Foreground" Value="Black" />
+              <Setter Property="Background" Value="White" />
+              <Setter TargetName="CaptionTextBoxBorder" Property="Background" Value="White" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+              <Setter Property="Foreground" Value="#FFFFFF" />
+              <Setter Property="Background" Value="#000000" />
+            </Trigger>
 
-    <Style x:Key="MyComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="MyComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
         <!--<Setter Property="FocusVisualStyle" Value="{StaticResource ComboBoxFocusVisual}"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
             <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
@@ -261,80 +261,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    <ControlTemplate x:Key="MyShareTextBoxTemplate"
-                     TargetType="{x:Type TextBox}">
-        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="4,4,4,4"
-                Background="{TemplateBinding Background}">
-            <Grid>
-                <TextBlock Text="{TemplateBinding Tag}"
-                           Foreground="{DynamicResource DarkTextBrush}"
-                           FontFamily="{TemplateBinding FontFamily}"
-                           FontSize="{TemplateBinding FontSize}"
-                           IsHitTestVisible="False"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0"
-                           Visibility="Hidden"
-                           Opacity="0.7"
-                           x:Name="Watermark" />
-                <ScrollViewer x:Name="PART_ContentHost"
-                              Margin="2,0,2,0"
-                              VerticalAlignment="Center"
-                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            </Grid>
-        </Border>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsFocused"
-                               Value="False" />
-                    <Condition Property="Text"
-                               Value="" />
-                </MultiTrigger.Conditions>
-
-                <Setter TargetName="Watermark"
-                        Property="Visibility"
-                        Value="Visible" />
-            </MultiTrigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="MyShareTextBoxDarkStyle"
-           TargetType="{x:Type TextBox}">
-        <Setter Property="Template"
-                Value="{StaticResource MyShareTextBoxTemplate}" />
-        <Setter Property="BorderBrush"
-                Value="{DynamicResource DarkTextBrush}" />
-        <Setter Property="BorderThickness"
-                Value="1,1,1,1" />
-        <Setter Property="FontFamily"
-                Value="{DynamicResource SerifFont}" />
-        <Setter Property="FontSize"
-                Value="{DynamicResource FontSize}" />
-        <Setter Property="HorizontalAlignment"
-                Value="Left" />
-        <Setter Property="SpellCheck.IsEnabled"
-                Value="True" />
-        <Setter Property="Opacity"
-                Value=".4" />
-    </Style>
-
-    <Style x:Key="MyShareTextBoxLightStyle"
-           TargetType="{x:Type TextBox}"
-           BasedOn="{StaticResource MyShareTextBoxDarkStyle}">
-        <Setter Property="BorderThickness"
-                Value="1" />
-        <Setter Property="Background"
-                Value="White" />
-        <Setter Property="Opacity"
-                Value="1" />
-        <Setter Property="BorderBrush"
-                Value="#FF696F71" />
-        <Setter Property="FontFamily"
-                Value="{DynamicResource SansSerifFont}" />
-        <Setter Property="SpellCheck.IsEnabled"
-                Value="True" />
-    </Style>
+  
 </ResourceDictionary>

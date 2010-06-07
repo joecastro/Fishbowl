@@ -8,14 +8,14 @@
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
       <TextBlock 
           Foreground="{DynamicResource SpinnerTextForeground}" 
-          FontFamily="Fonts/#Gotham" 
+          FontFamily="{DynamicResource SansSerifFont}" 
           FontWeight="Light" 
           FontSize="{DynamicResource LargeFontSize4}" 
           HorizontalAlignment="Center" 
           Text="Loading..." />
       <TextBlock 
           Foreground="{DynamicResource SpinnerTextForeground}" 
-          FontFamily="Fonts/#Gotham" 
+          FontFamily="{DynamicResource SansSerifFont}" 
           FontWeight="Light" 
           FontSize="{DynamicResource MiddleFontSize}" 
           HorizontalAlignment="Center" 

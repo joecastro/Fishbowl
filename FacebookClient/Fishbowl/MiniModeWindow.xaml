@@ -301,7 +301,7 @@
               FontSize="{DynamicResource MiddleFontSize}"
               FontWeight="Medium"
               Foreground="White"
-              FontFamily="Resources/Fonts/#Gotham" >
+              FontFamily="{DynamicResource SansSerifFont}" >
             <TextBlock.Text>
               <MultiBinding StringFormat="{}{0} of {1}">
                 <Binding Converter="{StaticResource AddConverter}" ConverterParameter="1" ElementName="PART_ZapScroller2" Path="CurrentItemIndex" />
@@ -393,7 +393,7 @@
                 <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,2,2" MinHeight="40" Background="#FFE3E7F0" CornerRadius="10" Padding="0">
                   <DockPanel>
                     <TextBlock DockPanel.Dock="Bottom" Margin="10,2" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-                    <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="../Fonts/#Gotham">
+                    <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="{DynamicResource SansSerifFont}">
                       <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                           <Setter Property="Visibility" Value="Visible" />

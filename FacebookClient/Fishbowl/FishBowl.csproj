@@ -114,6 +114,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Fonts\Linds.ttf" />
+    <Resource Include="Resources\Fonts\OCRAExt.TTF" />
+    <Resource Include="Resources\Fonts\JingJing.ttf" />
+    <Resource Include="Resources\Fonts\Pescab.ttf" />
+    <Resource Include="Resources\Fonts\QuartzMS.ttf" />
+    <Resource Include="Resources\Fonts\Pesca.ttf" />
     <Page Include="FacebookClientApplication.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -735,12 +741,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Fonts\VINERITC.TTF" />
-    <Resource Include="Resources\Fonts\Pesca.ttf" />
-    <Resource Include="Resources\Fonts\miramo.ttf" />
-    <Resource Include="Resources\Fonts\miramob.ttf" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

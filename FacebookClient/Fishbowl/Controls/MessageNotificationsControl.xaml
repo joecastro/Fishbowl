@@ -102,7 +102,7 @@
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
             </StackPanel>
-            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new messages..." Foreground="White" FontFamily="{StaticResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
+            <TextBlock x:Name="NoText" Margin="10, 2" Text="No new messages..." Foreground="White" FontFamily="{DynamicResource SerifFont}" HorizontalAlignment="Left" Visibility="Collapsed" />
             <Button x:Name="ShowInboxButton" 
                 Margin="3,5" 
                 Height="22" 

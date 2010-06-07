@@ -10,7 +10,7 @@
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="TextTrimming" Value="WordEllipsis" />
     <Setter Property="TextWrapping" Value="Wrap" />
-    <Setter Property="FontFamily" Value="../Fonts/#Gotham" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="FontWeight" Value="Light" />
     <Setter Property="Foreground" Value="{DynamicResource FriendViewerInformationalTextBlockForeground}" />
@@ -54,7 +54,7 @@
       <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
       <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
       
-      <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
+      <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
     </Grid>
     <ControlTemplate.Triggers>
       <Trigger Property="IsChecked" Value="True">
@@ -203,7 +203,7 @@
                 </Canvas>
               <TickBar Grid.Row="2" Placement="Bottom" Height="4" Visibility="Visible" />
 
-              <TextBlock Grid.Row="3" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light" FontStyle="Italic" Margin="0,5,0,0" Text="Interest Level" Foreground="{DynamicResource InterestLevelTextForeground}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+              <TextBlock Grid.Row="3" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light" FontStyle="Italic" Margin="0,5,0,0" Text="Interest Level" Foreground="{DynamicResource InterestLevelTextForeground}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
             </Grid>
           </Border>
           <ControlTemplate.Triggers>
@@ -233,14 +233,14 @@
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}" />
   </Style>
   <Style x:Key="AlbumTitleStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value=".. /Fonts/#Gotham" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="FontWeight" Value="Bold" />
     <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     <Setter Property="Foreground" Value="#FF393939" />
   </Style>
   <Style x:Key="AlbumInfoStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value=".. /Fonts/#Gotham" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}" />
     <Setter Property="FontWeight" Value="Light" />
     <Setter Property="Foreground" Value="#FF393939" />
@@ -317,7 +317,7 @@
       </DockPanel>
 
       <StackPanel x:Name="HeaderArea" MinHeight="50" Margin="10,6,0,0" VerticalAlignment="Top" DockPanel.Dock="Top">
-        <TextBlock IsHyphenationEnabled="True" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontFamily="../Fonts/#Gotham" FontSize="{DynamicResource LargeFontSize2}" FontWeight="Bold" Foreground="{DynamicResource FriendViewerNameForeground}" Text="{Binding Path=FacebookContact.Name}" />
+        <TextBlock IsHyphenationEnabled="True" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource LargeFontSize2}" FontWeight="Bold" Foreground="{DynamicResource FriendViewerNameForeground}" Text="{Binding Path=FacebookContact.Name}" />
         <Path Grid.Row="1" Fill="#FFE3E7F0" Stretch="Fill" Stroke="#FFE3E7F0" HorizontalAlignment="Left" Margin="25,10,0,0" Width="15" Data="M22.166642,154.45381 L29.999666,187.66699 40.791059,154.54395" StrokeThickness="3" VerticalAlignment="Top" Height="25" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
           <Path.Style>
             <Style TargetType="Path">
@@ -350,7 +350,7 @@
           </Border.Style>
 
           <TextBlock IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource LargeFontSize1}" FontWeight="Light" Background="#FFE3E7F0" Foreground="#FF85878A">
-            <FacebookClient:HyperlinkTextContent FontFamily="../Fonts/#Gotham" Text="{Binding Path=FacebookContact.StatusMessage.Message}" />
+            <FacebookClient:HyperlinkTextContent FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Path=FacebookContact.StatusMessage.Message}" />
           </TextBlock>
         </Border>
         <Rectangle Margin="20,2" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}" />
