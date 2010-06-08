@@ -3,10 +3,9 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Blend/ExpressionDark.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Blend/ExpressionApplicationBarResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Blend/ExpressionMainPageResources.xaml" />
-
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalApplicationBarResources.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalMainPageResources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />

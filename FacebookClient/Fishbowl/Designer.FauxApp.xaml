@@ -5,7 +5,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <!-- Pick a default theme to leverage for resources -->
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Blend/Expression.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/Charcoal.xaml" />
 
         <!-- The rest of these are theme agnostic and are duplicated in FacebookClientApplication.xaml -->
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBaseResources.xaml" />

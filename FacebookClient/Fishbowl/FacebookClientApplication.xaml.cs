@@ -40,7 +40,7 @@ namespace FacebookClient
             { "Blue",     new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
             { "Dark",     new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
             { "Facebook", new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
-            { "Blend",    new Uri(@"Resources\Themes\Blend\Expression.xaml", UriKind.Relative) },
+            { "Charcoal", new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) },
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
