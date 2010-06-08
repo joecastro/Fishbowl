@@ -57,6 +57,10 @@
   <GeometryGroup x:Key="ShuffleGeometry">
     <PathGeometry Figures="M0,12 50,12 50,0 70,20 50,40 50,28 0,28Z M70,47 20,47 20,35 0,55 20,75 20,63 70,63"/>
   </GeometryGroup>
+  
+  <GeometryGroup x:Key="FacebookLogoGeometry">
+    <PathGeometry Figures="M 411.334,106.302L 383.688,106.302C 380.455,106.302 377.833,108.922 377.833,112.155L 377.833,139.802C 377.833,143.037 380.455,145.657 383.688,145.657L 400.136,145.657L 400.136,129.602L 396.478,129.602L 396.478,124.646L 400.136,124.646L 400.136,121.947C 400.136,119.535 400.901,117.581 402.434,116.079C 404.062,114.477 406.303,113.675 409.152,113.675C 410.483,113.675 411.618,113.818 412.552,114.101L 412.552,119.331C 411.659,118.991 410.831,118.822 410.064,118.822C 407.91,118.822 406.835,119.99 406.835,122.33L 406.835,124.646L 411.811,124.646L 411.811,129.602L 406.835,129.602L 406.835,145.657L 411.334,145.657C 414.564,145.657 417.188,143.037 417.188,139.802L 417.188,112.155C 417.188,108.922 414.564,106.302 411.334,106.302 Z "/>
+  </GeometryGroup>
 
   <GeometryGroup x:Key="BuddyGeometry">
     <EllipseGeometry Center="50,20" RadiusX="25" RadiusY="25" />
@@ -405,6 +409,18 @@
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <GeometryDrawing Brush="{DynamicResource ToolbarIconForegroundBrush}" >
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="0,2.5,7,2" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="MinimizeLightDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" >
           <GeometryDrawing.Geometry>
             <RectangleGeometry Rect="0,2.5,7,2" />
           </GeometryDrawing.Geometry>
@@ -787,14 +803,25 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="FacebookDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="FacebookLogoDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
-          <GeometryDrawing Brush="{DynamicResource IconBackgroundBrush}" Geometry="F1 M 413.334,107.969L 385.688,107.969C 382.455,107.969 379.833,110.589 379.833,113.822L 379.833,141.469C 379.833,144.703 382.455,147.323 385.688,147.323L 402.136,147.323L 402.136,131.269L 398.478,131.269L 398.478,126.313L 402.136,126.313L 402.136,123.614C 402.136,121.202 402.901,119.248 404.434,117.745C 406.062,116.144 408.303,115.341 411.152,115.341C 412.483,115.341 413.618,115.485 414.552,115.767L 414.552,120.998C 413.659,120.658 412.831,120.489 412.064,120.489C 409.91,120.489 408.835,121.657 408.835,123.996L 408.835,126.313L 413.811,126.313L 413.811,131.269L 408.835,131.269L 408.835,147.323L 413.334,147.323C 416.564,147.323 419.188,144.703 419.188,141.469L 419.188,113.822C 419.188,110.589 416.564,107.969 413.334,107.969" />
-          <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="F1 M 411.334,106.302L 383.688,106.302C 380.455,106.302 377.833,108.922 377.833,112.155L 377.833,139.802C 377.833,143.037 380.455,145.657 383.688,145.657L 400.136,145.657L 400.136,129.602L 396.478,129.602L 396.478,124.646L 400.136,124.646L 400.136,121.947C 400.136,119.535 400.901,117.581 402.434,116.079C 404.062,114.477 406.303,113.675 409.152,113.675C 410.483,113.675 411.618,113.818 412.552,114.101L 412.552,119.331C 411.659,118.991 410.831,118.822 410.064,118.822C 407.91,118.822 406.835,119.99 406.835,122.33L 406.835,124.646L 411.811,124.646L 411.811,129.602L 406.835,129.602L 406.835,145.657L 411.334,145.657C 414.564,145.657 417.188,143.037 417.188,139.802L 417.188,112.155C 417.188,108.922 414.564,106.302 411.334,106.302 Z " />
+          <GeometryDrawing Brush="{DynamicResource IconBackgroundBrush}" Geometry="{StaticResource FacebookLogoGeometry}"/>
+          <DrawingGroup>
+            <DrawingGroup.Transform>
+              <TranslateTransform X="-2" Y="3.5" />
+            </DrawingGroup.Transform>
+            <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{StaticResource FacebookLogoGeometry}"/>
+          </DrawingGroup>
         </DrawingGroup.Children>
       </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="FacebookLogoLightDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource ToolbarLightIconForegroundBrush}" Geometry="{StaticResource FacebookLogoGeometry}" />
     </DrawingBrush.Drawing>
   </DrawingBrush>
 

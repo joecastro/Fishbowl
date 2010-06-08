@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     Width="30"
     Height="30"
-    HorizontalContentAlignment="Stretch">
+    HorizontalContentAlignment="Stretch"
+    x:Name="ThisControl">
 	<UserControl.Resources>
 		<Geometry x:Key="dotBar">
 			M181.885,33.846c0,18.693,15.153,33.846,33.846,33.846s33.846-15.153,33.846-33.846S234.424,0,215.731,0
@@ -19,7 +20,7 @@
 		</Style>
 	</UserControl.Resources>
 	
-	<Grid x:Name="spinner" Visibility="Hidden" Width="30" Height="30">
+	<Grid x:Name="spinner" Visibility="Hidden" Width="30" Height="30" DataContext="{Binding ElementName=ThisControl}">
 		<Grid.RenderTransform>
 			<RotateTransform x:Name="SpinnerRotate" CenterX="15" CenterY="13" Angle="0" />
 		</Grid.RenderTransform>
@@ -34,73 +35,73 @@
 		</Grid.ColumnDefinitions>
 
 		<Viewbox>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity="1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-30" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity="1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-60" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".9">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-90" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".8">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-120" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".7">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-150" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".6">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-180" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".5">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-210" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".4">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-240" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".3">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-270" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".2">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-300" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 		<Viewbox Opacity=".1">
 			<Viewbox.RenderTransform>
 				<RotateTransform Angle="-330" />
 			</Viewbox.RenderTransform>
-			<Path Fill="{DynamicResource SpinnerBrush}" Data="{StaticResource dotBar}"/>
+			<Path Fill="{Binding Foreground}" Data="{StaticResource dotBar}"/>
 		</Viewbox>
 
 	</Grid>

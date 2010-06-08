@@ -51,7 +51,7 @@
             VerticalAlignment="Stretch" 
             HorizontalAlignment="Stretch"/>
         <TextBlock Foreground="{DynamicResource FacebookBlueBrush}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" Opacity="1" FontSize="{DynamicResource MiddleFontSize}" HorizontalAlignment="Center" Margin="0,5,0,0" Text="Please wait" />
-        <ClientManagerControls:Spinner Margin="0,20,0,0">
+        <ClientManagerControls:Spinner Margin="0,20,0,0" Foreground="{DynamicResource FacebookBlueBrush}">
           <ClientManagerControls:Spinner.Style>
             <Style TargetType="{x:Type ClientManagerControls:Spinner}">
               <Setter Property="IsRunning" Value="False" />

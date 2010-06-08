@@ -9,6 +9,7 @@
 
         <!-- The rest of these are theme agnostic and are duplicated in FacebookClientApplication.xaml -->
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ApplicationBaseResources.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFontResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/BaseResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Resources/Themes/MainPageResources.xaml" />

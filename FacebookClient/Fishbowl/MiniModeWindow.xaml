@@ -41,118 +41,53 @@
   <Window.Resources>
     <FacebookClient:AddConverter x:Key="AddConverter" />
 
-    <Style x:Key="RestoreButtonStyle" TargetType="{x:Type Button}">
+    <Style x:Key="CaptionButtonStyle" TargetType="{x:Type Button}">
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+      <Setter Property="Visibility" Value="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}"/>
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type Button}">
-            <Grid Height="18">
-              <Border x:Name="CloseButtonBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="0,0,0,2" Height="Auto" Width="22" Background="Transparent">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{DynamicResource LargeFontSize2}" FontFamily="Webdings" Foreground="Black" Text="5" />
-                </StackPanel>
-              </Border>
+            <Grid>
+              <Border x:Name="hover"
+                  Background="Silver"
+                  BorderBrush="White"
+                  BorderThickness="1"
+                  CornerRadius="3"
+                  Margin="0,-4,0,0"
+                  Opacity="0"/>
+              <ContentPresenter Margin="3,1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsFocused" Value="True" />
-              <Trigger Property="IsDefaulted" Value="True" />
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Effect" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" />
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Background" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                      <GradientStop Color="Firebrick" Offset="0" />
-                      <GradientStop Color="#FFEBEBEB" Offset="0.2" />
-                      <GradientStop Color="#FFDDDDDD" Offset="0.2" />
-                      <GradientStop Color="Firebrick" Offset="1" />
-                    </LinearGradientBrush>
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Foreground" TargetName="CloseText" Value="White" />
+                <Trigger.EnterActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation
+                                  Duration="0:0:0.3"
+                                  Storyboard.TargetName="hover"
+                                  Storyboard.TargetProperty="Opacity"
+                                  To=".45"/>
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation
+                                  Duration="0:0:0.3"
+                                  Storyboard.TargetName="hover"
+                                  Storyboard.TargetProperty="Opacity"
+                                  To="0"/>
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.ExitActions>
               </Trigger>
-              <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Effect" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" />
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Background" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                      <GradientStop Color="DarkRed" Offset="0" />
-                      <GradientStop Color="#FFEBEBEB" Offset="0.2" />
-                      <GradientStop Color="#FFDDDDDD" Offset="0.2" />
-                      <GradientStop Color="DarkRed" Offset="1" />
-                    </LinearGradientBrush>
-                  </Setter.Value>
-                </Setter>
-              </Trigger>
-              <Trigger Property="IsEnabled" Value="False" />
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
-      <Setter Property="Foreground" Value="DarkBlue" />
-    </Style>
-
-    <Style x:Key="MinimizeButtonStyle" TargetType="{x:Type Button}">
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type Button}">
-            <Grid Height="18">
-              <Border x:Name="CloseButtonBorder" BorderBrush="Black" BorderThickness="1" CornerRadius="0,0,2,0" Height="Auto" Width="22" Background="Transparent">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                  <TextBlock x:Name="CloseText" Margin="3,0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="{DynamicResource LargeFontSize2}" FontFamily="Webdings" Foreground="Black" Text="6" />
-                </StackPanel>
-              </Border>
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsFocused" Value="True" />
-              <Trigger Property="IsDefaulted" Value="True" />
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Effect" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" />
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Background" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                      <GradientStop Color="Indigo" Offset="0" />
-                      <GradientStop Color="#FFEBEBEB" Offset="0.2" />
-                      <GradientStop Color="#FFDDDDDD" Offset="0.2" />
-                      <GradientStop Color="Indigo" Offset="1" />
-                    </LinearGradientBrush>
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Foreground" TargetName="CloseText" Value="White" />
-              </Trigger>
-              <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Effect" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <DropShadowEffect Color="White" BlurRadius="2" ShadowDepth="0" />
-                  </Setter.Value>
-                </Setter>
-                <Setter Property="Background" TargetName="CloseButtonBorder">
-                  <Setter.Value>
-                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                      <GradientStop Color="MidnightBlue" Offset="0" />
-                      <GradientStop Color="#FFEBEBEB" Offset="0.2" />
-                      <GradientStop Color="#FFDDDDDD" Offset="0.2" />
-                      <GradientStop Color="MidnightBlue" Offset="1" />
-                    </LinearGradientBrush>
-                  </Setter.Value>
-                </Setter>
-              </Trigger>
-              <Trigger Property="IsEnabled" Value="False" />
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Setter Property="Foreground" Value="DarkBlue" />
     </Style>
 
     <Style x:Key="MiniNotificationsToggleButtonStyle" TargetType="{x:Type ToggleButton}">
@@ -215,7 +150,7 @@
         </Popup>
 
         <Button DockPanel.Dock="Right" Margin="3,1" ToolTip="Go to Facebook" Style="{StaticResource SimpleButtonStyle}" Click="_OnFacebookButtonClick">
-          <Rectangle Width="24" Height="24"  Fill="{StaticResource FacebookDrawingBrush}" />
+          <Rectangle Width="20" Height="20"  Fill="{StaticResource FacebookLogoLightDrawingBrush}" />
         </Button>
 
         <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="3">
@@ -295,180 +230,172 @@
           <TextBlock
               MinWidth="75" 
               HorizontalAlignment="Stretch" 
-              VerticalAlignment="Stretch"
+              VerticalAlignment="Center"
               TextAlignment="Center"
               Margin="3" 
               FontSize="{DynamicResource MiddleFontSize}"
               FontWeight="Medium"
               Foreground="White"
               FontFamily="{DynamicResource SansSerifFont}" >
-            <TextBlock.Text>
-              <MultiBinding StringFormat="{}{0} of {1}">
-                <Binding Converter="{StaticResource AddConverter}" ConverterParameter="1" ElementName="PART_ZapScroller2" Path="CurrentItemIndex" />
-                <Binding ElementName="PART_ZapScroller2" Path="ItemCount" />
-              </MultiBinding>
-            </TextBlock.Text>
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text">
+                  <Setter.Value>
+                    <MultiBinding StringFormat="{}{0} of {1}">
+                      <Binding Converter="{StaticResource AddConverter}" ConverterParameter="1" ElementName="PART_ZapScroller2" Path="CurrentItemIndex" />
+                      <Binding ElementName="PART_ZapScroller2" Path="ItemCount" />
+                    </MultiBinding>
+                  </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding ElementName=PART_ZapScroller2, Path=ItemCount}" Value="0">
+                    <Setter Property="Text" Value="Loading..."/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
           </TextBlock>
         </DockPanel>
       </DockPanel>
 
-      <FacebookClient:ZapScroller x:Name="PART_ZapScroller2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed}"
-                                        PlayTimeInterval="6000" IsPlaying="False" IsShuffled="False">
-        <FacebookClient:ZapScroller.ItemTemplate>
-          <DataTemplate>
-            <Grid Margin="8">
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
+      <Grid>
+        <FacebookClient:ZapScroller x:Name="PART_ZapScroller2" 
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Stretch" 
+            ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NewsFeed}"
+            PlayTimeInterval="6000" IsPlaying="False" IsShuffled="False">
+          <FacebookClient:ZapScroller.ItemTemplate>
+            <DataTemplate>
+              <Grid Margin="8">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-              <!-- Large right margin because this is inline with the caption buttons. -->
-              <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,60,0" HorizontalAlignment="Stretch">
-                <Rectangle x:Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusAwayDrawingBrush}" Visibility="Collapsed" />
-                <Rectangle x:Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusOnlineDrawingBrush}" Visibility="Collapsed" />
+                <!-- Large right margin because this is inline with the caption buttons. -->
+                <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,60,0" HorizontalAlignment="Stretch">
+                  <Rectangle x:Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusAwayDrawingBrush}" Visibility="Collapsed" />
+                  <Rectangle x:Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusOnlineDrawingBrush}" Visibility="Collapsed" />
 
-                <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold" TextTrimming="CharacterEllipsis" Foreground="White" />
-              </DockPanel>
+                  <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="{DynamicResource MiddleFontSize}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="White" />
+                </DockPanel>
 
-              <Button Grid.Row="1" Grid.Column="0" Margin="5,3,0,0"
-                      VerticalAlignment="Top"
-                      Click="_OnNavigateToContentButtonClicked" 
-                      ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
-                      Style="{DynamicResource AnimatedItemButton}">
-                <Grid Width="70" Height="70">
-                  <Grid RenderTransformOrigin="0.5,0.5">
-                    <Grid.RenderTransform>
-                      <TransformGroup>
-                        <RotateTransform Angle="-6" />
-                      </TransformGroup>
-                    </Grid.RenderTransform>
-                    <Image Source="pack://application:,,,/Resources/Images/avatar_background.png" />
-                    <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Actor.Image}" FacebookImageDimensions="Big">
-                      <ClientManagerControls:FacebookImageControl.Template>
-                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                          <Border Margin="4,4,4.5,6">
-                            <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                          </Border>
-                        </ControlTemplate>
-                      </ClientManagerControls:FacebookImageControl.Template>
-                    </ClientManagerControls:FacebookImageControl>
+                <Button Grid.Row="1" Grid.Column="0" Margin="5,3,0,0"
+                        VerticalAlignment="Top"
+                        Click="_OnNavigateToContentButtonClicked" 
+                        ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
+                        Style="{DynamicResource AnimatedItemButton}">
+                  <Grid Width="70" Height="70">
+                    <Grid RenderTransformOrigin="0.5,0.5">
+                      <Grid.RenderTransform>
+                        <TransformGroup>
+                          <RotateTransform Angle="-6" />
+                        </TransformGroup>
+                      </Grid.RenderTransform>
+                      <Image Source="pack://application:,,,/Resources/Images/avatar_background.png" />
+                      <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Actor.Image}" FacebookImageDimensions="Big">
+                        <ClientManagerControls:FacebookImageControl.Template>
+                          <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                            <Border Margin="4,4,4.5,6">
+                              <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
+                            </Border>
+                          </ControlTemplate>
+                        </ClientManagerControls:FacebookImageControl.Template>
+                      </ClientManagerControls:FacebookImageControl>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Button>
+                </Button>
 
-              <Button Grid.Row="2" Grid.Column="0" 
-                  VerticalAlignment="Center" 
-                  HorizontalAlignment="Right" 
-                  Click="_OnNavigateToContentButtonClicked" 
-                  ClientManagerView:ViewManager.NavigationContent="{Binding Attachment}"
-                  Style="{DynamicResource AnimatedItemButton}">
-                <Image Width="24" Height="24" Stretch="Uniform">
-                  <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                      <Setter Property="Source" Value="{x:Null}" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Attachment.Type}" Value="Photos">
-                          <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/photos_icon.png" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Attachment.Type}" Value="Links">
-                          <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/links_icon.png" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Attachment.Type}" Value="Video">
-                          <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/video_icon.png" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Image.Style>
-                </Image>
-              </Button>
+                <Button Grid.Row="2" Grid.Column="0" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Right" 
+                    Click="_OnNavigateToContentButtonClicked" 
+                    ClientManagerView:ViewManager.NavigationContent="{Binding Attachment}"
+                    Style="{DynamicResource AnimatedItemButton}">
+                  <Image Width="24" Height="24" Stretch="Uniform">
+                    <Image.Style>
+                      <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="{x:Null}" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding Attachment.Type}" Value="Photos">
+                            <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/photos_icon.png" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding Attachment.Type}" Value="Links">
+                            <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/links_icon.png" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding Attachment.Type}" Value="Video">
+                            <Setter Property="Source" Value="pack://application:,,,/Resources/Images/Icons/video_icon.png" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Image.Style>
+                  </Image>
+                </Button>
 
-              <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="10" VerticalAlignment="Top">
-                <Path Fill="#FFE3E7F0" Stretch="Fill" Stroke="#FFE3E7F0" HorizontalAlignment="Left" Margin="-5,10,0,0" Width="20" Height="20" Data="M0,0 10,2 10,6Z" StrokeThickness="3" VerticalAlignment="Top" />
+                <Grid Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="10" VerticalAlignment="Top">
+                  <Path Fill="#FFE3E7F0" Stretch="Fill" Stroke="#FFE3E7F0" HorizontalAlignment="Left" Margin="-5,10,0,0" Width="20" Height="20" Data="M0,0 10,2 10,6Z" StrokeThickness="3" VerticalAlignment="Top" />
 
-                <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,2,2" MinHeight="40" Background="#FFE3E7F0" CornerRadius="10" Padding="0">
-                  <DockPanel>
-                    <TextBlock DockPanel.Dock="Bottom" Margin="10,2" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-                    <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="{DynamicResource SansSerifFont}">
-                      <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                          <Setter Property="Visibility" Value="Visible" />
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding Message}" Value="">
+                  <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,2,2" MinHeight="40" Background="#FFE3E7F0" CornerRadius="10" Padding="0">
+                    <DockPanel>
+                      <TextBlock DockPanel.Dock="Bottom" Margin="10,2" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
+                      <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="{DynamicResource SansSerifFont}">
+                        <TextBlock.Style>
+                          <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Message}" Value="">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>
+                        <FacebookClient:HyperlinkTextContent Text="{Binding Message}" RequestNavigate="_OnRequestNavigate"  />
+                      </TextBlock>
+
+                      <Grid DataContext="{Binding Attachment}" Margin="14,4" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        <Button HorizontalAlignment="Left" 
+                                Click="_OnNavigateToContentButtonClicked"
+                                ClientManagerView:ViewManager.NavigationContent="{Binding}" 
+                                IsEnabled="True">
+                          <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource AnimatedItemButton}">
                               <Setter Property="Visibility" Value="Collapsed" />
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </TextBlock.Style>
-                      <FacebookClient:HyperlinkTextContent Text="{Binding Message}" RequestNavigate="_OnRequestNavigate"  />
-                    </TextBlock>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Type}" Value="Video">
+                                  <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Button.Style>
+                          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding VideoPreviewImage}" FacebookImageDimensions="Small">
+                            <ClientManagerControls:FacebookImageControl.Template>
+                              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                                <Image Margin="2" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                              </ControlTemplate>
+                            </ClientManagerControls:FacebookImageControl.Template>
+                          </ClientManagerControls:FacebookImageControl>
+                        </Button>
 
-                    <Grid DataContext="{Binding Attachment}" Margin="14,4" VerticalAlignment="Top" HorizontalAlignment="Center">
-                      <Button HorizontalAlignment="Left" 
-                              Click="_OnNavigateToContentButtonClicked"
-                              ClientManagerView:ViewManager.NavigationContent="{Binding}" 
-                              IsEnabled="True">
-                        <Button.Style>
-                          <Style TargetType="Button" BasedOn="{StaticResource AnimatedItemButton}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Type}" Value="Video">
-                                <Setter Property="Visibility" Value="Visible" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Button.Style>
-                        <ClientManagerControls:FacebookImageControl FacebookImage="{Binding VideoPreviewImage}" FacebookImageDimensions="Small">
-                          <ClientManagerControls:FacebookImageControl.Template>
-                            <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                              <Image Margin="2" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                            </ControlTemplate>
-                          </ClientManagerControls:FacebookImageControl.Template>
-                        </ClientManagerControls:FacebookImageControl>
-                      </Button>
-
-                      <Button ClientManagerView:ViewManager.NavigationContent="{Binding}"
-                              Click="_OnNavigateToContentButtonClicked"
-                              IsEnabled="True">
-                        <Button.Style>
-                          <Style TargetType="Button" BasedOn="{StaticResource AnimatedItemButton}">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Style.Triggers>
-                              <DataTrigger Binding="{Binding Type}" Value="Photos">
-                                <Setter Property="Visibility" Value="Visible" />
-                              </DataTrigger>
-                            </Style.Triggers>
-                          </Style>
-                        </Button.Style>
-
-                        <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Photos[0].Image}" FacebookImageDimensions="Small">
-                          <ClientManagerControls:FacebookImageControl.Template>
-                            <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                              <Image Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                            </ControlTemplate>
-                          </ClientManagerControls:FacebookImageControl.Template>
-                        </ClientManagerControls:FacebookImageControl>
-                      </Button>
-
-                      <Grid>
-                        <Button ClientManagerView:ViewManager.NavigationContent="{Binding Link}" 
+                        <Button ClientManagerView:ViewManager.NavigationContent="{Binding}"
                                 Click="_OnNavigateToContentButtonClicked"
                                 IsEnabled="True">
                           <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource AnimatedItemButton}">
                               <Setter Property="Visibility" Value="Collapsed" />
                               <Style.Triggers>
-                                <DataTrigger Binding="{Binding Type}" Value="Links">
+                                <DataTrigger Binding="{Binding Type}" Value="Photos">
                                   <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                               </Style.Triggers>
                             </Style>
                           </Button.Style>
-                          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Links[0].Image}" FacebookImageDimensions="Small">
+
+                          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Photos[0].Image}" FacebookImageDimensions="Small">
                             <ClientManagerControls:FacebookImageControl.Template>
                               <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
                                 <Image Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
@@ -476,27 +403,70 @@
                             </ClientManagerControls:FacebookImageControl.Template>
                           </ClientManagerControls:FacebookImageControl>
                         </Button>
+
+                        <Grid>
+                          <Button ClientManagerView:ViewManager.NavigationContent="{Binding Link}" 
+                                  Click="_OnNavigateToContentButtonClicked"
+                                  IsEnabled="True">
+                            <Button.Style>
+                              <Style TargetType="Button" BasedOn="{StaticResource AnimatedItemButton}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding Type}" Value="Links">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </Button.Style>
+                            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Links[0].Image}" FacebookImageDimensions="Small">
+                              <ClientManagerControls:FacebookImageControl.Template>
+                                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                                  <Image Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                                </ControlTemplate>
+                              </ClientManagerControls:FacebookImageControl.Template>
+                            </ClientManagerControls:FacebookImageControl>
+                          </Button>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </DockPanel>
-                </Border>
+                    </DockPanel>
+                  </Border>
+                </Grid>
               </Grid>
-            </Grid>
-          </DataTemplate>
-        </FacebookClient:ZapScroller.ItemTemplate>
-      </FacebookClient:ZapScroller>
+            </DataTemplate>
+          </FacebookClient:ZapScroller.ItemTemplate>
+        </FacebookClient:ZapScroller>
+
+        <ClientManagerControls:Spinner Foreground="{DynamicResource ToolbarLightIconForegroundBrush}">
+          <ClientManagerControls:Spinner.Style>
+            <Style TargetType="{x:Type ClientManagerControls:Spinner}">
+              <Setter Property="IsRunning" Value="False" />
+              <Setter Property="Visibility" Value="Collapsed" />
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=PART_ZapScroller2, Path=ItemCount}" Value="0">
+                  <Setter Property="IsRunning" Value="True" />
+                  <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </ClientManagerControls:Spinner.Style>
+        </ClientManagerControls:Spinner>
+
+      </Grid>
+
     </DockPanel>
 
     <StackPanel x:Name="CaptionArea" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8,0" Orientation="Horizontal" FlowDirection="RightToLeft">
-      <Button Style="{StaticResource RestoreButtonStyle}" Click="_OnRestoreClicked">
+      <Button Style="{StaticResource CaptionButtonStyle}" Click="_OnRestoreClicked">
         <Button.ToolTip>
           <ToolTip Placement="Left">Go back to Fishbowl</ToolTip>
         </Button.ToolTip>
+        <Image Source="Resources\Images\Fishbowl.ico" Margin="2" Width="20" Height="20"/>
       </Button>
-      <Button Style="{StaticResource MinimizeButtonStyle}" Click="_OnMinimizeClicked">
+      <Button Style="{StaticResource CaptionButtonStyle}" Click="_OnMinimizeClicked">
         <Button.ToolTip>
           <ToolTip Placement="Left">Minimize</ToolTip>
         </Button.ToolTip>
+        <Rectangle Margin="2" Height="16" Width="16" Fill="{DynamicResource MinimizeLightDrawingBrush}"/>
       </Button>
     </StackPanel>
   </Grid>

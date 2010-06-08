@@ -57,7 +57,7 @@
           <shell:ThumbButtonInfo IsBackgroundVisible="False" IsEnabled="False"/>
           <shell:ThumbButtonInfo Command="{Binding Path=NavigationCommands.NavigateToContentCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" CommandParameter="[CurrentNavigator]" Description="Go to Facebook">
             <shell:ThumbButtonInfo.ImageSource>
-              <DrawingImage Drawing="{Binding Source={StaticResource FacebookDrawingBrush}, Path=Drawing}" />
+              <DrawingImage Drawing="{Binding Source={StaticResource FacebookLogoDrawingBrush}, Path=Drawing}" />
             </shell:ThumbButtonInfo.ImageSource>
           </shell:ThumbButtonInfo>
         </shell:ThumbButtonInfoCollection>

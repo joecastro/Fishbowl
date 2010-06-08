@@ -19,12 +19,13 @@
         </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
-    <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="White" Offset="0"/>
-            <GradientStop Color="Silver" Offset="1"/>
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
+  <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="White" Offset="0"/>
+      <GradientStop Color="White" Offset=".2"/>
+      <GradientStop Color="Silver" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
 
     <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="White"/>
     <SolidColorBrush x:Key="ToolbarLightTextBlockForegroundBrush" Color="White"/>

@@ -29,7 +29,7 @@
                 </FacebookClient:SearchAndFilterControl.Style>
             </FacebookClient:SearchAndFilterControl>
 
-            <ClientManagerControls:Spinner Grid.Column="1">
+            <ClientManagerControls:Spinner Grid.Column="1" Foreground="{DynamicResource SpinnerBrush}">
                 <ClientManagerControls:Spinner.Style>
                     <Style TargetType="{x:Type ClientManagerControls:Spinner}">
                         <Setter Property="IsRunning" Value="False" />

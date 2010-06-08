@@ -34,6 +34,11 @@ namespace ClientManager.Controls
             }
         }
 
+        static Spinner()
+        {
+            ForegroundProperty.OverrideMetadata(typeof(Spinner), new FrameworkPropertyMetadata(Brushes.Pink));
+        }
+
         public Spinner()
         {
             InitializeComponent();

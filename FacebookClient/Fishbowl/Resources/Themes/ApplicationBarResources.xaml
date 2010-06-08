@@ -359,7 +359,7 @@
                 </RadioButton>
                 <Button x:Name="FacebookButton" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Go to Facebook">
                   <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{DynamicResource FacebookDrawingBrush}" Width="30" />
+                    <Rectangle Fill="{DynamicResource FacebookLogoDrawingBrush}" Width="30" />
                     <TextBlock x:Name="FacebookButtonText" Text="Facebook" />
                   </StackPanel>
                 </Button>

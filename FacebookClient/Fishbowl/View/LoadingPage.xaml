@@ -21,7 +21,7 @@
           HorizontalAlignment="Center" 
           Margin="0,5,0,0" 
           Text="Please wait" />
-      <c:Spinner x:Name="Spinner" Margin="0,20,0,0"/>
+      <c:Spinner x:Name="Spinner" Margin="0,20,0,0" Foreground="{DynamicResource SpinnerBrush}"/>
     </StackPanel>
   </Grid>
 </ContentControl>

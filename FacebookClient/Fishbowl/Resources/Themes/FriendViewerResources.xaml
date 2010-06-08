@@ -453,7 +453,7 @@
           </Border>
 
           <!-- Wall template spinner. -->
-          <ClientManagerControls:Spinner x:Name="PART_WallScrollViewerSpinner">
+          <ClientManagerControls:Spinner x:Name="PART_WallScrollViewerSpinner" Foreground="{DynamicResource SpinnerBrush}">
             <ClientManagerControls:Spinner.Style>
               <Style TargetType="{x:Type ClientManagerControls:Spinner}">
                 <Setter Property="IsRunning" Value="False" />
