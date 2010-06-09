@@ -83,7 +83,7 @@
     <SolidColorBrush x:Key="PhotoCaptionForeground" Color="White" />
     <SolidColorBrush x:Key="FriendViewerNameForeground" Color="#FFDEDEDE"/>
 
-    <SolidColorBrush x:Key="PeopleWhoLikeThisForeground" Color="#ADADAD"/>
+    <SolidColorBrush x:Key="PeopleWhoLikeThisForeground" Color="#DDDDDD"/>
 
     <SolidColorBrush x:Key="PageNavigationTextForeground" Color="White"/>
 

@@ -17,7 +17,7 @@
   
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityActionButtonForeground}" />
     <Setter Property="Cursor" Value="Hand" />
@@ -186,8 +186,8 @@
     <Setter Property="Margin" Value="0,0,0,6" />
   </Style>
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
-    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
     <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
   </Style>
@@ -197,6 +197,7 @@
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
     <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
   </Style>
+
   <DataTemplate x:Key="NewsFeedCommentTemplate" DataType="{x:Type Facebook:ActivityComment}">
     <Grid x:Name="CommentPanel" MinHeight="65" Margin="0,0,0,5">
       <Grid.ColumnDefinitions>
@@ -419,7 +420,7 @@
     </Grid>
   </DataTemplate>
   <FacebookClient:ContentVisibilityConverter x:Key="contentVisibilityConverter" />
-  
+
   <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
     <Grid x:Name="Root" MinHeight="130" MinWidth="400" Background="Transparent" HorizontalAlignment="Stretch">
       <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}"/>
@@ -430,7 +431,13 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Actor.Image}">
-          <Button x:Name="ActivityButton" RenderTransformOrigin="0.5,0.5" Margin="10, 7, 0, 0" VerticalAlignment="Top" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" Style="{DynamicResource AnimatedItemButton}">
+          <Button x:Name="ActivityButton"
+                  RenderTransformOrigin="0.5,0.5"
+                  Margin="10, 7, 0, 0"
+                  VerticalAlignment="Top" 
+                  Click="OnNavigateToContentButtonClicked" 
+                  ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
+                  Style="{DynamicResource AnimatedItemButton}">
             <Button.RenderTransform>
               <TransformGroup>
                 <RotateTransform Angle="-6" />
@@ -463,72 +470,67 @@
           </Grid.RowDefinitions>
           <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
             <TextBlock Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
-            <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
-              <FacebookClient:BindableRun Text="{Binding Actor.Name}" />
-            </Hyperlink>
-            <InlineUIContainer>
-              <Grid x:Name="Status" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
-                <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-              </Grid>
-            </InlineUIContainer>
-            <TextBlock x:Name="TargetBlock">
-              <Run FontFamily="Webdings" Foreground="{DynamicResource ActivityPostPersonToPersonArrowBrush}">4
-              </Run>
-              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Target}">
-                <FacebookClient:BindableRun Text="{Binding Target.Name}" />
+              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
+                <FacebookClient:BindableRun Text="{Binding Actor.Name}" />
               </Hyperlink>
-              <Run>:
-              </Run>
+              <InlineUIContainer>
+                <Grid x:Name="Status" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
+                  <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+                  <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
+                </Grid>
+              </InlineUIContainer>
+              <TextBlock x:Name="TargetBlock">
+                <Run FontFamily="Webdings" Foreground="{DynamicResource ActivityPostPersonToPersonArrowBrush}">4</Run>
+                <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Target}">
+                  <FacebookClient:BindableRun Text="{Binding Target.Name}" />
+                </Hyperlink>
+                <Run>:</Run>
+              </TextBlock>
             </TextBlock>
-          </TextBlock>
             <TextBlock Margin="0,5,0,0" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource contentVisibilityConverter}}">
-            <FacebookClient:HyperlinkTextContent Text="{Binding Message}" />
-          </TextBlock>
-            <ContentControl Margin="0,10,0,5" Content="{Binding Attachment}" Visibility="{Binding Attachment, Converter={StaticResource contentVisibilityConverter}}" />
-            <StackPanel Margin="0,10,5,0" Orientation="Horizontal">
-              <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-            <Button x:Name="LikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddLikeCommand}" CommandParameter="{Binding}" Content="like" IsEnabled="{Binding CanLike}" ToolTip="Like">
-              <Button.Style>
-                <Style BasedOn="{StaticResource LikeButtonStyle}" TargetType="Button">
-                  <Setter Property="Visibility" Value="Visible" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding HasLiked}" Value="True">
-                      <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>
-            <Button x:Name="RemoveLikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveLikeCommand}" CommandParameter="{Binding}" Content="remove like" IsEnabled="{Binding HasLiked}" ToolTip="Remove Like">
-              <Button.Style>
-                <Style BasedOn="{StaticResource RemoveLikeButtonStyle}" TargetType="Button">
-                  <Setter Property="Visibility" Value="Visible" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding HasLiked}" Value="False">
-                      <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>
-            <ToggleButton x:Name="CommentButton" Margin="15,-5,0,0" VerticalAlignment="Center" Content="comment" IsChecked="{Binding Path=IsAvailable, ElementName=CommentTextBox, Mode=TwoWay}" IsEnabled="{Binding CanComment}" ToolTip="Comment">
-              <ToggleButton.Style>
-                <Style BasedOn="{StaticResource CommentButtonStyle}" TargetType="ToggleButton">
-                  <Setter Property="Visibility" Value="Collapsed" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=CanComment}" Value="True">
-                      <Setter Property="Visibility" Value="Visible" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </ToggleButton.Style>
-            </ToggleButton>
-            <ToggleButton x:Name="MoreCommentsButton" Margin="12,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
-            <TextBlock Margin="15,-2,0,0" VerticalAlignment="Top" FontFamily="{DynamicResource SansSerifFont}" FontStyle="Italic" FontWeight="Light" Opacity=".6">
-              <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
+              <FacebookClient:HyperlinkTextContent Text="{Binding Message}" />
             </TextBlock>
-          </StackPanel>
+            <ContentControl Margin="0,10,0,5" Content="{Binding Attachment}" Visibility="{Binding Attachment, Converter={StaticResource contentVisibilityConverter}}" />
+            <WrapPanel Margin="0,10,5,0" Orientation="Horizontal">
+              <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
+              <Button x:Name="LikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddLikeCommand}" CommandParameter="{Binding}" Content="like" IsEnabled="{Binding CanLike}" ToolTip="Like">
+                <Button.Style>
+                  <Style BasedOn="{StaticResource LikeButtonStyle}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding HasLiked}" Value="True">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+              <Button x:Name="RemoveLikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveLikeCommand}" CommandParameter="{Binding}" Content="remove like" IsEnabled="{Binding HasLiked}" ToolTip="Remove Like">
+                <Button.Style>
+                  <Style BasedOn="{StaticResource RemoveLikeButtonStyle}" TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding HasLiked}" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+              <ToggleButton x:Name="CommentButton" Margin="15,-5,0,0" VerticalAlignment="Center" Content="comment" IsChecked="{Binding Path=IsAvailable, ElementName=CommentTextBox, Mode=TwoWay}" IsEnabled="{Binding CanComment}" ToolTip="Comment">
+                <ToggleButton.Style>
+                  <Style BasedOn="{StaticResource CommentButtonStyle}" TargetType="ToggleButton">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=CanComment}" Value="True">
+                        <Setter Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ToggleButton.Style>
+              </ToggleButton>
+              <ToggleButton x:Name="MoreCommentsButton" Margin="12,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </WrapPanel>
           </StackPanel>
           <StackPanel Grid.Column="0" Grid.Row="1">
             <Border x:Name="Comments" Margin="0,3,0,0" Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6,6,0,0" HorizontalAlignment="Stretch">
@@ -546,16 +548,43 @@
                 </Style>
               </Border.Style>
               <Grid>
-              <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
-                <ItemsControl 
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
+
+                <Grid Margin="10" MinHeight="20">
+                  <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                      <Setter Property="Visibility" Value="Visible" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding PeopleWhoLikeThis.Count}" Value="0">
+                          <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Grid.Style>
+                  
+                  <TextBlock TextWrapping="Wrap" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource MiddleFontSize}" >
+                    <InlineUIContainer>
+                      <Image Width="18" Height="18" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
+                    </InlineUIContainer>
+                    <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
+                  </TextBlock>
+                  <Rectangle Height="2" Margin="-10,0,-10,-10" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
+                </Grid>
+
+                <ItemsControl Grid.Row="1"
                     Margin="10,0,10,0"
-                    ItemsSource="{Binding Comments}" ItemTemplate="{StaticResource NewsFeedCommentTemplate}">
+                    ItemsSource="{Binding Comments}" 
+                    ItemTemplate="{StaticResource NewsFeedCommentTemplate}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                       <VirtualizingStackPanel />
                     </ItemsPanelTemplate>
                   </ItemsControl.ItemsPanel>
-                  
                 </ItemsControl>
               </Grid>
             </Border>
@@ -624,6 +653,7 @@
       </DataTrigger>
     </DataTemplate.Triggers>
   </DataTemplate>
+
   <Style x:Key="CommentTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
     <Setter Property="SpellCheck.IsEnabled" Value="True" />
     <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
