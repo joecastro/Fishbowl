@@ -447,14 +447,14 @@
                 </Rectangle.OpacityMask>
             </Rectangle>
             <TextBlock
-        x:Name="ContentTextblock"
-        HorizontalAlignment="Left"
-        Margin="10,3,40,3"
-        VerticalAlignment="Center"
-        FontFamily="Calibri"
-        FontSize="{DynamicResource LargeFontSize1}"
-        Text="{TemplateBinding Content}"
-        TextWrapping="Wrap"/>
+                x:Name="ContentTextblock"
+                HorizontalAlignment="Left"
+                Margin="10,3,40,3"
+                VerticalAlignment="Center"
+                FontFamily="{DynamicResource SansSerifFont}"
+                FontSize="{DynamicResource LargeFontSize1}"
+                Text="{TemplateBinding Content}"
+                TextWrapping="Wrap"/>
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="True">
