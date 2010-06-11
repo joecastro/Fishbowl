@@ -7,7 +7,7 @@
     xmlns:ClientManager="clr-namespace:ClientManager"
     xmlns:ClientManagerData="clr-namespace:ClientManager.Data"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
-    xmlns:Annotations="clr-namespace:System.Windows.Annotations;assembly=PresentationFramework">
+    xmlns:TextSelection="clr-namespace:Microsoft.Wpf.Samples.Documents">
 
   <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
@@ -15,9 +15,11 @@
   <FacebookClient:AddConverter x:Key="AddConverter" />
 
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
+    <Setter Property="TextWrapping" Value="Wrap" />
     <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+    <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
   </Style>
 
   <DataTemplate x:Key="FriendSummaryItemTemplate">
@@ -112,9 +114,8 @@
         <TextBlock DockPanel.Dock="Bottom" Text="{Binding StatusMessage.Created, Converter={StaticResource DateTimeConverter}}" Margin="0,2,0,0" Style="{DynamicResource CreatedTextBlockStyle}" Visibility="{Binding StatusMessage.Message, Converter={StaticResource ContentVisibilityConverter}}" />
         
         <TextBlock Margin="0,9,0,0"
-            Style="{DynamicResource MessageTextBlockStyle}" 
+            Style="{StaticResource MessageTextBlockStyle}" 
             TextTrimming="WordEllipsis"
-            TextWrapping="Wrap" 
             Visibility="{Binding StatusMessage.Message, Converter={StaticResource ContentVisibilityConverter}}">
           <FacebookClient:HyperlinkTextContent Text="{Binding StatusMessage.Message}" FontWeight="Medium" />
         </TextBlock>
