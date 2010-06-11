@@ -154,11 +154,6 @@
     <Setter Property="Visibility" Value="Visible" />
     <Setter Property="Foreground" Value="{DynamicResource AttachmentTitleTextBlockForeground}"/>
     <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
-    <Style.Triggers>
-      <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Text}" Value="">
-        <Setter Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-    </Style.Triggers>
   </Style>
   
   <Style x:Key="AttachmentDescriptionTextBlockStyle" TargetType="TextBlock">
@@ -193,7 +188,6 @@
     <Setter Property="Foreground" Value="#8F8F8F" />
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
-    <Setter Property="Margin" Value="0,0,0,6" />
   </Style>
   
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
@@ -273,7 +267,11 @@
           </Style>
         </Grid.Style>
         <StackPanel Orientation="Vertical">
-          <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}" Text="{Binding Name}" />
+          <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}">
+            <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
+              <FacebookClient:BindableRun Text="{Binding Name}"/>
+            </Hyperlink>
+          </TextBlock>
           <TextBlock Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
           <Button HorizontalAlignment="Left" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
             <Grid MaxHeight="100" Margin="2.5">
@@ -357,15 +355,12 @@
             </Style.Triggers>
           </Style>
         </Grid.Style>
-        <ClientManagerControls:FacebookImageControl Grid.RowSpan="3" FacebookImage="{Binding Icon}" FacebookImageDimensions="Small">
-          <ClientManagerControls:FacebookImageControl.Template>
-            <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-              <Image VerticalAlignment="Bottom" Margin="10,0" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Height="16" Width="16" />
-            </ControlTemplate>
-          </ClientManagerControls:FacebookImageControl.Template>
-        </ClientManagerControls:FacebookImageControl>
 
-        <TextBlock Grid.Column="1" Grid.Row="0" Style="{StaticResource AttachmentTitleTextBlockStyle}" Text="{Binding Name}" />
+        <TextBlock Grid.Column="1" Grid.Row="0" Style="{StaticResource AttachmentTitleTextBlockStyle}">
+          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
+            <FacebookClient:BindableRun Text="{Binding Name}"/>
+          </Hyperlink>
+        </TextBlock>
         <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
         <TextBlock Grid.Column="1" Grid.Row="2" Style="{StaticResource AttachmentDescriptionTextBlockStyle}" TextWrapping="Wrap">
           <FacebookClient:HyperlinkTextContent Text="{Binding Description}" />
@@ -383,9 +378,9 @@
           </Style>
         </Grid.Style>
         <StackPanel Orientation="Vertical">
-          <TextBlock>
+          <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
-              <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}" Text="{Binding Name}" />
+              <FacebookClient:BindableRun Text="{Binding Name}"/>
             </Hyperlink>
           </TextBlock>
           <TextBlock x:Name="CaptionText" Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
@@ -504,8 +499,21 @@
             </TextBlock>
             <ContentControl Margin="0,10,0,5" Content="{Binding Attachment}" Visibility="{Binding Attachment, Converter={StaticResource contentVisibilityConverter}}" />
             <WrapPanel Margin="0,10,5,0" Orientation="Horizontal">
+              <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Attachment.Icon}" FacebookImageDimensions="Small">
+                <ClientManagerControls:FacebookImageControl.Template>
+                  <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                    <Image Height="16" 
+                           Width="16" 
+                           Margin="0,0,8,0"
+                           VerticalAlignment="Center" 
+                           Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                  </ControlTemplate>
+                </ClientManagerControls:FacebookImageControl.Template>
+              </ClientManagerControls:FacebookImageControl>
+
               <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-              <Button x:Name="LikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddLikeCommand}" CommandParameter="{Binding}" Content="like" IsEnabled="{Binding CanLike}" ToolTip="Like">
+              
+              <Button x:Name="LikeButton" Margin="15,0,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddLikeCommand}" CommandParameter="{Binding}" Content="like" IsEnabled="{Binding CanLike}" ToolTip="Like">
                 <Button.Style>
                   <Style BasedOn="{StaticResource LikeButtonStyle}" TargetType="Button">
                     <Setter Property="Visibility" Value="Visible" />
@@ -517,7 +525,7 @@
                   </Style>
                 </Button.Style>
               </Button>
-              <Button x:Name="RemoveLikeButton" Margin="15,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveLikeCommand}" CommandParameter="{Binding}" Content="remove like" IsEnabled="{Binding HasLiked}" ToolTip="Remove Like">
+              <Button x:Name="RemoveLikeButton" Margin="15,0,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveLikeCommand}" CommandParameter="{Binding}" Content="remove like" IsEnabled="{Binding HasLiked}" ToolTip="Remove Like">
                 <Button.Style>
                   <Style BasedOn="{StaticResource RemoveLikeButtonStyle}" TargetType="Button">
                     <Setter Property="Visibility" Value="Visible" />
@@ -529,7 +537,7 @@
                   </Style>
                 </Button.Style>
               </Button>
-              <ToggleButton x:Name="CommentButton" Margin="15,-5,0,0" VerticalAlignment="Center" Content="comment" IsChecked="{Binding Path=IsAvailable, ElementName=CommentTextBox, Mode=TwoWay}" IsEnabled="{Binding CanComment}" ToolTip="Comment">
+              <ToggleButton x:Name="CommentButton" Margin="15,0,0,0" VerticalAlignment="Center" Content="comment" IsChecked="{Binding Path=IsAvailable, ElementName=CommentTextBox, Mode=TwoWay}" IsEnabled="{Binding CanComment}" ToolTip="Comment">
                 <ToggleButton.Style>
                   <Style BasedOn="{StaticResource CommentButtonStyle}" TargetType="ToggleButton">
                     <Setter Property="Visibility" Value="Collapsed" />
@@ -541,7 +549,7 @@
                   </Style>
                 </ToggleButton.Style>
               </ToggleButton>
-              <ToggleButton x:Name="MoreCommentsButton" Margin="12,-5,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              <ToggleButton x:Name="MoreCommentsButton" Margin="15,0,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.GetMoreCommentsCommand}" CommandParameter="{Binding}" Content="see more comments" Style="{StaticResource ShowMoreCommentsButtonStyle}" ToolTip="See All Comments" Visibility="{Binding HasMoreComments, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </WrapPanel>
           </StackPanel>
           <StackPanel Grid.Column="0" Grid.Row="1">

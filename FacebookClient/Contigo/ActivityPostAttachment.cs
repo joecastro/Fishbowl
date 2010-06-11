@@ -78,5 +78,20 @@ namespace Contigo
         }
 
         public FacebookImage Icon { get; internal set; }
+
+        // We sometimes see Facebook attachment data with sub-elements but no data.
+        // It's useful to strip those attachments off the post data.
+        internal bool IsEmpty
+        { 
+            get
+            {
+                return _name == default(SmallString)
+                    && _caption == default(SmallString)
+                    && _description == default(SmallString)
+                    && _properties == default(SmallString)
+                    && _videoSource == default(SmallUri)
+                    && _link == default(SmallUri);
+            }
+        }
     }
 }

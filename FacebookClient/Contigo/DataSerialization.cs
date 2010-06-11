@@ -506,8 +506,12 @@ namespace Contigo
                         if (attachmentElement.Elements().Count() != 0)
                         {
                             // We have attachment information but no rich stream-media associated with it.
-                            post.Attachment = _DeserializeGenericPostAttachmentData(post, ns, attachmentElement);
-                            post.Attachment.Type = ActivityPostAttachmentType.Simple;
+                            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, ns, attachmentElement);
+                            if (!attachment.IsEmpty)
+                            {
+                                attachment.Type = ActivityPostAttachmentType.Simple;
+                                post.Attachment = attachment;
+                            }
                         }
                         break;
                     default:
