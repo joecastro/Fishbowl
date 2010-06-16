@@ -379,6 +379,29 @@ namespace Contigo
             return contact;
         }
 
+        private FacebookContact _DeserializePage(XNamespace ns, XElement elt)
+        {
+            Uri sourceUri = _SafeGetElementUri(elt, ns + "pic");
+            Uri sourceBigUri = _SafeGetElementUri(elt, ns + "pic_big");
+            Uri sourceSmallUri = _SafeGetElementUri(elt, ns + "pic_small");
+            Uri sourceSquareUri = _SafeGetElementUri(elt, ns + "pic_square");
+            // No idea why there are both large and big...
+            Uri sourceLargeUri = _SafeGetElementUri(elt, ns + "pic_large");
+
+            // This is a light weight view of a page as a FacebookContact.
+            // If the FacebookService were to expose pages as a first-class concept then there would be a dedicated class,
+            // and probably a base class.
+            var page = new FacebookContact(_service)
+            {
+                UserId = _SafeGetElementValue(elt, ns + "page_id"),
+                Name = _SafeGetElementValue(elt, ns + "name"),
+                ProfileUri = _SafeGetElementUri(elt, ns + "page_url"),
+                Image = new FacebookImage(_service, sourceUri, sourceBigUri ?? sourceLargeUri, sourceSmallUri, sourceSquareUri),
+            };
+
+            return page;
+        }
+
         private static OnlinePresence _DeserializePresenceNode(XNamespace ns, XElement elt)
         {
             string presence = _SafeGetElementValue(elt, ns + "online_presence");
@@ -681,6 +704,16 @@ namespace Contigo
                 Properties = _SafeGetElementXml(elt, ns + "properties"),
                 Icon = new FacebookImage(_service, iconUri),
             };
+        }
+
+        public List<FacebookContact> DeserializePagesList(string xml)
+        {
+            XDocument xdoc = SafeParseDocument(xml);
+            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+
+            var userNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements(ns + "page")
+                            select _DeserializePage(ns, elt);
+            return new List<FacebookContact>(userNodes);
         }
 
         public List<FacebookContact> DeserializeUsersList(string xml)

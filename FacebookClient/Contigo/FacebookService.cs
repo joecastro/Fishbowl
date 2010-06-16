@@ -862,6 +862,7 @@
         private void _UpdateFriendsAsync()
         {
             _friendInfoDispatcher.QueueRequest(_UpdateFriendsWorker, null);
+            _friendInfoDispatcher.QueueRequest(_UpdatePagesWorker, null);
         }
 
         private void _UpdateFriendsOnlineStatusAsync()
@@ -1151,6 +1152,35 @@
             RawInbox.Merge(newMessages, false);
         }
 
+        private void _UpdatePagesWorker(object parameter)
+        {
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            List<FacebookContact> pagesList = _facebookApi.GetPages();
+
+            lock (_userLookup)
+            {
+                if (IsOnline)
+                {
+                    foreach (FacebookContact page in pagesList)
+                    {
+                        FacebookContact lookedUpPage;
+                        if (!_userLookup.TryGetValue(page.UserId, out lookedUpPage))
+                        {
+                            _userLookup.Add(page.UserId, page);
+                        }
+                        else
+                        {
+                            lookedUpPage.Merge(page);
+                        }
+                    }
+                }
+            }
+        }
+
         private void _UpdateFriendsWorker(object parameter)
         {
             if (!IsOnline)
@@ -1159,7 +1189,7 @@
             }
 
             List<FacebookContact> friendsList = _facebookApi.GetFriends();
-                
+              
             // These contacts are known to be friends of UserId.
             foreach (var friend in friendsList)
             {

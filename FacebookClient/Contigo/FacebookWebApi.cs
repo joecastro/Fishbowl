@@ -33,6 +33,7 @@ namespace Contigo
         // family: relationship (one of parent, mother, father, sibling, sister, brother, child, son, daughter), uid (optional), name (optional), birthday (if the relative is a child, this is the birthday the user entered)
         private const string _UserColumns = "about_me, activities, affiliations, allowed_restrictions, birthday, birthday_date, books, current_location, education_history, email_hashes, family, first_name, has_added_app, hometown_location, hs_info, interests, is_app_user, is_blocked, last_name, locale, meeting_for, meeting_sex, movies, music, name, notes_count, online_presence, pic, pic_big, pic_small, pic_square, political, profile_blurb, profile_update_time, profile_url, proxied_email, quotes, relationship_status, religion, sex, significant_other_id, status, timezone, tv, uid, username, verified, wall_count, website, work_history";
         private const string _AlbumColumns = "aid, cover_pid, owner, name, created, modified, description, location, link, size, visible";
+        private const string _PageColumns = "page_id, name, pic_small, pic_big, pic_square, pic, pic_large, page_url, type, website, has_added_app, founded, company_overview, mission, products, location, parking, public_transit, hours";
         private const string _PhotoColumns = "pid, aid, owner, src, src_big, src_small, link, caption, created";
         // Facebook's documentation also mentions a "type" column that has been deprecated in favor of using the attachment to figure it out.
         private const string _StreamTableColumns = "post_id, viewer_id, app_id, source_id, updated_time, created_time, filter_key, attribution, actor_id, target_id, message, app_data, action_links, attachment, comments, likes, privacy";
@@ -1019,12 +1020,27 @@ namespace Contigo
             Utility.FailableFunction(() => _SendRequest(likeMap));
         }
 
+        public List<FacebookContact> GetPages()
+        {
+            var pagesMap = new METHOD_MAP
+            {
+                { "method", "pages.getInfo" },
+                { "fields", _PageColumns },
+                { "uid", _UserId },
+            };
+
+            string result = Utility.FailableFunction(() => _SendRequest(pagesMap));
+
+            return _serializer.DeserializePagesList(result);
+        }
+
         public List<FacebookContact> GetFriends()
         {
             string multiqueryResult = Utility.FailableFunction(() =>
                 _SendMultiQuery(
                     new[] { "friends", "profiles" },
-                    new[] { string.Format(_GetFriendsQueryString, _UserId), string.Format(_GetProfilesMultiQueryString, "friends") }));
+                    new[] { string.Format(_GetFriendsQueryString, _UserId),
+                            string.Format(_GetProfilesMultiQueryString, "friends") }));
 
             XDocument xdoc = DataSerialization.SafeParseDocument(multiqueryResult);
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
@@ -1041,9 +1057,7 @@ namespace Contigo
                                    .First();
             profilesNode = (XElement)profilesNode.NextNode;
             
-            List<FacebookContact> friendsList = _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
-
-            return friendsList;
+            return _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
         }
 
         public Dictionary<string, OnlinePresence> GetFriendsOnlineStatus()
