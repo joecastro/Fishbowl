@@ -30,15 +30,15 @@
       <ScrollViewer VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="10" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top">
           <Button x:Name="ClearCacheButton" Click="_OnClearCacheButtonClicked" Margin="5,2" Style="{DynamicResource StandardButtonStyle}" Width="Auto" HorizontalAlignment="Left" Content="Clear Image Cache" />
-          <TextBlock x:Name="ClearCacheInfoTextBlock" Margin="5,2"  Foreground="Gray" TextAlignment="Right" FontStyle="Italic">(Images will be purged when the application next shuts down)</TextBlock>
+          <TextBlock x:Name="ClearCacheInfoTextBlock" Margin="5,2" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Foreground="Gray" TextAlignment="Right" FontStyle="Italic">(Images will be purged when the application next shuts down)</TextBlock>
           <StackPanel Orientation="Horizontal">
-            <Label Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Visual Style</Label>
+            <Label Margin="10,2" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Foreground="{DynamicResource SettingsDialogForeground}">Visual Style</Label>
             <ComboBox x:Name="VisualStyleBox" Margin="0,2"/>
           </StackPanel>
-          <CheckBox x:Name="DisableUpdatesCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Disable automatic updates</CheckBox>
-          <CheckBox x:Name="OpenPagesInBrowserCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Open web content in external browser</CheckBox>
-          <CheckBox x:Name="KeepMiniModeOnTopCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep the mini-mode window on top of all others.</CheckBox>
-          <CheckBox x:Name="KeepMeLoggedInCheckBox" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep me logged in.</CheckBox>
+          <CheckBox x:Name="DisableUpdatesCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Disable automatic updates</CheckBox>
+          <CheckBox x:Name="OpenPagesInBrowserCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Open web content in external browser</CheckBox>
+          <CheckBox x:Name="KeepMiniModeOnTopCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep the mini-mode window on top of all others.</CheckBox>
+          <CheckBox x:Name="KeepMeLoggedInCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep me logged in.</CheckBox>
         </StackPanel>
       </ScrollViewer>
     </DockPanel>

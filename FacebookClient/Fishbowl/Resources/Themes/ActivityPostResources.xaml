@@ -147,7 +147,7 @@
   </Style>
   
   <Style x:Key="AttachmentTitleTextBlockStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
     <Setter Property="TextWrapping" Value="Wrap" />
@@ -167,7 +167,7 @@
   </Style>
   
   <Style x:Key="AttachmentCaptionTextBlockStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
     <Setter Property="Foreground" Value="#8F8F8F" />
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
@@ -589,7 +589,7 @@
                   
                   <TextBlock TextWrapping="Wrap" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource MiddleFontSize}" >
                     <InlineUIContainer>
-                      <Image Width="18" Height="18" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
+                      <Image Width="16" Height="16" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
                     </InlineUIContainer>
                     <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
                   </TextBlock>

@@ -114,6 +114,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Fonts\Miramo.ttf" />
+    <Resource Include="Resources\Fonts\Miramob.ttf" />
     <Resource Include="Resources\Fonts\Linds.ttf" />
     <Resource Include="Resources\Fonts\OCRAExt.TTF" />
     <Resource Include="Resources\Fonts\JingJing.ttf" />
@@ -370,22 +372,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="Resources\Fonts\GOTHAM-BLACK.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-BLACKITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-BOLD.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-BOLDITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-BOOK.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-BOOKITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-LIGHT.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-LIGHTITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-MEDIUM.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-MEDIUMITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-THIN.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-THINITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-ULTRA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-ULTRAITA.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-XLIGHT.OTF" />
-    <Resource Include="Resources\Fonts\GOTHAM-XLIGHTITA.OTF" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

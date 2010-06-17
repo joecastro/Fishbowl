@@ -136,7 +136,7 @@
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="../Fonts/#Gohtam" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
+        <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
         
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Left">
           <Button 
@@ -167,7 +167,7 @@
           </Button>
         </StackPanel>
 
-        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontSize="{DynamicResource LargeFontSize1}" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
+        <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource LargeFontSize1}" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
           <FacebookClient:HyperlinkTextContent Text="{Binding Path=Description, Mode=OneWay}" />
         </TextBlock>
 

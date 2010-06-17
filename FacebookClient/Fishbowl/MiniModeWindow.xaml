@@ -343,7 +343,7 @@
                   <Border VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,2,2,2" MinHeight="40" Background="#FFE3E7F0" CornerRadius="10" Padding="0">
                     <DockPanel>
                       <TextBlock DockPanel.Dock="Bottom" Margin="10,2" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-                      <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="{DynamicResource SansSerifFont}">
+                      <TextBlock DockPanel.Dock="Top" IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource MiddleFontSize}" Foreground="Black" FontFamily="{DynamicResource SerifFont}">
                         <TextBlock.Style>
                           <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Visible" />

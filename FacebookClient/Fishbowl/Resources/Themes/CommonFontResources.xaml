@@ -7,17 +7,17 @@
        All UI should use one of these FontFamily styles.  These are available
        for testing to ensure that there aren't any default fonts accidentally
        getting picked up, and that there's some visual coherence with when and
-       where types of fonts are applied.
+       where types of fonts are applied. -->
   <FontFamily x:Key="SerifFont">../Fonts/#Jing Jing</FontFamily>
   <FontFamily x:Key="SansSerifFont">../Fonts/#Quartz MS</FontFamily>
   <FontFamily x:Key="ScriptFont">../Fonts/#OCR A Extended</FontFamily>
-  -->
   
-  <!-- The real fonts to use in the app. -->
+  
+  <!-- The real fonts to use in the app. 
   <FontFamily x:Key="SerifFont">../Fonts/#Pescadero</FontFamily>
-  <FontFamily x:Key="SansSerifFont">../Fonts/#Gotham</FontFamily>
+  <FontFamily x:Key="SansSerifFont">../Fonts/#Miramonte</FontFamily>
   <FontFamily x:Key="ScriptFont">../Fonts/#Lindsey</FontFamily>
-
+-->
   <system:Double x:Key="LargeFontSize5">42</system:Double>
   <system:Double x:Key="LargeFontSize4">32</system:Double>
   <system:Double x:Key="LargeFontSize3">20</system:Double>
