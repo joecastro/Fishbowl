@@ -338,7 +338,7 @@
           </Path.RenderTransform>
         </Path>
 
-        <Border HorizontalAlignment="Left" Margin="30,-25,15,15" Background="#FFE3E7F0" BorderBrush="#FFE3E7F0" BorderThickness="3" CornerRadius="10" Padding="2">
+        <Border HorizontalAlignment="Left" Margin="30,-25,15,15" Background="#FFE3E7F0" CornerRadius="10" Padding="2">
           <Border.Style>
             <Style TargetType="Border">
               <Style.Triggers>
@@ -349,8 +349,8 @@
             </Style>
           </Border.Style>
 
-          <TextBlock IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource LargeFontSize1}" FontWeight="Light" Background="#FFE3E7F0" Foreground="#FF85878A">
-            <FacebookClient:HyperlinkTextContent FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Path=FacebookContact.StatusMessage.Message}" />
+          <TextBlock IsHyphenationEnabled="True" Padding="8,5" TextTrimming="WordEllipsis" TextWrapping="Wrap" FontSize="{DynamicResource LargeFontSize1}" FontWeight="Light" Foreground="#FF85878A">
+            <FacebookClient:HyperlinkTextContent FontFamily="{DynamicResource SerifFont}" Text="{Binding Path=FacebookContact.StatusMessage.Message}" />
           </TextBlock>
         </Border>
         <Rectangle Margin="20,2" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}" />

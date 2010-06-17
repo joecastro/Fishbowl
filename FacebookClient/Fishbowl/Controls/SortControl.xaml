@@ -7,92 +7,107 @@
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     Focusable="False"
     x:Name="TopControl">
+  
   <UserControl.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    <Style x:Key="{x:Type TabControl}" TargetType="{x:Type TabControl}">
+
+    <Style x:Key="SortTabControlStyle" TargetType="{x:Type TabControl}">
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="TabControl">
-            <Grid>
-              <StackPanel IsItemsHost="True" />
-            </Grid>
+            <StackPanel IsItemsHost="True" />
           </ControlTemplate>
         </Setter.Value>
       </Setter>
-    </Style>
-
-    <Style TargetType="TabItem">
-      <Setter Property="Height" Value="31" />
-      <Setter Property="Template">
+      <Setter Property="ItemContainerStyle">
         <Setter.Value>
-          <ControlTemplate TargetType="{x:Type TabItem}">
-            <Grid>
-              <Grid x:Name="selected" Opacity="0">
-                <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
-              </Grid>
-              <Grid x:Name="hover" Opacity="0">
-                <Border Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
-              </Grid>
-              <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
-              <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
-              <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-              <TextBlock x:Name="text2" Visibility="Hidden" Foreground="{DynamicResource FilterTabItemForegroundSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+          <Style TargetType="TabItem">
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                  <Grid Height="31">
+                    <Border x:Name="selected" Opacity="0" Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
+                    <Border x:Name="hover"    Opacity="0" Background="{DynamicResource FilterButtonSelectedBrush}" BorderBrush="{DynamicResource FilterBorderBrush}" BorderThickness="0,1,0,1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="True" />
 
-              <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Tag="{Binding}">
-                <Button.Template>
-                  <ControlTemplate>
-                    <Grid Background="Transparent" />
-                  </ControlTemplate>
-                </Button.Template>
-              </Button>
-            </Grid>
-            <ControlTemplate.Triggers>
-              <EventTrigger RoutedEvent="Mouse.MouseEnter">
-                <EventTrigger.Actions>
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <DoubleAnimation To=".5" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                    </Storyboard>
-                  </BeginStoryboard>
-                </EventTrigger.Actions>
-              </EventTrigger>
-              <EventTrigger RoutedEvent="Mouse.MouseLeave">
-                <EventTrigger.Actions>
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                    </Storyboard>
-                  </BeginStoryboard>
-                </EventTrigger.Actions>
-              </EventTrigger>
-              <Trigger Property="IsSelected" Value="true">
-                <Trigger.EnterActions>
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                      <ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                    </Storyboard>
-                  </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
-                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                      <ColorAnimation To="#4b4b4b" Duration="0:0:0.1" Storyboard.TargetName="text2" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
-                    </Storyboard>
-                  </BeginStoryboard>
-                </Trigger.ExitActions>
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
+                    <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
+                    <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
+
+                    <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Icon}" FacebookImageDimensions="Normal">
+                      <ClientManagerControls:FacebookImageControl.Template>
+                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                          <Image Width="16" Height="16" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                        </ControlTemplate>
+                      </ClientManagerControls:FacebookImageControl.Template>
+                    </ClientManagerControls:FacebookImageControl>
+
+                    <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SetNewsFeedFilterCommand}" CommandParameter="{Binding}">
+                      <Button.Template>
+                        <ControlTemplate>
+                          <Grid Background="Transparent" />
+                        </ControlTemplate>
+                      </Button.Template>
+                    </Button>
+                  </Grid>
+
+                  <ControlTemplate.Triggers>
+                    <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                      <EventTrigger.Actions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation To=".5" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </EventTrigger.Actions>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                      <EventTrigger.Actions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </EventTrigger.Actions>
+                    </EventTrigger>
+                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                      <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type FacebookClient:SearchAndFilterControl}}, Path=ShowMore}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                    <Trigger Property="IsSelected" Value="true">
+                      <Trigger.EnterActions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
+                            <ColorAnimation To="#FFFFFF" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.EnterActions>
+                      <Trigger.ExitActions>
+                        <BeginStoryboard>
+                          <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="selected" Storyboard.TargetProperty="Opacity" />
+                            <ColorAnimation To="{x:Null}" Duration="0:0:0.1" Storyboard.TargetName="text" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" />
+                          </Storyboard>
+                        </BeginStoryboard>
+                      </Trigger.ExitActions>
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
         </Setter.Value>
       </Setter>
     </Style>
   </UserControl.Resources>
-  
-  <Border Style="{DynamicResource SearchAndFilterBarMainBorderStyle}">
+
+  <Border
+      Background="{DynamicResource FilterControlBorderBackgroundBrush}"
+      BorderBrush="{DynamicResource FilterControlBorderBrush}"
+      BorderThickness="0,0,1,0">
     <DockPanel>
       <Button x:Name="ShowMoreButton" 
               DockPanel.Dock="Bottom" 
@@ -108,7 +123,7 @@
 
       <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontStyle="Italic" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
       <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold" FontFamily="{DynamicResource SansSerifFont}" Text="Sort by" Margin="10,17,0,0" />
-      <TabControl x:Name="SortTabs" Margin="0,6,0,0" />
+      <TabControl x:Name="SortTabs" Margin="0,6,0,0" Style="{StaticResource SortTabControlStyle}"/>
     </DockPanel>
   </Border>
 </UserControl>
