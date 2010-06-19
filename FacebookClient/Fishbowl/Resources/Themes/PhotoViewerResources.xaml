@@ -10,7 +10,6 @@
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
-  <FacebookClient:RotationAngleToSimplePositiveAngleConverter x:Key="AngleConverter"/>
 
   <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
   <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
@@ -21,32 +20,6 @@
     <VirtualizingStackPanel />
   </ItemsPanelTemplate>
 
-  <!-- Style for buttons (thumbnails) in the film strip -->
-  <Style x:Key="FilmStripThumbnailButton" TargetType="{x:Type Button}">
-    <Setter Property="Cursor" Value="Hand"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="Focusable" Value="False"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Button}">
-          <Border x:Name="ButtonBorder"
-              BorderThickness="0"
-              CornerRadius="0"
-              RenderTransformOrigin="0.5,0.99">
-            <Border.RenderTransform>
-              <TransformGroup>
-                <ScaleTransform ScaleX="1" ScaleY="1"/>
-              </TransformGroup>
-            </Border.RenderTransform>
-            <ContentPresenter/>
-          </Border>
-          <ControlTemplate.Triggers>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
   <!-- Data template for photos in the film strip -->
   <DataTemplate x:Key="FilmStripItemTemplate">
     <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
@@ -54,27 +27,45 @@
           Height="80" Width="80"
           Click="OnNavigateToContentButtonClicked"
           ClientManagerView:ViewManager.NavigationContent="{Binding}"
-          Focusable="False"
-          IsEnabled="{Binding HasData, FallbackValue=False}"
-          Style="{StaticResource FilmStripThumbnailButton}">
-        <ContentControl Margin="3" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
-            <ClientManagerControls:FacebookImageControl.Template>
-              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                <Grid Margin="4,4,4,11">
-                  <Border x:Name="PlaceholderBorder" Background="Black" Visibility="Collapsed" />
-                  <Image x:Name="MainImage" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                </Grid>
-                <ControlTemplate.Triggers>
-                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
-                    <Setter TargetName="MainImage" Property="Visibility" Value="Collapsed" />
-                    <Setter TargetName="PlaceholderBorder" Property="Visibility" Value="Visible" />
-                  </DataTrigger>
-                </ControlTemplate.Triggers>
-              </ControlTemplate>
-            </ClientManagerControls:FacebookImageControl.Template>
-          </ClientManagerControls:FacebookImageControl>
-        </ContentControl>
+          FocusVisualStyle="{x:Null}"
+          Cursor="Hand"
+          Focusable="False">
+        <Button.Template>
+          <ControlTemplate>
+            <Border x:Name="ButtonBorder"
+                BorderThickness="0"
+                CornerRadius="0"
+                RenderTransformOrigin="0.5,0.99">
+              <Border.RenderTransform>
+                <TransformGroup>
+                  <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </TransformGroup>
+              </Border.RenderTransform>
+              <ContentControl Margin="3" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
+                  <ClientManagerControls:FacebookImageControl.Template>
+                    <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                      <Grid Margin="4,4,4,11">
+                        <Border x:Name="PlaceholderBorder" Background="Black" Visibility="Collapsed" />
+                        <Image x:Name="MainImage"
+                            VerticalAlignment="Center" 
+                            HorizontalAlignment="Center" 
+                            Stretch="Uniform" 
+                            Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                      </Grid>
+                      <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
+                          <Setter TargetName="MainImage" Property="Visibility" Value="Collapsed" />
+                          <Setter TargetName="PlaceholderBorder" Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </ClientManagerControls:FacebookImageControl.Template>
+                </ClientManagerControls:FacebookImageControl>
+              </ContentControl>
+            </Border>
+          </ControlTemplate>
+        </Button.Template>
       </Button>
     </ClientManagerControls:FacebookPhotoDragContainer>
   </DataTemplate>
@@ -376,113 +367,7 @@
     </Setter>
   </Style>
 
-  <Storyboard x:Key="PhotoNavigationButtonMouseOverStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="PhotoNavigationButtonPressedStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="PhotoNavigationButtonNormalStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="PhotoNavigationButtonDisabledStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <!--Control template for toggle buttons on the bottom left hand corner of photo viewer-->
-  <ControlTemplate x:Key="PhotoToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
-    <Grid Margin="10,5" Cursor="Hand">
-      <Rectangle
-        x:Name="ButtonBackground"
-        Fill="#6682AFFE"
-        Stroke="White"
-        StrokeThickness="1">
-        <Rectangle.OpacityMask>
-          <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-            <GradientStop Offset="0.95" Color="#00000000"/>
-            <GradientStop Color="White"/>
-          </LinearGradientBrush>
-        </Rectangle.OpacityMask>
-      </Rectangle>
-      <TextBlock
-                x:Name="ContentTextblock"
-                HorizontalAlignment="Left"
-                Margin="10,3,40,3"
-                VerticalAlignment="Center"
-                FontFamily="{DynamicResource SansSerifFont}"
-                FontSize="{DynamicResource LargeFontSize1}"
-                Text="{TemplateBinding Content}"
-                TextWrapping="Wrap"/>
-    </Grid>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsChecked" Value="True">
-        <Setter TargetName="ButtonBackground" Property="StrokeThickness" Value="1"/>
-        <Setter TargetName="ContentTextblock" Property="Foreground" Value="White"/>
-        <Setter TargetName="ButtonBackground" Property="Fill" Value="#FF0076A8"/>
-      </Trigger>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Setter TargetName="ButtonBackground" Property="StrokeThickness" Value="3"/>
-        <Setter TargetName="ContentTextblock" Property="Foreground" Value="White"/>
-        <Setter TargetName="ButtonBackground" Property="Fill" Value="#FF0076A8"/>
-      </Trigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="IsChecked" Value="False"/>
-          <Condition Property="IsMouseOver" Value="False"/>
-        </MultiTrigger.Conditions>
-        <MultiTrigger.Setters>
-          <Setter TargetName="ButtonBackground" Property="StrokeThickness" Value="1"/>
-          <Setter TargetName="ContentTextblock" Property="Foreground" Value="Black"/>
-          <Setter TargetName="ButtonBackground" Property="Fill" Value="#6682AFFE"/>
-        </MultiTrigger.Setters>
-      </MultiTrigger>
-    </ControlTemplate.Triggers>
-  </ControlTemplate>
-
-  <Style x:Key="TopToolbarButton" TargetType="{x:Type Button}">
+  <Style x:Key="TopToolbarButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="Width" Value="24"/>
     <Setter Property="Height" Value="20"/>
     <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -593,7 +478,7 @@
                 Command="FacebookClient:PhotoDisplayControl.ZoomPhotoOutCommand"
                 CommandParameter="{Binding}"
                 CommandTarget="{Binding ElementName=PART_PhotoDisplay}"
-                Style="{DynamicResource TopToolbarButton}"
+                Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Zoom the photo out">
               <Rectangle Margin="4 0" Height="16" Width="16" Fill="{DynamicResource ZoomOutDrawingBrush}"/>
             </Button>
@@ -602,7 +487,7 @@
                 Command="FacebookClient:PhotoDisplayControl.FitPhotoToWindowCommand"
                 CommandParameter="{Binding}"
                 CommandTarget="{Binding ElementName=PART_PhotoDisplay}"
-                Style="{DynamicResource TopToolbarButton}"
+                Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Fit the photo to the window size"
                 Visibility="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource ZoomMagnifyingGlassToolbarDrawingBrush}"/>
@@ -611,7 +496,7 @@
                 Command="FacebookClient:PhotoDisplayControl.ZoomPhotoInCommand"
                 CommandParameter="{Binding}"
                 CommandTarget="{Binding ElementName=PART_PhotoDisplay}"
-                Style="{DynamicResource TopToolbarButton}"
+                Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Zoom the photo in">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource ZoomInDrawingBrush}"/>
             </Button>
@@ -626,14 +511,14 @@
             <Button
                 Margin="0,0,3,0"
                 Command="ApplicationCommands.Print"
-                Style="{DynamicResource TopToolbarButton}"
+                Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Print the photo">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource PrinterToolbarDrawingBrush}"/>
             </Button>
             <Button
                 Command="FacebookClient:PhotoViewerControl.SavePhotoAsCommand"
                 CommandParameter="{Binding}"
-                Style="{DynamicResource TopToolbarButton}"
+                Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Save the photo">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}" />
             </Button>
@@ -648,7 +533,7 @@
             <Button 
                 Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" 
                 CommandParameter="{Binding}" 
-                Style="{DynamicResource TopToolbarButton}" 
+                Style="{DynamicResource TopToolbarButtonStyle}" 
                 ToolTip="Slide Show">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource SlideShowToolbarDrawingBrush}"/>
             </Button>

@@ -32,7 +32,6 @@
           Style="{DynamicResource AnimatedItemButton}" 
           Click="OnNavigateToContentButtonClicked" 
           ClientManagerView:ViewManager.NavigationContent="{Binding}" 
-          IsEnabled="{Binding HasData, FallbackValue=False}" 
           RenderTransformOrigin="0.5,0.5"
           VerticalAlignment="Top">
         <Button.RenderTransform>
@@ -53,14 +52,12 @@
               </ClientManagerControls:FacebookImageControl.Template>
             </ClientManagerControls:FacebookImageControl>
           </Grid>
-
-          <!--<Image Width="19" Height="27" Source="pack://application:,,,/Resources/Images/thumbtack.png" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,-9,-40,0" />-->
         </Grid>
       </Button>
 
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
         <TextBlock DockPanel.Dock="Top" Style="{DynamicResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
-          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="{Binding HasData, FallbackValue=False}">
+          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" >
             <FacebookClient:BindableRun Text="{Binding Name}"/>
           </Hyperlink>
           <InlineUIContainer>
@@ -171,7 +168,7 @@
       <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,5">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" MinWidth="75" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -183,7 +180,7 @@
             ToolTip="Previous page">
           <Rectangle Height="25" Width="25" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
         </RepeatButton>
-        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" MinWidth="80">
+        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" MinWidth="80" TextAlignment="Center">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />

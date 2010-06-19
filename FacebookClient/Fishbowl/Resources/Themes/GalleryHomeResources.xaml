@@ -10,21 +10,6 @@
   <FacebookClient:AddConverter x:Key="AddConverter" />
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
   
-  <!-- Virtualizing panel used to display thumbnails -->
-  <ItemsPanelTemplate x:Key="VirtualizingHorizontalRowPanel">
-    <FacebookClient:RowScrollingPanel ItemHeight="160" ItemWidth="210"/>
-  </ItemsPanelTemplate>
-  
-  <!-- Virtualizing panel used to display thumbnails in the mini view-->
-  <ItemsPanelTemplate x:Key="VirtualizingMiniHorizontalRowPanel">
-    <FacebookClient:RowScrollingPanel ItemHeight="160" ItemWidth="210"/>
-  </ItemsPanelTemplate>
-  
-  <!-- Virtualizing panel used to display the list of albums on the right of the screen -->
-  <ItemsPanelTemplate x:Key="VirtualizingVerticalRowPanel">
-    <FacebookClient:RowScrollingPanel ItemHeight="160" ItemWidth="210"/>
-  </ItemsPanelTemplate>
-
   <!-- Item outline brush -->
   <SolidColorBrush x:Key="Border_ItemOutline" Color="#444444" />
 
@@ -37,7 +22,6 @@
       Margin="2,6"
       Click="OnNavigateToContentButtonClicked"
       ClientManagerView:ViewManager.NavigationContent="{Binding}"
-      IsEnabled="{Binding HasData, FallbackValue=False}"
       Style="{DynamicResource AnimatedItemButton}">
       <Border Margin="3" BorderBrush="{DynamicResource Border_ItemOutline}" BorderThickness="{DynamicResource Border_ItemOutline_Thickness}">
         <ClientManagerControls:FacebookImageControl Width="70" Height="70" FacebookImage="{Binding Image}" FacebookImageDimensions="Normal">
@@ -195,8 +179,11 @@
                         </Style>
                     </Grid.Style>
                     <Grid>
-                    <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                    <ClientManagerControls:LargePhotoThumbnailControl FacebookImage="{Binding Path=ThirdPhoto.Image}" Margin="4,4,6,16" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
+                      <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
+                      <ClientManagerControls:LargePhotoThumbnailControl FacebookImage="{Binding Path=ThirdPhoto.Image}"
+                                                                        Margin="4,4,6,16" 
+                                                                        Focusable="False" 
+                                                                        RenderTransformOrigin="0.5,0.5"/>
                     </Grid>                               
                 </Grid>
                                     
@@ -221,7 +208,11 @@
                   <RotateTransform Angle="-8"/>
                 </Grid.RenderTransform>
                   <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                  <ClientManagerControls:LargePhotoThumbnailControl Margin="4,4,6,16" FacebookImage="{Binding Path=SecondPhoto.Image}" Focusable="False" RenderTransformOrigin="0.5,0.5"/>
+                  <ClientManagerControls:LargePhotoThumbnailControl
+                    Margin="4,4,6,16" 
+                    FacebookImage="{Binding Path=SecondPhoto.Image}"
+                    Focusable="False"
+                    RenderTransformOrigin="0.5,0.5"/>
               </Grid>
               <Grid
                 Width="92"
@@ -407,7 +398,7 @@
             DataContext="{Binding ElementName=GalleryPreviewListBox, Path=ListPager}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" MinWidth="75" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -419,7 +410,7 @@
             ToolTip="Previous page">
           <Rectangle Height="25" Width="25" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
         </RepeatButton>
-        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" MinWidth="80">
+        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" TextAlignment="Center" MinWidth="80">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />
@@ -439,78 +430,10 @@
     </Grid>
   </ControlTemplate>
   
-  
   <!-- Collection of templates to use for the gallery home control, depending on the amount of space available -->
   <ClientManagerControls:SizeControlTemplateCollection x:Key="GalleryHomeTemplateCollection">
     <ClientManagerControls:SizeControlTemplate MinHeight="0" MinWidth="0" Template="{StaticResource GalleryHome_Normal}"/>
   </ClientManagerControls:SizeControlTemplateCollection>
-  
-  <Storyboard x:Key="PhotoNavigationButtonMouseOverStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  
-  <Storyboard x:Key="PhotoNavigationButtonPressedStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  
-  <Storyboard x:Key="PhotoNavigationButtonNormalStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.200" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  <Storyboard x:Key="PhotoNavigationButtonDisabledStoryboard">
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Normal" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Disabled" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="1"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="IsMouseOver" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-    <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Pressed" Storyboard.TargetProperty="(UIElement.Opacity)">
-      <SplineDoubleKeyFrame KeyTime="00:00:00.000" Value="0"/>
-    </DoubleAnimationUsingKeyFrames>
-  </Storyboard>
-  
-  <Style x:Key="BottomBorderSeparationStyle" TargetType="{x:Type Border}">
-    <Setter Property="Background" Value="#FF353535"/>
-    <Setter Property="BorderBrush" Value="#FF000000"/>
-    <Setter Property="BorderThickness" Value="1,0,0,0"/>
-    <Setter Property="Margin" Value="0,1,0,0"/>
-    <Setter Property="Width" Value="2"/>
-  </Style>
   
   <!-- Summary view of multiple albums. -->
   <DataTemplate DataType="{x:Type Facebook:FacebookPhotoAlbumCollection}">

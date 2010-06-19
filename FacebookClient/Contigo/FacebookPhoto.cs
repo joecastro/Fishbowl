@@ -14,7 +14,6 @@ namespace Contigo
         private SmallString _caption;
         private SmallString _ownerId;
         private SmallUri _link;
-        private bool _hasData;
         private FacebookPhotoTagCollection _tags;
         private ActivityCommentCollection _comments;
         private ActivityComment _firstComment;
@@ -40,7 +39,6 @@ namespace Contigo
         {
             Assert.IsNotNull(service);
             SourceService = service;
-            HasData = true;
             RawComments = new MergeableCollection<ActivityComment>();
             RawTags = new MergeableCollection<FacebookPhotoTag>();
         }
@@ -104,19 +102,6 @@ namespace Contigo
                 }
 
                 return _album;
-            }
-        }
-
-        public bool HasData
-        {
-            get { return _hasData; }
-            set
-            {
-                if (value != _hasData)
-                {
-                    _hasData = value;
-                    _NotifyPropertyChanged("HasData");
-                }
             }
         }
 

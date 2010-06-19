@@ -346,6 +346,10 @@ namespace FacebookClient
             }
         }
 
+// This trick breaks introspection tools like Snoop and Visual Profiler.
+// If we need to inspect element count then this needs to be turned off.
+#if !SMAKE_APPLICATION_INSPECTABLE
+
         // Trying desperately to turn off UI Automation because it destroys
         // performance on touch enabled machines.
         private class _FakeWindowsPeer : WindowAutomationPeer
@@ -364,6 +368,8 @@ namespace FacebookClient
         {
             return new _FakeWindowsPeer(this);
         }
+
+#endif
 
         private void _OnApplicationUpdated(object sender, EventArgs e)
         {

@@ -234,7 +234,6 @@
       <DependentUpon>PhotoUploadWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScaleScrollViewer.cs" />
-    <Compile Include="Controls\SearchContentControl.cs" />
     <Compile Include="Controls\SearchTextBlock.cs" />
     <Compile Include="Controls\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
@@ -289,8 +288,6 @@
     <Compile Include="Controls\FriendInfoDescriptionViewer.cs" />
     <Compile Include="Controls\PhotoViewerControl.cs" />
     <Compile Include="Controls\PhotoViewerToolbarControl.cs" />
-    <Compile Include="Controls\RowScrollingPanel.cs" />
-    <Compile Include="Controls\SearchControl.cs" />
     <Compile Include="Controls\SearchViewControl.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>SearchViewControl.xaml</DependentUpon>
@@ -367,6 +364,10 @@
     <Page Include="Resources\Themes\CommonFontResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\FacebookDataResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\LoadingPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -770,13 +771,9 @@
   <ItemGroup>
     <Resource Include="Resources\Images\comments_arrow.png" />
     <Resource Include="Resources\Images\comment_icon.png" />
-    <Resource Include="Resources\Images\placeholderprofilephoto-square.png" />
-    <Resource Include="Resources\Images\PlaceholderPhoto3.png" />
     <Resource Include="Resources\Images\Fishbowl.ico" />
     <Resource Include="Resources\Images\splash.png" />
-    <Resource Include="Resources\Images\main_header_status_divider.png" />
     <Resource Include="Resources\Images\logo.png" />
-    <Resource Include="Resources\Images\main_navigation_divider.png" />
     <Resource Include="Resources\Images\main_header_shadow.png" />
     <Resource Include="Resources\Images\Controls\text_box_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_right.png" />
@@ -797,7 +794,9 @@
     <Resource Include="Resources\Images\Controls\text_box_top.png" />
     <Resource Include="Resources\Images\Controls\text_box_top_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_top_right.png" />
-    <Resource Include="Resources\Images\thumbtack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\black_placeholder.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -58,9 +58,6 @@ namespace FacebookClient
         /// </summary>
         private ScrollViewer owner;
 
-        /// <summary>
-        /// The size of the entire RowScrollingPanel.
-        /// </summary>
         private Size _extent = new Size(0, 0);
 
         /// <summary>
@@ -102,9 +99,6 @@ namespace FacebookClient
             this.Background = Brushes.Transparent;
         } 
 
-        /// <summary>
-        /// Gets or sets a value that specifies the height of all items that are contained within a RowScrollingPanel. This is a dependency property.
-        /// </summary>
         public double ItemHeight
         {
             get { return (double)GetValue(ItemHeightProperty); }
@@ -142,17 +136,11 @@ namespace FacebookClient
         /// </summary>
         public bool CanVerticallyScroll { get; set; }
 
-        /// <summary>
-        /// Gets the height of the entire RowScrollingPanel.
-        /// </summary>
         public double ExtentHeight
         {
             get { return this._extent.Height; }
         }
 
-        /// <summary>
-        /// Gets the width of the entire RowScrollingPanel.
-        /// </summary>
         public double ExtentWidth
         {
             get { return this._extent.Width; }

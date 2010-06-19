@@ -3,7 +3,7 @@
   <FacebookClient:SexPronounConverter x:Key="SexPronounConverter" />
   <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
-  
+    
   <Style x:Key="FriendViewerInformationalTextBlock" TargetType="{x:Type TextBlock}">
     <Setter Property="Margin" Value="30, 10" />
     <Setter Property="VerticalAlignment" Value="Center" />

@@ -24,8 +24,8 @@
       </LinearGradientBrush.GradientStops>
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="#6A9FE9"/>
-    <SolidColorBrush x:Key="ToolbarLightTextBlockForegroundBrush" Color="White"/>
+  <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="#3F60A0"/>
+  <SolidColorBrush x:Key="ToolbarLightTextBlockForegroundBrush" Color="White"/>
 
     <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF7489B6" />
     <SolidColorBrush x:Key="InterestLevelTextForeground" Color="#3b5998"/>

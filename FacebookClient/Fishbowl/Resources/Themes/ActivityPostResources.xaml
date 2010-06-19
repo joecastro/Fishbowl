@@ -437,35 +437,15 @@
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Actor.Image}">
-          <Button x:Name="ActivityButton"
-                  RenderTransformOrigin="0.5,0.5"
-                  Margin="10, 7, 0, 0"
-                  VerticalAlignment="Top" 
-                  Click="OnNavigateToContentButtonClicked" 
-                  ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
-                  Style="{DynamicResource AnimatedItemButton}">
-            <Button.RenderTransform>
-              <TransformGroup>
-                <RotateTransform Angle="-6" />
-              </TransformGroup>
-            </Button.RenderTransform>
-            <Grid Width="126" Height="126">
-              <Grid>
-                <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
-                <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Actor.Image}" FacebookImageDimensions="Big">
-                  <ClientManagerControls:FacebookImageControl.Template>
-                    <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                      <Border Margin="4,4,4.5,6">
-                        <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                      </Border>
-                    </ControlTemplate>
-                  </ClientManagerControls:FacebookImageControl.Template>
-                </ClientManagerControls:FacebookImageControl>
-              </Grid>
-            </Grid>
-          </Button>
-        </ClientManagerControls:FacebookImageDragContainer>
+
+        <FacebookClient:FriendButton
+            Friend="{Binding Actor}"
+            Margin="10, 7, 0, 0"
+            Click="OnNavigateToContentButtonClicked" 
+            ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
+            VerticalAlignment="Top"
+            Style="{DynamicResource LargeFriendButtonStyle}"/>
+
         <Grid Grid.Column="1" Margin="15,7,0,0" HorizontalAlignment="Stretch">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*"/>

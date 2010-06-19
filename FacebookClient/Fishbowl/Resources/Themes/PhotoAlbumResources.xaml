@@ -15,11 +15,6 @@
   <!-- Converter to format the application dates consistently -->
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
 
-  <!-- Virtualizing panel used to display thumbnails -->
-  <ItemsPanelTemplate x:Key="VirtualizingHorizontalRowPanel">
-    <FacebookClient:RowScrollingPanel ItemHeight="220" ItemWidth="220"/>
-  </ItemsPanelTemplate>
-
   <FacebookClient:RandomAngleToTransformConverter x:Key="randomAngleToTransformConverter" />
 
   <!-- Template for a thumbnail displayed in the gallery home -->
@@ -29,7 +24,6 @@
           RenderTransformOrigin=".5,.5"
           Click="OnNavigateToContentButtonClicked"
           ClientManagerView:ViewManager.NavigationContent="{Binding}"
-          IsEnabled="{Binding HasData, FallbackValue=False}"                                          
           Style="{DynamicResource AnimatedAlbumItemButton}" 
           RenderTransform="{Binding ., Converter={StaticResource randomAngleToTransformConverter}}">
         <Button.ToolTip>
@@ -149,7 +143,7 @@
               <Rectangle Height="18" Width="18" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}"/>
               <TextBlock Margin="5,0,0,0"
                          FontSize="{DynamicResource LargeFontSize1}"
-                         VerticalAlignment="Center">Save Album</TextBlock>
+                         VerticalAlignment="Center">Save album</TextBlock>
             </StackPanel>
           </Button>
           <Button 
@@ -162,7 +156,7 @@
               <Rectangle Height="18" Width="18" Fill="{DynamicResource SlideShowToolbarDrawingBrush}"/>
               <TextBlock Margin="5,0,0,0"
                          FontSize="{DynamicResource LargeFontSize1}"
-                         VerticalAlignment="Center">Start Slide Show</TextBlock>
+                         VerticalAlignment="Center">Start slide show</TextBlock>
             </StackPanel>
           </Button>
         </StackPanel>
@@ -187,7 +181,7 @@
       <Grid Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5" DataContext="{Binding ElementName=AlbumList, Path=ListPager}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" MinWidth="75" />
+          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -199,7 +193,7 @@
             ToolTip="Previous page">
           <Rectangle Height="25" Width="25" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
         </RepeatButton>
-        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" MinWidth="80">
+        <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" TextAlignment="Center" MinWidth="80">
           <TextBlock.Text>
             <MultiBinding StringFormat="{}Page {0} of {1}">
               <Binding Path="CurrentPageIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1" />

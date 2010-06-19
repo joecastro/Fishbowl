@@ -406,7 +406,6 @@
         private SmallString _tv;
         private SmallString _website;
 
-        private bool _hasData;
         private double? _nullableInterestLevel;
         private DateTime _lastActivitySync = DateTime.MinValue;
 
@@ -803,19 +802,6 @@
             }
         }
 
-        public bool HasData
-        {
-            get { return _hasData; }
-            set
-            {
-                if (value != _hasData)
-                {
-                    _hasData = value;
-                    _NotifyPropertyChanged("HasData");
-                }
-            }
-        }
-        
         public FacebookPhotoAlbumCollection PhotoAlbums
         {
             get
@@ -985,7 +971,6 @@
             Hometown = other.Hometown;
             HighSchoolInfo = other.HighSchoolInfo;
             FirstName = other.FirstName;
-            HasData = other.HasData;
             MergeImage(other.Image);
             Interests = other.Interests;
             LastName = other.LastName;

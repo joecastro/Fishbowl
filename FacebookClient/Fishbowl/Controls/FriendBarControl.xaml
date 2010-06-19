@@ -14,7 +14,6 @@
                 Style="{DynamicResource AnimatedItemButton}"
                 Margin="5"
                 Click="_OnFriendButtonClicked"
-                IsEnabled="{Binding HasData, FallbackValue=False}"
                 RenderTransformOrigin="0.5,0.5">
           <Button.RenderTransform>
             <TransformGroup>

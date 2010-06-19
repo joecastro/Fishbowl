@@ -134,10 +134,7 @@
 
             _settings = ServiceSettings.Load(_settingsPath);
 
-            MeContact = new FacebookContact(this)
-            {
-                HasData = true,
-            };
+            MeContact = new FacebookContact(this);
 
             SearchIndex = new SearchIndex(this);
 
@@ -210,7 +207,6 @@
             }
 
             var newMeContact = (FacebookContact)e.UserState;
-            newMeContact.HasData = true;
             newMeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
 
             MeContact.Merge(newMeContact);
@@ -1107,7 +1103,6 @@
             if (_facebookApi != null)
             {
                 FacebookContact meContact = _facebookApi.GetUser(UserId);
-                meContact.HasData = true;
                 MeContact.Merge(meContact);
             }
         }
@@ -1190,12 +1185,6 @@
 
             List<FacebookContact> friendsList = _facebookApi.GetFriends();
               
-            // These contacts are known to be friends of UserId.
-            foreach (var friend in friendsList)
-            {
-                friend.HasData = true;
-            }
-
             lock (_userLookup)
             {
                 if (IsOnline)
