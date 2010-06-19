@@ -441,8 +441,6 @@
         <FacebookClient:FriendButton
             Friend="{Binding Actor}"
             Margin="10, 7, 0, 0"
-            Click="OnNavigateToContentButtonClicked" 
-            ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
             VerticalAlignment="Top"
             Style="{DynamicResource LargeFriendButtonStyle}"/>
 

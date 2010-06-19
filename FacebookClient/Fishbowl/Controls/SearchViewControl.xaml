@@ -28,23 +28,6 @@
       </Setter>
     </Style>
 
-    <!-- Style for the ListViewItems hosting the search results-->
-    <Style x:Key="PhotoStyle_Search" TargetType="{x:Type ListViewItem}"  >
-      <Setter Property="Focusable" Value="False" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type ListViewItem}">
-            <Button Style="{DynamicResource Button_Image}" >
-              <StackPanel VerticalAlignment="Top">
-                <Image Source="{Binding Path=ThumbnailUri}" />
-                <TextBlock x:Name="Title" Text="{Binding Path=Title}" TextWrapping="Wrap"/>
-              </StackPanel>
-            </Button>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
     <!-- Animated button containing an explorer node -->
     <Style x:Key="PhotoExplorerNodeButton" TargetType="{x:Type Button}">
       <Setter Property="Cursor" Value="Hand" />
@@ -143,37 +126,35 @@
 
     <!-- DataTemplate for generic nodes display a string, like a simple search -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerBaseNode}">
-      <Grid x:Name="Root">
-        <Ellipse Fill="#666666" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        <TextBlock Text="{Binding Path=Name}" Margin="13" Foreground="#FFFFFF" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold"/>
-      </Grid>
+      <Border x:Name="Root" CornerRadius="6" Background="#666666">
+        <TextBlock Text="{Binding Path=Name}" Margin="13" Foreground="#FFFFFF" FontSize="{DynamicResource MiddleFontSize}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold"/>
+      </Border>
     </DataTemplate>
 
     <!-- DataTemplate for explorer nodes that display a photo -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerPhotoNode}">
-      <Button
-                Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}"                                        
-                Style="{DynamicResource AnimatedItemButton}">
-        <Viewbox>
-          <Grid Margin="2.5" Width="92" Height="92">
-            <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png"/>
-            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Photo.Image}" FacebookImageDimensions="Small">
-              <ClientManagerControls:FacebookImageControl.Template>
-                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                  <Image Margin="4,4,6,16" Stretch="UniformToFill" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                </ControlTemplate>
-              </ClientManagerControls:FacebookImageControl.Template>
-            </ClientManagerControls:FacebookImageControl>
-          </Grid>
-        </Viewbox>
+      <Button 
+          Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" 
+          CommandParameter="{Binding}" 
+          Style="{DynamicResource AnimatedItemButton}">
+        <Grid Margin="2.5" Width="92" Height="92">
+          <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png"/>
+          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Photo.Image}" FacebookImageDimensions="Small">
+            <ClientManagerControls:FacebookImageControl.Template>
+              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                <Image Margin="4,4,6,16" Stretch="UniformToFill" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+              </ControlTemplate>
+            </ClientManagerControls:FacebookImageControl.Template>
+          </ClientManagerControls:FacebookImageControl>
+        </Grid>
       </Button>
     </DataTemplate>
 
     <!-- DataTemplate for explorer nodes that display an album  -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerAlbumNode}">
       <Button Style="{StaticResource GalleryAlbumButton2}"
-                        Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}" 
-                        Width="220" Height="160">
+          Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}" 
+          Width="220" Height="160">
         <Grid>
           <Grid Margin="10,0,0,0" Name="EffectGrid" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Grid.Effect>
@@ -370,8 +351,7 @@
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerPostNode}">
       <Button Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}" 
                     Style="{StaticResource PhotoExplorerNodeButton}" Margin="2,6">
-        <Border Background="{DynamicResource Background_ExplorerNode}" CornerRadius="7" Padding="5" 
-                        Margin="2">
+        <Border Background="{DynamicResource Background_ExplorerNode}" CornerRadius="7" Padding="5" Margin="2">
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
@@ -460,13 +440,35 @@
       <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Style="{DynamicResource MainScrollViewerStyle}" Margin="2">
         <StackPanel>
           <Expander>
+            <Expander.Style>
+              <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Friends.Count}" Value="0">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsExpanded" Value="False"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Expander.Style>
             <Expander.Header>
               <TextBlock Margin="5,0,0,0" FontSize="{DynamicResource LargeFontSize2}" FontFamily="{DynamicResource SansSerifFont}" Foreground="{DynamicResource Foreground_PromptText}">
-                <TextBlock.Text>
-                  <MultiBinding StringFormat="{}{0} Friends">
-                    <Binding Path="Friends.Count"/>
-                  </MultiBinding>
-                </TextBlock.Text>
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} friends" Path="Friends.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Friends.Count}" Value="1">
+                        <Setter Property="Text" Value="1 friend"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
               </TextBlock>
             </Expander.Header>
             
@@ -475,20 +477,42 @@
                 ItemTemplate="{DynamicResource FriendResultTemplate}" >
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <FacebookClient:AnimatingTilePanel ItemHeight="90" ItemWidth="90" Attraction="2.4" />
+                  <FacebookClient:AnimatingTilePanel ItemHeight="108" ItemWidth="108" Attraction="2.4" />
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
             </ListBox>
           </Expander>
 
           <Expander>
+            <Expander.Style>
+              <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Comments.Count}" Value="0">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsExpanded" Value="False"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Expander.Style>
             <Expander.Header>
               <TextBlock Margin="5,0,0,0" FontSize="{DynamicResource LargeFontSize2}" FontFamily="{DynamicResource SansSerifFont}" Foreground="{DynamicResource Foreground_PromptText}">
-                <TextBlock.Text>
-                  <MultiBinding StringFormat="{}{0} Comments">
-                    <Binding Path="Comments.Count"/>
-                  </MultiBinding>
-                </TextBlock.Text>
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} comments" Path="Comments.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Comments.Count}" Value="1">
+                        <Setter Property="Text" Value="1 comment" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
               </TextBlock>
             </Expander.Header>
 
@@ -504,13 +528,35 @@
           </Expander>
 
           <Expander>
+            <Expander.Style>
+              <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Posts.Count}" Value="0">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsExpanded" Value="False"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Expander.Style>
             <Expander.Header>
               <TextBlock Margin="5,0,0,0" FontSize="{DynamicResource LargeFontSize2}" FontFamily="{DynamicResource SansSerifFont}" Foreground="{DynamicResource Foreground_PromptText}">
-                <TextBlock.Text>
-                  <MultiBinding StringFormat="{}{0} Status Updates">
-                    <Binding Path="Posts.Count"/>
-                  </MultiBinding>
-                </TextBlock.Text>
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} posts" Path="Posts.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Posts.Count}" Value="1">
+                        <Setter Property="Text" Value="1 post"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
               </TextBlock>
             </Expander.Header>
 
@@ -526,13 +572,36 @@
           </Expander>
 
           <Expander>
+            <Expander.Style>
+              <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Photos.Count}" Value="0">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsExpanded" Value="False"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Expander.Style>
+
             <Expander.Header>
               <TextBlock Margin="5,0,0,0" FontSize="{DynamicResource LargeFontSize2}" FontFamily="{DynamicResource SansSerifFont}" Foreground="{DynamicResource Foreground_PromptText}">
-                <TextBlock.Text>
-                  <MultiBinding StringFormat="{}{0} Photos">
-                    <Binding Path="Photos.Count"/>
-                  </MultiBinding>
-                </TextBlock.Text>
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} photos" Path="Photos.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Photos.Count}" Value="1">
+                        <Setter Property="Text" Value="1 photo"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
               </TextBlock>
             </Expander.Header>
 
@@ -548,13 +617,36 @@
           </Expander>
 
           <Expander>
+            <Expander.Style>
+              <Style TargetType="{x:Type Expander}">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="IsExpanded" Value="True"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Albums.Count}" Value="0">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="IsExpanded" Value="False"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Expander.Style>
+
             <Expander.Header>
               <TextBlock Margin="5,0,0,0" FontSize="{DynamicResource LargeFontSize2}" FontFamily="{DynamicResource SansSerifFont}" Foreground="{DynamicResource Foreground_PromptText}">
-                <TextBlock.Text>
-                  <MultiBinding StringFormat="{}{0} Albums">
-                    <Binding Path="Albums.Count"/>
-                  </MultiBinding>
-                </TextBlock.Text>
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} albums" Path="Albums.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Albums.Count}" Value="1">
+                        <Setter Property="Text" Value="1 album"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
               </TextBlock>
             </Expander.Header>
 

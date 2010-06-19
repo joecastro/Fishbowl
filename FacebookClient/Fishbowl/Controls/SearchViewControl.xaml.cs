@@ -8,6 +8,7 @@ namespace FacebookClient
     using System.Windows.Media.Animation;
     using ClientManager.Controls;
     using Contigo;
+    using Standard;
 
     public enum SearchViewMode
     {
@@ -166,7 +167,7 @@ namespace FacebookClient
         {
             if (this.PhotoExplorer.Opacity == 0)
             {
-                this.PhotoExplorer.Visibility = Visibility.Collapsed;
+                this.PhotoExplorerGrid.Visibility = Visibility.Collapsed;
             }
             else
             {
@@ -184,6 +185,11 @@ namespace FacebookClient
             if (this.SearchListView.Opacity == 0)
             {
                 this.SearchListView.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                Assert.AreEqual(PhotoExplorerGrid.Opacity, 0);
+                PhotoExplorerGrid.Visibility = Visibility.Collapsed;
             }
         }
     }

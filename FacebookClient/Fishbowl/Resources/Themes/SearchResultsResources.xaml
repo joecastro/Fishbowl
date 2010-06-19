@@ -10,7 +10,7 @@
   <DataTemplate x:Key="FriendResultTemplate" DataType="{x:Type Facebook:FacebookContact}">
     <FacebookClient:FriendButton
       Friend="{Binding}"
-      Style="{DynamicResource LargeFriendButtonStyle}" 
+      Style="{DynamicResource MediumFriendButtonStyle}" 
       ToolTip="{Binding Name}"/>
   </DataTemplate>
 
@@ -18,11 +18,14 @@
     <Grid Width="390">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="20"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid Grid.Column="0" x:Name="FriendGrid">
-        <FacebookClient:FriendButton x:Name="FriendButton" Friend="{Binding FromUser}" Style="{DynamicResource LargeFriendButtonStyle}" ToolTip="{Binding FromUser.Name}"/>
+        <FacebookClient:FriendButton 
+          x:Name="FriendButton" 
+          Friend="{Binding FromUser}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          ToolTip="{Binding FromUser.Name}"/>
       </Grid>
       <Grid Grid.Column="2" x:Name="CommentGrid">
         <Button x:Name="CommentButton" Style="{StaticResource SimpleButtonStyle}" 
@@ -59,7 +62,11 @@
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid Grid.Column="0" x:Name="FriendGrid">
-        <FacebookClient:FriendButton x:Name="FriendButton" Friend="{Binding Actor}" Style="{DynamicResource LargeFriendButtonStyle}" ToolTip="{Binding Actor.Name}"/>
+        <FacebookClient:FriendButton 
+          x:Name="FriendButton" 
+          Friend="{Binding Actor}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          ToolTip="{Binding Actor.Name}"/>
       </Grid>
       <Grid Grid.Column="2" x:Name="PostGrid">
         <Button x:Name="PostButton" Style="{StaticResource SimpleButtonStyle}" 

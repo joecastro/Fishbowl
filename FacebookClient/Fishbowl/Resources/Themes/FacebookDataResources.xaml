@@ -15,6 +15,8 @@
           <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend.Image}">
             <Button x:Name="ActivityButton"
                 RenderTransformOrigin="0.5,0.5"
+                Click="OnNavigateToContentButtonClicked" 
+                ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" 
                 Style="{DynamicResource AnimatedItemButton}">
               <Button.RenderTransform>
                 <TransformGroup>
@@ -28,6 +30,80 @@
                     <ClientManagerControls:FacebookImageControl.Template>
                       <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
                         <Border Margin="4,4,4.5,6">
+                          <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
+                        </Border>
+                      </ControlTemplate>
+                    </ClientManagerControls:FacebookImageControl.Template>
+                  </ClientManagerControls:FacebookImageControl>
+                </Grid>
+              </Grid>
+            </Button>
+          </ClientManagerControls:FacebookImageDragContainer>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type FacebookClient:FriendButton}" x:Key="MediumFriendButtonStyle">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:FriendButton}">
+          <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend.Image}">
+            <Button x:Name="ActivityButton"
+                RenderTransformOrigin="0.5,0.5"
+                VerticalAlignment="Top"
+                Click="OnNavigateToContentButtonClicked" 
+                ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" 
+                Style="{DynamicResource AnimatedItemButton}">
+              <Button.RenderTransform>
+                <TransformGroup>
+                  <RotateTransform Angle="-6"/>
+                </TransformGroup>
+              </Button.RenderTransform>
+              <Grid Width="100" Height="100">
+                <Grid>
+                  <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
+                  <ClientManagerControls:FacebookImageControl FacebookImage="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend.Image}" FacebookImageDimensions="Normal">
+                    <ClientManagerControls:FacebookImageControl.Template>
+                      <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                        <Border Margin="4,4,4.5,6">
+                          <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
+                        </Border>
+                      </ControlTemplate>
+                    </ClientManagerControls:FacebookImageControl.Template>
+                  </ClientManagerControls:FacebookImageControl>
+                </Grid>
+              </Grid>
+            </Button>
+          </ClientManagerControls:FacebookImageDragContainer>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type FacebookClient:FriendButton}" x:Key="SmallFriendButtonStyle">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:FriendButton}">
+          <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend.Image}">
+            <Button x:Name="ActivityButton"
+                VerticalAlignment="Top"
+                RenderTransformOrigin="0.5,0.5"
+                Click="OnNavigateToContentButtonClicked" 
+                ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" 
+                Style="{DynamicResource AnimatedItemButton}">
+              <Button.RenderTransform>
+                <TransformGroup>
+                  <RotateTransform Angle="-6"/>
+                </TransformGroup>
+              </Button.RenderTransform>
+              <Grid Width="60" Height="60">
+                <Grid>
+                  <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
+                  <ClientManagerControls:FacebookImageControl FacebookImage="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend.Image}" FacebookImageDimensions="Square">
+                    <ClientManagerControls:FacebookImageControl.Template>
+                      <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                        <Border Margin="2,2,3,4">
                           <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
                         </Border>
                       </ControlTemplate>
