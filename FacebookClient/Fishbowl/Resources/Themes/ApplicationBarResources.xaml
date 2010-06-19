@@ -6,6 +6,8 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" 
     xmlns:ClientManagerView="clr-namespace:ClientManager.View">
 
+  <FacebookClient:NotConverter x:Key="NotConverter"/>
+  
   <ControlTemplate x:Key="ToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
     <Grid x:Name="Root">
       <Border x:Name="Hover" Background="{DynamicResource ButtonHoverBrush}" BorderBrush="{DynamicResource ButtonHoverBorderBrush}" BorderThickness="1" CornerRadius="3" Opacity="0" />
@@ -125,7 +127,6 @@
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="OverridesDefaultStyle" Value="True" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="Visibility" Value="{Binding Path=NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" />
     <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}"/>
   </Style>
 
@@ -179,7 +180,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:MainHeaderControl}">
-          <Grid x:Name="Header" Background="{DynamicResource ApplicationBarBackground}" Height="85" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Visibility="{Binding NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
+          <Grid x:Name="Header" Background="{DynamicResource ApplicationBarBackground}" Height="85" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" >
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
@@ -395,8 +396,8 @@
           <DockPanel x:Name="Footer" 
               Height="24" 
               Background="{DynamicResource ApplicationBarBackground}" 
-              IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
-              Visibility="{Binding NavigationUIVisibility, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}">
+              IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}"
+              >
             <DockPanel.Resources>
               <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="White" />

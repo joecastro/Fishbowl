@@ -568,6 +568,7 @@ namespace ClientManager.View
             sourceDialog.KeyDown += Dialog_OnKeyDown; // Dismiss the dialog if escape is pressed
 
             Dialog = sourceDialog;
+            IsDialogActive = true;
         }
 
         /// <summary>
@@ -583,7 +584,19 @@ namespace ClientManager.View
                     Dialog.Loaded -= Dialog_OnLoaded;
                     Dialog.KeyDown -= Dialog_OnKeyDown;
                     Dialog = null;
+                    IsDialogActive = false;
                 }
+            }
+        }
+
+        private bool _isDialogActiveStorage;
+        public bool IsDialogActive
+        {
+            get { return _isDialogActiveStorage; }
+            private set
+            {
+                _isDialogActiveStorage = value;
+                _NotifyPropertyChanged("IsDialogActive");
             }
         }
 

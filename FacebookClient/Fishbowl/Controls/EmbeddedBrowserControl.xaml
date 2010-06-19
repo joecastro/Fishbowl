@@ -240,7 +240,9 @@
   </UserControl.Resources>
   
 
-  <Border Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4" Margin="40">
+  <Border Background="{DynamicResource ApplicationBarBackground}" 
+          BorderBrush="{DynamicResource ApplicationBarBorderBrush}" 
+          BorderThickness="4" >
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />

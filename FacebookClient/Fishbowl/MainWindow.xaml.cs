@@ -34,16 +34,6 @@ namespace FacebookClient
         FullScreenNavigationUI,
 
         /// <summary>
-        /// Full-screen viewing without the navigation UI.
-        /// </summary>
-        FullScreenNoNavigationUI,
-
-        /// <summary>
-        /// Normal viewing without the navigation UI.
-        /// </summary>
-        NormalScreenNoNavigationUI,
-
-        /// <summary>
         /// Normal viewing with the navigation UI.
         /// </summary>
         NormalScreenNavigationUI
@@ -75,19 +65,6 @@ namespace FacebookClient
         {
             get { return (Brush)GetValue(GoldBarBorderBrushProperty); }
             set { SetValue(GoldBarBorderBrushProperty, value); }
-        }
-
-        public static readonly DependencyProperty NavigationUIVisibilityProperty = DependencyProperty.Register(
-            "NavigationUIVisibility",
-            typeof(Visibility),
-            typeof(MainWindow),
-            new UIPropertyMetadata(Visibility.Visible));
-
-        /// <summary>Gets the visibility of the Navigation UI.</summary>
-        public Visibility NavigationUIVisibility
-        {
-            get { return (Visibility)GetValue(NavigationUIVisibilityProperty); }
-            protected set { SetValue(NavigationUIVisibilityProperty, value); }
         }
 
         public static readonly DependencyProperty FullScreenModeProperty = DependencyProperty.Register(
@@ -507,9 +484,6 @@ namespace FacebookClient
                         case Key.F11:
                             OnF11KeyPress(e);
                             break;
-                        case Key.F12:
-                            OnF12KeyPress(e);
-                            break;
                         case Key.Escape:
                             OnEscapeKeyPress(e);
                             break;
@@ -544,23 +518,11 @@ namespace FacebookClient
         #region Private Methods
 
         /// <summary>
-        /// Turn off full screen, make navigation UI visible.
+        /// Turn off full screen
         /// </summary>
         private void RestoreViewingMode()
         {
-            SwitchNavigationUIVisibility(true);
             _SwitchFullScreenMode(false);
-        }
-
-        /// <summary>
-        /// On F12 key press, switch navigation UI visibility.
-        /// </summary>
-        /// <param name="e">EventArgs describing the event.</param>
-        private void OnF12KeyPress(KeyEventArgs e)
-        {
-            // Update viewing mode based on navigation UI visibility
-            UpdateViewingModeNavUI();
-            e.Handled = true;
         }
 
         /// <summary>
@@ -572,9 +534,7 @@ namespace FacebookClient
         {
             switch (viewingMode)
             {
-                case ViewingMode.FullScreenNavigationUI: return ViewingMode.FullScreenNoNavigationUI;
-                case ViewingMode.FullScreenNoNavigationUI: return ViewingMode.NormalScreenNoNavigationUI;
-                case ViewingMode.NormalScreenNoNavigationUI: return ViewingMode.NormalScreenNavigationUI;
+                case ViewingMode.FullScreenNavigationUI: return ViewingMode.NormalScreenNavigationUI;
                 case ViewingMode.NormalScreenNavigationUI: return ViewingMode.FullScreenNavigationUI;
                 default:
                     Assert.Fail();
@@ -637,34 +597,6 @@ namespace FacebookClient
         }
 
         /// <summary>
-        /// Switches viewing mode based on navigation UI visiblity, and toggles the visibilty of navigation UI.
-        /// </summary>
-        private void UpdateViewingModeNavUI()
-        {
-            switch (_viewingMode)
-            {
-                case ViewingMode.FullScreenNavigationUI:
-                    SwitchNavigationUIVisibility(false);
-                    _viewingMode = ViewingMode.FullScreenNoNavigationUI;
-                    break;
-                case ViewingMode.NormalScreenNavigationUI:
-                    SwitchNavigationUIVisibility(false);
-                    _viewingMode = ViewingMode.NormalScreenNoNavigationUI;
-                    break;
-                case ViewingMode.FullScreenNoNavigationUI:
-                    SwitchNavigationUIVisibility(true);
-                    _viewingMode = ViewingMode.FullScreenNavigationUI;
-                    break;
-                case ViewingMode.NormalScreenNoNavigationUI:
-                    SwitchNavigationUIVisibility(true);
-                    _viewingMode = ViewingMode.NormalScreenNavigationUI;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        /// <summary>
         /// On escape, go back to normal screen and navigation ui.
         /// </summary>
         /// <param name="e">Event args describing the event.</param>
@@ -711,14 +643,6 @@ namespace FacebookClient
                     _SwitchFullScreenMode(true);
                     _viewingMode = ViewingMode.FullScreenNavigationUI;
                     break;
-                case ViewingMode.FullScreenNoNavigationUI:
-                    _SwitchFullScreenMode(false);
-                    _viewingMode = ViewingMode.NormalScreenNoNavigationUI;
-                    break;
-                case ViewingMode.NormalScreenNoNavigationUI:
-                    _SwitchFullScreenMode(true);
-                    _viewingMode = ViewingMode.FullScreenNoNavigationUI;
-                    break;
                 default:
                     break;
             }
@@ -734,34 +658,15 @@ namespace FacebookClient
             {
                 case ViewingMode.FullScreenNavigationUI:
                     _SwitchFullScreenMode(true);
-                    SwitchNavigationUIVisibility(true);
-                    break;
-                case ViewingMode.FullScreenNoNavigationUI:
-                    _SwitchFullScreenMode(true);
-                    SwitchNavigationUIVisibility(false);
-                    break;
-                case ViewingMode.NormalScreenNoNavigationUI:
-                    _SwitchFullScreenMode(false);
-                    SwitchNavigationUIVisibility(false);
                     break;
                 case ViewingMode.NormalScreenNavigationUI:
                     _SwitchFullScreenMode(false);
-                    SwitchNavigationUIVisibility(true);
                     break;
                 default:
                     break;
             }
 
             _viewingMode = nextViewingMode;
-        }
-
-        /// <summary>
-        /// Switches navigation UI visibility on or off.
-        /// </summary>
-        /// <param name="visible">If true, navigation UI is visible, if false, visibility is collapsed.</param>
-        private void SwitchNavigationUIVisibility(bool visible)
-        {
-            NavigationUIVisibility = visible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void _SafeBrowseBack()

@@ -6,7 +6,7 @@
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" >
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:PhotoUploadWizard}">
-      <Border Width="505" Height="575" Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">
+      <Border MinWidth="400" Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">
         <Grid>
           <DockPanel x:Name="PART_AddPhotosPage" Margin="15" Visibility="Collapsed">
             <TextBlock DockPanel.Dock="Top" Background="Transparent" FontSize="{DynamicResource LargeFontSize3}" Opacity="0.8" HorizontalAlignment="Center" Foreground="White" FontFamily="{DynamicResource SansSerifFont}" Text="Upload photos"/>

@@ -253,6 +253,7 @@
     <Compile Include="Converters\CollapseWhenZeroConverter.cs" />
     <Compile Include="Converters\ContentVisibilityConverter.cs" />
     <Compile Include="Converters\IsStringNullOrWhitespaceConverter.cs" />
+    <Compile Include="Converters\NotConverter.cs" />
     <Compile Include="Converters\RandomAngleToTransformConverter.cs" />
     <Compile Include="Converters\SexPronounConverter.cs" />
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
