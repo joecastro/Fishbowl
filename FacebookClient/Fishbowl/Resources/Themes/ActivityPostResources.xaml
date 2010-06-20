@@ -61,6 +61,7 @@
   <Style x:Key="RemoveLikeButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type Button}">
     <Setter Property="Template" Value="{DynamicResource RemoveLikeButtonTemplate}" />
   </Style>
+
   <ControlTemplate x:Key="CommentButtonTemplate" TargetType="{x:Type ToggleButton}">
     <StackPanel Orientation="Horizontal">
       <Image Width="13" Height="13" Margin="0,0,4.5,0" Source="pack://application:,,,/Resources/Images/comment_icon.png" />
@@ -75,6 +76,7 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+
   <Style x:Key="CommentButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type ButtonBase}">
     <Setter Property="Template" Value="{DynamicResource CommentButtonTemplate}" />
   </Style>
@@ -104,6 +106,7 @@
       </Trigger>
     </Style.Triggers>
   </Style>
+  
   <ControlTemplate x:Key="RemoveCommentButtonTemplate" TargetType="{x:Type Button}">
     <ContentPresenter x:Name="Presenter" Grid.Column="1" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
     <ControlTemplate.Triggers>
@@ -118,32 +121,6 @@
   
   <Style x:Key="RemoveCommentButtonStyle" BasedOn="{StaticResource CommentButtonStyle}" TargetType="ButtonBase">
     <Setter Property="Template" Value="{DynamicResource RemoveCommentButtonTemplate}" />
-  </Style>
-  
-  <ControlTemplate x:Key="CopyItemButtonTemplate" TargetType="{x:Type Button}">
-    <Grid x:Name="Host" Background="#00000000" Cursor="Hand">
-      <ContentPresenter x:Name="Glow" Opacity="0" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="Navy" />
-      <ContentPresenter x:Name="Presenter" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
-    </Grid>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsPressed" Value="True">
-        <Setter TargetName="Glow" Property="Opacity" Value="0.5" />
-        <Setter TargetName="Presenter" Property="Opacity" Value="0.7" />
-      </Trigger>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Setter TargetName="Glow" Property="Opacity" Value="1" />
-      </Trigger>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="Host" Property="Opacity" Value="0.5" />
-      </Trigger>
-    </ControlTemplate.Triggers>
-  </ControlTemplate>
-  
-  <Style x:Key="CopyItemButtonStyle" BasedOn="{StaticResource CommentButtonStyle}" TargetType="ButtonBase">
-    <Setter Property="Template" Value="{DynamicResource CopyItemButtonTemplate}" />
-    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize1}" />
-    <Setter Property="Margin" Value="10,0,0,0" />
-    <Setter Property="Cursor" Value="Hand" />
   </Style>
   
   <Style x:Key="AttachmentTitleTextBlockStyle" TargetType="TextBlock">
@@ -184,7 +161,8 @@
   
   <Style x:Key="CreatedTextBlockStyle" TargetType="TextBlock">
     <Setter Property="VerticalAlignment" Value="Bottom" />
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontWeight" Value="Medium" />
     <Setter Property="Foreground" Value="#8F8F8F" />
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
@@ -235,12 +213,14 @@
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">
         <TextBlock MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
-            <TextBlock Text="{Binding FromUser.Name}" />
+            <FacebookClient:BindableRun Text="{Binding FromUser.Name}" />
           </Hyperlink>
-          <TextBlock FontSize="{DynamicResource MiddleFontSize}"> at </TextBlock>
-          <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Time, Converter={StaticResource DateTimeConverter}}" />
+          <TextBlock Style="{StaticResource CreatedTextBlockStyle}" TextWrapping="Wrap">
+            <Span> at </Span>
+            <FacebookClient:BindableRun Text="{Binding Time, Converter={StaticResource DateTimeConverter}}"/>
+          </TextBlock>
         </TextBlock>
-        <TextBlock Margin="0,-3,0,0" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
+        <TextBlock Margin="0" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
           <FacebookClient:HyperlinkTextContent Text="{Binding Text}" />
           <Button x:Name="RemoveCommentButton" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveCommentCommand}" CommandParameter="{Binding}" Content="Remove" Style="{StaticResource RemoveCommentButtonStyle}" Visibility="Collapsed" />
         </TextBlock>
@@ -551,7 +531,7 @@
                   <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <Polygon x:Name="PersonToPersonArrow" RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
+                <Polygon RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
 
                 <Grid Margin="10" MinHeight="20">
                   <Grid.Style>
@@ -560,6 +540,9 @@
                       <Style.Triggers>
                         <DataTrigger Binding="{Binding PeopleWhoLikeThis.Count}" Value="0">
                           <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding HasLiked}" Value="True">
+                          <Setter Property="Visibility" Value="Visible" />
                         </DataTrigger>
                       </Style.Triggers>
                     </Style>

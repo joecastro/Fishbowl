@@ -560,7 +560,7 @@ namespace ClientManager.View
             Verify.IsNotNull(sourceDialog, "sourceDialog");
 
             if (Dialog != null)
-            {
+            {                
                 throw new InvalidOperationException("A dialog is already active.");
             }
 

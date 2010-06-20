@@ -109,17 +109,12 @@ namespace FacebookClient
         private readonly RoutedCommand _SwitchFullScreenModeCommand;
 
         private WindowStyle _windowStyle = WindowStyle.None;
-        
         private WindowState _windowState = WindowState.Normal;
-
-        /// <summary>
-        /// Saved state for resize mode.
-        /// </summary>
         private ResizeMode _resizeMode = ResizeMode.NoResize;
 
-        private PhotoUploadWizard _photoUploadWizard;
-        
-        private EmbeddedBrowserControl _embeddedBrowserControl;
+        private readonly PhotoUploadWizard _photoUploadWizard;
+        private readonly PhotoUploadInformationPage _photoUploadWizardInfoPage;
+        private readonly EmbeddedBrowserControl _embeddedBrowserControl;
 
         public MainWindow()
         {
@@ -162,6 +157,10 @@ namespace FacebookClient
 
             InitializeComponent();
 
+            _photoUploadWizard = new PhotoUploadWizard();
+            _photoUploadWizardInfoPage = new PhotoUploadInformationPage(_photoUploadWizard);
+            _embeddedBrowserControl = new EmbeddedBrowserControl();
+
             Rect settingsBounds = Properties.Settings.Default.MainWindowBounds;
             if (!settingsBounds.IsEmpty)
             {
@@ -178,9 +177,6 @@ namespace FacebookClient
                 this.Height = settingsBounds.Height;
             }
             
-            _photoUploadWizard = new PhotoUploadWizard();
-            _embeddedBrowserControl = new EmbeddedBrowserControl();
-
             CommandBindings.Add(new CommandBinding(System.Windows.Input.NavigationCommands.BrowseBack, (sender, e) => _SafeBrowseBack(), (sender, e) => e.CanExecute = CanGoBack));
             CommandBindings.Add(new CommandBinding(System.Windows.Input.NavigationCommands.Refresh, (sender, e) => ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null)));
             CommandBindings.Add(new CommandBinding(_SwitchFullScreenModeCommand, OnSwitchFullScreenCommand));
@@ -425,7 +421,7 @@ namespace FacebookClient
 
         public void ShowUploadWizard()
         {
-            _photoUploadWizard.Show();
+            ServiceProvider.ViewManager.ShowDialog(_photoUploadWizardInfoPage);
         }
 
         /// <summary>
@@ -836,6 +832,19 @@ namespace FacebookClient
         internal void ShowInbox()
         {
             _OnExternalNavigationRequested(this, new RequestNavigateEventArgs(new Uri("http://www.facebook.com/inbox"), null));
+        }
+
+        internal void SetTaskbarProgress(float percent)
+        {
+            TaskbarItemInfo tbi = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            tbi.ProgressState = TaskbarItemProgressState.Normal;
+            tbi.ProgressValue = percent;
+        }
+
+        internal void ClearTaskbarProgress()
+        {
+            TaskbarItemInfo tbi = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            tbi.ProgressState = TaskbarItemProgressState.None;
         }
     }
 }

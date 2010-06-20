@@ -28,6 +28,11 @@ namespace FacebookClient
             get { return (FacebookClientApplication)Application.Current; }
         }
 
+        new public MainWindow MainWindow
+        {
+            get { return Application.Current.MainWindow as MainWindow; }
+        }
+
         internal const string FacebookApiId = "149486762639";
         internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
         internal const string BingApiKey = "63F02036684DE7BEA0FDE713C0D1653056727276";
@@ -236,7 +241,7 @@ namespace FacebookClient
                 _minimodeWindow.Top = minimodeStartupLocation.Y;
             }
 
-            this.MainWindow = _mainWindow;
+            base.MainWindow = _mainWindow;
 
             var jumpListResource = (JumpList)Resources["MainModeJumpList"];
             Assert.IsNotNull(jumpListResource);

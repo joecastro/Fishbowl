@@ -32,17 +32,9 @@
                     <Rectangle Fill="{DynamicResource FilterButtonDivider1}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height=".5" SnapsToDevicePixels="True" />
                     <Rectangle Fill="{DynamicResource FilterButtonDivider2}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height=".5" SnapsToDevicePixels="True" />
 
-                    <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Icon}" FacebookImageDimensions="Normal">
-                      <ClientManagerControls:FacebookImageControl.Template>
-                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                          <Image Width="16" Height="16" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                        </ControlTemplate>
-                      </ClientManagerControls:FacebookImageControl.Template>
-                    </ClientManagerControls:FacebookImageControl>
-
                     <TextBlock x:Name="text" Foreground="{DynamicResource FilterTabItemForegroundUnSelected}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding Name}" Margin="5,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
 
-                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SetNewsFeedFilterCommand}" CommandParameter="{Binding}">
+                    <Button HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Button_Click" Tag="{Binding}">
                       <Button.Template>
                         <ControlTemplate>
                           <Grid Background="Transparent" />
@@ -70,12 +62,6 @@
                         </BeginStoryboard>
                       </EventTrigger.Actions>
                     </EventTrigger>
-                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                      <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type FacebookClient:SearchAndFilterControl}}, Path=ShowMore}" Value="True">
-                      <Setter Property="Visibility" Value="Visible" />
-                    </DataTrigger>
                     <Trigger Property="IsSelected" Value="true">
                       <Trigger.EnterActions>
                         <BeginStoryboard>
@@ -121,9 +107,9 @@
         Add more photos
       </Button>
 
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontStyle="Italic" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
-      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Bold" FontFamily="{DynamicResource SansSerifFont}" Text="Sort by" Margin="10,17,0,0" />
-      <TabControl x:Name="SortTabs" Margin="0,6,0,0" Style="{StaticResource SortTabControlStyle}"/>
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource LargeFontSize1}" FontStyle="Italic" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding ElementName=TopControl, Path=TitleText}" Margin="10,17,0,6" />
+      <TextBlock DockPanel.Dock="Top" Foreground="{DynamicResource SearchAndFilterHeader}" FontSize="{DynamicResource LargeFontSize1}" FontWeight="Bold" FontFamily="{DynamicResource SansSerifFont}" Text="Sort by" Margin="10,17,0,0" />
+      <TabControl x:Name="SortTabs" Margin="0,6,0,0" Style="{StaticResource SortTabControlStyle}" />
     </DockPanel>
   </Border>
 </UserControl>

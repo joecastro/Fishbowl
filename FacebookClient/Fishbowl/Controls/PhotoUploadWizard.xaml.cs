@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.Diagnostics;
     using System.IO;
     using System.Threading;
     using System.Windows;
@@ -26,9 +25,7 @@
     [TemplatePart(Name = "PART_AlbumName", Type = typeof(TextBox))]
     [TemplatePart(Name = "PART_AlbumLocation", Type = typeof(TextBox))]
     [TemplatePart(Name = "PART_AlbumDescription", Type = typeof(TextBox))]
-    [TemplatePart(Name = "PART_UploadCountText", Type = typeof(TextBlock))]
     [TemplatePart(Name = "PART_NextPhotoImage", Type = typeof(Image))]
-    [TemplatePart(Name = "PART_AlbumName2", Type = typeof(TextBlock))]
     [TemplatePart(Name = "PART_UploadStatus", Type = typeof(TextBlock))]
     [TemplatePart(Name = "PART_CloseCancelButton", Type = typeof(Button))]
     public partial class PhotoUploadWizard : UserControl
@@ -62,6 +59,54 @@
             Upload
         }
 
+        public static readonly DependencyProperty FileCountProperty = DependencyProperty.Register(
+            "FileCount",
+            typeof(int),
+            typeof(PhotoUploadWizard),
+            new FrameworkPropertyMetadata(default(int)));
+
+        public int FileCount
+        {
+            get { return (int)GetValue(FileCountProperty); }
+            set { SetValue(FileCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty UploadAlbumNameProperty = DependencyProperty.Register(
+            "UploadAlbumName",
+            typeof(string),
+            typeof(PhotoUploadWizard),
+            new FrameworkPropertyMetadata(""));
+
+        public string UploadAlbumName
+        {
+            get { return (string)GetValue(UploadAlbumNameProperty); }
+            set { SetValue(UploadAlbumNameProperty, value); }
+        }
+
+        public static readonly DependencyProperty UploadCountProperty = DependencyProperty.Register(
+            "UploadCount",
+            typeof(int),
+            typeof(PhotoUploadWizard),
+            new FrameworkPropertyMetadata(default(int)));
+
+        public int UploadCount
+        {
+            get { return (int)GetValue(UploadCountProperty); }
+            set { SetValue(UploadCountProperty, value); }
+        }
+
+        public static readonly DependencyProperty PageProperty = DependencyProperty.Register(
+            "Page",
+            typeof(PhotoUploaderPage),
+            typeof(PhotoUploadWizard),
+            new FrameworkPropertyMetadata(OnPagePropertyChanged));
+
+        public PhotoUploaderPage Page
+        {
+            get { return (PhotoUploaderPage)GetValue(PageProperty); }
+            set { SetValue(PageProperty, value); }
+        }
+
         private Panel _addPhotosPage;
         private Panel _albumPickerPage;
         private Panel _uploadProgressPage;
@@ -70,18 +115,17 @@
         private TextBox _albumName;
         private TextBox _albumLocation;
         private TextBox _albumDescription;
-        private TextBlock _uploadCount;
         private Image _nextPhotoImage;
-        private TextBlock _albumName2;
         private TextBlock _uploadStatus;
+        private TextBlock _uploadPhotoStatusTextBlock;
         private Button _closeCancelButton;
 
         private Thread _workerThread;
-        private bool _uploading;
 
         public PhotoUploadWizard()
         {
             InitializeComponent();
+
             CommandBindings.Add(new CommandBinding(UploadCommand, new ExecutedRoutedEventHandler(OnUploadExecuted), new CanExecuteRoutedEventHandler(OnUploadCanExecute)));
             Files = new ObservableCollection<UploadFile>();
 
@@ -93,14 +137,6 @@
 
         public static RoutedCommand SelectedAlbumChangedCommand = new RoutedCommand("SelectedAlbumChanged", typeof(PhotoUploadWizard));
         public static RoutedCommand UploadCommand = new RoutedCommand("Upload", typeof(PhotoUploadWizard));
-        public static readonly DependencyProperty PageProperty = DependencyProperty.Register("Page", typeof(PhotoUploaderPage), typeof(PhotoUploadWizard),
-            new FrameworkPropertyMetadata(OnPagePropertyChanged));
-
-        public PhotoUploaderPage Page
-        {
-            get { return (PhotoUploaderPage)GetValue(PageProperty); }
-            set { SetValue(PageProperty, value); }
-        }
 
         public ObservableCollection<UploadFile> Files { get; private set; }
 
@@ -108,6 +144,7 @@
         {
             base.OnApplyTemplate();
 
+            _uploadPhotoStatusTextBlock = Template.FindName("PART_UploadPhotoStatusTextBlock", this) as TextBlock;
             _addPhotosPage = Template.FindName("PART_AddPhotosPage", this) as Panel;
             _albumPickerPage = Template.FindName("PART_AlbumPickerPage", this) as Panel;
             _uploadProgressPage = Template.FindName("PART_UploadProgressPage", this) as Panel;
@@ -116,17 +153,14 @@
             _albumName = Template.FindName("PART_AlbumName", this) as TextBox;
             _albumLocation = Template.FindName("PART_AlbumLocation", this) as TextBox;
             _albumDescription = Template.FindName("PART_AlbumDescription", this) as TextBox;
-            _uploadCount = Template.FindName("PART_UploadCount", this) as TextBlock;
             _nextPhotoImage = Template.FindName("PART_NextPhotoImage", this) as Image;
-            _albumName2 = Template.FindName("PART_AlbumName2", this) as TextBlock;
             _uploadStatus = Template.FindName("PART_UploadStatus", this) as TextBlock;
             _closeCancelButton = Template.FindName("PART_CloseCancelButton", this) as Button;
 
             _albumName.TextChanged += new TextChangedEventHandler((sender, e) => CommandManager.InvalidateRequerySuggested());
             _albumLocation.TextChanged += new TextChangedEventHandler((sender, e) => CommandManager.InvalidateRequerySuggested());
             _albumDescription.TextChanged += new TextChangedEventHandler((sender, e) => CommandManager.InvalidateRequerySuggested());
-
-
+            
             UpdatePhotoAlbums();
         }
 
@@ -168,6 +202,7 @@
             if (CheckWorkerThread())
             {
                 ServiceProvider.ViewManager.EndDialog(this);
+                FacebookClientApplication.Current2.MainWindow.ClearTaskbarProgress();
                 Files.Clear();
             }
         }
@@ -179,18 +214,8 @@
                 if (!_workerThread.IsAlive)
                 {
                     _workerThread = null;
-                    return true;
                 }
-
-                if (_uploading)
-                {
-                    if (MessageBox.Show("Are you sure you want to cancel the current upload?", "Photo Upload", MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
-                    {
-                        return false;
-                    }
-                }
-
-                if (_workerThread != null)
+                else
                 {
                     _workerThread.Abort();
                     _workerThread.Join();
@@ -240,12 +265,19 @@
             FacebookPhotoAlbum album = _albumsComboBox.SelectedItem as FacebookPhotoAlbum;
 
             Page = PhotoUploaderPage.Upload;
-            _albumName2.Text = album != null ? album.Title : albumName;
+            UploadAlbumName = album != null ? album.Title : albumName;
             _closeCancelButton.Content = "Cancel";
-            _uploadCount.Text = "0";
+            UploadCount = 0;
+            FileCount = Files.Count;
+
+            FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress(0);
+
             _uploadStatus.Text = "";
 
-            _uploading = true;
+            // This is terrible, but for some reason I can't get StringFormat to work correctly with the MultiBinding in this case.
+            // This needs to be looked into next time there's any investment made into the PhotoUploadWizard.
+            // (There are other things here that are also terrible (i.e. not localizable, not designable) so this isn't making anything worse...)
+            _uploadPhotoStatusTextBlock.Text = "Uploading photo " + (UploadCount + 1) + " of " + FileCount + " to album " + UploadAlbumName;
 
             _workerThread = new Thread(new ThreadStart(() =>
             {
@@ -273,13 +305,16 @@
 
                         Dispatcher.BeginInvoke(new Action(() =>
                         {
-                            _uploadCount.Text = count.ToString();
+                            UploadCount = count;
+                            _uploadPhotoStatusTextBlock.Text = "Uploading photo " + (UploadCount + 1) + " of " + FileCount + " to album " + UploadAlbumName;
+                            FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress((float)UploadCount / Files.Count);
                         }));
                     }
 
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(album);
+                        FacebookClientApplication.Current2.MainWindow.ClearTaskbarProgress();
                         Hide();
                     }));
                 }
@@ -295,8 +330,6 @@
                         _closeCancelButton.Content = "Close";
                     }));
                 }
-
-                _uploading = false;
             }));
             _workerThread.Start();
         }
@@ -331,11 +364,6 @@
         private void CancelButtonClick(object sender, RoutedEventArgs e)
         {
             Hide();
-        }
-
-        private void BrowseButtonClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo("explorer.exe", Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)));
         }
 
         private void RemovePhotoButtonClick(object sender, RoutedEventArgs e)

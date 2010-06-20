@@ -111,8 +111,8 @@
       <TextBlock 
           DockPanel.Dock="Top" 
           Foreground="{DynamicResource SearchAndFilterHeader}" 
-          FontSize="{DynamicResource MiddleFontSize}" 
-          FontWeight="Medium" 
+          FontSize="{DynamicResource LargeFontSize1}" 
+          FontWeight="Bold" 
           FontFamily="{DynamicResource SansSerifFont}" 
           Text="Facebook Feeds" 
           Margin="10,17,0,0" />

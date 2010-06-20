@@ -122,6 +122,10 @@
     <Resource Include="Resources\Fonts\Pescab.ttf" />
     <Resource Include="Resources\Fonts\QuartzMS.ttf" />
     <Resource Include="Resources\Fonts\Pesca.ttf" />
+    <Page Include="Controls\PhotoUploadInformationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FacebookClientApplication.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -229,6 +233,9 @@
     </Compile>
     <Compile Include="Controls\PhotoTaggerControl.xaml.cs">
       <DependentUpon>PhotoTaggerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PhotoUploadInformationPage.xaml.cs">
+      <DependentUpon>PhotoUploadInformationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PhotoUploadWizard.xaml.cs">
       <DependentUpon>PhotoUploadWizard.xaml</DependentUpon>

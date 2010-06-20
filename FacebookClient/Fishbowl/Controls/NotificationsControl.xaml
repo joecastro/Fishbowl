@@ -61,7 +61,7 @@
                         </Style.Triggers>
                       </Style> 
                     </TextBlock.Style>
-                    <FacebookClient:HyperlinkTextContent Text="{Binding Title}" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MediumFontSize}" RequestNavigate="_OnNotificationRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}"/>
+                    <FacebookClient:HyperlinkTextContent Text="{Binding Title}" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" RequestNavigate="_OnNotificationRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}"/>
                     <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}">
                       <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CreatedTextBlockStyle}">
@@ -82,7 +82,7 @@
           <Button Content="Mark all as read"
               Margin="5"
               FontFamily="{DynamicResource SansSerifFont}"
-              FontSize="{DynamicResource MediumFontSize}"
+              FontSize="{DynamicResource MiddleFontSize}"
               Foreground="White"
               HorizontalAlignment="Left" 
               Style="{StaticResource SimpleButtonStyle}" 

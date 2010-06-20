@@ -28,10 +28,10 @@ namespace FacebookClient
                 return true;
             }
 
-            //if (activityPost.LikedCount != 0)
-            //{
-            //    return true;
-            //}
+            if (activityPost.LikedCount != 0)
+            {
+                return true;
+            }
 
             return false;
         }

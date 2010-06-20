@@ -48,8 +48,12 @@
             Margin="0,1,0,0" 
             Text="{Binding Converter={StaticResource CityStateConverter}}">
           <TextBlock.Style>
-            <Style BasedOn="{StaticResource MessageTextBlockStyle}" TargetType="{x:Type TextBlock}">
+            <Style TargetType="{x:Type TextBlock}">
               <Setter Property="Visibility" Value="Visible" />
+              <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+              <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+              <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+              <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
               <Style.Triggers>
                <DataTrigger Binding="{Binding Converter={StaticResource CityStateConverter}}" Value="">
                  <Setter Property="Visibility" Value="Collapsed" />
@@ -67,18 +71,22 @@
 
         <TextBlock DockPanel.Dock="Top" Margin="0,1,0,0" Text="{Binding Birthday}">
           <TextBlock.Style>
-            <Style BasedOn="{StaticResource MessageTextBlockStyle}" TargetType="{x:Type TextBlock}">
+            <Style TargetType="{x:Type TextBlock}">
               <Setter Property="Visibility" Value="Collapsed" />
+              <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+              <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+              <Setter Property="Foreground" Value="{DynamicResource ActivityPostMessageTextBlockForeground}"/>
+              <Setter Property="TextSelection:TextSelection.IsEnabled" Value="True" />
               <Style.Triggers>
-               <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActiveContactSortOrder}" Value="AscendingByBirthday">
-                 <Setter Property="Visibility" Value="Visible" />
-               </DataTrigger>
-               <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActiveContactSortOrder}" Value="DescendingByBirthday">
-                 <Setter Property="Visibility" Value="Visible" />
-               </DataTrigger>
-               <DataTrigger Binding="{Binding Birthday}" Value="">
-                 <Setter Property="Visibility" Value="Collapsed" />
-               </DataTrigger>
+                <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActiveContactSortOrder}" Value="AscendingByBirthday">
+                  <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActiveContactSortOrder}" Value="DescendingByBirthday">
+                  <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Birthday}" Value="">
+                  <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
               </Style.Triggers>
             </Style>
           </TextBlock.Style>

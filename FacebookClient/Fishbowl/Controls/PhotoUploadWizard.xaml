@@ -3,141 +3,117 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
-    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" >
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" 
+    x:Name="ThisControl">
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:PhotoUploadWizard}">
       <Border MinWidth="400" Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">
         <Grid>
-          <DockPanel x:Name="PART_AddPhotosPage" Margin="15" Visibility="Collapsed">
-            <TextBlock DockPanel.Dock="Top" Background="Transparent" FontSize="{DynamicResource LargeFontSize3}" Opacity="0.8" HorizontalAlignment="Center" Foreground="White" FontFamily="{DynamicResource SansSerifFont}" Text="Upload photos"/>
-
-            <Grid DockPanel.Dock="Top" Margin="0,35">
-              <Rectangle Stroke="White" StrokeThickness="6" StrokeDashArray="3 3" Opacity="0.8" StrokeLineJoin="Round" Width="300" Height="150"/>
-              <TextBlock TextWrapping="Wrap" Width="220" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="{DynamicResource LargeFontSize2}" Foreground="White" 
-                         FontFamily="{DynamicResource SansSerifFont}" Text="Drag your photos here or into the application at any time"/>
-            </Grid>
-
-            <Button DockPanel.Dock="Top"
-                    Style="{DynamicResource StandardButtonStyle}" 
-                    HorizontalAlignment="Center" 
-                    VerticalContentAlignment="Center" 
-                    Click="BrowseButtonClick" 
-                    Content="Browse..."/>
-
-            <Button DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Cancel" Style="{DynamicResource StandardButtonStyle}"  x:Name="CancelAddPhotosButton" Click="CancelButtonClick"/>
-
-          </DockPanel>
-
+          
           <Grid x:Name="PART_PickAlbumPage" Visibility="Collapsed">
             <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="*"/>
+              <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="0,10,0,0" FontSize="{DynamicResource LargeFontSize3}" FontFamily="{DynamicResource SansSerifFont}" Foreground="#FFD8DEEA" Text="Upload photos" HorizontalAlignment="Center" />
+            <TextBlock Grid.Row="0"
+              Margin="8"
+              HorizontalAlignment="Center"
+              FontSize="{DynamicResource LargeFontSize3}" 
+              FontFamily="{DynamicResource SansSerifFont}" 
+              Foreground="White" 
+              Text="Upload photos" />
 
-            <TextBox HorizontalAlignment="Center" Text="{Binding ElementName=PART_ZapScroller, Path=CurrentItem.Description, UpdateSourceTrigger=PropertyChanged}" 
-                             ToolTip="Photo Caption" Margin="0,15,0,0" Style="{DynamicResource CaptionTextBoxStyle}" Width="450" Height="20" Grid.Row="2" TextWrapping="Wrap"
+            <ScrollViewer Background="{DynamicResource MainWindowBackgroundBrush}" Grid.Row="1" Style="{DynamicResource MainScrollViewerStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+              <FacebookClient:AnimatingTilePanel ItemHeight="280" ItemWidth="350" Attraction="2.4" MaxWidth="800" >
+                <StackPanel Orientation="Vertical" Width="350" Height="280">
+                  <TextBox HorizontalAlignment="Center" Text="{Binding ElementName=PART_ZapScroller, Path=CurrentItem.Description, UpdateSourceTrigger=PropertyChanged}" 
+                             ToolTip="Photo Caption" Margin="0,10,0,0" Style="{DynamicResource CaptionTextBoxStyle}" Width="330" MinHeight="20" TextWrapping="Wrap"
                              AcceptsReturn="True" />
 
-            <FacebookClient:ZapScroller Grid.Row="3" HorizontalAlignment="Center" x:Name="PART_ZapScroller" Height="180" ClipToBounds="True" 
+                  <FacebookClient:ZapScroller Grid.Row="3" HorizontalAlignment="Center" x:Name="PART_ZapScroller" Height="180" ClipToBounds="True" 
                                                      ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Files}" Margin="0,10,0,0">
-              <FacebookClient:ZapScroller.ItemTemplate>
-                <DataTemplate>
-                  <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
-                    <Viewbox MaxHeight="180" MaxWidth="240"  HorizontalAlignment="Center" VerticalAlignment="Top">
-                      <Image Stretch="UniformToFill" Source="{Binding Path}"/>
-                    </Viewbox>
-                    <Button HorizontalAlignment="Right" Cursor="Hand" Margin="-16,0,0,0" VerticalAlignment="Top" Width="20" Height="20" Style="{DynamicResource RemoveItemButtonStyle}" Click="RemovePhotoButtonClick"  ToolTip="Remove this photo" Content="X" />
-                  </StackPanel>
-                </DataTemplate>
-              </FacebookClient:ZapScroller.ItemTemplate>
-            </FacebookClient:ZapScroller>
+                    <FacebookClient:ZapScroller.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" >
+                          <Viewbox MaxHeight="180" MaxWidth="240"  HorizontalAlignment="Center" VerticalAlignment="Top">
+                            <Image Stretch="UniformToFill" Source="{Binding Path}"/>
+                          </Viewbox>
+                          <Button HorizontalAlignment="Right" Cursor="Hand" Margin="-16,0,0,0" VerticalAlignment="Top" Width="20" Height="20" Style="{DynamicResource RemoveItemButtonStyle}" Click="RemovePhotoButtonClick"  ToolTip="Remove this photo" Content="X" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </FacebookClient:ZapScroller.ItemTemplate>
+                  </FacebookClient:ZapScroller>
 
-            <Grid Height="25" Width="150"  Grid.Row="4" Margin="0,10,0,0" >
-              <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" >
+                  <Grid Margin="0,10,0,0" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <RepeatButton 
-                    DockPanel.Dock="Left"
-                    Command="{Binding ElementName=PART_ZapScroller, Path=PreviousCommand}"
-                    Style="{DynamicResource SimpleButtonBaseStyle}"
-                    Width="28"
-                    Height="20"
-                    Margin="5,0"
-                    VerticalAlignment="Center">
-                  <Rectangle Fill="{DynamicResource LeftArrowLightToolbarDrawingBrush}"/>
-                </RepeatButton>
+                    <RepeatButton 
+                        Command="{Binding ElementName=PART_ZapScroller, Path=PreviousCommand}"
+                        Style="{DynamicResource SimpleButtonBaseStyle}"
+                        Width="28"
+                        Height="20"
+                        Margin="5,0"
+                        VerticalAlignment="Center">
+                      <Rectangle Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
+                    </RepeatButton>
+                    
+                    <TextBlock Grid.Column="1" Style="{DynamicResource ToolbarTextBlockStyle}" TextAlignment="Center" MinWidth="80">
+                      <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} of {1}">
+                          <Binding ElementName="PART_ZapScroller" Path="CurrentItemIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1"/>
+                          <Binding ElementName="PART_ZapScroller" Path="ItemCount"/>
+                        </MultiBinding>
+                      </TextBlock.Text>
+                    </TextBlock>
 
-                <TextBlock Foreground="White" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Medium" Margin="5,0" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" HorizontalAlignment="Center" TextAlignment="Center" MinWidth="50" >
-                  <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} of {1}">
-                      <Binding ElementName="PART_ZapScroller" Path="CurrentItemIndex" Converter="{StaticResource AddConverter}" ConverterParameter="1"/>
-                      <Binding ElementName="PART_ZapScroller" Path="ItemCount"/>
-                    </MultiBinding>
-                  </TextBlock.Text>
-                </TextBlock>
+                    <RepeatButton Grid.Column="2"
+                        Command="{Binding ElementName=PART_ZapScroller, Path=NextCommand}"
+                        Style="{DynamicResource SimpleButtonBaseStyle}"
+                        Width="28"
+                        Height="20"
+                        Margin="5,0"
+                        VerticalAlignment="Center">
+                      <Rectangle Fill="{DynamicResource RightArrowToolbarDrawingBrush}"/>
+                    </RepeatButton>
+                  </Grid>
+                </StackPanel>
 
-                <RepeatButton 
-                    DockPanel.Dock="Left"
-                    Command="{Binding ElementName=PART_ZapScroller, Path=NextCommand}"
-                    Style="{DynamicResource SimpleButtonBaseStyle}"
-                    Width="28"
-                    Height="20"
-                    Margin="5,0"
-                    VerticalAlignment="Center">
-                  <Rectangle Fill="{DynamicResource RightArrowLightToolbarDrawingBrush}"/>
-                </RepeatButton>
+                <StackPanel HorizontalAlignment="Center" Margin="0,5,0,0">
 
-              </StackPanel>
+                  <TextBlock
+                      Margin="5" 
+                      Text="Choose album:" 
+                      HorizontalAlignment="Left"
+                      Style="{DynamicResource ToolbarTextBlockStyle}" />
 
-            </Grid>
-
-            <Grid Grid.Row="6" HorizontalAlignment="Center" Margin="0,10,0,0" x:Name="NewAlbumFields">
-              <Grid.ColumnDefinitions >
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-
-
-              <TextBlock Grid.Column="0" 
-                         Margin="0,5,20,0" 
-                         Text="Choose album" 
-                         FontFamily="{DynamicResource SansSerifFont}" 
-                         FontSize="{DynamicResource MiddleFontSize}"
-                         Foreground="White"  
-                         HorizontalAlignment="Right" 
-                         VerticalAlignment="Center" />
-
-              <ComboBox Grid.Row="0" Grid.Column="1"  x:Name="PART_AlbumsComboBox" Width="250" MinHeight="40" Style="{DynamicResource MyComboBoxStyle}" 
-                                      Margin="0,0,0,3" HorizontalAlignment="Right">
-                <ComboBox.Resources>
-                  <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFCEDEE8"/>
-                  <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
-                </ComboBox.Resources>
-                <ComboBox.ItemTemplate>
-                  <DataTemplate>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="34">
-                      <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=CoverPic.Image}" FacebookImageDimensions="Small" ToolTip="{Binding Path=Description}" >
-                        <ClientManagerControls:FacebookImageControl.Template>
-                          <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                            <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                          </ControlTemplate>
-                        </ClientManagerControls:FacebookImageControl.Template>
-                      </ClientManagerControls:FacebookImageControl>
-                      <TextBlock TextTrimming="CharacterEllipsis" 
+                  <ComboBox x:Name="PART_AlbumsComboBox"
+                            Width="250" 
+                            MinHeight="40" 
+                            Style="{DynamicResource MyComboBoxStyle}" 
+                            Margin="5"
+                            HorizontalAlignment="Left">
+                    <ComboBox.Resources>
+                      <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFCEDEE8"/>
+                      <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="34">
+                          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=CoverPic.Image}" FacebookImageDimensions="Small" ToolTip="{Binding Path=Description}" >
+                            <ClientManagerControls:FacebookImageControl.Template>
+                              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                                <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
+                              </ControlTemplate>
+                            </ClientManagerControls:FacebookImageControl.Template>
+                          </ClientManagerControls:FacebookImageControl>
+                          <TextBlock TextTrimming="CharacterEllipsis" 
                                  Text="{Binding Title}" 
                                  Foreground="White"
                                  FontFamily="{DynamicResource SansSerifFont}"
@@ -145,48 +121,51 @@
                                  HorizontalAlignment="Center" 
                                  VerticalAlignment="Center" 
                                  Margin="5"/>
-                    </StackPanel>
-                  </DataTemplate>
-                </ComboBox.ItemTemplate>
-              </ComboBox>
+                        </StackPanel>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
 
-              <TextBlock Grid.Row="1" Grid.Column="0" 
-                         Margin="0,10,20,0"
-                         FontFamily="{DynamicResource SansSerifFont}" 
-                         FontSize="{DynamicResource MiddleFontSize}"
-                         Text="Album title" 
-                         Foreground="White"
-                         HorizontalAlignment="Right" 
-                         VerticalAlignment="Center" />
-              <TextBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"  Margin="0,10,0,0"  x:Name="PART_AlbumName" Text="{Binding ElementName=PART_AlbumsComboBox, Path=SelectedItem.Title, Mode=OneWay}" 
-                                    Style="{DynamicResource CaptionTextBoxStyle}" Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
+                  <TextBlock 
+                      Margin="5"
+                      HorizontalAlignment="Left"
+                      Style="{DynamicResource ToolbarTextBlockStyle}"
+                      Text="Album title:"/>
 
-              <TextBlock Grid.Row="2" Grid.Column="0"
-                         Margin="0,10,20,0" 
-                         FontFamily="{DynamicResource SansSerifFont}" 
-                         FontSize="{DynamicResource MiddleFontSize}"
-                         Text="Album location" 
-                         Foreground="White" 
-                         HorizontalAlignment="Right" 
-                         VerticalAlignment="Center" />
-              <TextBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center"  Margin="0,10,0,0"  x:Name="PART_AlbumLocation" Text="{Binding ElementName=PART_AlbumsComboBox, Path=SelectedItem.Location, Mode=OneWay}" 
-                                     Style="{DynamicResource CaptionTextBoxStyle}" Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
+                  <TextBox Margin="5"
+                           x:Name="PART_AlbumName" 
+                           Text="{Binding ElementName=PART_AlbumsComboBox, Path=SelectedItem.Title, Mode=OneWay}" 
+                           Style="{DynamicResource CaptionTextBoxStyle}" 
+                           HorizontalAlignment="Left"
+                           Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
 
-              <TextBlock Grid.Row="3" Grid.Column="0"
-                         Margin="0,10,20,0"
-                         FontFamily="{DynamicResource SansSerifFont}" 
-                         FontSize="{DynamicResource MiddleFontSize}"
-                         Text="Album description" 
-                         Foreground="White"  
-                         HorizontalAlignment="Right"
-                         VerticalAlignment="Center" />
-              <TextBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center"  Margin="0,10,0,0"   x:Name="PART_AlbumDescription" Text="{Binding Description,  Path=SelectedItem.Description, Mode=OneWay}"  
-                                     Style="{DynamicResource CaptionTextBoxStyle}" Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
-            </Grid>
+                  <TextBlock Style="{DynamicResource ToolbarTextBlockStyle}"
+                         Margin="5" 
+                         HorizontalAlignment="Left"
+                         Text="Album location:" />
+                  <TextBox Margin="5" 
+                           HorizontalAlignment="Left"
+                           x:Name="PART_AlbumLocation" 
+                           Text="{Binding ElementName=PART_AlbumsComboBox, Path=SelectedItem.Location, Mode=OneWay}" 
+                           Style="{DynamicResource CaptionTextBoxStyle}" Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
 
-            <StackPanel Margin="0,15,10,10" Orientation="Horizontal" Grid.Row="8" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-              <Button Style="{DynamicResource StandardButtonStyle}" DockPanel.Dock="Right" Content="Upload"  Margin="10,0,0,0" Command="{x:Static FacebookClient:PhotoUploadWizard.UploadCommand}"/>
-              <Button Style="{DynamicResource StandardButtonStyle}" DockPanel.Dock="Right" Content="Cancel"  Margin="10,0,0,0" Click="CancelButtonClick"/>
+                  <TextBlock 
+                    Margin="5"
+                    HorizontalAlignment="Left"
+                    Style="{DynamicResource ToolbarTextBlockStyle}"
+                    Text="Album description:" />
+                  <TextBox Margin="5" x:Name="PART_AlbumDescription" 
+                           HorizontalAlignment="Left"
+                           Text="{Binding Description,  Path=SelectedItem.Description, Mode=OneWay}"  
+                           Style="{DynamicResource CaptionTextBoxStyle}" Width="250" Height="20" FontWeight="Normal" TextWrapping="Wrap" IsEnabled="False" Opacity=".7" />
+                </StackPanel>
+
+              </FacebookClient:AnimatingTilePanel>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2" Margin="0,5,10,10" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+              <Button Style="{DynamicResource StandardButtonStyle}" Content="Upload"  Margin="10,0,0,0" Command="{x:Static FacebookClient:PhotoUploadWizard.UploadCommand}"/>
+              <Button Style="{DynamicResource StandardButtonStyle}" Content="Cancel"  Margin="10,0,0,0" Click="CancelButtonClick"/>
             </StackPanel>
 
           </Grid>
@@ -195,25 +174,10 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto"/>
               <RowDefinition Height="170"/>
-              <RowDefinition Height="*"/>
+              <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" HorizontalAlignment="Center">
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Background="Transparent" FontSize="{DynamicResource LargeFontSize4}" Opacity=".8" HorizontalAlignment="Left"
-                                           Foreground="White" FontFamily="{DynamicResource SansSerifFont}" x:Name="PART_UploadCount"/>
-                <TextBlock Margin="5,0,5,0" Background="Transparent" FontSize="{DynamicResource LargeFontSize4}" Opacity="0.8" HorizontalAlignment="Left"
-                                           Foreground="White" FontFamily="{DynamicResource SansSerifFont}" Text=" of "/>
-                <TextBlock Background="Transparent" FontSize="{DynamicResource LargeFontSize4}" Opacity="0.8" HorizontalAlignment="Left"
-                                           Foreground="White" FontFamily="{DynamicResource SansSerifFont}" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Files.Count}"/>
-              </StackPanel>
-              <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <TextBlock Margin="0,0,0,20" HorizontalAlignment="Center" Background="Transparent" FontSize="{DynamicResource LargeFontSize2}" Opacity="0.8"
-                                                           Foreground="White" FontFamily="{DynamicResource SansSerifFont}" Text="Photos added to "/>
-                <TextBlock Margin="0,0,0,20" HorizontalAlignment="Center" Background="Transparent" FontSize="{DynamicResource LargeFontSize2}" Opacity="0.8"
-                                                           Foreground="White" FontFamily="{DynamicResource SansSerifFont}" x:Name="PART_AlbumName2"/>
-              </WrapPanel>
-            </StackPanel>
+            <TextBlock x:Name="PART_UploadPhotoStatusTextBlock" Margin="8,16" Foreground="White" FontSize="{DynamicResource LargeFontSize3}" HorizontalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" TextAlignment="Center" MinWidth="50" TextWrapping="Wrap" />
 
             <Grid Grid.Row="1">
               <Border x:Name="NextPhotoToUpload" Margin="0,10" DockPanel.Dock="Bottom" BorderBrush="Gray" BorderThickness="0">
@@ -230,9 +194,6 @@
       </Border>
       
       <ControlTemplate.Triggers>
-        <Trigger Property="Page" Value="AddPhotos">
-          <Setter TargetName="PART_AddPhotosPage" Property="Visibility" Value="Visible"/>
-        </Trigger>
         <Trigger Property="Page" Value="PickAlbum">
           <Setter TargetName="PART_PickAlbumPage" Property="Visibility" Value="Visible"/>
         </Trigger>
