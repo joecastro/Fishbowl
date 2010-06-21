@@ -1,12 +1,18 @@
-﻿<!-- The PhotoViewer 'Dark' Theme -->
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkMainPageResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkMainPageResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkApplicationBarResources.xaml" />
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="DarkGray" Offset="0" />
+      <GradientStop Color="Black" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
 
-    </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

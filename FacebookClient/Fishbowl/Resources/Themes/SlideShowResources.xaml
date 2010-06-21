@@ -55,12 +55,11 @@
               Style="{DynamicResource StandardToggleButtonStyle}"
               Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 
               CommandTarget="{Binding}"
-              Margin="5"
               Padding="5,2"
               IsChecked="{Binding IsShuffled}"
               VerticalAlignment="Center"
               ToolTip="Shuffle">
-            <Rectangle Width="30" Height="26" Fill="{DynamicResource ShuffleToolbarDrawingBrush}"/>
+            <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center"  Width="30" Height="26" Fill="{DynamicResource ShuffleToolbarDrawingBrush}"/>
           </ToggleButton>
           <Button Width="40" Height="30"
               Style="{DynamicResource StandardButtonStyle}"

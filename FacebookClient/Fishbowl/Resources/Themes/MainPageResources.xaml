@@ -3,359 +3,50 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
-    xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    xmlns:FacebookClient="clr-namespace:FacebookClient">
 
   <Color x:Key="FacebookBlue">#3b5998</Color>
   <SolidColorBrush x:Key="FacebookBlueBrush" Color="{StaticResource FacebookBlue}"/>
-    
-  <Color x:Key="FacebookLightBlue">#8b9dc3</Color>
-  <Color x:Key="HalfTransparentFacebookBlue">#883B5998</Color>
-
-    <LinearGradientBrush x:Key="ShareTextBoxLightBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-        <GradientStop Color="#FF6A6F71"
-                      Offset="0.014" />
-        <GradientStop Color="#FF7F8589"
-                      Offset="0.027" />
-        <GradientStop Color="#FF7F8589"
-                      Offset="0.055" />
-        <GradientStop Color="#FF9FA7AB"
-                      Offset="0.068" />
-        <GradientStop Color="#FF9FA7AB"
-                      Offset="0.096" />
-        <GradientStop Color="#FFB5BEC3"
-                      Offset="0.110" />
-        <GradientStop Color="#FFBFC8CD"
-                      Offset="0.151" />
-    </LinearGradientBrush>
-
-    <RadialGradientBrush x:Key="MainContentHighlightBrush"
-                         RadiusX="0.663"
-                         RadiusY="0.619">
-        <GradientStop Color="#B2FFFFFF"
-                      Offset="0" />
-        <GradientStop Color="#33FFFFFF"
-                      Offset="1" />
-        <GradientStop Color="#7FFFFFFF"
-                      Offset="0.732" />
-    </RadialGradientBrush>
-
-    <LinearGradientBrush x:Key="FriendBarHostBackgroundBrush"
-                         StartPoint="0,0"
-                         EndPoint="0,1">
-        <GradientStop Color="Black"
-                      Offset="0" />
-        <GradientStop Color="Black"
-                      Offset="0.2" />
-        <GradientStop Color="Transparent"
-                      Offset="0.6" />
-        <GradientStop Color="Transparent"
-                      Offset="1.0" />
-    </LinearGradientBrush>
 
   <ControlTemplate x:Key="NotificationCountControlTemplate" TargetType="{x:Type FacebookClient:NotificationCountControl}">
     <Border 
-        Width="20" 
-        Height="20" 
-        BorderBrush="White" 
-        BorderThickness="2" 
-        CornerRadius="8" 
+        Width="18" 
+        Height="18" 
+        CornerRadius="9" 
         HorizontalAlignment="Right" 
         VerticalAlignment="Bottom" 
         Visibility="{TemplateBinding Visibility}"
         Background="{TemplateBinding Background}">
-      <Viewbox>
-        <TextBlock HorizontalAlignment="Center" Margin="1" VerticalAlignment="Center" Foreground="#FFF7F0F0" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisplayCount}" TextAlignment="Center" TextWrapping="NoWrap" FontWeight="Bold"  />
+      <Viewbox Margin="2,3">
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisplayCount}" TextAlignment="Center" TextWrapping="NoWrap" FontWeight="Bold" FontFamily="{DynamicResource SansSerifFont}" />
       </Viewbox>
     </Border>
   </ControlTemplate>
-  
+
   <Style TargetType="{x:Type FacebookClient:NotificationCountControl}">
     <Setter Property="Template" Value="{StaticResource NotificationCountControlTemplate}" />
   </Style>
 
-    <ControlTemplate x:Key="ShareTextBoxTemplate"
-                     TargetType="{x:Type TextBox}">
-        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="4,0,0,4"
-                Background="{TemplateBinding Background}">
-            <Grid>
-                <TextBlock x:Name="Watermark"
-                           Text="{TemplateBinding Tag}"
-                           Foreground="Black"
-                           FontFamily="{TemplateBinding FontFamily}"
-                           FontSize="{TemplateBinding FontSize}"
-                           IsHitTestVisible="False"
-                           VerticalAlignment="Center"
-                           Margin="2,0,0,0"
-                           Visibility="Hidden" />
-                <ScrollViewer x:Name="PART_ContentHost"
-                              Margin="2,0,2,0"
-                              VerticalAlignment="Center"
-                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            </Grid>
-        </Border>
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsFocused"
-                               Value="False" />
-                    <Condition Property="Text"
-                               Value="" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Watermark"
-                        Property="Visibility"
-                        Value="Visible" />
-            </MultiTrigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="ShareButtonTemplate"
-                     TargetType="{x:Type Button}">
-        <Border BorderThickness="{TemplateBinding BorderThickness}"
-                CornerRadius="0,4,4,0"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                Background="{TemplateBinding Background}"
-                x:Name="Host">
-            <Grid>
-                <TextBlock Text="{TemplateBinding Content}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,2,0"
-                           HorizontalAlignment="Center"
-                           Foreground="White"
-                           FontFamily="{TemplateBinding FontFamily}"
-                           FontSize="{TemplateBinding FontSize}"
-                           Opacity="0"
-                           x:Name="Glow">
-                    <TextBlock.Effect>
-                        <BlurEffect />
-                    </TextBlock.Effect>
-                </TextBlock>
-
-                <TextBlock Text="{TemplateBinding Content}"
-                           VerticalAlignment="Center"
-                           Margin="2,0,2,0"
-                           HorizontalAlignment="Center"
-                           Foreground="{TemplateBinding Foreground}"
-                           FontFamily="{TemplateBinding FontFamily}"
-                           FontSize="{TemplateBinding FontSize}"
-                           x:Name="Main" />
-            </Grid>
-        </Border>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
-                <Setter TargetName="Glow"
-                        Property="Opacity"
-                        Value="1" />
-            </Trigger>
-            <Trigger Property="IsPressed"
-                     Value="True">
-                <Setter TargetName="Main"
-                        Property="Opacity"
-                        Value="0.7" />
-            </Trigger>
-            <Trigger Property="IsEnabled"
-                     Value="False">
-                <Setter TargetName="Host"
-                        Property="Opacity"
-                        Value="0.4" />
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="BubbleButtonTemplate"
-                     TargetType="{x:Type ToggleButton}">
-        <Grid x:Name="Bubble"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              ClipToBounds="True"
-              IsHitTestVisible="{TemplateBinding IsHitTestVisible}">
-            <Path x:Name="Base"
-                  Fill="#FFFFFFFF"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Width="28"
-                  Height="21"
-                  Data="M26.0029487609864,8.31378841400159C26.0029487609864,4.27624130249039,20.4061679840088,1.00323104858401,13.5026388168336,1.00323104858401C6.59858512878401,1.00323104858401,1.00180435180678,4.27624130249039,1.00180435180678,8.31378841400159C1.00180435180678,11.7684497833252,5.1011495590208,14.6613969802856,10.6098823547364,15.4250993728636C10.1614170074464,16.7174472808836,9.41345024108881,18.241180419922,8.239667892456,19.0021409988404C10.5013065338136,19.005431175232,12.7314739227296,17.2024145126344,14.2602376937868,15.6094684600832C20.8110027313232,15.3802051544188,26.0029487609864,12.2019424438476,26.0029487609864,8.31378841400159z"
-                  Opacity="0"
-                  Margin="3,3,3,3" />
-            <Path x:Name="Glow"
-                  Width="28"
-                  Height="21"
-                  Data="M26.0029735565184,8.31380176544201C26.0029735565184,4.27625465393081,20.4062166213988,1.00324440002439,13.5026636123656,1.00324440002439C6.59858608245841,1.00324440002439,1.00182914733881,4.27625465393081,1.00182914733881,8.31380176544201C1.00182914733881,11.7684631347656,5.10119819641119,14.661410331726,10.6099309921264,15.4251127243044C10.1614418029784,16.7174606323244,9.41345119476321,18.2411699295044,8.23974037170399,19.0021305084228C10.5013313293456,19.0054445266724,12.7314987182616,17.2024278640748,14.2602863311768,15.6094818115236C20.8110275268556,15.3802185058592,26.0029735565184,12.201955795288,26.0029735565184,8.31380176544201z"
-                  Opacity="0"
-                  Stroke="#FFFFFFFF"
-                  Fill="#FFFFFFFF"
-                  Margin="3,3,3,3">
-                <Path.Effect>
-                    <BlurEffect Radius="8" />
-                </Path.Effect>
-            </Path>
-            <Path x:Name="GradientEvents"
-                  Width="28"
-                  Height="21"
-                  Data="M26.0029735565184,8.31380176544201C26.0029735565184,4.27625465393081,20.4062166213988,1.00324440002439,13.5026636123656,1.00324440002439C6.59858608245841,1.00324440002439,1.00182914733881,4.27625465393081,1.00182914733881,8.31380176544201C1.00182914733881,11.7684631347656,5.10119819641119,14.661410331726,10.6099309921264,15.4251127243044C10.1614418029784,16.7174606323244,9.41345119476321,18.2411699295044,8.23974037170399,19.0021305084228C10.5013313293456,19.0054445266724,12.7314987182616,17.2024278640748,14.2602863311768,15.6094818115236C20.8110275268556,15.3802185058592,26.0029735565184,12.201955795288,26.0029735565184,8.31380176544201z"
-                  Opacity="0"
-                  Stroke="{DynamicResource BubbleButtonColorStrokeBrush}"
-                  Margin="3,3,3,3"
-                  Fill="{DynamicResource BubbleButtonColorBackgroundBrush}" />
-        </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsChecked"
-                     Value="False">
-                <Setter Property="Opacity"
-                        TargetName="Base"
-                        Value="1" />
-            </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="True">
-                <Setter Property="Opacity"
-                        TargetName="Glow"
-                        Value="1" />
-                <Setter Property="Opacity"
-                        TargetName="GradientEvents"
-                        Value="1" />
-            </Trigger>
-            <Trigger Property="IsChecked"
-                     Value="{x:Null}" />
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
-
-    <Style x:Key="PinnedFriendBarHostStyle"
-           TargetType="{x:Type Border}">
-        <Setter Property="Height"
-                Value="96" />
-        <Setter Property="Background"
-                Value="{DynamicResource FriendBarHostBackgroundBrush}" />
-    </Style>
-
-    <Style x:Key="FriendBarHostStyle"
-           TargetType="{x:Type Border}">
-        <Setter Property="Background"
-                Value="{DynamicResource FriendBarHostBackgroundBrush}" />
-        <Setter Property="Height"
-                Value="96" />
-        <Setter Property="Margin"
-                Value="-15,0,0,0" />
-    </Style>
-
-    <Style x:Key="PinnedTocHostStyle"
-           TargetType="{x:Type Border}">
-        <Setter Property="Width"
-                Value="220" />
-        <Setter Property="Margin"
-                Value="0,-15,0,0" />
-        <Setter Property="Background"
-                Value="{DynamicResource MainContentGridBrush}" />
-    </Style>
-
-    <Style x:Key="TocHostStyle"
-           TargetType="{x:Type Border}">
-        <Setter Property="Width"
-                Value="220" />
-    </Style>
-
-    <Style x:Key="SearchAndFilterHostStyle"
-           TargetType="Border">
-        <Setter Property="Width"
-                Value="285" />
-    </Style>
-
-    <Style x:Key="TocButtonStyle"
-           TargetType="Button">
-        <Setter Property="VerticalAlignment"
-                Value="Center" />
-        <Setter Property="HorizontalAlignment"
-                Value="Left" />
-        <Setter Property="Focusable"
-                Value="False" />
-        <Setter Property="Width"
-                Value="9" />
-        <Setter Property="Height"
-                Value="200" />
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid x:Name="Root"
-                          Opacity="0.3"
-                          Background="#00000000">
-                        <Path x:Name="Background"
-                              Width="8.667"
-                              Height="200.053"
-                              Stretch="Fill"
-                              Fill="#FF5E5E5E"
-                              Data="F1 M10.409875,1.9073501E-05 C13.355275,1.9073501E-05 18.6667,2.38802 18.6667,5.33333 L18.6667,262.667 C18.6667,265.612 14.387288,268.06969 11.441888,268.06969 L7.762536,268.02792 C4.817196,268.02792 0,265.612 0,262.667 L0,5.33333 C0,2.38802 5.3107676,1.9073501E-05 8.2561076,1.9073501E-05 L3.0511702,0.22335239"
-                              Margin="0,0,0.333,0"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Center" />
-                        <Grid x:Name="Arrows"
-                              Margin="2,93.47"
-                              RenderTransformOrigin="0.5,0.5">
-                            <Path Width="Auto"
-                                  Height="8"
-                                  Stretch="Fill"
-                                  Fill="#FF3E3E3E"
-                                  Data="F1 M 4.25653,131.762C 4.25653,132.008 4.35025,132.253 4.53772,132.44L 9.42706,137.333L 4.53772,142.224C 4.35025,142.411 4.25653,142.656 4.25653,142.902C 4.25653,143.148 4.35025,143.393 4.53772,143.581C 4.91281,143.956 5.52078,143.956 5.89584,143.581L 11.4622,138.012C 11.6497,137.824 11.7435,137.579 11.7435,137.333C 11.7435,137.087 11.6497,136.843 11.4636,136.655L 5.89584,131.083C 5.52078,130.708 4.91281,130.708 4.53772,131.083C 4.35025,131.271 4.25653,131.516 4.25653,131.762"
-                                  Margin="0.188,0,1.148,0"
-                                  VerticalAlignment="Center" />
-                            <Path Width="Auto"
-                                  Height="8"
-                                  Stretch="Fill"
-                                  Fill="#FFFFFFFF"
-                                  Data="F1 M 5.86972,132.44L 10.7604,137.333L 5.87106,142.224C 5.49612,142.599 5.49612,143.207 5.87106,143.581C 6.24612,143.956 6.85413,143.956 7.22787,143.581L 12.7956,138.012C 13.1705,137.637 13.1705,137.03 12.7969,136.655L 7.22919,131.083C 6.85413,130.708 6.24612,130.708 5.87106,131.083C 5.49612,131.457 5.49612,132.065 5.86972,132.44 Z "
-                                  Margin="1.087,0,0.248,0"
-                                  VerticalAlignment="Center" />
-                        </Grid>
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter Property="Opacity"
-                                    TargetName="Root"
-                                    Value="1" />
-                            <Setter Property="Fill"
-                                    TargetName="Background"
-                                    Value="#FF558FCB" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding ElementName=Toc, Path=IsDisplayed}"
-                                     Value="True">
-                            <Setter TargetName="Arrows"
-                                    Property="RenderTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleX="-1"
-                                                    ScaleY="1" />
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <ControlTemplate x:Key="UpdateTextBoxTemplate" TargetType="{x:Type TextBox}">
-        <ControlTemplate.Resources>
-            <Storyboard x:Key="ShowGlowStoryboard">
-                <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Glow" Storyboard.TargetProperty="(UIElement.Opacity)">
-                    <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1" />
-                </DoubleAnimationUsingKeyFrames>
-            </Storyboard>
-        </ControlTemplate.Resources>
+  <ControlTemplate x:Key="UpdateTextBoxTemplate" TargetType="{x:Type TextBox}">
+    <ControlTemplate.Resources>
+      <Storyboard x:Key="ShowGlowStoryboard">
+        <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="Glow" Storyboard.TargetProperty="(UIElement.Opacity)">
+          <SplineDoubleKeyFrame KeyTime="00:00:00.2000000" Value="1" />
+        </DoubleAnimationUsingKeyFrames>
+      </Storyboard>
+    </ControlTemplate.Resources>
+    <Grid>
+      <Rectangle x:Name="Glow" Fill="White" Opacity="0">
+        <Rectangle.Effect>
+          <BlurEffect Radius="14" />
+        </Rectangle.Effect>
+      </Rectangle>
+      <Border x:Name="BoxBorder" Background="AliceBlue" BorderBrush="Gray" BorderThickness="2" CornerRadius="8" Padding="4,0,4,4">
         <Grid>
-            <Rectangle x:Name="Glow" Fill="White" Opacity="0">
-                <Rectangle.Effect>
-                    <BlurEffect Radius="14" />
-                </Rectangle.Effect>
-            </Rectangle>
-            <Border x:Name="BoxBorder" Background="AliceBlue" BorderBrush="Gray" BorderThickness="2" CornerRadius="8" Padding="4,0,4,4">
-                <Grid>
-                    <ScrollViewer x:Name="PART_ContentHost"
+          <ScrollViewer x:Name="PART_ContentHost"
               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
               VerticalAlignment="Top"/>
-                    <TextBlock Foreground="Black"
+          <TextBlock Foreground="Black"
               x:Name="Watermark"
               FontFamily="{TemplateBinding FontFamily}"
               FontSize="{TemplateBinding FontSize}"
@@ -364,356 +55,356 @@
               Margin="2,0,0,0"
               Visibility="Hidden"
               IsHitTestVisible="False" />
-                </Grid>
-            </Border>
         </Grid>
+      </Border>
+    </Grid>
 
-        <ControlTemplate.Triggers>
-            <MultiTrigger>
-                <MultiTrigger.Conditions>
-                    <Condition Property="IsFocused" Value="False" />
-                    <Condition Property="Text" Value="" />
-                </MultiTrigger.Conditions>
-                <Setter TargetName="Watermark" Property="Visibility" Value="Visible" />
-            </MultiTrigger>
-            <Trigger Property="IsKeyboardFocused" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard x:Name="ShowGlowStoryboard_BeginStoryboard" Storyboard="{StaticResource ShowGlowStoryboard}" />
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <StopStoryboard BeginStoryboardName="ShowGlowStoryboard_BeginStoryboard" />
-                </Trigger.ExitActions>
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard x:Name="ShowGlowStoryboard_BeginStoryboard1" Storyboard="{StaticResource ShowGlowStoryboard}" />
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <StopStoryboard BeginStoryboardName="ShowGlowStoryboard_BeginStoryboard" />
-                </Trigger.ExitActions>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>
+    <ControlTemplate.Triggers>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="IsFocused" Value="False" />
+          <Condition Property="Text" Value="" />
+        </MultiTrigger.Conditions>
+        <Setter TargetName="Watermark" Property="Visibility" Value="Visible" />
+      </MultiTrigger>
+      <Trigger Property="IsKeyboardFocused" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard x:Name="ShowGlowStoryboard_BeginStoryboard" Storyboard="{StaticResource ShowGlowStoryboard}" />
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <StopStoryboard BeginStoryboardName="ShowGlowStoryboard_BeginStoryboard" />
+        </Trigger.ExitActions>
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard x:Name="ShowGlowStoryboard_BeginStoryboard1" Storyboard="{StaticResource ShowGlowStoryboard}" />
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <StopStoryboard BeginStoryboardName="ShowGlowStoryboard_BeginStoryboard" />
+        </Trigger.ExitActions>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
-    <Style x:Key="ApplicationBarShareTextBoxStyle" TargetType="TextBox">
-        <Setter Property="SpellCheck.IsEnabled" Value="True" />
-        <Setter Property="Template" Value="{StaticResource UpdateTextBoxTemplate}" />
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
-        <Setter Property="MinHeight" Value="20" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Margin" Value="20,20,0,20" />
-        <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="MaxHeight" Value="350" />
-    </Style>
+  <Style x:Key="ApplicationBarShareTextBoxStyle" TargetType="TextBox">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="Template" Value="{StaticResource UpdateTextBoxTemplate}" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+    <Setter Property="MinHeight" Value="20" />
+    <Setter Property="VerticalAlignment" Value="Top" />
+    <Setter Property="Margin" Value="20,20,0,20" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="MaxHeight" Value="350" />
+  </Style>
 
-    <!-- Search Box -->
-    <Style x:Key="SearchTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
-        <Setter Property="SpellCheck.IsEnabled" Value="True" />
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
-        <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="MaxLines" Value="1"/>
-        <Setter Property="Height" Value="23"/>
-        <Setter Property="TextWrapping" Value="NoWrap"/>
-        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type FacebookClient:CommandTextBox}">
-                    <Grid x:Name="RootContainer">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="15" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="15" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="9" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="9" />
-                            </Grid.RowDefinitions>
+  <!-- Search Box -->
+  <Style x:Key="SearchTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="AllowDrop" Value="true"/>
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
+    <Setter Property="Foreground" Value="#FFFFFF"/>
+    <Setter Property="Background" Value="#000000"/>
+    <Setter Property="MaxLines" Value="1"/>
+    <Setter Property="Height" Value="23"/>
+    <Setter Property="TextWrapping" Value="NoWrap"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:CommandTextBox}">
+          <Grid x:Name="RootContainer">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="9" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="9" />
+              </Grid.RowDefinitions>
 
-                            <Border CornerRadius="6.5" Background="{DynamicResource SearchTextBoxBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
-                            <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
+              <Border CornerRadius="6.5" Background="{DynamicResource SearchTextBoxBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+              <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
 
-                            <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
 
-                            <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
+              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
 
-                            <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-                        </Grid>
+              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+            </Grid>
 
-                        <Rectangle x:Name="Icon" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center"
+            <Rectangle x:Name="Icon" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center"
                                    Fill="{DynamicResource SearchGlassLightDrawingBrush}"/>
 
-                        <Rectangle x:Name="Icon2" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" Opacity="0"
+            <Rectangle x:Name="Icon2" Width="14" Height="13" HorizontalAlignment="Left" Margin="8,0,0,0" VerticalAlignment="Center" Opacity="0"
                                    Fill="{DynamicResource SearchGlassDarkDrawingBrush}"/>
 
-                        <TextBlock x:Name="HelpText" Margin="30,1,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
+            <TextBlock x:Name="HelpText" Margin="30,1,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
                                    FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" 
                                    Foreground="#FFFFFF" FontStyle="Italic" Text="{TemplateBinding BannerText}" 
                                    Visibility="Collapsed" FontSize="{DynamicResource MiddleFontSize}" />
 
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="26,2,25,0" FontWeight="Medium"
+            <ScrollViewer x:Name="PART_ContentHost" Margin="26,2,25,0" FontWeight="Medium"
                                       VerticalAlignment="Center" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsFocused" Value="False" />
-                                <Condition Property="Text" Value="" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="Foreground" Value="#000000" />
-                            <Setter Property="Background" Value="#FFFFFF" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="False">
-                            <Setter Property="Foreground" Value="#FFFFFF" />
-                            <Setter Property="Background" Value="#000000" />
-                        </Trigger>
-                        <EventTrigger RoutedEvent="FrameworkElement.GotFocus">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
-                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="FrameworkElement.LostFocus">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
-                                        <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsFocused" Value="False" />
+                <Condition Property="Text" Value="" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter Property="Foreground" Value="#000000" />
+              <Setter Property="Background" Value="#FFFFFF" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+              <Setter Property="Foreground" Value="#FFFFFF" />
+              <Setter Property="Background" Value="#000000" />
+            </Trigger>
+            <EventTrigger RoutedEvent="FrameworkElement.GotFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.LostFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <!-- Status Box -->
-    <Style x:Key="StatusTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
-        <Setter Property="SpellCheck.IsEnabled" Value="True" />
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
-        <Setter Property="Foreground" Value="#FFFFFF"/>
-        <Setter Property="Background" Value="#000000"/>
-        <Setter Property="MinHeight" Value="23"/>
-        <Setter Property="MaxHeight" Value="23"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="AcceptsReturn" Value="True"/>
-        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type FacebookClient:CommandTextBox}">
-                    <Grid x:Name="RootContainer">
+  <!-- Status Box -->
+  <Style x:Key="StatusTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="AllowDrop" Value="true"/>
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
+    <Setter Property="Foreground" Value="#FFFFFF"/>
+    <Setter Property="Background" Value="#000000"/>
+    <Setter Property="MinHeight" Value="23"/>
+    <Setter Property="MaxHeight" Value="23"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="AcceptsReturn" Value="True"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:CommandTextBox}">
+          <Grid x:Name="RootContainer">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="15" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="15" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="9" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="9" />
-                            </Grid.RowDefinitions>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="9" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="9" />
+              </Grid.RowDefinitions>
 
-                            <Border CornerRadius="6.5" Background="{DynamicResource StatusTextBoxBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
-                            <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" 
+              <Border CornerRadius="6.5" Background="{DynamicResource StatusTextBoxBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+              <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" 
                                     Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
 
-                            <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
 
-                            <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
+              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
 
-                            <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-                        </Grid>
+              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+            </Grid>
 
             <Rectangle x:Name="Icon" Width="14" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,6,0,0" Visibility="Hidden" Fill="{DynamicResource BroadcastStatusDrawingBrush}"/>
 
-                        <TextBlock x:Name="HelpText" Margin="10,5,0,0" HorizontalAlignment="Left" 
+            <TextBlock x:Name="HelpText" Margin="10,5,0,0" HorizontalAlignment="Left" 
                                    FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" 
                                    Foreground="#FFFFFF" Text="{TemplateBinding BannerText}" 
                                    Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}"/>
 
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="25,2,5,0" FontWeight="Medium" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsFocused" Value="False" />
-                                <Condition Property="Text" Value="" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsFocused" Value="True">
-                            <Setter Property="Foreground" Value="#000000" />
-                            <Setter Property="Background" Value="#FFFFFF" />
-                            <Setter TargetName="Icon" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="IsFocused" Value="False">
-                            <Setter Property="Foreground" Value="#FFFFFF" />
-                            <Setter Property="Background" Value="#000000" />
-                            <Setter TargetName="Icon" Property="Visibility" Value="Hidden" />
-                        </Trigger>
-                        <EventTrigger RoutedEvent="FrameworkElement.GotFocus">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
-                                        <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />-->
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
-                        <EventTrigger RoutedEvent="FrameworkElement.LostFocus">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
-                                        <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />-->
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+            <ScrollViewer x:Name="PART_ContentHost" Margin="25,2,5,0" FontWeight="Medium" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsFocused" Value="False" />
+                <Condition Property="Text" Value="" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter Property="Foreground" Value="#000000" />
+              <Setter Property="Background" Value="#FFFFFF" />
+              <Setter TargetName="Icon" Property="Visibility" Value="Visible" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+              <Setter Property="Foreground" Value="#FFFFFF" />
+              <Setter Property="Background" Value="#000000" />
+              <Setter TargetName="Icon" Property="Visibility" Value="Hidden" />
+            </Trigger>
+            <EventTrigger RoutedEvent="FrameworkElement.GotFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="FrameworkElement.LostFocus">
+              <EventTrigger.Actions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="FocusBacking" Storyboard.TargetProperty="Opacity" />
+                    <!--<DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="Icon2" Storyboard.TargetProperty="Opacity" />-->
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger.Actions>
+            </EventTrigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
-    <Style x:Key="LinkTextBoxStyle" TargetType="{x:Type TextBox}">
-        <Setter Property="SpellCheck.IsEnabled" Value="True" />
-        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="AllowDrop" Value="true"/>
-        <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
-        <Setter Property="Foreground" Value="#35528c"/>
-        <Setter Property="Background" Value="#FFFFFF"/>
-        <Setter Property="MinHeight" Value="23"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="AcceptsReturn" Value="True"/>
-        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TextBox}">
-                    <Grid x:Name="RootContainer">
+  <Style x:Key="LinkTextBoxStyle" TargetType="{x:Type TextBox}">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="AllowDrop" Value="true"/>
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
+    <Setter Property="Foreground" Value="#35528c"/>
+    <Setter Property="Background" Value="#FFFFFF"/>
+    <Setter Property="MinHeight" Value="23"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="AcceptsReturn" Value="True"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type TextBox}">
+          <Grid x:Name="RootContainer">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="15" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="15" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="9" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="9" />
-                            </Grid.RowDefinitions>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="9" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="9" />
+              </Grid.RowDefinitions>
 
-                            <Border CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+              <Border CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" />
 
-                            <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
 
-                            <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
+              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
 
-                            <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-                            <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
-                            <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-                        </Grid>
+              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+            </Grid>
 
-                        <TextBlock x:Name="HelpText" Margin="15,3,0,0" HorizontalAlignment="Left" 
+            <TextBlock x:Name="HelpText" Margin="15,3,0,0" HorizontalAlignment="Left" 
                                    FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" Opacity=".7" 
                                    Foreground="#35528c" Text="{TemplateBinding ToolTip}" VerticalAlignment="Center" 
                                    Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}"/>
 
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Light" VerticalAlignment="Center" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Text" Value="" />
-                            </MultiTrigger.Conditions>
-                            <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
-                        </MultiTrigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+            <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Light" VerticalAlignment="Center" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Text" Value="" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

@@ -13,7 +13,7 @@ namespace FacebookClient
     {
         public NotificationCountControl()
         {
-            Visibility = Visibility.Collapsed;
+            Visibility = Visibility.Hidden;
             LayoutUpdated += (sender, e) => _UpdateImageSource();
         }
 
@@ -54,7 +54,7 @@ namespace FacebookClient
             }
             else
             {
-                Visibility = Visibility.Collapsed;
+                Visibility = Visibility.Hidden;
                 ImageSource = null;
             }
         }
