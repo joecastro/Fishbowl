@@ -436,7 +436,7 @@
         </TextBlock>
       </DockPanel>
 
-      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Style="{DynamicResource MainScrollViewerStyle}" Margin="2">
+      <FacebookClient:ScaleScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible" Style="{DynamicResource MainScaleScrollViewerStyle}" Margin="2">
         <StackPanel>
           <Expander>
             <Expander.Style>
@@ -661,7 +661,7 @@
           </Expander>
          
         </StackPanel>
-      </ScrollViewer>
+      </FacebookClient:ScaleScrollViewer>
     </Grid>
 
     <Grid x:Name="PhotoExplorerGrid" Visibility="Collapsed" >
