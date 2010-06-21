@@ -16,11 +16,15 @@
     
     <SolidColorBrush x:Key="ApplicationBarBorderBrush"
                      Color="DarkGray" />
-    
-    <SolidColorBrush x:Key="HyperlinkForegroundBrush"
-                     Color="#FF472C2C" />
 
-    <SolidColorBrush x:Key="SearchTextBoxBrush"
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="Orange" Offset="0"/>
+      <GradientStop Color="Firebrick" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="SearchTextBoxBrush"
                      Color="DarkRed" />
 
     <SolidColorBrush x:Key="StatusTextBoxBrush"

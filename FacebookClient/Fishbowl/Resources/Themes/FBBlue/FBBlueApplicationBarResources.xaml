@@ -5,9 +5,14 @@
   <SolidColorBrush x:Key="ApplicationBarBackground" Color="#FF3B5998"/>
   
   <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF"/>
-  
-  <SolidColorBrush x:Key="HyperlinkForegroundBrush" Color="#3B5998"/>
-  
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0"/>
+      <GradientStop Color="#3F60A0" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
   <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#517dc9"/>
   
   <SolidColorBrush x:Key="StatusTextBoxBrush" Color="#60517dc9"/>

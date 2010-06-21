@@ -11,11 +11,6 @@
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
 
-  <SolidColorBrush x:Key="Background_PhotoViewerDefault" Color="#444444" />
-  <SolidColorBrush x:Key="Background_PhotoViewerOver" Color="#696969" />
-  <SolidColorBrush x:Key="Background_PhotoViewerPressed" Color="#909090" />
-  <SolidColorBrush x:Key="Background_PhotoViewerChecked" Color="#555555" />
-
   <ItemsPanelTemplate x:Key="VirtualizedItemsPanelTemplate">
     <VirtualizingStackPanel />
   </ItemsPanelTemplate>
@@ -154,171 +149,11 @@
       </Trigger>
     </Style.Triggers>
   </Style>
-  <!-- Style to collapse text if empty -->
-  <Style x:Key="CollapseIfEmptyText" TargetType="{x:Type TextBlock}">
-    <Style.Triggers>
-      <Trigger Property="Text" Value="{x:Null}">
-        <Setter Property="Visibility" Value="Collapsed"/>
-      </Trigger>
-      <Trigger Property="Text" Value="">
-        <Setter Property="Visibility" Value="Collapsed"/>
-      </Trigger>
-    </Style.Triggers>
-  </Style>
-  <!-- Style for photo tag links -->
-  <Style x:Key="PhotoTagLink" TargetType="Hyperlink">
-    <Setter Property="Foreground" Value="#AAAAAA"/>
-    <Setter Property="TextDecorations" Value="None"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Style.Triggers>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Setter Property="Foreground" Value="#DDDDDD"/>
-        <Setter Property="TextDecorations" Value="Underline"/>
-      </Trigger>
-      <Trigger Property="IsKeyboardFocused" Value="True">
-        <Setter Property="Foreground" Value="#DDDDDD"/>
-        <Setter Property="TextDecorations" Value="Underline"/>
-      </Trigger>
-    </Style.Triggers>
-  </Style>
 
   <!-- The panel template for listing the photo's tags -->
   <ItemsPanelTemplate x:Key="PhotoTagPanel">
     <WrapPanel IsItemsHost="True"/>
   </ItemsPanelTemplate>
-
-  <!-- Control template for the photo viewer toolbar -->
-  <Style x:Key="PhotoToolbar" TargetType="{x:Type FacebookClient:PhotoViewerToolbarControl}">
-    <!-- Default styles for controls inside the toolbar as style resources -->
-    <Style.Resources>
-      <!-- Control template for toolbar buttons -->
-      <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type Button}">
-              <Border Background="{StaticResource Background_PhotoViewerDefault}" Padding="4,0">
-                <Border
-                  x:Name="Border"
-                  HorizontalAlignment="Center"
-                  Margin="1"
-                  CornerRadius="3"
-                  Opacity="0.6">
-                  <ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"/>
-                </Border>
-              </Border>
-              <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerOver}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsKeyboardFocused" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerOver}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerPressed}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                  <Setter TargetName="Border" Property="Opacity" Value="0.2"/>
-                </Trigger>
-              </ControlTemplate.Triggers>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-      <!-- Control template for toolbar togglebuttons -->
-      <Style x:Key="{x:Type ToggleButton}" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type ToggleButton}">
-              <Border Background="{StaticResource Background_PhotoViewerDefault}" Padding="4,0">
-                <Border
-                  x:Name="Border"
-                  Margin="1"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="2"
-                  CornerRadius="3"
-                  Opacity="0.6">
-                  <ContentPresenter Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"/>
-                </Border>
-              </Border>
-              <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerOver}"/>
-                  <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource Background_PhotoViewerOver}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsKeyboardFocused" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerOver}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerPressed}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                  <Setter TargetName="Border" Property="Background" Value="{StaticResource Background_PhotoViewerChecked}"/>
-                  <Setter TargetName="Border" Property="Opacity" Value="1"/>
-                </Trigger>
-              </ControlTemplate.Triggers>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-      <!-- Control template for toolbar separator -->
-      <Style x:Key="{x:Type Separator}" TargetType="{x:Type Separator}">
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Margin" Value="0"/>
-        <Setter Property="Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type Separator}">
-              <StackPanel>
-                <StackPanel Height="11" ClipToBounds="True">
-                  <Border Height="10" Background="{StaticResource Background_PhotoViewerDefault}" CornerRadius="4">
-                    <Border.RenderTransform>
-                      <TranslateTransform Y="-5"/>
-                    </Border.RenderTransform>
-                  </Border>
-                </StackPanel>
-                <StackPanel Height="5" ClipToBounds="True">
-                  <Border Height="10" Background="{StaticResource Background_PhotoViewerDefault}" CornerRadius="4"/>
-                </StackPanel>
-              </StackPanel>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-      </Style>
-    </Style.Resources>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type FacebookClient:PhotoViewerToolbarControl}">
-          <StackPanel>
-            <!-- Header (bottom half of a separator) -->
-            <StackPanel Height="5" ClipToBounds="True">
-              <Border Height="10" Background="{StaticResource Background_PhotoViewerDefault}" CornerRadius="4"/>
-            </StackPanel>
-            <ItemsPresenter/>
-            <!-- Footer (top half of a separator) -->
-            <StackPanel Height="5" ClipToBounds="True">
-              <Border Height="10" Background="{StaticResource Background_PhotoViewerDefault}" CornerRadius="4">
-                <Border.RenderTransform>
-                  <TranslateTransform Y="-5"/>
-                </Border.RenderTransform>
-              </Border>
-            </StackPanel>
-          </StackPanel>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
 
   <!-- Control template for the photo display control -->
   <Style TargetType="{x:Type FacebookClient:PhotoDisplayControl}">
@@ -346,17 +181,17 @@
                     <MenuItem Command="ApplicationCommands.Print" Header="_Print..."/>
                     <Separator/>
                     <MenuItem
-                      Command="FacebookClient:PhotoDisplayControl.ZoomPhotoInCommand"
-                      CommandParameter="{Binding}"
-                      CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}"
-                      Header="Zoom _In"
-                      InputGestureText="Ctrl++"/>
+                        Command="FacebookClient:PhotoDisplayControl.ZoomPhotoInCommand"
+                        CommandParameter="{Binding}"
+                        CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}"
+                        Header="Zoom _In"
+                        InputGestureText="Ctrl++"/>
                     <MenuItem
-                      Command="FacebookClient:PhotoDisplayControl.ZoomPhotoOutCommand"
-                      CommandParameter="{Binding}"
-                      CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}"
-                      Header="Zoom _Out"
-                      InputGestureText="Ctrl+-"/>
+                        Command="FacebookClient:PhotoDisplayControl.ZoomPhotoOutCommand"
+                        CommandParameter="{Binding}"
+                        CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}"
+                        Header="Zoom _Out"
+                        InputGestureText="Ctrl+-"/>
                   </ContextMenu>
                 </ClientManagerControls:FacebookImageControl.ContextMenu>
               </ClientManagerControls:FacebookImageControl>
@@ -391,22 +226,14 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation
-                                  Duration="0:0:0.3"
-                                  Storyboard.TargetName="hover"
-                                  Storyboard.TargetProperty="Opacity"
-                                  To="1"/>
+                    <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1"/>
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.EnterActions>
               <Trigger.ExitActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation
-                                  Duration="0:0:0.3"
-                                  Storyboard.TargetName="hover"
-                                  Storyboard.TargetProperty="Opacity"
-                                  To="0"/>
+                    <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0"/>
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.ExitActions>
@@ -503,7 +330,7 @@
                 Height="17"
                 Margin="5,0,5,0"
                 VerticalAlignment="Center"
-                Fill="#203b5998"
+                Fill="{DynamicResource ToolbarIconForegroundBrush}"
                 SnapsToDevicePixels="True"/>
             <Button
                 Margin="0,0,3,0"
@@ -524,7 +351,7 @@
                 Height="17"
                 Margin="5,0,5,0"
                 VerticalAlignment="Center"
-                Fill="#203b5998"
+                Fill="{DynamicResource ToolbarIconForegroundBrush}"
                 SnapsToDevicePixels="True"/>
             <Button 
                 Command="FacebookClient:PhotoViewerControl.StartSlideShowCommand" 
@@ -533,6 +360,52 @@
                 ToolTip="Slide Show">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource SlideShowToolbarDrawingBrush}"/>
             </Button>
+          </StackPanel>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="AlbumInformationStyle" TargetType="{x:Type Control}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Control}">
+          <StackPanel>
+            <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
+              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
+                <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
+              </Hyperlink>
+            </TextBlock>
+            <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Regular" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource PhotoViewerAlbumNameForeground}" TextWrapping="Wrap">
+              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}">
+                <FacebookClient:BindableRun Text="{Binding Title}"/>
+              </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Style="{DynamicResource CreatedTextBlockStyle}">
+              <TextBlock.Text>
+                <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
+              </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Style="{DynamicResource CreatedTextBlockStyle}">
+              <TextBlock>
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                      <Setter Property="Text">
+                        <Setter.Value>
+                          <Binding StringFormat="{}{0} photos" Path="Photos.Count"/>
+                        </Setter.Value>
+                      </Setter>
+                    
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Photos.Count}" Value="1">
+                          <Setter Property="Text" Value="1 photo" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </TextBlock>
           </StackPanel>
         </ControlTemplate>
       </Setter.Value>
@@ -632,75 +505,18 @@
       <DockPanel>
         <Control DockPanel.Dock="Bottom" Style="{StaticResource AlbumStripStyle}"/>
 
-        <Control DockPanel.Dock="Top" Style="{StaticResource PhotoViewerToolbarStyle}"/>
         <!-- photo contact info and comments -->
         <DockPanel 
-                    DockPanel.Dock="Left"
-                    VerticalAlignment="Top"
-                    MaxWidth="220"
-                    HorizontalAlignment="Left">
-          <TextBlock
-              DockPanel.Dock="Top"
-              Margin="0,20,0,0"
-              VerticalAlignment="Top"
-              DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
-              Style="{StaticResource ProfileNameTextBlockStyle}"
-              TextWrapping="Wrap">
-            <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" >
-              <FacebookClient:BindableRun Text="{Binding Name}"/>
-            </Hyperlink>
-            <InlineUIContainer>
-              <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
-                <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-              </Grid>
-            </InlineUIContainer></TextBlock>
-          <StackPanel DockPanel.Dock="Top" Margin="0,10,0,0">
-            <Button
-                Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
-                CommandParameter="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}" 
-                Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}">
-              <Button.Template>
-                <ControlTemplate TargetType="{x:Type Button}">
-                  <TextBlock x:Name="ContactTextBlock"
-                      Cursor="Hand"
-                      FontFamily="{DynamicResource SansSerifFont}"
-                      FontSize="{DynamicResource LargeFontSize3}"
-                      FontWeight="Regular"
-                      Foreground="#000000"
-                      Text="{TemplateBinding Content}"
-                      TextWrapping="Wrap"/>
-                  <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                      <Setter TargetName="ContactTextBlock" Property="TextDecorations" Value="Underline"/>
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="False">
-                      <Setter TargetName="ContactTextBlock" Property="TextDecorations" Value="{x:Null}"/>
-                    </Trigger>
-                  </ControlTemplate.Triggers>
-                </ControlTemplate>
-              </Button.Template>
-            </Button>
-            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
-              <TextBlock
-                  VerticalAlignment="Center"
-                  FontFamily="{DynamicResource SansSerifFont}"
-                  FontSize="{DynamicResource MiddleFontSize}"
-                  FontWeight="Light"
-                  Foreground="Black"
-                  Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Photos.Count, StringFormat=\{0\} photos}"/>
-              <TextBlock
-                  Margin="5,0"
-                  VerticalAlignment="Center"
-                  FontFamily="{DynamicResource SansSerifFont}"
-                  FontSize="{DynamicResource SmallFontSize1}"
-                  FontWeight="Light"
-                  Foreground="Black"
-                  Opacity=".56"
-                  Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"/>
-            </StackPanel>
-          </StackPanel>
+            Margin="10"
+            DockPanel.Dock="Left"
+            VerticalAlignment="Top"
+            Width="220"
+            HorizontalAlignment="Left"
+            DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}">
+          <Control DockPanel.Dock="Top" Style="{StaticResource AlbumInformationStyle}" />
+
           <ScrollViewer
+              Margin="0,5,0,0"
               VerticalAlignment="Top"
               VerticalScrollBarVisibility="Auto" >
             <Border Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6">
@@ -743,6 +559,8 @@
           </ScrollViewer>
         </DockPanel>
 
+        <Control DockPanel.Dock="Top" Style="{StaticResource PhotoViewerToolbarStyle}"/>
+
         <Control DockPanel.Dock="Bottom" Style="{StaticResource PhotoDescriptionStyle}"/>
 
         <Control x:Name="PART_FitPhotoFrame" MinHeight="180" MinWidth="200"/>
@@ -777,8 +595,8 @@
         <StackPanel 
             DockPanel.Dock="Left"
             Orientation="Vertical" 
-            Width="200" 
             Margin="10"
+            Width="200" 
             DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}">
           <Button x:Name="ActivityButton" 
               VerticalAlignment="Top"
@@ -808,27 +626,7 @@
               </ClientManagerControls:FacebookImageControl>
             </Grid>
           </Button>
-          <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
-          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
-            <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
-          </Hyperlink>
-          </TextBlock>
-          <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Regular" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource PhotoViewerAlbumNameForeground}" TextWrapping="Wrap">
-            <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}">
-              <FacebookClient:BindableRun Text="{Binding Title}"/>
-            </Hyperlink>
-          </TextBlock>
-
-          <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
-            <TextBlock.Text>
-              <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
-            </TextBlock.Text>
-          </TextBlock>
-          <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
-          <TextBlock.Text>
-            <Binding StringFormat="{}{0} photos" Path="Photos.Count" />
-          </TextBlock.Text>
-          </TextBlock>
+          <Control Style="{StaticResource AlbumInformationStyle}" />
         </StackPanel>
 
         <!-- Comments -->

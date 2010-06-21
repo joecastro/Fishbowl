@@ -70,21 +70,6 @@
     </Setter>
   </Style>
   
-  <Style x:Key="AlbumTitleStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
-    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
-    <Setter Property="FontWeight" Value="Light"/>
-    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-    <Setter Property="Foreground" Value="{DynamicResource AlbumTitleForeground}"/>
-  </Style>
-  
-  <Style x:Key="AlbumInfoStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}"/>
-    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
-    <Setter Property="FontWeight" Value="Light"/>
-    <Setter Property="Foreground" Value="{DynamicResource AlbumInfoForeground}"/>
-  </Style>
-  
   <!-- Template to display one photo and the album title, used on the homepage list view -->
   <DataTemplate x:Key="ListPhotoAlbumPreview">
     <Grid Width="210" Height="160">
@@ -329,19 +314,36 @@
                 </Grid.Triggers>
             </Grid>
             <StackPanel VerticalAlignment="Bottom" Orientation="Vertical">
-              <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Style="{StaticResource AlbumInfoStyle}" Text="{Binding Path=Photos.Count}"/>
-                <TextBlock
-                  Margin="3,0,0,0"
-                  VerticalAlignment="Center"
-                  Style="{StaticResource AlbumInfoStyle}"
-                  Text="photos"/>
-              </StackPanel>
+              <TextBlock HorizontalAlignment="Left" 
+                         FontFamily="{DynamicResource SansSerifFont}" 
+                         FontSize="{DynamicResource SmallFontSize1}" 
+                         FontWeight="Light"
+                         Foreground="{DynamicResource AlbumInfoForeground}">
+                <TextBlock.Style>
+                  <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text">
+                      <Setter.Value>
+                        <Binding StringFormat="{}{0} photos" Path="Photos.Count"/>
+                      </Setter.Value>
+                    </Setter>
+                    
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Path=Photos.Count}" Value="1">
+                        <Setter Property="Text" Value="1 photo" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
               <TextBlock
-                HorizontalAlignment="Left"
-                Margin="0,2,0,0"
-                Style="{StaticResource AlbumTitleStyle}"
-                Text="{Binding Path=Title}"/>
+                  HorizontalAlignment="Left" 
+                  FontFamily="{DynamicResource SansSerifFont}" 
+                  FontSize="{DynamicResource SmallFontSize1}" 
+                  FontWeight="Light"
+                  Foreground="{DynamicResource AlbumInfoForeground}"                
+                  Margin="0,2,0,0"
+                  TextTrimming="CharacterEllipsis"
+                  Text="{Binding Path=Title}"/>
             </StackPanel>
           </Grid>
         </Button>

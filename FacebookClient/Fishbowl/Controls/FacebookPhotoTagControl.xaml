@@ -3,20 +3,14 @@
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:ClientManager="clr-namespace:ClientManager"
      xmlns:ClientManagerView="clr-namespace:ClientManager.View">
-  <Grid>
-    <TextBlock
-        FontSize="{DynamicResource SmallFontSize1}"
-        Foreground="#AAAAAA"  
-        TextWrapping="Wrap"
-        Margin="0,0,4,0"
-        MouseEnter="PhotoTag_MouseEnter"
-        MouseLeave="PhotoTag_MouseLeave">
-      <Hyperlink 
-          Style="{DynamicResource PhotoTagLink}"
-          Click="OnNavigateToContentButtonClicked"
-          ClientManagerView:ViewManager.NavigationContent="{Binding Contact}">
-        <TextBlock Text="{Binding Contact.Name}" TextWrapping="Wrap"/>
-      </Hyperlink>
-    </TextBlock>
-  </Grid>
+  <TextBlock
+      FontSize="{DynamicResource MediumFontSize}"
+      TextWrapping="Wrap"
+      Margin="0,0,4,0"
+      MouseEnter="PhotoTag_MouseEnter"
+      MouseLeave="PhotoTag_MouseLeave">
+    <Hyperlink  Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Contact}">
+      <TextBlock Text="{Binding Contact.Name}" TextWrapping="Wrap"/>
+    </Hyperlink>
+  </TextBlock>
 </UserControl>

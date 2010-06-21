@@ -166,6 +166,7 @@
     <Setter Property="Foreground" Value="#8F8F8F" />
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
+    <Setter Property="TextWrapping" Value="Wrap" />
   </Style>
   
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">

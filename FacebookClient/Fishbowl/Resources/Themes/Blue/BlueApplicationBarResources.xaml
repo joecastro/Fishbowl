@@ -12,10 +12,14 @@
     
     <SolidColorBrush x:Key="ApplicationBarBorderBrush"
                      Color="#FFAAD4FF" />
-    
-    <SolidColorBrush x:Key="HyperlinkForegroundBrush"
-                     Color="#3B5998" />
-    
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0"/>
+      <GradientStop Color="#3F60A0" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
     <SolidColorBrush x:Key="ApplicationBarSeparationBackgroundBrush"
                          Color="#FF95A5C7"/>
 

@@ -350,7 +350,7 @@
     <!-- DataTemplate for explorer nodes that display a status post  -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerPostNode}">
       <Button Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" CommandParameter="{Binding}" 
-                    Style="{StaticResource PhotoExplorerNodeButton}" Margin="2,6">
+              Style="{StaticResource PhotoExplorerNodeButton}" Margin="2,6">
         <Border Background="{DynamicResource Background_ExplorerNode}" CornerRadius="7" Padding="5" Margin="2">
           <Grid>
             <Grid.ColumnDefinitions>
@@ -359,8 +359,7 @@
             </Grid.ColumnDefinitions>
 
             <Image Source="../Resources/Images/Icons/feed_icon.png" Width="16" Height="16" Margin="3,0,6,0" />
-            <TextBlock Grid.Column="1" Text="{Binding Post.Message}" MaxWidth="200" FontWeight="Bold" 
-                                   Foreground="#FFFFFF" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="1" Text="{Binding Post.Message}" Style="{DynamicResource MessageTextBlockStyle}" MaxWidth="200" Foreground="White" TextTrimming="CharacterEllipsis"/>
           </Grid>
         </Border>
       </Button>
@@ -379,7 +378,7 @@
             </Grid.ColumnDefinitions>
 
             <Image Source="../Resources/Images/comment_icon.png" Width="13" Height="13" Margin="3,0,6,0" />
-            <TextBlock Grid.Column="1" Text="{Binding Comment.Text}" MaxWidth="200" FontWeight="Bold" Foreground="Black" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Column="1" Text="{Binding Comment.Text}" MaxWidth="200" Style="{DynamicResource MessageTextBlockStyle}" Foreground="Black" TextTrimming="CharacterEllipsis"/>
           </Grid>
         </Border>
       </Button>

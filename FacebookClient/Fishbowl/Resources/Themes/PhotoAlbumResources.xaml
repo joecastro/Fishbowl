@@ -105,20 +105,36 @@
             </ClientManagerControls:FacebookImageControl>
           </Grid>
         </Button>
+
         <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
             <FacebookClient:BindableRun Text="{Binding Owner.Name}"/>
           </Hyperlink>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" TextWrapping="Wrap">
+
+        <TextBlock Style="{DynamicResource CreatedTextBlockStyle}">
           <TextBlock.Text>
             <Binding StringFormat="{}Last updated {0}" Path="LastModified" Converter="{StaticResource DateTimeConverter}"/>
           </TextBlock.Text>
         </TextBlock>
-        <TextBlock Foreground="#8F8F8F" FontSize="{DynamicResource SmallFontSize1}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
-          <TextBlock.Text>
-            <Binding StringFormat="{}{0} photos" Path="Photos.Count" />
-          </TextBlock.Text>
+        <TextBlock Style="{DynamicResource CreatedTextBlockStyle}">
+          <TextBlock>
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                  <Setter Property="Text">
+                    <Setter.Value>
+                      <Binding StringFormat="{}{0} photos" Path="Photos.Count"/>
+                    </Setter.Value>
+                  </Setter>
+                    
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=Photos.Count}" Value="1">
+                      <Setter Property="Text" Value="1 photo" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+          </TextBlock>
         </TextBlock>
       </StackPanel>
 
