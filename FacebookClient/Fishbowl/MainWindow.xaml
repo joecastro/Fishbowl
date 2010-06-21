@@ -14,7 +14,7 @@
     Background="{DynamicResource MainWindowBackgroundBrush}"
     ShowsNavigationUI="False"
     Title="Fishbowl for Facebook - Preview"
-    diag:PresentationTraceSources.TraceLevel="High">
+    shell:WindowChrome.WindowChrome="{DynamicResource ApplicationWindowChrome}">
   
   <NavigationWindow.Style>
     <Style>
