@@ -50,6 +50,9 @@ namespace FacebookClient
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
             { "Red",      new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) },
+
+            // In development
+            { "Modern",   new Uri(@"Resources\Themes\FBModern\FBModern.xaml", UriKind.Relative) },
 #endif
         };
         private static readonly List<string> _ThemeNames = new List<string>(_ThemeLookup.Keys);
@@ -78,7 +81,6 @@ namespace FacebookClient
                     Settings.Default.IsFirstRun = value;
                     _NotifyPropertyChanged("IsFirstRun");
                 }
-
             }
         }
 
