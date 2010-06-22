@@ -1,15 +1,17 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalApplicationBarResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalMainPageResources.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonApplicationBarResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalApplicationBarResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/CharcoalMainPageResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
-    <SolidColorBrush x:Key="Foreground_ContentElement" Color="White"/>
+  <SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
+  <SolidColorBrush x:Key="Foreground_ContentElement" Color="White"/>
 
     <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
         <LinearGradientBrush.GradientStops>

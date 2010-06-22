@@ -562,7 +562,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\Themes\ApplicationBarResources.xaml">
+    <Page Include="Resources\Themes\CommonApplicationBarResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -3,22 +3,15 @@
 
     <!--<SolidColorBrush x:Key="ApplicationBarBackground">Black</SolidColorBrush>-->
 
-    <LinearGradientBrush x:Key="ApplicationBarBackground"
-                    EndPoint="1,0"
-					StartPoint="0,0">
-        <GradientStop Color="#FF1B2027"
-						Offset="0.9" />
-        <GradientStop Color="#FF111411"
-						Offset="0.356" />
-        <GradientStop Color="#FF141D30"
-						Offset="0.002" />
+    <LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
+      <GradientStop Color="#FF1B2027" Offset="0.9" />
+      <GradientStop Color="#FF111411" Offset="0.356" />
+      <GradientStop Color="#FF141D30" Offset="0.002" />
     </LinearGradientBrush>
     
-    <SolidColorBrush x:Key="ApplicationBarBorderBrush"
-                     Color="DarkGray" />
+    <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="DarkGray" />
 
-    <SolidColorBrush x:Key="SearchTextBoxBrush"
-                     Color="#FF051935" />
+    <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#FF051935" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
