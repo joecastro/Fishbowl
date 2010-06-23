@@ -7,6 +7,7 @@
     using System.Windows;
     using Contigo;
     using Standard;
+    using Microsoft.Windows.Shell;
 
     public sealed class ActionCommands
     {
@@ -36,6 +37,12 @@
         public SetSortOrderCommand SetSortOrderCommand { get; private set; }
         public StartSyncCommand StartSyncCommand { get; private set; }
         public WriteOnWallCommand WriteOnWallCommand { get; private set; }
+
+        // TODO: These really belong on MainWindowCommands, but that's not currently properly exposed to XAML
+        public CloseWindowCommand CloseWindowCommand { get; private set; }
+        public MinimizeWindowCommand MinimizeWindowCommand { get; private set; }
+        public MaximizeWindowCommand MaximizeWindowCommand { get; private set; }
+        public RestoreWindowCommand RestoreWindowCommand { get; private set; }
     }
 
     public abstract class ActionCommand : ViewCommand
@@ -369,6 +376,74 @@
             {
                 ServiceProvider.FacebookService.AddComment(photo, comment);
             }
+        }
+    }
+
+    public sealed class CloseWindowCommand : ActionCommand
+    {
+        public CloseWindowCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return true;
+        }
+
+        protected override void  PerformAction(object parameter)
+        {
+            SystemCommands.CloseWindow(Application.Current.MainWindow);
+        }
+    }
+
+    public sealed class MinimizeWindowCommand : ActionCommand
+    {
+        public MinimizeWindowCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return true;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            SystemCommands.MinimizeWindow(Application.Current.MainWindow);
+        }
+    }
+
+    public sealed class MaximizeWindowCommand : ActionCommand
+    {
+        public MaximizeWindowCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return Application.Current.MainWindow.WindowState == WindowState.Normal;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            SystemCommands.MaximizeWindow(Application.Current.MainWindow);
+        }
+    }
+
+    public sealed class RestoreWindowCommand : ActionCommand
+    {
+        public RestoreWindowCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return true;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            SystemCommands.RestoreWindow(Application.Current.MainWindow);
         }
     }
 }

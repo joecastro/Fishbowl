@@ -9,7 +9,16 @@
 
   <FacebookClient:NotConverter x:Key="NotConverter"/>
 
-  <shell:WindowChrome x:Key="ApplicationWindowChrome" GlassFrameThickness="0" CornerRadius="8" CaptionHeight="20"/>
+  <!-- Keeping DWM enabled for the window when possible because it provides a drop shadow
+       and it significantly improves resizing behavior from the top left corner.
+       TODO: Window background needs to be transparent, and the corner radius needs to be applied to the 
+       header and footer.  Currently the Window's background is used in a couple places, so that needs to be split
+       into two properties.  -->
+  <shell:WindowChrome x:Key="ApplicationWindowChrome" 
+                      GlassFrameThickness="1,0,1,1" 
+                      CornerRadius="8" 
+                      CaptionHeight="42"
+                      ResizeBorderThickness="8"/>
   
   <SolidColorBrush x:Key="ApplicationBarBackground" Color="#FF3B5998"/>
 
@@ -87,10 +96,6 @@
   </LinearGradientBrush>
 
   <SolidColorBrush x:Key="ProfilePictureBackgroundBrush" Color="#FF91A2C1"/>
-
-  <SolidColorBrush x:Key="ProfilePictureBorderBrush" Color="#FF323A4B"/>
-
-  <SolidColorBrush x:Key="FriendsButtonHeadBackgroundBrush" Color="#FFCAD2E3"/>
 
   <ControlTemplate x:Key="ToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
     <Grid x:Name="Root">
@@ -212,10 +217,12 @@
     <Setter Property="OverridesDefaultStyle" Value="True" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}"/>
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
   </Style>
 
   <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MiniModeButtonStyle}">
     <Setter Property="Template" Value="{StaticResource SpinningToolbarButtonTemplate}" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
   </Style>
 
   <Style x:Key="NavigationButtonStyle" TargetType="{x:Type ButtonBase}">
@@ -227,6 +234,7 @@
     <Setter Property="Focusable" Value="False" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}"/>
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
   </Style>
 
   <Style x:Key="NavigationRadioButtonStyle" TargetType="{x:Type ToggleButton}">
@@ -238,6 +246,7 @@
     <Setter Property="Focusable" Value="False" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template" Value="{StaticResource ToolbarToggleButtonTemplate}"/>
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
   </Style>
 
   <Style x:Key="FooterToggleButtonStyle" TargetType="{x:Type ToggleButton}">
@@ -250,6 +259,7 @@
     <Setter Property="Focusable" Value="False" />
     <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Template" Value="{StaticResource ToolbarToggleButtonTemplate}" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
   </Style>
 
   <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}">
@@ -264,19 +274,16 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:MainHeaderControl}">
-          <Grid x:Name="Header" Background="{DynamicResource ApplicationBarBackground}" Height="85" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" >
+          <Grid x:Name="Header" Background="{DynamicResource ApplicationBarBackground}" Height="50" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" >
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="Auto" />
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
 
-            <Button x:Name="BackButton" Grid.RowSpan="3" Command="NavigationCommands.BrowseBack" Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" ToolTip="Go back">
+            <Button x:Name="BackButton" 
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                    Command="NavigationCommands.BrowseBack" Width="25" Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0" ToolTip="Go back">
               <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                   <Border x:Name="ButtonBorder">
@@ -320,6 +327,16 @@
               </Button.Template>
             </Button>
 
+            <Button Margin="20,-10,0,0" 
+                  MinHeight="20"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{DynamicResource RefreshButtonStyle}"
+                  ToolTip="Think you're missing something? Click to refresh now.">
+              <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
+            </Button>
+
             <!-- Status -->
             <StackPanel Grid.Column="1" Margin="6,3,3,3" VerticalAlignment="Top" HorizontalAlignment="Left" >
               <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource LargeFontSize1}" FontWeight="Light" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis"
@@ -339,96 +356,105 @@
                   </ToolTip>
                 </TextBlock.ToolTip>
               </TextBlock>
+
+              <Canvas HorizontalAlignment="Left" Margin="0,0,0,0" ClipToBounds="False">
+                <FacebookClient:UpdateStatusControl x:Name="UpdateStatusControl" Margin="10,0,0,0" Width="300" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" />
+              </Canvas>
             </StackPanel>
 
-            <Canvas HorizontalAlignment="Left" Grid.Column="1" Grid.Row="2" Margin="-10,0,0,0" ClipToBounds="False">
-              <FacebookClient:UpdateStatusControl x:Name="UpdateStatusControl" Margin="10,0,0,0" Width="300" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" />
-            </Canvas>
-
-            <!-- Search Panel -->
-            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" Margin="10,2,5,-2">
-              <FacebookClient:CommandTextBox x:Name="SearchTextBox"
-                  Width="200" 
-                  HorizontalAlignment="Right" 
-                  Margin="5,0" 
-                  VerticalAlignment="Center" 
-                  CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" 
-                  CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" 
-                  IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
-                  Style="{DynamicResource SearchTextBoxStyle}" 
-                  Tag="Search" 
-                  BannerText="Search" />
-              <Button Margin="0,3" 
-                MinHeight="20"
-                VerticalAlignment="Center" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                Style="{DynamicResource RefreshButtonStyle}"
-                ToolTip="Think you're missing something? Click to refresh now.">
-                <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
-              </Button>
-
+            <DockPanel Grid.Column="2" HorizontalAlignment="Right">
               <Button Margin="0,3"
-                  VerticalAlignment="Center" HorizontalAlignment="Center" 
+                  DockPanel.Dock="Right"
+                  VerticalAlignment="Top" HorizontalAlignment="Center" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.CloseWindowCommand}"
+                  Style="{DynamicResource MiniModeButtonStyle}"
+                  ToolTip="Close">
+                <Rectangle Margin="2" Width="12" Height="12" Fill="{DynamicResource CloseDrawingBrush}" />
+              </Button>
+              <Button Margin="0,3"
+                  DockPanel.Dock="Right"
+                  VerticalAlignment="Top" HorizontalAlignment="Center" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MinimizeWindowCommand}"
+                  Style="{DynamicResource MiniModeButtonStyle}"
+                  ToolTip="Minimize">
+                <Rectangle Margin="2" Width="12" Height="12" Fill="{DynamicResource MinimizeDrawingBrush}" />
+              </Button>
+              <Button Margin="0,3"
+                  DockPanel.Dock="Right"
+                  VerticalAlignment="Top" HorizontalAlignment="Center" 
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                   Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                   Style="{DynamicResource MiniModeButtonStyle}"
                   ToolTip="Switch to mini-mode window">
                 <Rectangle Margin="2" Width="18" Height="18" Fill="{DynamicResource MiniModeIconDrawingBrush}" />
               </Button>
-            </StackPanel>
 
-            <Grid x:Name="NavigationPanel" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" Margin="2,3,5,0" HorizontalAlignment="Right">
-              <Grid.Resources>
-                <Style TargetType="Rectangle">
-                  <Setter Property="Height" Value="23" />
-                  <Setter Property="Margin" Value="0" />
-                </Style>
-                <Style TargetType="TextBlock">
-                  <Setter Property="Foreground" Value="White" />
-                  <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}" />
-                  <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
-                  <Setter Property="FontWeight" Value="Light" />
-                  <Setter Property="VerticalAlignment" Value="Top" />
-                  <Setter Property="HorizontalAlignment" Value="Center" />
-                  <Setter Property="Margin" Value="4,5,4,0" />
-                </Style>
-              </Grid.Resources>
-              <StackPanel Orientation="Horizontal">
-                <RadioButton x:Name="HomeNavigationButton" Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" IsChecked="True" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See what's new with your friends">
-                  <DockPanel>
-                    <TextBlock DockPanel.Dock="Bottom" x:Name="HomeNavigationButtonText" Text="Home" />
-                    <Rectangle x:Name="HomeNavigationButtonImage" Fill="{DynamicResource Home3DrawingBrush}" Width="23" />
-                  </DockPanel>
-                </RadioButton>
-                <RadioButton x:Name="FriendsNavigationButton" Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on your friends">
-                  <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{DynamicResource StackedBuddies2DrawingBrush}" Width="23" />
-                    <TextBlock x:Name="FriendsNavigationButtonText" Text="Friends" />
-                  </StackPanel>
-                </RadioButton>
-                <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself">
-                  <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{DynamicResource SingleBuddy2DrawingBrush}" Width="23" />
-                    <TextBlock x:Name="ProfileNavigationButtonText" Text="Profile" />
-                  </StackPanel>
-                </RadioButton>
-                <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos">
-                  <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{DynamicResource PhotosDrawingBrush}" Width="36" />
-                    <TextBlock x:Name="PhotoAlbumsNavigationButtonText" Text="Photos" />
-                  </StackPanel>
-                </RadioButton>
-                <Button x:Name="FacebookButton" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Go to Facebook">
-                  <StackPanel Orientation="Vertical">
-                    <Rectangle Fill="{DynamicResource FacebookLogoDrawingBrush}" Width="30" />
-                    <TextBlock x:Name="FacebookButtonText" Text="Facebook" />
-                  </StackPanel>
-                </Button>
-              </StackPanel>
-            </Grid>
+              <Grid x:Name="NavigationPanel" Margin="2,3,5,0" HorizontalAlignment="Right">
+                <Grid.Resources>
+                  <Style TargetType="Rectangle">
+                    <Setter Property="Height" Value="23" />
+                    <Setter Property="Margin" Value="0" />
+                  </Style>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}" />
+                    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+                    <Setter Property="FontWeight" Value="Light" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="4,5,4,0" />
+                  </Style>
+                </Grid.Resources>
+                <StackPanel Orientation="Horizontal">
+                  <RadioButton x:Name="HomeNavigationButton" Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" IsChecked="True" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See what's new with your friends">
+                    <DockPanel>
+                      <TextBlock DockPanel.Dock="Bottom" x:Name="HomeNavigationButtonText" Text="Home" />
+                      <Rectangle x:Name="HomeNavigationButtonImage" Fill="{DynamicResource Home3DrawingBrush}" Width="23" />
+                    </DockPanel>
+                  </RadioButton>
+                  <RadioButton x:Name="FriendsNavigationButton" Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on your friends">
+                    <StackPanel Orientation="Vertical">
+                      <Rectangle Fill="{DynamicResource StackedBuddies2DrawingBrush}" Width="23" />
+                      <TextBlock x:Name="FriendsNavigationButtonText" Text="Friends" />
+                    </StackPanel>
+                  </RadioButton>
+                  <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself">
+                    <StackPanel Orientation="Vertical">
+                      <Rectangle Fill="{DynamicResource SingleBuddy2DrawingBrush}" Width="23" />
+                      <TextBlock x:Name="ProfileNavigationButtonText" Text="Profile" />
+                    </StackPanel>
+                  </RadioButton>
+                  <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos">
+                    <StackPanel Orientation="Vertical">
+                      <Rectangle Fill="{DynamicResource PhotosDrawingBrush}" Width="36" />
+                      <TextBlock x:Name="PhotoAlbumsNavigationButtonText" Text="Photos" />
+                    </StackPanel>
+                  </RadioButton>
+                  <FacebookClient:CommandTextBox 
+                      x:Name="SearchTextBox" 
+                      DockPanel.Dock="Right" 
+                      Width="20" 
+                      HorizontalAlignment="Right" 
+                      Margin="5,0" 
+                      VerticalAlignment="Center" 
+                      CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" 
+                      CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" 
+                      IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" 
+                      Style="{DynamicResource SearchTextBoxStyle}" 
+                      Tag="Search" 
+                      BannerText="Search" />
+                  <Button x:Name="FacebookButton" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Style="{StaticResource NavigationButtonStyle}" ToolTip="Go to Facebook">
+                    <StackPanel Orientation="Vertical">
+                      <Rectangle Fill="{DynamicResource FacebookLogoDrawingBrush}" Width="30" />
+                      <TextBlock x:Name="FacebookButtonText" Text="Facebook" />
+                    </StackPanel>
+                  </Button>
+                </StackPanel>
+              </Grid>
+            </DockPanel>
           </Grid>
-
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -528,15 +554,15 @@
                 Margin="3,1"
                 DockPanel.Dock="Left"
                 MinHeight="20"
-		VerticalAlignment="Center"
+		        VerticalAlignment="Center"
                 HorizontalAlignment="Left" 
-		VerticalContentAlignment="Center" 
+		        VerticalContentAlignment="Center" 
                 HorizontalContentAlignment="Center"
-		Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" 
+		        Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" 
                 CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
                 Style="{DynamicResource MiniModeButtonStyle}" 
                 ToolTipService.Placement="Top"
-		ToolTip="View and change settings">
+		        ToolTip="View and change settings">
               <StackPanel Orientation="Horizontal">
                 <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource SettingsDrawingBrush}" />
                 <TextBlock>Settings</TextBlock>
