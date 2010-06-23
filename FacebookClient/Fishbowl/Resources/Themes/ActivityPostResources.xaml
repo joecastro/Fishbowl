@@ -191,24 +191,22 @@
       </Grid.ColumnDefinitions>
       <Rectangle Height="2" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
       <ClientManagerControls:FacebookImageDragContainer VerticalAlignment="Top" FacebookImage="{Binding FromUser.Image}">
-        <Button x:Name="NewsfeedProfilePhotoButton" RenderTransformOrigin="0.5,0.5" Width="60" Height="60" Margin="0,5" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" Style="{DynamicResource AnimatedItemButton}">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <RotateTransform Angle="4.5" />
-                </TransformGroup>
-            </Button.RenderTransform>
-            <Grid>
-            <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
-            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding FromUser.Image}" FacebookImageDimensions="Square">
-              <ClientManagerControls:FacebookImageControl.Template>
-                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                  <Border Margin="2,2,2.5,3.5" CornerRadius="3">
-                    <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                  </Border>
-                </ControlTemplate>
-              </ClientManagerControls:FacebookImageControl.Template>
-            </ClientManagerControls:FacebookImageControl>
-          </Grid>
+        <Button x:Name="NewsfeedProfilePhotoButton" 
+            RenderTransformOrigin="0.5,0.5" 
+            Width="60" 
+            Height="60" 
+            Margin="0,5"
+            Click="OnNavigateToContentButtonClicked" 
+            ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" 
+            Style="{DynamicResource AnimatedItemButton}"
+            RenderTransform="{DynamicResource CommentRenderTransform}">
+          <FacebookClient:ShinyImageControl FacebookImage="{Binding FromUser.Image}"
+              Width="50" Height="50" 
+              ShowGlare="False" 
+              FacebookImageDimensions="Square" 
+              CornerRadius="0" 
+              ImagePadding="2"
+              ActivityColor="White"/>
         </Button>
       </ClientManagerControls:FacebookImageDragContainer>
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">

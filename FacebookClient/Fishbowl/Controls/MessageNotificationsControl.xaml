@@ -41,62 +41,49 @@
                       <ColumnDefinition Width="150" />
                       <ColumnDefinition Width="300" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="Auto" />
-                      <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <Grid Grid.RowSpan="2" RenderTransformOrigin="0.5,0.5" Width="50" Height="50" VerticalAlignment="Top">
-                      <Grid.RenderTransform>
-                        <TransformGroup>
-                          <RotateTransform Angle="-6" />
-                        </TransformGroup>
-                      </Grid.RenderTransform>
+                    <FacebookClient:FriendButton
+                        Friend="{Binding Sender}" 
+                        Style="{DynamicResource TinyFriendButtonStyle}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"/>
 
-                      <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png" />
-                      <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Sender.Image}" FacebookImageDimensions="Square">
-                        <ClientManagerControls:FacebookImageControl.Template>
-                          <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                            <Border Margin="2,2,2,3">
-                              <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                            </Border>
-                          </ControlTemplate>
-                        </ClientManagerControls:FacebookImageControl.Template>
-                      </ClientManagerControls:FacebookImageControl>
-                    </Grid>
+                    <StackPanel Grid.Column="1">
+                      <TextBlock TextWrapping="Wrap" Style="{DynamicResource ProfileNameTextBlockStyle}" FontSize="{DynamicResource MiddleFontSize}">
+                        <Hyperlink 
+                            Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
+                            CommandParameter="{Binding Sender}">
+                          <FacebookClient:BindableRun Text="{Binding Sender.Name}" />
+                        </Hyperlink>
+                      </TextBlock>
 
-                    <TextBlock Grid.Column="1" TextWrapping="Wrap" Style="{DynamicResource ProfileNameTextBlockStyle}">
-                      <Hyperlink 
-                          Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
-                          CommandParameter="{Binding Sender}">
-                        <FacebookClient:BindableRun Text="{Binding Sender.Name}" />
-                      </Hyperlink>
-                    </TextBlock>
-
-                    <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}"/>
-
-                    <TextBlock Grid.Column="2" TextWrapping="Wrap" FontWeight="Bold" Style="{DynamicResource AttachmentTitleTextBlockStyle}">
-                      <Hyperlink 
-                          Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
-                          CommandParameter="{Binding Link}">
-                        <FacebookClient:BindableRun>
-                          <FacebookClient:BindableRun.Style>
-                            <Style TargetType="{x:Type FacebookClient:BindableRun}">
-                              <Setter Property="Text" Value="{Binding Title}"/>
-                              <Style.Triggers>
-                                <DataTrigger Binding="{Binding Title}" Value="">
-                                  <Setter Property="Text" Value="(No Subject)"/>
-                                </DataTrigger>
-                              </Style.Triggers>
-                            </Style>
-                          </FacebookClient:BindableRun.Style>
-                        </FacebookClient:BindableRun>
-                      </Hyperlink>
-                    </TextBlock>
-                        
-                    <TextBlock Grid.Column="2" Grid.Row="2" TextWrapping="Wrap" Style="{DynamicResource MessageTextBlockStyle}">
-                      <FacebookClient:HyperlinkTextContent Text="{Binding Description}" RequestNavigate="_OnMessageRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}" />
-                    </TextBlock>
+                      <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Top" TextWrapping="Wrap" Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="2">
+                      <TextBlock TextWrapping="Wrap" FontWeight="Bold" Style="{DynamicResource AttachmentTitleTextBlockStyle}" FontSize="{DynamicResource MiddleFontSize}">
+                        <Hyperlink 
+                            Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
+                            CommandParameter="{Binding Link}">
+                          <FacebookClient:BindableRun>
+                            <FacebookClient:BindableRun.Style>
+                              <Style TargetType="{x:Type FacebookClient:BindableRun}">
+                                <Setter Property="Text" Value="{Binding Title}"/>
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding Title}" Value="">
+                                    <Setter Property="Text" Value="(No Subject)"/>
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </FacebookClient:BindableRun.Style>
+                          </FacebookClient:BindableRun>
+                        </Hyperlink>
+                      </TextBlock>
+                          
+                      <TextBlock TextWrapping="Wrap" Style="{DynamicResource MessageTextBlockStyle}">
+                        <FacebookClient:HyperlinkTextContent Text="{Binding Description}" RequestNavigate="_OnMessageRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}" />
+                      </TextBlock>
+                    </StackPanel>
                   </Grid>
                 </DockPanel>
               </DataTemplate>

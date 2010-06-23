@@ -8,36 +8,7 @@
     Focusable="False">
   <UserControl.Resources>
     <DataTemplate x:Key="ItemTemplate">
-      <ClientManagerControls:FacebookContactDragContainer FacebookContact="{Binding}">
-        <Button x:Name="ItemButton" 
-                VerticalAlignment="Top" 
-                Style="{DynamicResource AnimatedItemButton}"
-                Margin="5"
-                Click="_OnFriendButtonClicked"
-                RenderTransformOrigin="0.5,0.5">
-          <Button.RenderTransform>
-            <TransformGroup>
-              <RotateTransform Angle="-6"/>
-            </TransformGroup>
-          </Button.RenderTransform>
-          <Viewbox>
-            <Grid Width="106" Height="106">
-              <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png"/>
-              <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Big">
-                <ClientManagerControls:FacebookImageControl.Template>
-                  <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                    <Border Margin="4,4,4.5,6">
-                      <Border.Background>
-                        <ImageBrush Stretch="UniformToFill" ImageSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                      </Border.Background>
-                    </Border>
-                  </ControlTemplate>
-                </ClientManagerControls:FacebookImageControl.Template>
-              </ClientManagerControls:FacebookImageControl>
-            </Grid>
-          </Viewbox>
-        </Button>
-      </ClientManagerControls:FacebookContactDragContainer>
+      <FacebookClient:FriendButton Friend="{Binding}" Style="{DynamicResource SmallFriendButtonStyle}" Margin="5" />
     </DataTemplate>
 
     <Style x:Key="FriendsBarListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
@@ -84,17 +55,10 @@
                           KeyTime="00:00:00.0700000"
                           Value="1.4" />
                       </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
-                                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
-                                                                 Storyboard.TargetName="ButtonBorder">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00"
-                                                            Value="1"
-                                                            KeySpline="0,0,0.875,1" />
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0400000"
-                                                            Value="1.5"
-                                                            KeySpline="0.125,0,0.875,1" />
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0700000"
-                                                            Value="1.4" />
+                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="ButtonBorder">
+                        <SplineDoubleKeyFrame KeyTime="00:00:00" Value="1" KeySpline="0,0,0.875,1" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.0400000" Value="1.5" KeySpline="0.125,0,0.875,1" />
+                        <SplineDoubleKeyFrame KeyTime="00:00:00.0700000" Value="1.4" />
                       </DoubleAnimationUsingKeyFrames>
                     </Storyboard>
                   </BeginStoryboard>

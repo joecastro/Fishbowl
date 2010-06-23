@@ -47,11 +47,5 @@
                 friends.CollectionChanged -= new NotifyCollectionChangedEventHandler(Friends_CollectionChanged);
             }
         }
-
-        private void _OnFriendButtonClicked(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(button.DataContext);
-        }
     }
 }

@@ -77,6 +77,7 @@
   <ItemsPanelTemplate x:Key="FilmStripPanel">
     <FacebookClient:FilmStripPanel ItemHeight="{Binding RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:FilmStripControl}}, Path=ItemHeight}"/>
   </ItemsPanelTemplate>
+
   <!-- Animations for the photos in the film strip -->
   <Style x:Key="FilmStripItemStyle" TargetType="{x:Type ListBoxItem}">
     <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -140,22 +141,18 @@
       </Setter.Value>
     </Setter>
     <Style.Triggers>
-      <!--
-            Ensure the ListBoxItem is at the top of the ZIndex on MouseOver or else it will overlap with adjacent ListBoxItems
-            when it is zoomed-in during selection. 
-            -->
+      <!-- Ensure the ListBoxItem is at the top of the ZIndex on MouseOver or else it will overlap with 
+           adjacent ListBoxItems when it is zoomed-in during selection. -->
       <Trigger Property="IsMouseOver" Value="true">
         <Setter Property="Panel.ZIndex" Value="1"/>
       </Trigger>
     </Style.Triggers>
   </Style>
 
-  <!-- The panel template for listing the photo's tags -->
   <ItemsPanelTemplate x:Key="PhotoTagPanel">
     <WrapPanel IsItemsHost="True"/>
   </ItemsPanelTemplate>
 
-  <!-- Control template for the photo display control -->
   <Style TargetType="{x:Type FacebookClient:PhotoDisplayControl}">
     <Setter Property="Template">
       <Setter.Value>
@@ -213,12 +210,12 @@
         <ControlTemplate TargetType="{x:Type Button}">
           <Grid>
             <Border
-                          x:Name="hover"
-                          Background="{DynamicResource PhotoViewerToolbarButtonSelectedBrush}"
-                          BorderBrush="{DynamicResource PhotoViewerToolbarButtonSelectedBrush}"
-                          BorderThickness="1"
-                          CornerRadius="3"
-                          Opacity="0"/>
+                x:Name="hover"
+                Background="{DynamicResource PhotoViewerToolbarButtonSelectedBrush}"
+                BorderBrush="{DynamicResource PhotoViewerToolbarButtonSelectedBrush}"
+                BorderThickness="1"
+                CornerRadius="3"
+                Opacity="0"/>
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Grid>
           <ControlTemplate.Triggers>
@@ -506,26 +503,29 @@
         <Control DockPanel.Dock="Bottom" Style="{StaticResource AlbumStripStyle}"/>
 
         <!-- photo contact info and comments -->
-        <DockPanel 
+        <DockPanel
             Margin="10"
             DockPanel.Dock="Left"
             VerticalAlignment="Top"
             Width="220"
-            HorizontalAlignment="Left"
-            DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}">
-          <Control DockPanel.Dock="Top" Style="{StaticResource AlbumInformationStyle}" />
+            HorizontalAlignment="Left">
+          <Control DockPanel.Dock="Top"
+              DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}"
+              Style="{StaticResource AlbumInformationStyle}" />
 
           <ScrollViewer
               Margin="0,5,0,0"
-              VerticalAlignment="Top"
-              VerticalScrollBarVisibility="Auto" >
+              VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+              VerticalScrollBarVisibility="Auto">
             <Border Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="6">
               <StackPanel>
-                <ItemsControl x:Name="CommentsList"
-                  Margin="10,0"
-                  ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}"
-                  ItemsSource="{Binding FacebookPhoto.Comments}"
-                  ItemTemplate="{StaticResource NewsFeedCommentTemplate}"/>
+                <ItemsControl
+                    x:Name="CommentsList"
+                    Margin="10,0"
+                    ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}"
+                    ItemsSource="{Binding FacebookPhoto.Comments}"
+                    ItemTemplate="{StaticResource NewsFeedCommentTemplate}"/>
                 <StackPanel Margin="7,5,0,7">
                   <FacebookClient:CommandTextBox x:Name="CommentTextBox" Margin="5,0" Panel.ZIndex="1" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddCommentToPhotoCommand}" FontSize="{DynamicResource MiddleFontSize}" SpellCheck.IsEnabled="True" TextWrapping="Wrap">
                     <FacebookClient:CommandTextBox.Style>
@@ -598,34 +598,12 @@
             Margin="10"
             Width="200" 
             DataContext="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum}">
-          <Button x:Name="ActivityButton" 
-              VerticalAlignment="Top"
-              Style="{StaticResource AnimatedItemButton}" 
+          <FacebookClient:FriendButton 
+              Friend="{Binding Owner}" 
               Margin="10"
-              Click="OnNavigateToContentButtonClicked"
-              HorizontalAlignment="Left" 
-              ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
-              RenderTransformOrigin="0.5,0.5">
-            <Button.RenderTransform>
-              <TransformGroup>
-                <RotateTransform Angle="-6"/>
-              </TransformGroup>
-            </Button.RenderTransform>
-            <Grid Width="106" Height="106">
-              <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png"/>
-              <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Owner.Image}" FacebookImageDimensions="Big">
-                <ClientManagerControls:FacebookImageControl.Template>
-                  <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                    <Border Margin="4,4,4.5,6">
-                      <Border.Background>
-                        <ImageBrush Stretch="UniformToFill" ImageSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                      </Border.Background>
-                    </Border>
-                  </ControlTemplate>
-                </ClientManagerControls:FacebookImageControl.Template>
-              </ClientManagerControls:FacebookImageControl>
-            </Grid>
-          </Button>
+              Style="{DynamicResource MediumFriendButtonStyle}"
+              VerticalAlignment="Top" 
+              HorizontalAlignment="Left"/>
           <Control Style="{StaticResource AlbumInformationStyle}" />
         </StackPanel>
 

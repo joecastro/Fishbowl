@@ -1,20 +1,24 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFontResources.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+  
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFontResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <SolidColorBrush x:Key="ActivityPostCommentDividerBrush" Color="White" />
-    <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
+  <SolidColorBrush x:Key="ActivityPostCommentDividerBrush" Color="White" />
+  <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
 
-    <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
-        <LinearGradientBrush.GradientStops>
-            <GradientStop Color="#6A9FE9" Offset="0"/>
-            <GradientStop Color="#3F60A0" Offset="1"/>
-        </LinearGradientBrush.GradientStops>
-    </LinearGradientBrush>
+  <RotateTransform x:Key="FriendRenderTransform" Angle="-6"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="4.5"/>
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0"/>
+      <GradientStop Color="#3F60A0" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
 
     <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
       <LinearGradientBrush.GradientStops>
@@ -127,22 +131,52 @@
     <SolidColorBrush x:Key="FilterTabItemForegroundSelected1" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="FilterTabItemForegroundSelected2" Color="#FFFFFFFF"/>
 
-    <ControlTemplate x:Key="StandardButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
-        <Grid>
-            <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
-            <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
-            <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1" Stroke="White" >
-                <Rectangle.Fill>
-                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
-                        <GradientStop Color="#EEF3FE" Offset="0"/>
-                        <GradientStop Color="#C1D3FB" Offset="1"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-        </Grid>
-    </ControlTemplate>
+  <LinearGradientBrush x:Key="StandardButtonChromeNormalBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#EEF3FE" Offset="0"/>
+    <GradientStop Color="#C1D3FB" Offset="1"/>
+  </LinearGradientBrush>
 
-    <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
+  <LinearGradientBrush x:Key="StandardButtonChromePressedBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#A1B3DB" Offset="0"/>
+    <GradientStop Color="#00B9CEFB" Offset=".3"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="StandardButtonChromeHoverBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#F9F9F9" Offset="0"/>
+    <GradientStop Color="#C8D8FB" Offset="1"/>
+  </LinearGradientBrush>
+
+  <ControlTemplate x:Key="StandardButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+      <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1" Stroke="White" Fill="{DynamicResource StandardButtonChromeNormalBrush}" />
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardButtonChromePressedControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">
+        <Rectangle.Fill>
+          <LinearGradientBrush StartPoint="0,.5" EndPoint="10,.5" MappingMode="Absolute">
+            <GradientStop Color="#A1B3DB" Offset="0"/>
+            <GradientStop Color="#B9CEFB" Offset=".3"/>
+          </LinearGradientBrush>
+        </Rectangle.Fill>
+      </Rectangle>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1" Fill="{DynamicResource StandardButtonChromePressedBrush}"/>
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardButtonChromeHoverControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1" Fill="{DynamicResource StandardButtonChromeHoverBrush}"/>
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
         <Grid Margin="{TemplateBinding Margin}">
             <Rectangle Margin="2,4,-2,-4" Fill="#11000000"/>
             <Rectangle Margin="4,2,-4,-2" Fill="#11000000"/>
@@ -198,42 +232,6 @@
                     <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
                         <GradientStop Color="#EEF3FE" Offset="0"/>
                         <GradientStop Color="#C1D3FB" Offset="1"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="StandardButtonChromePressedControlTemplate" TargetType="{x:Type Control}">
-        <Grid>
-            <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">
-                <Rectangle.Fill>
-                    <LinearGradientBrush StartPoint="0,.5" EndPoint="10,.5" MappingMode="Absolute">
-                        <GradientStop Color="#A1B3DB" Offset="0"/>
-                        <GradientStop Color="#B9CEFB" Offset=".3"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">
-                <Rectangle.Fill>
-                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
-                        <GradientStop Color="#A1B3DB" Offset="0"/>
-                        <GradientStop Color="#00B9CEFB" Offset=".3"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="StandardButtonChromeHoverControlTemplate" TargetType="{x:Type Control}">
-        <Grid>
-            <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
-            <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
-            <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">
-                <Rectangle.Fill>
-                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
-                        <GradientStop Color="#F9F9F9" Offset="0"/>
-                        <GradientStop Color="#C8D8FB" Offset="1"/>
                     </LinearGradientBrush>
                 </Rectangle.Fill>
             </Rectangle>
@@ -327,10 +325,10 @@
             <Control x:Name="hover" Opacity="0" Template="{StaticResource StandardButtonChromeHoverControlTemplate}"/>
             <Control x:Name="down" Opacity="0" Template="{StaticResource StandardButtonChromePressedControlTemplate}"/>
             <ContentPresenter x:Name="Content"
-          Content="{TemplateBinding Content}" 
-          Margin="{TemplateBinding Padding}" 
-          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                Content="{TemplateBinding Content}" 
+                Margin="{TemplateBinding Padding}" 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="False">

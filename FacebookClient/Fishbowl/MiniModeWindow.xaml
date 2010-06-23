@@ -288,26 +288,10 @@
                         VerticalAlignment="Top"
                         Click="_OnNavigateToContentButtonClicked" 
                         ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
-                        Style="{DynamicResource AnimatedItemButton}">
-                  <Grid Width="70" Height="70">
-                    <Grid RenderTransformOrigin="0.5,0.5">
-                      <Grid.RenderTransform>
-                        <TransformGroup>
-                          <RotateTransform Angle="-6" />
-                        </TransformGroup>
-                      </Grid.RenderTransform>
-                      <Image Source="pack://application:,,,/Resources/Images/avatar_background.png" />
-                      <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Actor.Image}" FacebookImageDimensions="Big">
-                        <ClientManagerControls:FacebookImageControl.Template>
-                          <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                            <Border Margin="4,4,4.5,6">
-                              <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                            </Border>
-                          </ControlTemplate>
-                        </ClientManagerControls:FacebookImageControl.Template>
-                      </ClientManagerControls:FacebookImageControl>
-                    </Grid>
-                  </Grid>
+                        Style="{DynamicResource AnimatedItemButton}"
+                        RenderTransform="{DynamicResource FriendRenderTransform}">
+                  <!-- Using standard button because we want custom click handler. -->
+                  <FacebookClient:ShinyImageControl Width="70" Height="70" FacebookImage="{Binding Actor.Image}" ShowGlare="False" FacebookImageDimensions="Normal" CornerRadius="0" ImagePadding="3" ActivityColor="White"/>
                 </Button>
 
                 <Button Grid.Row="2" Grid.Column="0" 

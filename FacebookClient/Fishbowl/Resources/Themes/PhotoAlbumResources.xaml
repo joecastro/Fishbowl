@@ -81,30 +81,12 @@
       </Grid.ColumnDefinitions>
       
       <StackPanel Orientation="Vertical" Width="200" Margin="10">
-        <Button x:Name="ActivityButton" VerticalAlignment="Top" Style="{DynamicResource AnimatedItemButton}" 
-                Margin="10" Click="OnNavigateToContentButtonClicked" HorizontalAlignment="Left" 
-                ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
-                RenderTransformOrigin="0.5,0.5">
-          <Button.RenderTransform>
-            <TransformGroup>
-              <RotateTransform Angle="-6"/>
-            </TransformGroup>
-          </Button.RenderTransform>
-          <Grid Width="106" Height="106">
-            <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/avatar_background.png"/>
-            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Owner.Image}" FacebookImageDimensions="Big">
-              <ClientManagerControls:FacebookImageControl.Template>
-                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                  <Border Margin="4,4,4.5,6">
-                    <Border.Background>
-                      <ImageBrush Stretch="UniformToFill" ImageSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                    </Border.Background>
-                  </Border>
-                </ControlTemplate>
-              </ClientManagerControls:FacebookImageControl.Template>
-            </ClientManagerControls:FacebookImageControl>
-          </Grid>
-        </Button>
+        <FacebookClient:FriendButton 
+            Friend="{Binding Owner}" 
+            Margin="10"
+            Style="{DynamicResource MediumFriendButtonStyle}" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Left" />
 
         <TextBlock FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold" FontSize="{DynamicResource LargeFontSize3}" Foreground="{DynamicResource ActivityPostUserNameForeground}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Owner}">
