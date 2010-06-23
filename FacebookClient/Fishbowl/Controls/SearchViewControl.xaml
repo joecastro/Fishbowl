@@ -156,7 +156,7 @@
             <Grid>
               <Grid Name="EffectGrid" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Grid.Effect>
-                  <DropShadowEffect BlurRadius="0" ShadowDepth="0" Color="#FF3B5998" Opacity=".5" />
+                <DropShadowEffect BlurRadius="0" ShadowDepth="0" Color="{DynamicResource IconDropShadowColor}" Opacity=".8" />
                 </Grid.Effect>
                 <Grid Width="92" Height="92" HorizontalAlignment="Left" Margin="50,20,0,0" VerticalAlignment="Top">
                   <Grid.Style>
