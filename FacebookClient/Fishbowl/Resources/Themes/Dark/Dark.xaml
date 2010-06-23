@@ -8,12 +8,4 @@
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Dark/DarkApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
-
-  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
-    <LinearGradientBrush.GradientStops>
-      <GradientStop Color="DarkGray" Offset="0" />
-      <GradientStop Color="Black" Offset="1"/>
-    </LinearGradientBrush.GradientStops>
-  </LinearGradientBrush>
-
 </ResourceDictionary>

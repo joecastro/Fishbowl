@@ -15,13 +15,22 @@
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
-      <GradientStop Color="DarkGray" Offset="0" />
+      <GradientStop Color="#3b5998" Offset="0" />
+      <GradientStop Color="#3b5998" Offset=".4" />
       <GradientStop Color="Black" Offset="1"/>
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="StatusTextBoxBrush"
-                     Color="#60051935" />
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#3b5998" Offset="0" />
+      <GradientStop Color="#3b5998" Offset=".4" />
+      <GradientStop Color="Black" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+
+  <SolidColorBrush x:Key="StatusTextBoxBrush" Color="#60051935" />
     
     <SolidColorBrush x:Key="UpdateStatusControlBrush"
                      Color="#FF051935" Opacity="0"/>
