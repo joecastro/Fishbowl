@@ -25,7 +25,14 @@ namespace Contigo
             }
             else
             {
-                ret = album1.Owner.CompareTo(album2.Owner);
+                if (album2.Owner == null)
+                {
+                    ret = 1;
+                }
+                else
+                {
+                    ret = album1.Owner.CompareTo(album2.Owner);
+                }
             }
 
             if (ret == 0)
@@ -43,7 +50,14 @@ namespace Contigo
             }
             else
             {
-                ret = album1.Owner.InterestLevel.CompareTo(album2.Owner.InterestLevel);
+                if (album2.Owner == null)
+                {
+                    ret = 1;
+                }
+                else
+                {
+                    ret = album1.Owner.InterestLevel.CompareTo(album2.Owner.InterestLevel);
+                }
             }
 
             if (ret == 0)
@@ -64,7 +78,14 @@ namespace Contigo
             }
             else
             {
-                ret = album2.Owner.CompareTo(album1.Owner);
+                if (album1.Owner == null)
+                {
+                    ret = 1;
+                }
+                else
+                {
+                    ret = album2.Owner.CompareTo(album1.Owner);
+                }
             }
 
             if (ret == 0)
@@ -82,7 +103,14 @@ namespace Contigo
             }
             else
             {
-                ret = album2.Owner.InterestLevel.CompareTo(album1.Owner.InterestLevel);
+                if (album2.Owner == null)
+                {
+                    ret = 1;
+                }
+                else
+                {
+                    ret = album2.Owner.InterestLevel.CompareTo(album1.Owner.InterestLevel);
+                }
             }
 
             if (ret == 0)
