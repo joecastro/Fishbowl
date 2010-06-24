@@ -80,16 +80,19 @@
             KeyboardNavigation.DirectionalNavigation="None"
             KeyboardNavigation.IsTabStop="False"/>
 
+        
         <Image x:Name="HeaderShadow"
           Height="6"
           Grid.Row="1"
+          Visibility="Collapsed"
           VerticalAlignment="Top"
           Source="Resources/Images/main_header_shadow.png"
           Stretch="Fill"/>
 
         <Image x:Name="FooterShadow"
             Height="4"
-            Grid.Row="1"
+            Grid.Row="1" 
+            Visibility="Collapsed" 
             VerticalAlignment="Bottom"
             Source="Resources/Images/main_header_shadow.png"
             Stretch="Fill"
