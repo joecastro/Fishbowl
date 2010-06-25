@@ -96,15 +96,12 @@
   </Style>
 
   <!-- Keeping DWM enabled for the window when possible because it provides a drop shadow
-       and it significantly improves resizing behavior from the top left corner.
-       TODO: Window background needs to be transparent, and the corner radius needs to be applied to the 
-       header and footer.  Currently the Window's background is used in a couple places, so that needs to be split
-       into two properties.  -->
+       and it significantly improves resizing behavior from the top left corner. -->
   <shell:WindowChrome 
     x:Key="ApplicationWindowChrome" 
-    GlassFrameThickness="{Binding {x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
+    GlassFrameThickness="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
     CornerRadius="10"
-    CaptionHeight="42"
+    CaptionHeight="82"
     />
 
   <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
@@ -525,7 +522,17 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:MainHeaderControl}">
-          <Border Background="{DynamicResource ApplicationBarBackground}" Height="90" CornerRadius="8,8,0,0" BorderBrush="#2c4371" BorderThickness="1,1,1,0">
+          <Border Background="{DynamicResource ApplicationBarBackground}" Height="90" BorderBrush="#2c4371" BorderThickness="1,1,1,0">
+            <Border.Style>
+              <Style TargetType="{x:Type Border}">
+                <Setter Property="CornerRadius" Value="8,8,0,0"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
+                    <Setter Property="CornerRadius" Value="0"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
             <Grid x:Name="Header" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60" />
@@ -636,7 +643,18 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
-          <Border Height="32" Grid.Row="2" Background="{StaticResource FooterBackground}" CornerRadius="0,0,8,8" BorderBrush="#2c4371" BorderThickness="1,0,1,1">
+          <Border Height="32" Grid.Row="2" Background="{StaticResource FooterBackground}" BorderBrush="#2c4371" BorderThickness="1,0,1,1">
+            <Border.Style>
+              <Style TargetType="{x:Type Border}">
+                <Setter Property="CornerRadius" Value="0,0,8,8"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
+                    <Setter Property="CornerRadius" Value="0"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+
             <Grid>
             <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
               <Border.Background>

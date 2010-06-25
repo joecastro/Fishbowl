@@ -39,4 +39,6 @@
     <GradientStop Color="#88000000" Offset="1" />
   </LinearGradientBrush>
 
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}"/>
+
 </ResourceDictionary>
