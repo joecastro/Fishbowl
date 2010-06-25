@@ -2,14 +2,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:FacebookClient="clr-namespace:FacebookClient" >
 
-  <!--<SolidColorBrush x:Key="ApplicationBarBackground">Black</SolidColorBrush>-->
-
-  <!--<LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
-    <GradientStop Color="#FF595959" Offset="0.9" />
-    <GradientStop Color="#FF3A3A3A" Offset="0.356" />
-    <GradientStop Color="#FF333333" Offset="0.002" />
-  </LinearGradientBrush>-->
-
   <LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
     <GradientStop Color="#111111" Offset="0" />
     <GradientStop Color="#222222" Offset="0.3" />
@@ -43,10 +35,6 @@
   <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#FF808080"  />
   <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
   <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
-  <LinearGradientBrush x:Key="ApplicationBarSeparationBackgroundBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-    <GradientStop Color="#FF363636" Offset="0" />
-    <GradientStop Color="#FF626262" Offset="1" />
-  </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
     <GradientStop Color="#FF3A3A3A" Offset="0.25"/>
@@ -54,19 +42,6 @@
   </LinearGradientBrush>
 
   <!--  Used in Based Resources instead of hardcoded color  -->
-  <SolidColorBrush x:Key="TooltipBorderBrush" Color="#FF333333" />
-
-  <LinearGradientBrush x:Key="ApplicationBarSeparationBorderBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-    <GradientStop Color="#FF262930" Offset="0" />
-    <GradientStop Color="#FF000000" Offset="1" />
-  </LinearGradientBrush>
+  <SolidColorBrush x:Key="TooltipBorderBrush" Color="#FF333333" /> 
   
-  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" EndPoint="0.5,1" StartPoint="0.5,0">
-    <GradientStop Color="#E5000000" Offset="0" />
-    <GradientStop Color="#00000000" Offset="1" />
-  </LinearGradientBrush>
-
-  <SolidColorBrush x:Key="ProfilePictureBackgroundBrush" Color="White" />
-  <SolidColorBrush x:Key="ProfilePictureBorderBrush" Color="Black" />
-  <SolidColorBrush x:Key="FriendsButtonHeadBackgroundBrush" Color="#FF707175" />
 </ResourceDictionary>

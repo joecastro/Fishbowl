@@ -4,8 +4,8 @@
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FBModern/FBModernMainPageResources.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FBModern/FBModernApplicationBarResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernMainPageResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
   
 </ResourceDictionary>

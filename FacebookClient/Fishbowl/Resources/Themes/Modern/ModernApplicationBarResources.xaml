@@ -1,4 +1,11 @@
-<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.FBModernApplicationBarResourcesDictionary" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:FacebookClient="clr-namespace:FacebookClient" xmlns:ClientManager="clr-namespace:ClientManager" xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" xmlns:ClientManagerView="clr-namespace:ClientManager.View" xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell">
+<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.ModernApplicationBarResourcesDictionary"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:FacebookClient="clr-namespace:FacebookClient" 
+    xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" 
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View" 
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell">
 
   <FacebookClient:NotConverter x:Key="NotConverter" />
 

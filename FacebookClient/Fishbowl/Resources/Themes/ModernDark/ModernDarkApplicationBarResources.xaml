@@ -1,0 +1,779 @@
+<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.ModernDarkApplicationBarResourcesDictionary"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:FacebookClient="clr-namespace:FacebookClient" 
+    xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" 
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View" 
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell">
+
+  <FacebookClient:NotConverter x:Key="NotConverter" />
+
+  <LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
+    <GradientStop Color="#111111" Offset="0" />
+    <GradientStop Color="#222222" Offset="0.3" />
+    <GradientStop Color="#303030" Offset="1" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="DarkGray" />
+  <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#FF333333" />
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="White" Offset="0"/>
+      <GradientStop Color="Silver" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="StatusTextBoxBrush" Color="#60FFFFFF" />
+  <SolidColorBrush x:Key="UpdateStatusControlBrush" Color="#FF3A3A3A" Opacity="0" />
+  <SolidColorBrush x:Key="HeaderStatusForegroundBrush" Color="White" />
+  <SolidColorBrush x:Key="ButtonHoverBrush" Color="#FFBDBDBD" />
+  <SolidColorBrush x:Key="ButtonSelectedBrush" Color="#FFBDBDBD" />
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush" Color="#595959"  />
+  <!-- 595959-->
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush" Color="#25EBEBEB" />
+  <SolidColorBrush x:Key="FilterControlBorderBrush" Color="#AAAAAA" />
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush" Color="#FFBDBDBD" />
+  <SolidColorBrush x:Key="FilterBorderBrush" Color="#3b5998"/>
+  <SolidColorBrush x:Key="FilterButtonHoverBrush" Color="#FF4A4A4A"  />
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush" Color="#25FFFFFF"  />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#FF808080"  />
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
+  <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
+    <GradientStop Color="#FF3A3A3A" Offset="0.25"/>
+    <GradientStop Color="#FF595959" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!--  Used in Based Resources instead of hardcoded color  -->
+  <SolidColorBrush x:Key="TooltipBorderBrush" Color="#FF333333" />
+
+  <Geometry x:Key="DownArrow">M0,0 L1,0 0.5,1Z</Geometry>
+  <Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
+  <Geometry x:Key="RightArrow">M0,0 L1,0.5 0,1Z</Geometry>
+  <Geometry x:Key="LeftArrow">M0,0.5 L1,1 1,0Z</Geometry>
+  <Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
+  <Geometry x:Key="HorizontalLine">M0,0 L0,1</Geometry>
+  <Geometry x:Key="VerticalLine">M0,0 L1,0</Geometry>
+  <Geometry x:Key="LeftRightDiagonalLine">M0,0 L1,1</Geometry>
+  <Geometry x:Key="RightLeftDiagonalLine">M1,0 L0,1</Geometry>
+  <Geometry x:Key="RightTriangle">M0,0 L0,1 L1,1Z</Geometry>
+  <Geometry x:Key="LeftTriangle">M1,0 L1,1 L0,1Z</Geometry>
+  <Geometry x:Key="LeftTriangleFlipped">M1,1 L1,0 L0,0Z</Geometry>
+
+  <StreamGeometry x:Key="PicturesGeometry">F1M256.974,119.473L241.632,119.473 241.632,128.81 256.974,128.81z M258.545,130.381L240.062,130.381 240.062,117.902 258.545,117.902z M238.487,117.927L237.817,118.211 238.487,119.793 238.487,123.819 235.757,117.378 252.774,110.163 255.38,116.313 253.674,116.313 251.94,112.223 242.295,116.313 238.487,116.313z M257.19,116.313L253.523,107.991 233.719,116.716 238.487,127.538 238.487,131.949 260.132,131.949 260.132,116.313z</StreamGeometry>
+  <StreamGeometry x:Key="FlagGeometry">F1M254.4731,171.8779C254.4731,171.8779,250.7131,177.0249,245.1491,171.4609L245.1491,171.4719C241.1821,167.3999,237.7371,172.0319,237.7371,172.0319L243.3191,185.4419C243.3191,185.4419,245.6391,178.8549,252.6431,185.8589L252.6431,185.8489C256.6121,189.9199,260.0571,185.2889,260.0571,185.2889z M233.7931,173.5269L243.2111,196.2939 245.8581,195.1979 236.4421,172.4309z</StreamGeometry>
+  <StreamGeometry x:Key="PersonGeometry">F1M251.5557,236.3071C251.7767,237.1981 251.7977,237.2721 251.7787,238.1861 251.7707,238.5391 251.5677,240.1701 251.6217,240.6701 251.6667,241.0821 251.7707,241.1161 251.9327,241.4551 252.2157,242.0471 252.1217,242.8641 252.0127,243.4591 251.9537,243.7861 251.8267,244.2501 251.6357,244.5181 251.4267,244.8111 251.0047,244.8131 250.8177,245.1571 250.5497,245.6491 250.7007,246.3421 250.5327,246.8751 250.3387,247.4791 249.8507,247.5221 249.8137,248.3131 250.0537,248.3461 250.2917,248.3811 250.5327,248.4141 250.7727,248.9261 251.2117,249.9531 251.6607,250.2621 252.0377,250.3661 252.4147,250.4671 252.7897,250.5711 254.1107,251.1121 255.5757,251.7581 256.8977,252.3171 258.1027,252.8251 259.5437,253.0041 259.9797,254.2681 259.9797,255.1231 260.0597,257.1491 260.0377,258.2721L233.8137,258.2721C233.7897,257.1491 233.8717,255.1231 233.8717,254.2681 234.3057,253.0041 235.7467,252.8251 236.9517,252.3171 238.2747,251.7581 239.7397,251.1121 241.0597,250.5711 241.4347,250.4671 241.8117,250.3661 242.1887,250.2621 242.6377,249.9531 243.0767,248.9261 243.3177,248.4141L243.8527,248.2861C243.7317,247.6101,243.3137,247.5571,243.1397,247.0801L242.9347,244.9241C242.9367,244.9571 242.4427,244.8321 242.3777,244.7931 241.6807,244.3561 241.6667,242.5801 241.5987,241.8441 241.5697,241.5061 242.0377,241.2291 241.9077,240.6121 241.1437,236.9891 242.2377,235.2951 243.9677,234.7331 245.1687,234.2441 247.4127,233.3421 249.5047,234.6291L250.0247,235.1121 250.8647,235.2561C251.2857,235.4981,251.5557,236.3071,251.5557,236.3071</StreamGeometry>
+  <StreamGeometry x:Key="HomeGeometry">F1M237.0571,313.2476L237.0571,322.3496 244.1101,322.3496 244.1101,314.0776 249.7411,314.0776 249.7411,322.3496 256.7931,322.3496 256.7931,313.2456 246.9261,303.3806z M246.9261,296.0406L233.0881,309.8766 235.6921,312.4796 246.9281,301.2476 258.1591,312.4796 260.7621,309.8786z</StreamGeometry>
+  <StreamGeometry x:Key="MailGeometry">F1M246.9224,376.9575L233.7774,365.7135 233.7774,380.5225 260.0724,380.5225 260.0724,365.8255z M259.8794,364.0165L234.1114,364.0165 246.9284,374.9775z</StreamGeometry>
+  <StreamGeometry x:Key="GroupGeometry">F1M354.4941,122.7285C354.3421,122.2875 353.8361,122.2245 353.4161,122.0465 352.9531,121.8515 352.4391,121.6245 351.9761,121.4355 351.8461,121.4005 351.7131,121.3635 351.5821,121.3285 351.4241,121.2185 351.2711,120.8595 351.1851,120.6795 351.1011,120.6675 351.0171,120.6565 350.9351,120.6445 350.9471,120.3675 351.1191,120.3515 351.1851,120.1405 351.2461,119.9555 351.1931,119.7125 351.2871,119.5395 351.3511,119.4195 351.5001,119.4175 351.5721,119.3165 351.6401,119.2225 351.6831,119.0605 351.7051,118.9455 351.7421,118.7365 351.7751,118.4515 351.6781,118.2445 351.6191,118.1245 351.5841,118.1135 351.5681,117.9685 351.5491,117.7925 351.6191,117.2225 351.6231,117.0995 351.6291,116.7795 351.6231,116.4885 351.5451,116.1775 351.5451,116.1775 351.4511,115.8945 351.3031,115.8085L351.0081,115.7575 350.8261,115.5895C350.0941,115.1385 349.3081,115.4555 348.8891,115.6245 348.2831,115.8225 347.8981,116.6795 348.1661,117.9475 348.2131,118.1645 348.0491,118.2615 348.0581,118.3785 348.0821,118.6385 348.0881,119.2595 348.3321,119.4125 348.3531,119.4255 348.5271,119.4705 348.5251,119.4585 348.5511,119.7085 348.5741,119.9605 348.5981,120.2125 348.6581,120.3805 348.8051,120.3985 348.8481,120.6345L348.6601,120.6795C348.5901,120.8325 348.4691,121.1115 348.3361,121.2595 348.5741,121.3615 348.8161,121.4645 349.0551,121.5665 349.3301,121.6855 349.6051,121.8045 349.8691,121.9155 349.9901,121.9665 350.1191,122.0115 350.2561,122.0585 350.7751,122.2385 351.4201,122.4605 351.6601,123.1565L351.6851,123.2265 351.6851,123.3005C351.6851,123.4645 351.6911,123.7265 351.6971,124.0055 351.6991,124.0465 351.6991,124.0895 351.7011,124.1305L354.5141,124.1305C354.5211,123.7385,354.4941,123.0295,354.4941,122.7285 M349.6991,122.3225C349.0371,122.0425 348.3011,121.7185 347.6391,121.4455 347.4511,121.3945 347.2621,121.3435 347.0721,121.2905 346.8481,121.1365 346.6271,120.6215 346.5061,120.3655 346.3871,120.3475 346.2651,120.3305 346.1441,120.3125 346.1641,119.9155 346.4101,119.8945 346.5061,119.5915 346.5921,119.3245 346.5151,118.9765 346.6501,118.7305 346.7421,118.5585 346.9551,118.5565 347.0601,118.4105 347.1561,118.2755 347.2191,118.0425 347.2501,117.8785 347.3031,117.5805 347.3511,117.1695 347.2091,116.8735 347.1271,116.7035 347.0761,116.6855 347.0531,116.4805 347.0251,116.2285 347.1271,115.4105 347.1311,115.2325 347.1401,114.7735 347.1311,114.3595 347.0191,113.9125 347.0191,113.9125 346.8851,113.5055 346.6721,113.3845L346.2521,113.3125 345.9901,113.0705C344.9411,112.4255 343.8161,112.8765 343.2131,113.1215 342.3441,113.4045 341.7951,114.6325 342.1801,116.4495 342.2441,116.7595 342.0101,116.8985 342.0251,117.0685 342.0581,117.4375 342.0641,118.3285 342.4141,118.5465 342.4471,118.5685 342.6951,118.6305 342.6931,118.6135 342.7281,118.9745 342.7641,119.3335 342.7971,119.6955 342.8851,119.9355 343.0941,119.9605 343.1541,120.2985L342.8871,120.3655C342.8011,120.5465 342.6641,120.8595 342.5101,121.0825 342.8441,121.2225 343.1811,121.3675 343.5141,121.5095 343.9001,121.6775 344.2831,121.8415 344.6521,121.9985 344.8281,122.0705 345.0121,122.1345 345.2071,122.2035 345.9331,122.4555 346.7581,122.7405 347.0661,123.6325L347.0901,123.7035 347.0901,123.7775C347.0901,124.0095 347.0991,124.3805 347.1091,124.7735 347.1131,124.9475 347.1171,125.1285 347.1211,125.3105L351.2751,125.3105C351.2851,124.7465 351.2461,123.7305 351.2461,123.3005 351.0271,122.6675 350.3051,122.5785 349.6991,122.3225 M344.4781,122.4045C343.5471,122.0115 342.5151,121.5565 341.5861,121.1755 341.3221,121.1035 341.0561,121.0315 340.7911,120.9585 340.4741,120.7405 340.1661,120.0175 339.9961,119.6585 339.8281,119.6345 339.6601,119.6095 339.4901,119.5855 339.5151,119.0295 339.8611,118.9995 339.9961,118.5745 340.1151,118.1995 340.0101,117.7105 340.1971,117.3655 340.3301,117.1235 340.6251,117.1215 340.7731,116.9155 340.9081,116.7265 340.9961,116.4005 341.0391,116.1695 341.1151,115.7495 341.1811,115.1755 340.9821,114.7595 340.8691,114.5215 340.7951,114.4985 340.7641,114.2075 340.7241,113.8555 340.8671,112.7075 340.8731,112.4585 340.8891,111.8145 340.8731,111.2325 340.7171,110.6055 340.7171,110.6055 340.5271,110.0375 340.2301,109.8655L339.6391,109.7635 339.2731,109.4235C337.8011,108.5195 336.2231,109.1545 335.3771,109.4965 334.1581,109.8925 333.3891,111.6155 333.9261,114.1645 334.0171,114.5995 333.6871,114.7945 333.7091,115.0335 333.7561,115.5525 333.7651,116.8005 334.2581,117.1095 334.3031,117.1365 334.6501,117.2245 334.6481,117.2015 334.6971,117.7075 334.7441,118.2125 334.7931,118.7185 334.9161,119.0545 335.2091,119.0915 335.2951,119.5665L334.9201,119.6585C334.7501,120.0175 334.4391,120.7405 334.1231,120.9585 333.8591,121.0315 333.5941,121.1035 333.3281,121.1755 332.4001,121.5565 331.3691,122.0115 330.4371,122.4045 329.5901,122.7615 328.5761,122.8885 328.2691,123.7775 328.2691,124.3805 328.2131,125.8045 328.2281,126.5955L346.6871,126.5955C346.7031,125.8045 346.6461,124.3805 346.6461,123.7775 346.3401,122.8885 345.3241,122.7615 344.4781,122.4045</StreamGeometry>
+  <StreamGeometry x:Key="FacebookGeometry">F1M350.4053,173.8252L348.1253,173.8252C347.3263,173.8252,347.0413,174.2812,347.0413,174.9092L347.0413,177.0752 350.4053,177.0752 350.0063,180.8962 347.0413,180.8962 347.0413,191.5592 342.5353,191.5592 342.5353,180.8962 340.2553,180.8962 340.2553,177.0752 342.5353,177.0752 342.5353,174.9092C342.5353,172.3432,343.3913,170.2902,347.0413,170.1762L350.4053,170.1762z M328.8983,193.3242L353.8413,193.3242 353.8413,168.3812 328.8983,168.3812z M328.8983,168.3812</StreamGeometry>
+  <StreamGeometry x:Key="SearchGeometry">F1M338.5352,249.082C334.1642,249.055 330.6292,245.475 330.6582,241.103 330.6852,236.76 334.2422,233.225 338.5842,233.225L338.6372,233.225C340.7542,233.238 342.7402,234.076 344.2282,235.582 345.7172,237.09 346.5272,239.086 346.5142,241.205 346.5022,243.312 345.6702,245.293 344.1742,246.779 342.6782,248.264 340.6952,249.082 338.5882,249.082z M354.4302,253.125L354.2672,252.963 347.7952,246.488C348.6932,244.937 349.2172,243.143 349.2282,241.221 349.2652,235.344 344.5312,230.549 338.6542,230.512L338.5842,230.512C332.7382,230.512 327.9802,235.232 327.9432,241.086 327.9062,246.963 332.6402,251.758 338.5172,251.797L338.5882,251.797C340.5412,251.797,342.3712,251.268,343.9472,250.348L350.4162,256.816 350.5782,256.977C351.0662,257.467,351.8592,257.467,352.3492,256.977L354.4302,254.896C354.9202,254.408,354.9202,253.615,354.4302,253.125</StreamGeometry>
+  <StreamGeometry x:Key="GearGeometry">F1M341.3691,311.126C339.0921,311.126 337.2461,309.28 337.2461,307.003 337.2461,304.725 339.0921,302.879 341.3691,302.879 343.6481,302.879 345.4941,304.725 345.4941,307.003 345.4941,309.28 343.6481,311.126 341.3691,311.126 M354.3081,308.413L354.3081,305.468 353.8921,305.332 350.7401,304.303 349.9001,302.272 351.5171,298.851 349.4331,296.768 349.0431,296.966 346.0881,298.468 344.0571,297.626 342.7791,294.063 339.8361,294.063 339.6991,294.48 338.6701,297.632 336.6401,298.473 333.2171,296.856 331.1351,298.938 331.3341,299.328 332.8341,302.286 331.9941,304.315 328.4301,305.592 328.4301,308.538 328.8461,308.673 332.0001,309.702 332.8401,311.733 331.2241,315.155 333.3051,317.237 333.6951,317.039 336.6521,315.538 338.6831,316.379 339.9591,319.942 342.9041,319.942 343.0411,319.526 344.0701,316.374 346.0991,315.532 349.5211,317.149 351.6051,315.067 351.4061,314.677 349.9041,311.72 350.7461,309.688z</StreamGeometry>
+  <StreamGeometry x:Key="ExitGeometry">F1M333.1797,356.873L333.1797,359.587 349.7417,359.587 349.7417,380.566 333.1797,380.566 333.1797,383.281 352.4547,383.281 352.4547,356.873z M336.1387,379.564L347.6837,370.035 336.1387,360.508 336.1387,366.724 330.2847,366.724 330.2847,373.348 336.1387,373.348z</StreamGeometry>
+  <StreamGeometry x:Key="RefreshGeometry">F1 M 394.441,269.118L 394.419,269.118 Z M 411.856,286.665C 411.853,277.027 404.08,269.188 394.431,269.118C 394.379,269.118 394.334,269.118 394.304,269.118C 389.338,269.117 384.832,271.193 381.643,274.519L 377.478,270.3L 377.478,282.561L 389.582,282.561L 385.379,278.303C 387.618,275.915 390.78,274.43 394.363,274.43L 394.385,274.43C 401.114,274.472 406.543,279.945 406.543,286.665L 406.543,286.761C 406.491,293.483 401.022,298.903 394.31,298.902L 394.204,298.902L 394.22,304.216L 394.31,304.216C 403.95,304.213 411.791,296.433 411.856,286.778L 411.856,286.749L 411.856,286.665 Z</StreamGeometry>
+
+  <Style x:Key="OpacityButton" TargetType="{x:Type ButtonBase}">
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Padding" Value="2" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <Border x:Name="Border" Background="Transparent">
+            <ContentPresenter x:Name="cp" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Opacity="0.5" RecognizesAccessKey="True" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="cp" Property="RenderTransform">
+                <Setter.Value>
+                  <TranslateTransform Y="1" />
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.1" Storyboard.TargetName="cp" Storyboard.TargetProperty="Opacity" To="1.0" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="cp" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.1" Storyboard.TargetName="cp" Storyboard.TargetProperty="Opacity" To="0.1" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="cp" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Keeping DWM enabled for the window when possible because it provides a drop shadow
+       and it significantly improves resizing behavior from the top left corner.
+       TODO: Window background needs to be transparent, and the corner radius needs to be applied to the 
+       header and footer.  Currently the Window's background is used in a couple places, so that needs to be split
+       into two properties.  -->
+  <shell:WindowChrome 
+    x:Key="ApplicationWindowChrome" 
+    GlassFrameThickness="{Binding {x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
+    CornerRadius="10"
+    CaptionHeight="42"
+    />
+
+  <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#3B5997" />
+    <GradientStop Offset="1" Color="#2B426F" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ApplicationBarForeground" Color="#3A5896" />
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF" />
+  <SolidColorBrush x:Key="FooterBackground" Color="#3B5997" />
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0" />
+      <GradientStop Color="#3F60A0" Offset="1" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#517dc9" />
+
+  <SolidColorBrush x:Key="StatusTextBoxBrush" Color="#60517dc9" />
+
+  <SolidColorBrush x:Key="HeaderStatusForegroundBrush" Color="White" />
+
+  <SolidColorBrush x:Key="UpdateStatusControlBrush" Color="#DD3b5998" Opacity="0" />
+
+  <LinearGradientBrush x:Key="ButtonHoverBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#80698FDD" Offset="0" />
+    <GradientStop Color="#35698FDD" Offset="1" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ButtonHoverBorderBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#AF4E6AA2" Offset="0" />
+    <GradientStop Color="#804E6AA2" Offset=".5" />
+    <GradientStop Color="#004E6AA2" Offset=".55" />
+    <GradientStop Color="#35698FDD" Offset="1" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="UpdateBoxBorderBackgroundBrush" EndPoint="0.267,1.816" StartPoint="0.799,-0.41">
+    <GradientStop Color="#CC0E6DAD" Offset="0" />
+    <GradientStop Color="#B20E6DAD" Offset="1" />
+    <GradientStop Color="#660E6DAD" Offset="0.34" />
+    <GradientStop Color="#66E0E8EE" Offset="0.652" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush" Color="#e3e7f0" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush" Color="#3b5998" />
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsHoveredBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBrush" Color="#b3c4e9" />
+
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="FilterBorderBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterButtonHoverBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#35528c" />
+
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
+
+  <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
+
+  <SolidColorBrush x:Key="ApplicationBarSeparationBackgroundBrush" Color="#FF95A5C7" />
+
+  <SolidColorBrush x:Key="ApplicationBarSeparationBorderBrush" Color="#FF1F3C79" />
+
+  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+    <GradientStop Offset="0" Color="#E53B3B3B" />
+    <GradientStop Offset="1" Color="#00000000" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
+    <GradientStop Offset="0.25" Color="#DF35528C" />
+    <GradientStop Offset="1" Color="#8F35528C" />
+  </LinearGradientBrush>
+
+  <ControlTemplate x:Key="ToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
+    <Grid x:Name="Root">
+      <Border x:Name="Hover" Background="{DynamicResource ButtonHoverBrush}" BorderBrush="{DynamicResource ButtonHoverBorderBrush}" BorderThickness="1" CornerRadius="3" Opacity="0" />
+      <ContentPresenter Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Opacity" TargetName="Root" Value="0.4" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To=".8" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To="0" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <!-- Just like ToolbarButtonTemplate, but it spins the content a couple times on click. -->
+  <ControlTemplate x:Key="SpinningToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
+    <Grid x:Name="Root">
+      <Border x:Name="hover" Background="{DynamicResource ButtonHoverBrush}" CornerRadius="3" Opacity="0" />
+      <ContentPresenter x:Name="RotatingContentPresenter" RenderTransformOrigin=".5,.5" Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ContentPresenter.RenderTransform>
+          <RotateTransform />
+        </ContentPresenter.RenderTransform>
+      </ContentPresenter>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Opacity" TargetName="Root" Value="0.4" />
+      </Trigger>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Trigger.EnterActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.EnterActions>
+        <Trigger.ExitActions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" />
+            </Storyboard>
+          </BeginStoryboard>
+        </Trigger.ExitActions>
+      </Trigger>
+      <EventTrigger RoutedEvent="Button.Click">
+        <EventTrigger.Actions>
+          <BeginStoryboard>
+            <Storyboard>
+              <DoubleAnimation Storyboard.TargetName="RotatingContentPresenter" Storyboard.TargetProperty="(RenderTransform).(RotateTransform.Angle)" From="0" To="720" Duration="00:00:01.5" />
+            </Storyboard>
+          </BeginStoryboard>
+        </EventTrigger.Actions>
+      </EventTrigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Key="BackButton" TargetType="{x:Type Button}">
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid x:Name="Grid" Background="Transparent">
+            <Ellipse x:Name="Ellipse" Fill="White" />
+            <Path x:Name="Arrow" Width="8" Height="11" Margin="-1,0,1,0" Data="{StaticResource LeftArrow}" Fill="{StaticResource ApplicationBarForeground}" Stretch="Fill" Opacity="0.5" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Grid" Property="RenderTransform">
+                <Setter.Value>
+                  <TranslateTransform Y="1" />
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.1" Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Opacity" To="1.0" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.1" Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Opacity" To="0.25" />
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Opacity" To="1.0" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="Ellipse" Storyboard.TargetProperty="Opacity" />
+                    <DoubleAnimation Duration="00:00:00.2" Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="IconButton" TargetType="{x:Type ButtonBase}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FontFamily" Value="Miramonte" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <StackPanel x:Name="Root" Background="Transparent" Orientation="Horizontal">
+            <Path x:Name="Icon" Margin="{TemplateBinding Padding}" Data="{TemplateBinding Tag}" Fill="#FFFFFF" Stretch="Uniform" Opacity="0.75" VerticalAlignment="Center" />
+            <ContentPresenter Margin="4,0" VerticalAlignment="Center" />
+          </StackPanel>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" To="1.0" Duration="00:00:00.1" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" Duration="00:00:00.2" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Root" Property="RenderTransform">
+                <Setter.Value>
+                  <TranslateTransform Y="1" />
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Icon" Property="Opacity" Value="1.0" />
+              <Setter Property="Opacity" Value=".25" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="MiniModeButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="OverridesDefaultStyle" Value="True" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+  </Style>
+
+  <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MiniModeButtonStyle}">
+    <Setter Property="Template" Value="{StaticResource SpinningToolbarButtonTemplate}" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+  </Style>
+
+  <Style x:Key="NavigationButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FontFamily" Value="Miramonte" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Height" Value="60" />
+    <Setter Property="MinWidth" Value="50" />
+    <Setter Property="Padding" Value="8,12,8,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="SelectionBorder" Visibility="Collapsed" Grid.RowSpan="2">
+              <Border Margin="1" Background="White" CornerRadius="4,4,0,0">
+                <Border.Effect>
+                  <DropShadowEffect BlurRadius="7" Direction="-90" Opacity="1.0" ShadowDepth="2" />
+                </Border.Effect>
+              </Border>
+              <Border Background="White" CornerRadius="4,4,0,0" />
+            </Grid>
+
+            <Path x:Name="Icon" Margin="{TemplateBinding Padding}" Data="{TemplateBinding Tag}" Fill="#FFFFFF" Stretch="Uniform" VerticalAlignment="Bottom" Opacity="0.5" />
+            <ContentPresenter Margin="16,3,16,9" Grid.Row="1" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" To="1.0" Duration="00:00:00.1" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" Duration="00:00:00.2" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="NavigationRadioButtonStyle" TargetType="{x:Type RadioButton}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FontFamily" Value="Miramonte" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Height" Value="60" />
+    <Setter Property="MinWidth" Value="50" />
+    <Setter Property="Padding" Value="8,12,8,0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type RadioButton}">
+          <Grid Background="Transparent" ClipToBounds="True">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid x:Name="SelectionBorder" Visibility="Collapsed" Grid.RowSpan="2" Margin="5,5,5,0">
+              <Border Margin="1" Background="White" CornerRadius="4,4,0,0">
+                <Border.Effect>
+                  <DropShadowEffect BlurRadius="7" Direction="-90" Opacity="1.0" ShadowDepth="2" />
+                </Border.Effect>
+              </Border>
+              <Border Background="White" CornerRadius="4,4,0,0" />
+            </Grid>
+
+            <Path x:Name="Icon" Margin="{TemplateBinding Padding}" Data="{TemplateBinding Tag}" Fill="#FFFFFF" Stretch="Uniform" VerticalAlignment="Bottom" Opacity="0.5" />
+            <ContentPresenter Margin="16,3,16,9" Grid.Row="1" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" To="1.0" Duration="00:00:00.1" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" Duration="00:00:00.2" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="SelectionBorder" Property="Visibility" Value="Visible" />
+              <Setter Property="Foreground" Value="{StaticResource ApplicationBarForeground}" />
+              <Setter TargetName="Icon" Property="Fill" Value="{StaticResource ApplicationBarForeground}" />
+              <Setter TargetName="Icon" Property="Opacity" Value="1.0" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!--<Style x:Key="FooterToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+    <Setter Property="Margin" Value="10,1" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="Height" Value="22" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="Template" Value="{StaticResource ToolbarToggleButtonTemplate}" />
+    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+  </Style>-->
+
+  <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="VerticalAlignment" Value="Bottom" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize3}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="Foreground" Value="{DynamicResource IconForegroundBrush}" />
+    <Setter Property="Margin" Value="0,10,0,0" />
+  </Style>
+
+  <Style TargetType="{x:Type FacebookClient:MainHeaderControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:MainHeaderControl}">
+          <Border Background="{DynamicResource ApplicationBarBackground}" Height="90" CornerRadius="8,8,0,0" BorderBrush="#2c4371" BorderThickness="1,1,1,0">
+            <Grid x:Name="Header" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+
+              <!-- Bottom Shadow -->
+              <Border Height="6" VerticalAlignment="Bottom" BorderBrush="#7000" BorderThickness="0,0,0,1" Grid.ColumnSpan="3">
+                <Border.Background>
+                  <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#0000" />
+                    <GradientStop Offset="1" Color="#4000" />
+                  </LinearGradientBrush>
+                </Border.Background>
+              </Border>
+
+              <!-- Back Button -->
+              <Button Width="28" Height="28" x:Name="BackButton" Style="{StaticResource BackButton}" shell:WindowChrome.IsHitTestVisibleInChrome="True" Command="NavigationCommands.BrowseBack" Margin="5,0" ToolTip="Go back" />
+
+              <!-- Name / Status -->
+              <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,0">
+                <!-- Divider -->
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                  <Rectangle Width="1" Fill="#7000" />
+                  <Rectangle Width="1" Fill="#3FFF" />
+                </StackPanel>
+
+                <StackPanel SnapsToDevicePixels="True">
+                  <TextBlock Margin="16,0,0,0" FontFamily="{DynamicResource SansSerifFont}" FontSize="21" FontWeight="Bold" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.Name}" />
+                  <TextBlock Margin="16,-1,16,4" FontFamily="{DynamicResource SansSerifFont}" FontSize="14" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message}">
+                    <TextBlock.ToolTip>
+                      <ToolTip Placement="Bottom">
+                        <TextBlock TextWrapping="Wrap" MaxWidth="350">
+                          <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                              <Binding Source="{x:Static ClientManager:ServiceProvider.ViewManager}" Path="MeContact.Name" />
+                              <Binding Source="{x:Static ClientManager:ServiceProvider.ViewManager}" Path="MeContact.StatusMessage.Message" FallbackValue="" />
+                            </MultiBinding>
+                          </TextBlock.Text>
+                        </TextBlock>
+                      </ToolTip>
+                    </TextBlock.ToolTip>
+                  </TextBlock>
+                  <Canvas HorizontalAlignment="Left" Margin="0,0,0,0" ClipToBounds="False" Visibility="Collapsed">
+                    <FacebookClient:UpdateStatusControl x:Name="UpdateStatusControl" Margin="10,0,0,0" Width="300" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" />
+                  </Canvas>
+
+                </StackPanel>
+              </Grid>
+
+              <Grid x:Name="NavigationPanel" Margin="2,3,5,0" HorizontalAlignment="Right" Grid.Column="3" VerticalAlignment="Bottom">
+                <Grid.Resources>
+                  <Style TargetType="Rectangle">
+                    <Setter Property="Height" Value="23" />
+                    <Setter Property="Margin" Value="0" />
+                  </Style>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}" />
+                    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+                    <Setter Property="FontWeight" Value="Light" />
+                    <Setter Property="VerticalAlignment" Value="Top" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="4,5,4,0" />
+                  </Style>
+                </Grid.Resources>
+                <StackPanel Orientation="Horizontal">
+
+                  <Button Tag="{StaticResource SearchGeometry}" Content="Search" Style="{StaticResource NavigationButtonStyle}" />
+                  <RadioButton x:Name="HomeNavigationButton" Command="{Binding Path=NavigationCommands.NavigateHomeCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" IsChecked="True" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See what's new with your friends" Tag="{StaticResource HomeGeometry}" Content="Home" />
+                  <RadioButton x:Name="FriendsNavigationButton" Command="{Binding Path=NavigationCommands.NavigateFriendsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on your friends" Tag="{StaticResource GroupGeometry}" Content="Friends" />
+                  <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself" Tag="{StaticResource PersonGeometry}" Content="Profile" />
+                  <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos" Tag="{StaticResource PicturesGeometry}" Content="Photos" Padding="8,10,8,0" />
+                  <Button Tag="{StaticResource FacebookGeometry}" Content="Facebook" Style="{StaticResource NavigationButtonStyle}" />
+
+                  <FacebookClient:CommandTextBox x:Name="SearchTextBox" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0" VerticalAlignment="Center" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource SearchTextBoxStyle}" Tag="Search" BannerText="Search" Visibility="Collapsed" />
+
+                </StackPanel>
+
+              </Grid>
+              
+              <!-- Window Buttons -->
+              <StackPanel Grid.ColumnSpan="3" HorizontalAlignment="Right" Margin="8,2" VerticalAlignment="Top" Orientation="Horizontal">
+
+                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                  <Path Width="10" Height="10" Data="M64.54,0L98.15,33.60 57.44,74.31 80,96.86 0,96.86 0,16.86 23.84,40.70z" Fill="White" Stretch="Fill" />
+                </Button>
+                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MinimizeWindowCommand}">
+                  <Border Width="12" Height="9" BorderBrush="White" BorderThickness="0,0,0,3" />
+                </Button>
+                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}">
+                  <Border Width="12" Height="9" BorderBrush="White" BorderThickness="2,3,2,2" />
+                </Button>
+                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.CloseWindowCommand}">
+                  <Path Width="11" Height="11" Data="{StaticResource CloseX}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
+                </Button>
+
+              </StackPanel>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type FacebookClient:FooterControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
+          <Border Height="32" Grid.Row="2" Background="{StaticResource FooterBackground}" CornerRadius="0,0,8,8" BorderBrush="#2c4371" BorderThickness="1,0,1,1">
+            <Grid>
+            <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
+              <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                  <GradientStop Offset="0" Color="#3000" />
+                  <GradientStop Offset="1" Color="#0000" />
+                </LinearGradientBrush>
+              </Border.Background>
+            </Border>
+
+              <StackPanel x:Name="Footer" IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,16,0">
+                <StackPanel.Resources>
+                  <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="{DynamicResource MediumFontSize}" />
+                    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+                    <Setter Property="FontWeight" Value="Light" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="4,0" />
+                  </Style>
+                </StackPanel.Resources>
+
+                <!-- Inbox -->
+                <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{StaticResource MailGeometry}" Padding="0,5,-4,5" Content="Inbox" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
+                <Grid Width="17" Height="17">
+                  <Ellipse>
+                    <Ellipse.Effect>
+                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
+                    </Ellipse.Effect>
+                    <Ellipse.Fill>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#4c94d7" Offset="0" />
+                        <GradientStop Color="#1876cd" Offset="1" />
+                      </LinearGradientBrush>
+                    </Ellipse.Fill>
+                  </Ellipse>
+                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" FontFamily="Miramonte" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Grid>
+                
+ 
+                <!-- Notifications -->
+                <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{StaticResource FlagGeometry}" Padding="0,2,-4,2" Content="Notifications" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
+                <Grid Width="17" Height="17">
+                  <Ellipse>
+                    <Ellipse.Effect>
+                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
+                    </Ellipse.Effect>
+                    <Ellipse.Fill>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#e25423" Offset="0" />
+                        <GradientStop Color="#dc2300" Offset="1" />
+                      </LinearGradientBrush>
+                    </Ellipse.Fill>
+                  </Ellipse>
+                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" FontFamily="Miramonte" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Grid>
+
+                <!-- Who's Online-->
+                <ToggleButton x:Name="ChatButton" Style="{DynamicResource IconButton}" Tag="{StaticResource PersonGeometry}" Padding="0,2,-4,2" Content="Who's Online" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See who else is around" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}" />
+                <Grid Width="17" Height="17">
+                  <Ellipse>
+                    <Ellipse.Effect>
+                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
+                    </Ellipse.Effect>
+                    <Ellipse.Fill>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#5da110" Offset="0" />
+                        <GradientStop Color="#308700" Offset="1" />
+                      </LinearGradientBrush>
+                    </Ellipse.Fill>
+                  </Ellipse>
+                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" FontFamily="Miramonte" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Grid>
+
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                <Button Visibility="Collapsed" Margin="20,-10,0,0" MinHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  Style="{DynamicResource RefreshButtonStyle}" ToolTip="">
+                  <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
+                </Button>
+
+                <Button Content="Settings" Tag="{StaticResource GearGeometry}" Margin="12,0,0,0" Padding="0,3,-6,4" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="View and change settings" />
+                <Button Content="Sign Out" Tag="{StaticResource ExitGeometry}" Margin="8,0,0,0" Padding="0,3,-4,3" Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Sign out" />
+                <Button Content="Refresh" Tag="{StaticResource RefreshGeometry}" Margin="6,0,0,0" Padding="0,3,-8,3" Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Think you're missing something? Click to refresh now." />
+                <!--
+                <Button Content="Settings" Tag="{StaticResource ExitGeometry}" Margin="16,0,0,0" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Signout" />
+                -->
+
+              </StackPanel>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ClientManagerView:EventResourceDictionary>

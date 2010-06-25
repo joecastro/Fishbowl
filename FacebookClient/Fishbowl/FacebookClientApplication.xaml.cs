@@ -42,21 +42,20 @@ namespace FacebookClient
 
         private static readonly Dictionary<string, Uri> _ThemeLookup = new Dictionary<string,Uri>
         {
-            { "Blue",     new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
-            { "Dark",     new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
-            { "Facebook", new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
-            { "Charcoal", new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) },
+            { "Blue",          new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
+            { "Dark",          new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
+            { "Facebook",      new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
+            { "Charcoal",      new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) },
+            { "Modern",        new Uri(@"Resources\Themes\Modern\Modern.xaml", UriKind.Relative) },
+            { "Modern Dark",   new Uri(@"Resources\Themes\ModernDark\ModernDark.xaml", UriKind.Relative) },
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
             { "Red",      new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) },
-
-            // In development
-            { "Modern",   new Uri(@"Resources\Themes\FBModern\FBModern.xaml", UriKind.Relative) },
 #endif
         };
         private static readonly List<string> _ThemeNames = new List<string>(_ThemeLookup.Keys);
-        private const string _DefaultThemeName = "Dark";
+        private const string _DefaultThemeName = "Modern";
 
         private MainWindow _mainWindow;
         private MiniModeWindow _minimodeWindow;

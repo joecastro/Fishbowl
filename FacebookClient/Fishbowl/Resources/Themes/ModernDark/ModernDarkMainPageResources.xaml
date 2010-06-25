@@ -1,0 +1,17 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <SolidColorBrush x:Key="PhotoStripOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
+
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent"/>
+  
+  <Visibility x:Key="ContentShadowVisibility">Collapsed</Visibility>
+  
+  <system:Boolean x:Key="UseGlass">False</system:Boolean>
+
+</ResourceDictionary>
