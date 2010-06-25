@@ -24,7 +24,7 @@
           HorizontalAlignment="Right" 
           VerticalAlignment="Top" 
           Click="StartChatButton_Click"
-          Style="{StaticResource StandardButtonStyle}">
+          Style="{DynamicResource StandardButtonStyle}">
         Chat
       </Button>
 
