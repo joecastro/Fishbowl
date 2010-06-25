@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ClientManager="clr-namespace:ClientManager"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
@@ -11,11 +12,11 @@
     Width="900" Height="600"
     MinWidth="640" MinHeight="280"
     AllowDrop="True"
-    Background="{DynamicResource MainWindowBackgroundBrush}"
+    Background="Transparent"
     ShowsNavigationUI="False"
     Title="Fishbowl for Facebook - Preview"
     shell:WindowChrome.WindowChrome="{DynamicResource ApplicationWindowChrome}">
-  
+
   <NavigationWindow.Style>
     <Style>
       <Setter Property="std:WindowExtensions.HwndBackgroundBrush" Value="Black" />
@@ -66,41 +67,34 @@
   
   <NavigationWindow.Content>
     <AdornerDecorator>
-      <Grid x:Name="NavigationRoot">
+      <Grid x:Name="NavigationRoot" Background="Transparent">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
           <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ClientManagerControls:MainContentContainer x:Name="ContentPane"
-            Grid.Row="1"
-            Focusable="True"
-            FocusVisualStyle="{x:Null}"
-            KeyboardNavigation.DirectionalNavigation="None"
-            KeyboardNavigation.IsTabStop="False"/>
+        <Grid x:Name="MainContentGrid" Grid.Row="1" Background="{DynamicResource MainContentBackgroundBrush}">
+          <ClientManagerView:AnimatedSwooshes x:Name="animatedSwooshes" Opacity="0" Margin="0,0,0,300" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
 
-        
-        <Image x:Name="HeaderShadow"
-          Height="6"
-          Grid.Row="1"
-          Visibility="Collapsed"
-          VerticalAlignment="Top"
-          Source="Resources/Images/main_header_shadow.png"
-          Stretch="Fill"/>
+          <ClientManagerControls:MainContentContainer x:Name="ContentPane"
+              Focusable="True"
+              FocusVisualStyle="{x:Null}"
+              KeyboardNavigation.DirectionalNavigation="None"
+              KeyboardNavigation.IsTabStop="False"/>
 
-        <Image x:Name="FooterShadow"
-            Height="4"
-            Grid.Row="1" 
-            Visibility="Collapsed" 
-            VerticalAlignment="Bottom"
-            Source="Resources/Images/main_header_shadow.png"
-            Stretch="Fill"
-            RenderTransformOrigin=".5,.5">
-          <Image.RenderTransform>
-            <ScaleTransform ScaleY="-1"/>
-          </Image.RenderTransform>
-        </Image>
+          <Rectangle 
+              Fill="{DynamicResource ContentHeaderShadowBrush}"
+              Height="6"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"/>
+
+          <Rectangle 
+              Fill="{DynamicResource ContentFooterShadowBrush}"
+              Height="4"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Stretch"/>
+        </Grid>
 
         <FacebookClient:MainHeaderControl Grid.Row="0" x:Name="Header"/>
 

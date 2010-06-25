@@ -25,7 +25,7 @@
               Foreground="White" 
               Text="Upload photos" />
 
-            <ScrollViewer Background="{DynamicResource MainWindowBackgroundBrush}" Grid.Row="1" Style="{DynamicResource MainScrollViewerStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Background="{DynamicResource MainContentBackgroundBrush}" Grid.Row="1" Style="{DynamicResource MainScrollViewerStyle}" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 
               <FacebookClient:AnimatingTilePanel ItemHeight="280" ItemWidth="350" Attraction="2.4" MaxWidth="800" >
                 <StackPanel Orientation="Vertical" Width="350" Height="280">

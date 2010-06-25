@@ -93,7 +93,12 @@
        TODO: Window background needs to be transparent, and the corner radius needs to be applied to the 
        header and footer.  Currently the Window's background is used in a couple places, so that needs to be split
        into two properties.  -->
-  <shell:WindowChrome x:Key="ApplicationWindowChrome" GlassFrameThickness="1,0,1,1" CornerRadius="8" CaptionHeight="42" ResizeBorderThickness="8" />
+  <shell:WindowChrome 
+    x:Key="ApplicationWindowChrome" 
+    GlassFrameThickness="{Binding {x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
+    CornerRadius="10"
+    CaptionHeight="42"
+    />
 
   <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
     <GradientStop Offset="0" Color="#3B5997" />
@@ -175,8 +180,6 @@
     <GradientStop Offset="0.25" Color="#DF35528C" />
     <GradientStop Offset="1" Color="#8F35528C" />
   </LinearGradientBrush>
-
-  <SolidColorBrush x:Key="ProfilePictureBackgroundBrush" Color="#FF91A2C1" />
 
   <ControlTemplate x:Key="ToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
     <Grid x:Name="Root">

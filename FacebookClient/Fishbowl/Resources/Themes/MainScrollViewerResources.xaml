@@ -503,15 +503,12 @@
         <RowDefinition Height="*" />
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
-      <Grid>
-        <!-- Use these rows to pad the opacity mask below, gives the content presenter a dynamically sized margin -->
-        <!-- by using * values that add up to 100, it's easy to get this to match the mask below -->
-
-        <ScrollContentPresenter Margin="{TemplateBinding Padding}"
-                                                    x:Name="PART_ScrollContentPresenter"
-                                                    CanContentScroll="{TemplateBinding CanContentScroll}"
-                                                    CanHorizontallyScroll="False"
-                                                    CanVerticallyScroll="False">
+      <Grid OpacityMask="{DynamicResource ScrollViewerOpacityMask}">
+        <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+            Margin="{TemplateBinding Padding}"
+            CanContentScroll="{TemplateBinding CanContentScroll}"
+            CanHorizontallyScroll="False"
+            CanVerticallyScroll="False">
           <ScrollContentPresenter.Content>
             <StackPanel>
               <Rectangle Fill="Transparent" Height="18" />
@@ -520,17 +517,8 @@
             </StackPanel>
           </ScrollContentPresenter.Content>
         </ScrollContentPresenter>
-        <Grid.OpacityMask>
-          <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-            <GradientStop Color="Transparent" Offset="0.0" />
-            <GradientStop Color="White" Offset="0.04" />
-            <GradientStop Color="White" Offset="0.96" />
-            <GradientStop Color="Transparent" Offset="1.0" />
-          </LinearGradientBrush>
-        </Grid.OpacityMask>
       </Grid>
-      <Grid Grid.Column="1"
-                              Grid.Row="0" Margin="0,3,0,0">
+      <Grid Grid.Column="1" Grid.Row="0" Margin="0,3,0,0">
         <ScrollBar Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" 
                                    Cursor="Arrow"
                                    x:Name="PART_VerticalScrollBar"                                 

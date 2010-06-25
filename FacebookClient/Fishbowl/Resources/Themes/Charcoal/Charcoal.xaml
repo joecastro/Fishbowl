@@ -123,7 +123,7 @@
     <SolidColorBrush Color="#13FFFFFF" x:Key="AnimatedSwoosh1"/>
     <SolidColorBrush Color="#13FFFFFF" x:Key="AnimatedSwoosh2"/>
 
-    <SolidColorBrush Color="#404040" x:Key="MainWindowBackgroundBrush" />
+    <SolidColorBrush Color="#404040" x:Key="MainContentBackgroundBrush" />
 
     <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush"
                      Color="#FFBDBDBD"  />

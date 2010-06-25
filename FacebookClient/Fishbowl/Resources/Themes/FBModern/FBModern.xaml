@@ -7,4 +7,5 @@
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FBModern/FBModernMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/FBModern/FBModernApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
+  
 </ResourceDictionary>

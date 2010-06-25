@@ -300,21 +300,17 @@ namespace FacebookClient
         {
             if (navigator.Content.GetType() == typeof(LoadingPage))
             {
-                this.StartSwooshes();
                 var timeline = new DoubleAnimation(1, new Duration(TimeSpan.FromMilliseconds(2000)));
                 this.animatedSwooshes.BeginAnimation(FrameworkElement.OpacityProperty, timeline);
             }
             else
             {
-                if (this.animatedSwooshes != null)
-                {
-                    this.animatedSwooshes.Pause();
+                this.animatedSwooshes.Pause();
 
-                    if (this.animatedSwooshes.Opacity == 1)
-                    {
-                        var timeline = new DoubleAnimation(.7, new Duration(TimeSpan.FromMilliseconds(500)));
-                        this.animatedSwooshes.BeginAnimation(FrameworkElement.OpacityProperty, timeline);
-                    }
+                if (this.animatedSwooshes.Opacity == 1)
+                {
+                    var timeline = new DoubleAnimation(.7, new Duration(TimeSpan.FromMilliseconds(500)));
+                    this.animatedSwooshes.BeginAnimation(FrameworkElement.OpacityProperty, timeline);
                 }
             }
         }
@@ -772,22 +768,6 @@ namespace FacebookClient
             GoldBarTextBlock.Inlines.AddRange(text);
 
             GoldBarBorder.Visibility = Visibility.Visible;
-        }
-
-        private AnimatedSwooshes animatedSwooshes = null;
-
-        private void StartSwooshes()
-        {
-            if (this.animatedSwooshes == null)
-            {
-                this.animatedSwooshes = new AnimatedSwooshes();
-                this.animatedSwooshes.Opacity = 0;
-                this.animatedSwooshes.Margin = new Thickness(0, 0, 0, 300);
-                this.animatedSwooshes.VerticalAlignment = VerticalAlignment.Bottom;
-                this.animatedSwooshes.HorizontalAlignment = HorizontalAlignment.Stretch;
-                Grid.SetRow(this.animatedSwooshes, 1);
-                this.NavigationRoot.Children.Insert(0, this.animatedSwooshes);
-            }
         }
 
         internal bool ProcessCommandLineArgs(IList<string> commandLineArgs)

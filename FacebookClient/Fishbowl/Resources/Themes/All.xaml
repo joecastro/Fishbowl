@@ -118,7 +118,7 @@
     <SolidColorBrush Color="#1C317ADD" x:Key="AnimatedSwoosh1"/>
     <SolidColorBrush Color="#1C317ADD" x:Key="AnimatedSwoosh2"/>
 
-    <SolidColorBrush Color="White" x:Key="MainWindowBackgroundBrush" />
+    <SolidColorBrush Color="White" x:Key="MainContentBackgroundBrush" />
     <SolidColorBrush x:Key="TooltipBorderBrush"
                      Color="#FF7494C0" />
 

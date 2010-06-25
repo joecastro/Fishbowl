@@ -796,7 +796,6 @@
     <Resource Include="Resources\Images\Fishbowl.ico" />
     <Resource Include="Resources\Images\splash.png" />
     <Resource Include="Resources\Images\logo.png" />
-    <Resource Include="Resources\Images\main_header_shadow.png" />
     <Resource Include="Resources\Images\Controls\text_box_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_right.png" />
     <Resource Include="Resources\Images\avatar_background.png" />

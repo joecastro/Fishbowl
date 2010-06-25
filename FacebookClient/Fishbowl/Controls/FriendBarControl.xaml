@@ -117,17 +117,8 @@
                 Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}"
-                Padding="0">
-              <Border.OpacityMask>
-                <LinearGradientBrush StartPoint="0,.5" EndPoint="1,.5">
-                  <GradientStop Offset="0" Color="Transparent"/>
-                  <GradientStop Offset=".05" Color="#88000000"/>
-                  <GradientStop Offset=".15" Color="Black"/>
-                  <GradientStop Offset=".85" Color="Black"/>
-                  <GradientStop Offset=".95" Color="#88000000"/>
-                  <GradientStop Offset="1" Color="Transparent"/>
-                </LinearGradientBrush>
-              </Border.OpacityMask>
+                Padding="0"
+                OpacityMask="{DynamicResource FriendBarOpacityMask}">
 
               <ScrollViewer
                   Padding="{TemplateBinding Padding}"
@@ -142,9 +133,7 @@
     </Style>
   </UserControl.Resources>
 
-  <Grid>
-    <Border Margin="0,2,0,0" Background="{DynamicResource FriendBarBackgroundBrush}" />
-    <Rectangle Height="1" SnapsToDevicePixels="True" VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="{DynamicResource FriendBarBorderBrush}" />
+  <Border Background="{DynamicResource FriendBarBackgroundBrush}" BorderBrush="{DynamicResource FriendBarBorderBrush}" BorderThickness="0,1,0,0" >
     <Grid x:Name="FilmStripBlurEffectArea">
       <FacebookClient:FilmStripControl x:Name="FilmStrip"
           ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Friends}"
@@ -163,5 +152,5 @@
         </FacebookClient:FilmStripControl.ItemsPanel>
       </FacebookClient:FilmStripControl>
     </Grid>
-  </Grid>
+  </Border>
 </UserControl>

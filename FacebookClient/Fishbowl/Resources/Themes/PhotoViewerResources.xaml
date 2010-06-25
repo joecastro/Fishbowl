@@ -255,17 +255,8 @@
                   Background="{DynamicResource FriendBarBackgroundBrush}"
                   BorderThickness="0,2,0,0"
                   BorderBrush="{DynamicResource FriendBarBorderBrush}"
+                  OpacityMask="{DynamicResource PhotoStripOpacityMask}"
                   Height="112">
-              <Border.OpacityMask>
-                <LinearGradientBrush StartPoint="0,.5" EndPoint="1,.5">
-                  <GradientStop Offset="0" Color="Transparent"/>
-                  <GradientStop Offset=".05" Color="#88000000"/>
-                  <GradientStop Offset=".15" Color="Black"/>
-                  <GradientStop Offset=".85" Color="Black"/>
-                  <GradientStop Offset=".95" Color="#88000000"/>
-                  <GradientStop Offset="1" Color="Transparent"/>
-                </LinearGradientBrush>
-              </Border.OpacityMask>
               <FacebookClient:FilmStripControl
                 x:Name="PART_FilmStrip"
                 Background="Transparent"
