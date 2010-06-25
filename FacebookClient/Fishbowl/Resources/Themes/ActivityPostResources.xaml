@@ -25,7 +25,7 @@
   
   <ControlTemplate x:Key="LikeButtonTemplate" TargetType="{x:Type Button}">
     <StackPanel Orientation="Horizontal">
-      <Image x:Name="Like" Width="13" Height="13" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
+      <Image x:Name="Like" Width="13" Height="13" Margin="3,0" Source="pack://application:,,,/Resources/Images/Icons/like_icon.png" />
       <ContentPresenter x:Name="Presenter" VerticalAlignment="Center" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
     </StackPanel>
     <ControlTemplate.Triggers>
@@ -42,7 +42,7 @@
   </Style>
   <ControlTemplate x:Key="RemoveLikeButtonTemplate" TargetType="{x:Type Button}">
     <StackPanel Cursor="Hand" Orientation="Horizontal">
-      <Image x:Name="Like" Width="13" Height="13" Margin="3,0" RenderTransformOrigin=".5,.5" Source="pack://application:,,,/Resources/Images/like_icon.png">
+      <Image x:Name="Like" Width="13" Height="13" Margin="3,0" RenderTransformOrigin=".5,.5" Source="pack://application:,,,/Resources/Images/Icons/like_icon.png">
         <Image.RenderTransform>
           <RotateTransform Angle="180" />
         </Image.RenderTransform>
@@ -64,7 +64,7 @@
 
   <ControlTemplate x:Key="CommentButtonTemplate" TargetType="{x:Type ToggleButton}">
     <StackPanel Orientation="Horizontal">
-      <Image Width="13" Height="13" Margin="0,0,4.5,0" Source="pack://application:,,,/Resources/Images/comment_icon.png" />
+      <Image Width="13" Height="13" Margin="0,0,4,0" Source="pack://application:,,,/Resources/Images/Icons/comment_icon.png" />
       <ContentPresenter x:Name="Presenter" VerticalAlignment="Center" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
     </StackPanel>
     <ControlTemplate.Triggers>
@@ -549,7 +549,7 @@
                   
                   <TextBlock TextWrapping="Wrap" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource MiddleFontSize}" >
                     <InlineUIContainer>
-                      <Image Width="16" Height="16" Margin="3,0" Source="pack://application:,,,/Resources/Images/like_icon.png" />
+                      <Image Width="13" Height="13" Margin="3,0" Source="pack://application:,,,/Resources/Images/Icons/like_icon.png" />
                     </InlineUIContainer>
                     <FacebookClient:PeopleWhoLikeThisSpan ActivityPost="{Binding}" Foreground="{DynamicResource PeopleWhoLikeThisForeground}"/>
                   </TextBlock>

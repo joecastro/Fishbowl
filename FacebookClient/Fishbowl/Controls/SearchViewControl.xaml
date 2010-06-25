@@ -428,7 +428,7 @@
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Image Source="../Resources/Images/comment_icon.png" Width="13" Height="13" Margin="3,0,6,0" />
+            <Image Source="../Resources/Images/Icons/comment_icon.png" Width="13" Height="13" Margin="3,0,6,0" />
             <TextBlock Grid.Column="1" Text="{Binding Comment.Text}" MaxWidth="200" Style="{DynamicResource MessageTextBlockStyle}" Foreground="Black" TextTrimming="CharacterEllipsis"/>
           </Grid>
         </Border>

@@ -791,15 +791,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\comments_arrow.png" />
-    <Resource Include="Resources\Images\comment_icon.png" />
+    <Resource Include="Resources\Images\Icons\comment_icon.png" />
     <Resource Include="Resources\Images\Fishbowl.ico" />
     <Resource Include="Resources\Images\splash.png" />
     <Resource Include="Resources\Images\logo.png" />
     <Resource Include="Resources\Images\Controls\text_box_left.png" />
     <Resource Include="Resources\Images\Controls\text_box_right.png" />
     <Resource Include="Resources\Images\avatar_background.png" />
-    <Resource Include="Resources\Images\like_icon.png" />
+    <Resource Include="Resources\Images\Icons\like_icon.png" />
     <Resource Include="Resources\Images\photo_background.png" />
     <Resource Include="Resources\Images\Icons\feed_icon.png" />
     <Resource Include="Resources\Images\Icons\links_icon.png" />
