@@ -71,7 +71,6 @@
             }
         }
 
-
         public static readonly DependencyProperty IsInboxToggledProperty = DependencyProperty.Register(
             "IsInboxToggled",
             typeof(bool),
@@ -98,11 +97,13 @@
 
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(FooterControl));
         public static RoutedCommand SignOutCommand = new RoutedCommand("SignOut", typeof(FooterControl));
+        public static RoutedCommand RefreshCommand = new RoutedCommand("Refresh", typeof(FooterControl));
 
         public FooterControl()
         {
-            CommandBindings.Add(new CommandBinding(ShowSettingsCommand, OnShowSettingsCommand));
-            CommandBindings.Add(new CommandBinding(SignOutCommand, OnSignOutCommand));
+            CommandBindings.Add(new CommandBinding(ShowSettingsCommand, _OnShowSettingsCommand));
+            CommandBindings.Add(new CommandBinding(SignOutCommand, _OnSignOutCommand));
+            CommandBindings.Add(new CommandBinding(RefreshCommand, _OnRefreshCommand));
         }
 
         public override void OnApplyTemplate()
@@ -112,14 +113,19 @@
             NotificationControl = Template.FindName("NotificationControl", this) as NotificationCountControl;
         }
 
-        private void OnShowSettingsCommand(object sender, ExecutedRoutedEventArgs e)
+        private void _OnShowSettingsCommand(object sender, ExecutedRoutedEventArgs e)
         {
             ServiceProvider.ViewManager.ShowDialog(new SettingsDialog());
         }
 
-        private void OnSignOutCommand(object sender, ExecutedRoutedEventArgs e)
+        private void _OnSignOutCommand(object sender, ExecutedRoutedEventArgs e)
         {
             ((MainWindow)Application.Current.MainWindow).SignOut();
+        }
+
+        private void _OnRefreshCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null);
         }
     }
 }

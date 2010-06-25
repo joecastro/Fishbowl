@@ -298,12 +298,12 @@
                   Tag="Search" 
                   BannerText="Search" />
               <Button Margin="0,3" 
-                MinHeight="20"
-                VerticalAlignment="Center" HorizontalAlignment="Right" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                Style="{DynamicResource RefreshButtonStyle}"
-                ToolTip="Think you're missing something? Click to refresh now.">
+                  MinHeight="20"
+                  VerticalAlignment="Center" HorizontalAlignment="Right" 
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                  Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  Style="{DynamicResource RefreshButtonStyle}"
+                  ToolTip="Think you're missing something? Click to refresh now.">
                 <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
               </Button>
 

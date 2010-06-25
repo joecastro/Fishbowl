@@ -649,7 +649,6 @@
                   </Ellipse>
                   <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" FontFamily="{DynamicResource SansSerifFont}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </Grid>
-                
  
                 <!-- Notifications -->
                 <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource FlagGeometry}" Padding="0,2,-4,2" Content="Notifications" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
@@ -688,14 +687,17 @@
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-
-                <Button Visibility="Collapsed" Margin="20,-10,0,0" MinHeight="20" VerticalAlignment="Center" HorizontalAlignment="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"  Style="{DynamicResource RefreshButtonStyle}" ToolTip="">
-                  <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
-                </Button>
-
                 <Button Content="Settings" Tag="{DynamicResource GearGeometry}" Margin="12,0,0,0" Padding="0,3,-6,4" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="View and change settings" />
                 <Button Content="Sign Out" Tag="{DynamicResource ExitGeometry}" Margin="8,0,0,0" Padding="0,3,-4,3" Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Sign out" />
-                <Button Content="Refresh" Tag="{DynamicResource RefreshGeometry}" Margin="6,0,0,0" Padding="0,3,-8,3" Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Think you're missing something? Click to refresh now." />
+                <Button Content="Refresh"
+                        Tag="{DynamicResource RefreshGeometry}" 
+                        Margin="6,0,0,0"
+                        Padding="0,3,-8,3"
+                        Command="{x:Static FacebookClient:FooterControl.RefreshCommand}"
+                        CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                        Style="{DynamicResource IconButton}"
+                        ToolTipService.Placement="Top" 
+                        ToolTip="Think you're missing something? Click to refresh now." />
                 <!--
                 <Button Content="Settings" Tag="{DynamicResource ExitGeometry}" Margin="16,0,0,0" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Signout" />
                 -->
