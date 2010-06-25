@@ -367,23 +367,6 @@
               </StackPanel>
             </Grid>
           </Grid>
-          
-          <!--<ControlTemplate.Triggers>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type FacebookClient:MainWindow}}, Path=IsInSmallMode}" Value="True">
-              <Setter TargetName="UpdateStatusControl" Property="Width" Value="300" />
-              <Setter TargetName="HomeNavigationButton" Property="Height" Value="30" />
-              <Setter TargetName="HomeNavigationButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="FriendsNavigationButton" Property="Height" Value="30" />
-              <Setter TargetName="FriendsNavigationButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="ProfileNavigationButton" Property="Height" Value="30" />
-              <Setter TargetName="ProfileNavigationButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="PhotoAlbumsNavigationButton" Property="Height" Value="30" />
-              <Setter TargetName="PhotoAlbumsNavigationButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="FacebookButton" Property="Height" Value="30" />
-              <Setter TargetName="FacebookButtonText" Property="Visibility" Value="Collapsed" />
-              <Setter TargetName="StatusTextBlock" Property="Grid.ColumnSpan" Value="2"/>
-            </DataTrigger>
-          </ControlTemplate.Triggers>-->
         </ControlTemplate>
       </Setter.Value>
     </Setter>
