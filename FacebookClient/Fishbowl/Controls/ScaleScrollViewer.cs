@@ -298,18 +298,13 @@
 
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                return;
-            }
-
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 && e.MiddleButton == MouseButtonState.Pressed)
             {
                 this.Scale = 1.0;
             }
 
-            if (_inPromotion)
+            if (_inPromotion || e.ChangedButton != MouseButton.Left)
             {
                 base.OnPreviewMouseDown(e);
             }
