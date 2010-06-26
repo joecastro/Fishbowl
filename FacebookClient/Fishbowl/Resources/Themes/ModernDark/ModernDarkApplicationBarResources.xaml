@@ -136,40 +136,14 @@
        into two properties.  -->
   <shell:WindowChrome 
     x:Key="ApplicationWindowChrome" 
-    GlassFrameThickness="{Binding {x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
+    GlassFrameThickness="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
     CornerRadius="10"
     CaptionHeight="42"
     />
 
-  <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
-    <GradientStop Offset="0" Color="#3B5997" />
-    <GradientStop Offset="1" Color="#2B426F" />
-  </LinearGradientBrush>
-
   <SolidColorBrush x:Key="ApplicationBarForeground" Color="#3A5896" />
 
-  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF" />
   <SolidColorBrush x:Key="FooterBackground" Color="#3B5997" />
-
-  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
-    <LinearGradientBrush.GradientStops>
-      <GradientStop Color="#6A9FE9" Offset="0" />
-      <GradientStop Color="#3F60A0" Offset="1" />
-    </LinearGradientBrush.GradientStops>
-  </LinearGradientBrush>
-
-  <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#517dc9" />
-
-  <SolidColorBrush x:Key="StatusTextBoxBrush" Color="#60517dc9" />
-
-  <SolidColorBrush x:Key="HeaderStatusForegroundBrush" Color="White" />
-
-  <SolidColorBrush x:Key="UpdateStatusControlBrush" Color="#DD3b5998" Opacity="0" />
-
-  <LinearGradientBrush x:Key="ButtonHoverBrush" StartPoint=".5,0" EndPoint=".5,1">
-    <GradientStop Color="#80698FDD" Offset="0" />
-    <GradientStop Color="#35698FDD" Offset="1" />
-  </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="ButtonHoverBorderBrush" StartPoint="0,0" EndPoint="1,1">
     <GradientStop Color="#AF4E6AA2" Offset="0" />
