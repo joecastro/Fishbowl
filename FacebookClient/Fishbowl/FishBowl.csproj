@@ -81,10 +81,6 @@
       <HintPath>..\References\Interop.WIA.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.Windows.Shell, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\Microsoft.Windows.Shell.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -801,6 +797,10 @@
     <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
       <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
       <Name>Microsoft.Bing.Dev10</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
+      <Project>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</Project>
+      <Name>Microsoft.Windows.Shell</Name>
     </ProjectReference>
     <ProjectReference Include="..\TransitionEffects\TransitionEffects.csproj">
       <Project>{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}</Project>
