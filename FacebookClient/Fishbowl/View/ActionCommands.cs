@@ -438,7 +438,7 @@
 
         protected override bool CanExecuteInternal(object parameter)
         {
-            return true;
+            return Application.Current.MainWindow.WindowState != WindowState.Normal;
         }
 
         protected override void PerformAction(object parameter)

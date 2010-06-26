@@ -596,8 +596,29 @@
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MinimizeWindowCommand}">
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="0,0,0,3" />
                 </Button>
-                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}">
+                <Button Width="24" Height="24" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MaximizeWindowCommand}">
+                  <Button.Style>
+                    <Style BasedOn="{StaticResource OpacityButton}" TargetType="{x:Type Button}">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
+                          <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger> 
+                      </Style.Triggers>
+                    </Style>
+                  </Button.Style>
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="2,3,2,2" />
+                </Button>
+                <Button Width="24" Height="24" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RestoreWindowCommand}">
+                  <Button.Style>
+                    <Style BasedOn="{StaticResource OpacityButton}" TargetType="{x:Type Button}">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
+                          <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Button.Style>
+                  <Path Width="12" Height="11" Data="{DynamicResource RestoreGeometry}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
                 </Button>
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.CloseWindowCommand}">
                   <Path Width="11" Height="11" Data="{DynamicResource CloseXGeometry}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
