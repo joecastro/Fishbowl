@@ -600,9 +600,9 @@
                   <Button.Style>
                     <Style BasedOn="{StaticResource OpacityButton}" TargetType="{x:Type Button}">
                       <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
+                        <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
                           <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger> 
+                        </DataTrigger>
                       </Style.Triggers>
                     </Style>
                   </Button.Style>
@@ -611,9 +611,10 @@
                 <Button Width="24" Height="24" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RestoreWindowCommand}">
                   <Button.Style>
                     <Style BasedOn="{StaticResource OpacityButton}" TargetType="{x:Type Button}">
+                      <Setter Property="Visibility" Value="Collapsed"/>
                       <Style.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False">
-                          <Setter Property="Visibility" Value="Collapsed"/>
+                        <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
+                          <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                       </Style.Triggers>
                     </Style>

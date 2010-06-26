@@ -419,11 +419,6 @@
             : base(viewManager)
         { }
 
-        protected override bool CanExecuteInternal(object parameter)
-        {
-            return Application.Current.MainWindow.WindowState == WindowState.Normal;
-        }
-
         protected override void PerformAction(object parameter)
         {
             SystemCommands.MaximizeWindow(Application.Current.MainWindow);
@@ -435,11 +430,6 @@
         public RestoreWindowCommand(ViewManager viewManager)
             : base(viewManager)
         { }
-
-        protected override bool CanExecuteInternal(object parameter)
-        {
-            return Application.Current.MainWindow.WindowState != WindowState.Normal;
-        }
 
         protected override void PerformAction(object parameter)
         {
