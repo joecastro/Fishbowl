@@ -145,6 +145,56 @@
     <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}"/>
   </Style>
 
+  <Style x:Key="BackButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="Margin" Value="5,0" />
+    <Setter Property="Width" Value="25" />
+    <Setter Property="Height" Value="25" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Border x:Name="ButtonBorder">
+            <Border.Clip>
+              <EllipseGeometry RadiusX="13" RadiusY="13" Center="12.5,12.5" />
+            </Border.Clip>
+            <Rectangle Fill="{DynamicResource BackArrowDrawingBrush}" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsFocused" Value="True" />
+            <Trigger Property="IsDefaulted" Value="True" />
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" TargetName="ButtonBorder">
+                <Setter.Value>
+                  <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#66F3F3F3" Offset="0" />
+                    <GradientStop Color="#66EBEBEB" Offset="0.5" />
+                    <GradientStop Color="#66DDDDDD" Offset="0.5" />
+                    <GradientStop Color="#66B1BDD6" Offset="1" />
+                  </LinearGradientBrush>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter Property="Background" TargetName="ButtonBorder">
+                <Setter.Value>
+                  <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0" />
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5" />
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5" />
+                    <GradientStop Color="#FFB1BDD6" Offset="1" />
+                  </LinearGradientBrush>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" TargetName="ButtonBorder" Value=".3" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style x:Key="NavigationRadioButtonStyle" TargetType="{x:Type ToggleButton}">
     <Setter Property="Margin" Value="1" />
     <Setter Property="VerticalAlignment" Value="Bottom" />
@@ -212,49 +262,7 @@
             </ClientManagerControls:FacebookImageControl>
 
             <StackPanel Orientation="Horizontal" Margin="0">
-              <Button x:Name="BackButton" Command="NavigationCommands.BrowseBack" Width="25" Height="25" VerticalAlignment="Center" Margin="5,0" ToolTip="Go back">
-                <Button.Template>
-                  <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="ButtonBorder">
-                      <Border.Clip>
-                        <EllipseGeometry RadiusX="13" RadiusY="13" Center="12.5,12.5" />
-                      </Border.Clip>
-                      <Rectangle Fill="{DynamicResource BackArrowDrawingBrush}" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                      <Trigger Property="IsFocused" Value="True" />
-                      <Trigger Property="IsDefaulted" Value="True" />
-                      <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" TargetName="ButtonBorder">
-                          <Setter.Value>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                              <GradientStop Color="#66F3F3F3" Offset="0" />
-                              <GradientStop Color="#66EBEBEB" Offset="0.5" />
-                              <GradientStop Color="#66DDDDDD" Offset="0.5" />
-                              <GradientStop Color="#66B1BDD6" Offset="1" />
-                            </LinearGradientBrush>
-                          </Setter.Value>
-                        </Setter>
-                      </Trigger>
-                      <Trigger Property="IsPressed" Value="True">
-                        <Setter Property="Background" TargetName="ButtonBorder">
-                          <Setter.Value>
-                            <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-                              <GradientStop Color="#FFF3F3F3" Offset="0" />
-                              <GradientStop Color="#FFEBEBEB" Offset="0.5" />
-                              <GradientStop Color="#FFDDDDDD" Offset="0.5" />
-                              <GradientStop Color="#FFB1BDD6" Offset="1" />
-                            </LinearGradientBrush>
-                          </Setter.Value>
-                        </Setter>
-                      </Trigger>
-                      <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" TargetName="ButtonBorder" Value=".3" />
-                      </Trigger>
-                    </ControlTemplate.Triggers>
-                  </ControlTemplate>
-                </Button.Template>
-              </Button>
+              <Button x:Name="BackButton" Style="{StaticResource BackButtonStyle}" Command="NavigationCommands.BrowseBack" ToolTip="Go back"/>
               <Image Width="129" Height="19" Margin="3,0,0,0" Source="pack://application:,,,/Resources/Images/logo.png" VerticalAlignment="Stretch" HorizontalAlignment="Left" />
             </StackPanel>
 

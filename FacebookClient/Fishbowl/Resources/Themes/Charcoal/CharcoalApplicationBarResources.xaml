@@ -8,7 +8,8 @@
     <GradientStop Color="#303030" Offset="1" />
   </LinearGradientBrush>
 
-  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="DarkGray" />
+  <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
+
   <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#FF333333" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >

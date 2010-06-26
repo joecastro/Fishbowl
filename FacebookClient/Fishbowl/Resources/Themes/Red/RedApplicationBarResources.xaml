@@ -13,9 +13,8 @@
         <GradientStop Color="Red"
                       Offset="0.998" />
     </LinearGradientBrush>
-    
-    <SolidColorBrush x:Key="ApplicationBarBorderBrush"
-                     Color="DarkGray" />
+
+  <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
@@ -101,14 +100,6 @@
                       Offset="0" />
         <GradientStop Color="#FF000000"
                       Offset="1" />
-    </LinearGradientBrush>
-    <LinearGradientBrush x:Key="ApplicationBarShadowBrush"
-    	EndPoint="0.5,1"
-    	StartPoint="0.5,0">
-    	<GradientStop Color="#E5000000"
-    		Offset="0" />
-    	<GradientStop Color="#00000000"
-    		Offset="1" />
     </LinearGradientBrush>
     
     <SolidColorBrush x:Key="ProfilePictureBackgroundBrush"

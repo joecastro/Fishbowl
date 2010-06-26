@@ -6,6 +6,8 @@
   
   <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF"/>
 
+  <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
+
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
       <GradientStop Color="#6A9FE9" Offset="0"/>
@@ -66,11 +68,6 @@
   <SolidColorBrush x:Key="ApplicationBarSeparationBackgroundBrush" Color="#FF95A5C7"/>
   
   <SolidColorBrush x:Key="ApplicationBarSeparationBorderBrush" Color="#FF1F3C79"/>
-  
-  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-    <GradientStop Offset="0" Color="#E53B3B3B"/>
-    <GradientStop Offset="1" Color="#00000000"/>
-  </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
     <GradientStop Offset="0.25" Color="#DF35528C"/>

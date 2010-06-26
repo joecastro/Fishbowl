@@ -13,7 +13,6 @@
   <Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
   <Geometry x:Key="RightArrow">M0,0 L1,0.5 0,1Z</Geometry>
   <Geometry x:Key="LeftArrow">M0,0.5 L1,1 1,0Z</Geometry>
-  <Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
   <Geometry x:Key="HorizontalLine">M0,0 L0,1</Geometry>
   <Geometry x:Key="VerticalLine">M0,0 L1,0</Geometry>
   <Geometry x:Key="LeftRightDiagonalLine">M0,0 L1,1</Geometry>
@@ -93,19 +92,33 @@
     />
 
   <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
-    <GradientStop Offset="0" Color="#3B5997" />
+    <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
     <GradientStop Offset="1" Color="#2B426F" />
   </LinearGradientBrush>
 
+  <LinearGradientBrush x:Key="InactiveApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#8b9dc3" />
+    <GradientStop Offset="1" Color="#2B426F" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#0000" />
+    <GradientStop Offset=".9" Color="#4000" />
+    <GradientStop Offset="1" Color="#7000" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#2c4371" />
+
   <SolidColorBrush x:Key="ApplicationBarForeground" Color="#3A5896" />
 
-  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF" />
-  <SolidColorBrush x:Key="FooterBackground" Color="#3B5997" />
+  <SolidColorBrush x:Key="FooterBackground" Color="{DynamicResource FacebookBlue}" />
+
+  <SolidColorBrush x:Key="InactiveFooterBackground" Color="#8b9dc3" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
     <LinearGradientBrush.GradientStops>
-      <GradientStop Color="#6A9FE9" Offset="0" />
-      <GradientStop Color="#3F60A0" Offset="1" />
+      <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
+      <GradientStop Offset="1" Color="#2B426F" />
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
 
@@ -158,15 +171,6 @@
   <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
 
   <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
-
-  <SolidColorBrush x:Key="ApplicationBarSeparationBackgroundBrush" Color="#FF95A5C7" />
-
-  <SolidColorBrush x:Key="ApplicationBarSeparationBorderBrush" Color="#FF1F3C79" />
-
-  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-    <GradientStop Offset="0" Color="#E53B3B3B" />
-    <GradientStop Offset="1" Color="#00000000" />
-  </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
     <GradientStop Offset="0.25" Color="#DF35528C" />
@@ -243,7 +247,9 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
-  <Style x:Key="BackButton" TargetType="{x:Type Button}">
+  <Style x:Key="BackButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="Width" Value="28" />
+    <Setter Property="Height" Value="28" />
     <Setter Property="OverridesDefaultStyle" Value="true" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Cursor" Value="Hand" />
@@ -252,7 +258,7 @@
         <ControlTemplate TargetType="{x:Type Button}">
           <Grid x:Name="Grid" Background="Transparent">
             <Ellipse x:Name="Ellipse" Fill="White" />
-            <Path x:Name="Arrow" Width="8" Height="11" Margin="-1,0,1,0" Data="{StaticResource LeftArrow}" Fill="{StaticResource ApplicationBarForeground}" Stretch="Fill" Opacity="0.5" />
+            <Path x:Name="Arrow" Width="8" Height="11" Margin="-1,0,1,0" Data="{DynamicResource LeftArrow}" Fill="{DynamicResource ApplicationBarForeground}" Stretch="Fill" Opacity="0.5" />
           </Grid>
           <ControlTemplate.Triggers>
             <Trigger Property="IsPressed" Value="True">
@@ -475,8 +481,8 @@
             </Trigger>
             <Trigger Property="IsChecked" Value="True">
               <Setter TargetName="SelectionBorder" Property="Visibility" Value="Visible" />
-              <Setter Property="Foreground" Value="{StaticResource ApplicationBarForeground}" />
-              <Setter TargetName="Icon" Property="Fill" Value="{StaticResource ApplicationBarForeground}" />
+              <Setter Property="Foreground" Value="{DynamicResource ApplicationBarForeground}" />
+              <Setter TargetName="Icon" Property="Fill" Value="{DynamicResource ApplicationBarForeground}" />
               <Setter TargetName="Icon" Property="Opacity" Value="1.0" />
             </Trigger>
           </ControlTemplate.Triggers>
@@ -497,13 +503,20 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:MainHeaderControl}">
-          <Border Background="{DynamicResource ApplicationBarBackground}" Height="90" BorderBrush="#2c4371" BorderThickness="1,1,1,0">
+          <Border Height="90" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="1,1,1,0">
             <Border.Style>
               <Style TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="{DynamicResource ApplicationBarBackground}"/>
                 <Setter Property="CornerRadius" Value="6,6,0,0"/>
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
                     <Setter Property="CornerRadius" Value="0"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource InactiveApplicationBarBackground}"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource InactiveApplicationBarBackground}"/>
                   </DataTrigger>
                 </Style.Triggers>
               </Style>
@@ -519,17 +532,10 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Bottom Shadow -->
-                <Border Height="6" VerticalAlignment="Bottom" BorderBrush="#7000" BorderThickness="0,0,0,1" Grid.ColumnSpan="3">
-                  <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                      <GradientStop Offset="0" Color="#0000" />
-                      <GradientStop Offset="1" Color="#4000" />
-                    </LinearGradientBrush>
-                  </Border.Background>
-                </Border>
+                <Border Height="6" VerticalAlignment="Bottom" Grid.ColumnSpan="3" Background="{DynamicResource ApplicationBarShadowBrush}"/>
 
                 <!-- Back Button -->
-                <Button Width="28" Height="28" x:Name="BackButton" Style="{StaticResource BackButton}" shell:WindowChrome.IsHitTestVisibleInChrome="True" Command="NavigationCommands.BrowseBack" Margin="5,0" ToolTip="Go back" />
+                <Button x:Name="BackButton" Style="{StaticResource BackButtonStyle}" shell:WindowChrome.IsHitTestVisibleInChrome="True" Command="NavigationCommands.BrowseBack" Margin="5,0" ToolTip="Go back" />
 
                 <!-- Name / Status -->
                 <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,0">
@@ -594,7 +600,7 @@
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="2,3,2,2" />
                 </Button>
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.CloseWindowCommand}">
-                  <Path Width="11" Height="11" Data="{StaticResource CloseX}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
+                  <Path Width="11" Height="11" Data="{DynamicResource CloseXGeometry}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
                 </Button>
               </StackPanel>
             </Grid>
@@ -609,13 +615,20 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
-          <Border Height="32" Background="{StaticResource FooterBackground}" BorderBrush="#2c4371" BorderThickness="1,0,1,1">
+          <Border Height="32" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="1,0,1,1">
             <Border.Style>
               <Style TargetType="{x:Type Border}">
+                <Setter Property="Background" Value="{DynamicResource FooterBackground}"/>
                 <Setter Property="CornerRadius" Value="0,0,6,6"/>
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
                     <Setter Property="CornerRadius" Value="0"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="False">
+                    <Setter Property="Background" Value="{DynamicResource InactiveFooterBackground}"/>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource InactiveFooterBackground}"/>
                   </DataTrigger>
                 </Style.Triggers>
               </Style>

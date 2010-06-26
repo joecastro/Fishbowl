@@ -15,6 +15,11 @@
     <GradientStop Color="#303030" Offset="1" />
   </LinearGradientBrush>
 
+  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#0000" />
+    <GradientStop Offset="1" Color="#4000" />
+  </LinearGradientBrush>
+
   <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="DarkGray" />
   <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#FF333333" />
 
@@ -55,7 +60,6 @@
   <Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
   <Geometry x:Key="RightArrow">M0,0 L1,0.5 0,1Z</Geometry>
   <Geometry x:Key="LeftArrow">M0,0.5 L1,1 1,0Z</Geometry>
-  <Geometry x:Key="CloseX">M0,0 L1,1 M0,1 L1,0</Geometry>
   <Geometry x:Key="HorizontalLine">M0,0 L0,1</Geometry>
   <Geometry x:Key="VerticalLine">M0,0 L1,0</Geometry>
   <Geometry x:Key="LeftRightDiagonalLine">M0,0 L1,1</Geometry>
@@ -207,11 +211,6 @@
   <SolidColorBrush x:Key="ApplicationBarSeparationBackgroundBrush" Color="#FF95A5C7" />
 
   <SolidColorBrush x:Key="ApplicationBarSeparationBorderBrush" Color="#FF1F3C79" />
-
-  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0.5,0" EndPoint="0.5,1">
-    <GradientStop Offset="0" Color="#E53B3B3B" />
-    <GradientStop Offset="1" Color="#00000000" />
-  </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
     <GradientStop Offset="0.25" Color="#DF35528C" />
@@ -651,7 +650,7 @@
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="2,3,2,2" />
                 </Button>
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.CloseWindowCommand}">
-                  <Path Width="11" Height="11" Data="{StaticResource CloseX}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
+                  <Path Width="11" Height="11" Data="{DynamicResource CloseXGeometry}" Stretch="Fill" Stroke="White" StrokeThickness="2.5" />
                 </Button>
 
               </StackPanel>
