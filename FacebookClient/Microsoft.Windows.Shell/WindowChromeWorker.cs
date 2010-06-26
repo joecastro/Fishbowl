@@ -517,44 +517,47 @@ namespace Microsoft.Windows.Shell
 
         private IntPtr _HandleNCHitTest(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled)
         {
-            IntPtr lRet = IntPtr.Zero;
-            handled = false;
+            // Let the system know if we consider the mouse to be in our effective non-client area.
+            var mousePosScreen = new Point(Utility.GET_X_LPARAM(lParam), Utility.GET_Y_LPARAM(lParam));
+            Rect windowPosition = _GetWindowRect();
 
-            // Give DWM a chance at this first.
-            if (Utility.IsOSVistaOrNewer && _chromeInfo.GlassFrameThickness != default(Thickness) && _isGlassEnabled)
+            Point mousePosWindow = mousePosScreen;
+            mousePosWindow.Offset(-windowPosition.X, -windowPosition.Y);
+            mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow);
+
+            // If the app is asking for content to be treated as client then that takes precedence over _everything_, even DWM caption buttons.
+            // This allows apps to set the glass frame to be non-empty, still cover it with WPF content to hide all the glass,
+            // yet still get DWM to draw a drop shadow.
+            IInputElement inputElement = _window.InputHitTest(mousePosWindow);
+            if (inputElement != null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement))
             {
-                // If we're on Vista, give the DWM a chance to handle the message first.
-                handled = NativeMethods.DwmDefWindowProc(_hwnd, uMsg, wParam, lParam, out lRet);
+                handled = true;
+                return new IntPtr((int)HT.CLIENT);
             }
 
-            // Handle letting the system know if we consider the mouse to be in our effective non-client area.
-            // If DWM already handled this by way of DwmDefWindowProc, then respect their call.
-            if (IntPtr.Zero == lRet)
+            // It's not opted out, so offer up the hittest to DWM, then to our custom non-client area logic.
+            if (_chromeInfo.UseAeroCaptionButtons)
             {
-                var mousePosScreen = new Point(Utility.GET_X_LPARAM(lParam), Utility.GET_Y_LPARAM(lParam));
-                Rect windowPosition = _GetWindowRect();
-
-                HT ht = _HitTestNca(
-                    DpiHelper.DeviceRectToLogical(windowPosition),
-                    DpiHelper.DevicePixelsToLogical(mousePosScreen));
-
-                // Don't blindly respect HTCAPTION.
-                // We want UIElements in the caption area to be actionable so run through a hittest first.
-                if (ht != HT.CLIENT)
+                IntPtr lRet;
+                if (Utility.IsOSVistaOrNewer && _chromeInfo.GlassFrameThickness != default(Thickness) && _isGlassEnabled)
                 {
-                    Point mousePosWindow = mousePosScreen;
-                    mousePosWindow.Offset(-windowPosition.X, -windowPosition.Y);
-                    mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow);
-                    IInputElement inputElement = _window.InputHitTest(mousePosWindow);
-                    if (inputElement != null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement))
+                    // If we're on Vista, give the DWM a chance to handle the message first.
+                    handled = NativeMethods.DwmDefWindowProc(_hwnd, uMsg, wParam, lParam, out lRet);
+
+                    if (IntPtr.Zero != lRet)
                     {
-                        ht = HT.CLIENT;
+                        // If DWM claims to have handled this, then respect their call.
+                        return lRet;
                     }
                 }
-                handled = true;
-                lRet = new IntPtr((int)ht);
             }
-            return lRet;
+
+            HT ht = _HitTestNca(
+                DpiHelper.DeviceRectToLogical(windowPosition),
+                DpiHelper.DevicePixelsToLogical(mousePosScreen));
+
+            handled = true;
+            return new IntPtr((int)ht);
         }
 
         private IntPtr _HandleNCRButtonUp(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled)

@@ -89,6 +89,7 @@
     GlassFrameThickness="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" 
     CornerRadius="10"
     CaptionHeight="82"
+    UseAeroCaptionButtons="False"
     />
 
   <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">

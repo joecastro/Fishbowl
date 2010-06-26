@@ -161,10 +161,23 @@ namespace Microsoft.Windows.Shell
 
             return thickness;
         }
+
         public Thickness GlassFrameThickness
         {
             get { return (Thickness)GetValue(GlassFrameThicknessProperty); }
             set { SetValue(GlassFrameThicknessProperty, value); }
+        }
+
+        public static readonly DependencyProperty UseAeroCaptionButtonsProperty = DependencyProperty.Register(
+            "UseAeroCaptionButtons",
+            typeof(bool),
+            typeof(WindowChrome),
+            new FrameworkPropertyMetadata(true));
+
+        public bool UseAeroCaptionButtons
+        {
+            get { return (bool)GetValue(UseAeroCaptionButtonsProperty); }
+            set { SetValue(UseAeroCaptionButtonsProperty, value); }
         }
 
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register(
