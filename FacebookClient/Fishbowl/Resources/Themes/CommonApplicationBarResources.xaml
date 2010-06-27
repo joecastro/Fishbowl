@@ -36,48 +36,6 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
   
-  <!-- Just like ToolbarButtonTemplate, but it spins the content a couple times on click. -->
-  <ControlTemplate x:Key="SpinningToolbarButtonTemplate" TargetType="{x:Type ButtonBase}">
-    <Grid x:Name="Root">
-      <Border x:Name="hover" Background="{DynamicResource ButtonHoverBrush}" CornerRadius="3" Opacity="0" />
-      <ContentPresenter x:Name="RotatingContentPresenter" RenderTransformOrigin=".5,.5" Margin="4,0" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <ContentPresenter.RenderTransform>
-          <RotateTransform />
-        </ContentPresenter.RenderTransform>
-      </ContentPresenter>
-    </Grid>
-    <ControlTemplate.Triggers>
-      <Trigger Property="IsEnabled" Value="False">
-        <Setter Property="Opacity" TargetName="Root" Value="0.4" />
-      </Trigger>
-      <Trigger Property="IsMouseOver" Value="True">
-        <Trigger.EnterActions>
-          <BeginStoryboard>
-            <Storyboard>
-              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="1" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.EnterActions>
-        <Trigger.ExitActions>
-          <BeginStoryboard>
-            <Storyboard>
-              <DoubleAnimation Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" To="0" />
-            </Storyboard>
-          </BeginStoryboard>
-        </Trigger.ExitActions>
-      </Trigger>
-      <EventTrigger RoutedEvent="Button.Click">
-        <EventTrigger.Actions>
-          <BeginStoryboard>
-            <Storyboard>
-              <DoubleAnimation Storyboard.TargetName="RotatingContentPresenter" Storyboard.TargetProperty="(RenderTransform).(RotateTransform.Angle)" From="0" To="720" Duration="00:00:01.5" />
-            </Storyboard>
-          </BeginStoryboard>
-        </EventTrigger.Actions>
-      </EventTrigger>
-    </ControlTemplate.Triggers>
-  </ControlTemplate>
-
   <ControlTemplate x:Key="ToolbarToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
     <Grid x:Name="Root">
       <Border x:Name="Selected" Background="{DynamicResource ButtonHoverBrush}" BorderBrush="{DynamicResource ButtonHoverBorderBrush}" BorderThickness="1" CornerRadius="3" Opacity="0" />
@@ -129,11 +87,7 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}"/>
   </Style>
-
-  <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MiniModeButtonStyle}">
-    <Setter Property="Template" Value="{StaticResource SpinningToolbarButtonTemplate}" />
-  </Style>
-  
+ 
   <Style x:Key="NavigationButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="Margin" Value="5,0,5,1" />
     <Setter Property="VerticalAlignment" Value="Bottom" />
@@ -305,16 +259,6 @@
                   Style="{DynamicResource SearchTextBoxStyle}" 
                   Tag="Search" 
                   BannerText="Search" />
-              <Button Margin="0,3" 
-                  MinHeight="20"
-                  VerticalAlignment="Center" HorizontalAlignment="Right" 
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                  Command="{x:Static FacebookClient:MainHeaderControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                  Style="{DynamicResource RefreshButtonStyle}"
-                  ToolTip="Think you're missing something? Click to refresh now.">
-                <Rectangle Width="16" Height="16" Fill="{DynamicResource RefreshArrowDrawingBrush}" />
-              </Button>
-
               <Button Margin="0,3"
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
@@ -416,8 +360,8 @@
                       DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" >
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                      <GradientStop Offset="0.000" Color="#FFF9F9" />
-                      <GradientStop Offset="0.524" Color="#67A932" />
+                      <GradientStop Color="#5da110" Offset="0" />
+                      <GradientStop Color="#308700" Offset="1" />
                     </LinearGradientBrush>
                   </FacebookClient:NotificationCountControl.Background>
                 </FacebookClient:NotificationCountControl>
@@ -439,8 +383,8 @@
                       DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                      <GradientStop Offset="0.000" Color="#FFF9F9" />
-                      <GradientStop Offset="0.524" Color="Firebrick" />
+                      <GradientStop Color="#e25423" Offset="0" />
+                      <GradientStop Color="#dc2300" Offset="1" />
                     </LinearGradientBrush>
                   </FacebookClient:NotificationCountControl.Background>
                 </FacebookClient:NotificationCountControl>
@@ -461,9 +405,9 @@
                     HorizontalAlignment="Right" VerticalAlignment="Center"
                     DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" >
                   <FacebookClient:NotificationCountControl.Background>
-                      <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                      <GradientStop Offset="0.000" Color="#FFF9F9" />
-                      <GradientStop Offset="0.524" Color="#7288B7" />
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#4c94d7" Offset="0" />
+                      <GradientStop Color="#1876cd" Offset="1" />
                     </LinearGradientBrush>
                   </FacebookClient:NotificationCountControl.Background>
                 </FacebookClient:NotificationCountControl>
@@ -474,15 +418,15 @@
                 Margin="3,1"
                 DockPanel.Dock="Left"
                 MinHeight="20"
-		VerticalAlignment="Center"
+		        VerticalAlignment="Center"
                 HorizontalAlignment="Left" 
-		VerticalContentAlignment="Center" 
+                VerticalContentAlignment="Center" 
                 HorizontalContentAlignment="Center"
-		Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" 
+                Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" 
                 CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
                 Style="{DynamicResource MiniModeButtonStyle}" 
                 ToolTipService.Placement="Top"
-		ToolTip="View and change settings">
+                ToolTip="View and change settings">
               <StackPanel Orientation="Horizontal">
                 <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource SettingsDrawingBrush}" />
                 <TextBlock>Settings</TextBlock>
@@ -501,6 +445,21 @@
               <StackPanel Orientation="Horizontal">
                 <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource ClosingDoorDrawingBrush}" />
                 <TextBlock>Sign out</TextBlock>
+              </StackPanel>
+            </Button>
+            <Button Margin="3,1"
+                DockPanel.Dock="Left"
+                MinHeight="20"
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Left" 
+                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                Style="{DynamicResource MiniModeButtonStyle}"
+                ToolTipService.Placement="Top"
+                Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                ToolTip="Think you're missing something? Click to refresh now.">
+              <StackPanel Orientation="Horizontal">
+                <Path Data="{DynamicResource RefreshGeometry}" Fill="#FFFFFF" Stretch="Uniform" VerticalAlignment="Center" />
+                <TextBlock>Refresh</TextBlock>
               </StackPanel>
             </Button>
 

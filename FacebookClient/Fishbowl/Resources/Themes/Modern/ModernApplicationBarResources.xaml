@@ -667,59 +667,44 @@
                 </Border.Background>
               </Border>
 
-              <StackPanel IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0">
+              <StackPanel IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
 
                 <!-- Inbox -->
                 <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource MailGeometry}" Padding="0,5,-4,5" Content="Inbox" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
-                <Grid Width="17" Height="17">
-                  <Ellipse>
-                    <Ellipse.Effect>
-                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
-                    </Ellipse.Effect>
-                    <Ellipse.Fill>
-                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#4c94d7" Offset="0" />
-                        <GradientStop Color="#1876cd" Offset="1" />
-                      </LinearGradientBrush>
-                    </Ellipse.Fill>
-                  </Ellipse>
-                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" FontFamily="{DynamicResource SansSerifFont}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Grid>
+                <FacebookClient:NotificationCountControl
+                    DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" >
+                  <FacebookClient:NotificationCountControl.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#4c94d7" Offset="0" />
+                      <GradientStop Color="#1876cd" Offset="1" />
+                    </LinearGradientBrush>
+                  </FacebookClient:NotificationCountControl.Background>
+                </FacebookClient:NotificationCountControl>
  
                 <!-- Notifications -->
                 <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource FlagGeometry}" Padding="0,2,-4,2" Content="Notifications" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
-                <Grid Width="17" Height="17">
-                  <Ellipse>
-                    <Ellipse.Effect>
-                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
-                    </Ellipse.Effect>
-                    <Ellipse.Fill>
-                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#e25423" Offset="0" />
-                        <GradientStop Color="#dc2300" Offset="1" />
-                      </LinearGradientBrush>
-                    </Ellipse.Fill>
-                  </Ellipse>
-                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" FontFamily="{DynamicResource SansSerifFont}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Grid>
+                <FacebookClient:NotificationCountControl
+                  x:Name="NotificationControl"
+                  DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}" >
+                  <FacebookClient:NotificationCountControl.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#e25423" Offset="0" />
+                      <GradientStop Color="#dc2300" Offset="1" />
+                    </LinearGradientBrush>
+                  </FacebookClient:NotificationCountControl.Background>
+                </FacebookClient:NotificationCountControl>
 
                 <!-- Who's Online-->
                 <ToggleButton x:Name="ChatButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource PersonGeometry}" Padding="0,2,-4,2" Content="Who's Online" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See who else is around" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}" />
-                <Grid Width="17" Height="17">
-                  <Ellipse>
-                    <Ellipse.Effect>
-                      <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
-                    </Ellipse.Effect>
-                    <Ellipse.Fill>
-                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#5da110" Offset="0" />
-                        <GradientStop Color="#308700" Offset="1" />
-                      </LinearGradientBrush>
-                    </Ellipse.Fill>
-                  </Ellipse>
-                  <TextBlock Foreground="#FFFFFF" FontWeight="Normal" FontSize="9" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" FontFamily="{DynamicResource SansSerifFont}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </Grid>
-
+                <FacebookClient:NotificationCountControl
+                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" >
+                  <FacebookClient:NotificationCountControl.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#5da110" Offset="0" />
+                      <GradientStop Color="#308700" Offset="1" />
+                    </LinearGradientBrush>
+                  </FacebookClient:NotificationCountControl.Background>
+                </FacebookClient:NotificationCountControl>
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
@@ -734,10 +719,6 @@
                         Style="{DynamicResource IconButton}"
                         ToolTipService.Placement="Top" 
                         ToolTip="Think you're missing something? Click to refresh now." />
-                <!--
-                <Button Content="Settings" Tag="{DynamicResource ExitGeometry}" Margin="16,0,0,0" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Signout" />
-                -->
-
               </StackPanel>
             </Grid>
           </Border>

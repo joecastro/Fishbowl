@@ -130,8 +130,8 @@
           <FacebookClient:NotificationCountControl x:Name="NotificationCountControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
             <FacebookClient:NotificationCountControl.Background>
               <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                <GradientStop Offset="0.000" Color="#FFF9F9" />
-                <GradientStop Offset="0.524" Color="Firebrick" />
+                <GradientStop Color="#e25423" Offset="0" />
+                <GradientStop Color="#dc2300" Offset="1" />
               </LinearGradientBrush>
             </FacebookClient:NotificationCountControl.Background>
           </FacebookClient:NotificationCountControl>

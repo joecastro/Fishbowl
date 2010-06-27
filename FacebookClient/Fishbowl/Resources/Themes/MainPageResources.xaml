@@ -9,18 +9,22 @@
   <SolidColorBrush x:Key="FacebookBlueBrush" Color="{StaticResource FacebookBlue}"/>
 
   <ControlTemplate x:Key="NotificationCountControlTemplate" TargetType="{x:Type FacebookClient:NotificationCountControl}">
-    <Border 
-        Width="18" 
-        Height="18" 
-        CornerRadius="9" 
-        HorizontalAlignment="Right" 
-        VerticalAlignment="Bottom" 
-        Visibility="{TemplateBinding Visibility}"
-        Background="{TemplateBinding Background}">
-      <Viewbox Margin="2,3">
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisplayCount}" TextAlignment="Center" TextWrapping="NoWrap" FontWeight="Bold" FontFamily="{DynamicResource SansSerifFont}" />
+    <Grid Width="17" Height="17" Visibility="{TemplateBinding Visibility}">
+      <Ellipse Fill="{TemplateBinding Background}">
+        <Ellipse.Effect>
+          <DropShadowEffect Direction="-90" Opacity="0.75" ShadowDepth="1" BlurRadius="4" />
+        </Ellipse.Effect>
+      </Ellipse>
+      <Viewbox Margin="0,3">
+        <TextBlock Foreground="White" 
+                   FontWeight="Normal" 
+                   FontSize="9"
+                   Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=DisplayCount}" 
+                   FontFamily="{DynamicResource SansSerifFont}" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center" />
       </Viewbox>
-    </Border>
+    </Grid>
   </ControlTemplate>
 
   <Style TargetType="{x:Type FacebookClient:NotificationCountControl}">
@@ -329,82 +333,4 @@
     </Setter>
   </Style>
 
-  <Style x:Key="LinkTextBoxStyle" TargetType="{x:Type TextBox}">
-    <Setter Property="SpellCheck.IsEnabled" Value="True" />
-    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
-    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="AllowDrop" Value="true"/>
-    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
-    <Setter Property="Foreground" Value="#35528c"/>
-    <Setter Property="Background" Value="#FFFFFF"/>
-    <Setter Property="MinHeight" Value="23"/>
-    <Setter Property="TextWrapping" Value="Wrap"/>
-    <Setter Property="AcceptsReturn" Value="True"/>
-    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type TextBox}">
-          <Grid x:Name="RootContainer">
-
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="15" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="15" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="9" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="9" />
-              </Grid.RowDefinitions>
-
-              <Border CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" />
-
-              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
-              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-
-              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
-              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
-
-              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
-              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
-              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
-            </Grid>
-
-            <TextBlock x:Name="HelpText" Margin="15,3,0,0" HorizontalAlignment="Left" 
-                                   FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" Opacity=".7" 
-                                   Foreground="#35528c" Text="{TemplateBinding ToolTip}" VerticalAlignment="Center" 
-                                   Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}"/>
-
-            <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Light" VerticalAlignment="Center" />
-          </Grid>
-          <ControlTemplate.Triggers>
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="Text" Value="" />
-              </MultiTrigger.Conditions>
-              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
-            </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="false">
-              <Trigger.EnterActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation To="0.5" Duration="0:0:0.1" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.EnterActions>
-              <Trigger.ExitActions>
-                <BeginStoryboard>
-                  <Storyboard>
-                    <DoubleAnimation To="1" Duration="0:0:0.5" Storyboard.TargetName="RootContainer" Storyboard.TargetProperty="Opacity"/>
-                  </Storyboard>
-                </BeginStoryboard>
-              </Trigger.ExitActions>
-            </Trigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
 </ResourceDictionary>

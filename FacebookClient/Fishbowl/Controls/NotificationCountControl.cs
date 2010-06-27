@@ -1,22 +1,14 @@
 ﻿
 namespace FacebookClient
 {
-    using System;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Threading;
+    using System.Windows.Shapes;
     using Standard;
 
     public class NotificationCountControl : Control
     {
-        public NotificationCountControl()
-        {
-            Visibility = Visibility.Hidden;
-            LayoutUpdated += (sender, e) => _UpdateImageSource();
-        }
-
         public static readonly DependencyProperty DisplayCountProperty = DependencyProperty.Register(
             "DisplayCount",
             typeof(int), 
@@ -30,43 +22,65 @@ namespace FacebookClient
             set { SetValue(DisplayCountProperty, value); }
         }
 
-        public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(
+        private static readonly DependencyPropertyKey ImageSourcePropertyKey = DependencyProperty.RegisterReadOnly(
             "ImageSource", 
             typeof(ImageSource), 
             typeof(NotificationCountControl),
             new PropertyMetadata(null));
 
-        /// <summary>
-        /// Gets or sets the ImageSource property.  This dependency property 
-        /// indicates ....
-        /// </summary>
+        public static readonly DependencyProperty ImageSourceProperty = ImageSourcePropertyKey.DependencyProperty;
+
         public ImageSource ImageSource
         {
             get { return (ImageSource)GetValue(ImageSourceProperty); }
-            set { SetValue(ImageSourceProperty, value); }
+            private set { SetValue(ImageSourcePropertyKey, value); }
         }
 
         private void _OnDisplayCountChanged()
         {
-            if (DisplayCount != 0)
-            {
-                Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Visibility = Visibility.Hidden;
-                ImageSource = null;
-            }
+            _UpdateImageSource();
         }
 
         private void _UpdateImageSource()
         {
-            if (ActualWidth == 0 || ActualHeight == 0)
+            if (DisplayCount == 0)
             {
-                return;
+                ImageSource = null;
             }
+            else
+            {
+                // Doing this in code rather than relying on the template because I want to use 
+                // every pixel as deliberately as possible.
+                // This isn't necessarily similar to the way the control will generally be displayed.
+                // Because of the way this is done, it's not very customizable right now.
+                var element = new Grid
+                {
+                    Width = SystemParameters.SmallIconWidth,
+                    Height = SystemParameters.SmallIconHeight,
+                    Children =
+                    {
+                        new Ellipse
+                        {
+                            Fill = Background
+                        },
+                        new Viewbox
+                        {
+                            Margin = new Thickness(0,3,0,3),
+                            Child = new TextBlock
+                            {
+                                Foreground = Brushes.White,
+                                FontSize = 9,
+                                Text = DisplayCount.ToString(),
+                                VerticalAlignment = VerticalAlignment.Center,
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                FontFamily = (FontFamily)Application.Current.Resources["SansSerifFont"],
+                            },
+                        },
+                    },
+                };
 
-            ImageSource = Utility.GenerateBitmapSource(this, 16, 16, false);
+                ImageSource = Utility.GenerateBitmapSource(element, (int)element.Width, (int)element.Height, true);
+            }
         }
     }
 }
