@@ -49,10 +49,7 @@ namespace FacebookClient
             }
             else
             {
-                // Doing this in code rather than relying on the template because I want to use 
-                // every pixel as deliberately as possible.
-                // This isn't necessarily similar to the way the control will generally be displayed.
-                // Because of the way this is done, it's not very customizable right now.
+                // TODO: Switch this to XAML so we can easily, properly pick up theme resources.
                 var element = new Grid
                 {
                     Width = SystemParameters.SmallIconWidth,
@@ -73,7 +70,7 @@ namespace FacebookClient
                                 Text = DisplayCount.ToString(),
                                 VerticalAlignment = VerticalAlignment.Center,
                                 HorizontalAlignment = HorizontalAlignment.Center,
-                                FontFamily = (FontFamily)Application.Current.Resources["SansSerifFont"],
+                                // FontFamily = new FontFamily("Miramonte"),
                             },
                         },
                     },
