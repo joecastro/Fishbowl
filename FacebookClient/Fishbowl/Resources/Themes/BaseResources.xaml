@@ -7,9 +7,6 @@
     xmlns:ClientManagerData="clr-namespace:ClientManager.Data"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
-	<ClientManagerView:EventResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="All.xaml"/>
-	</ClientManagerView:EventResourceDictionary.MergedDictionaries>
 
   <Style x:Key="ToolbarTextBlockStyle" TargetType="{x:Type TextBlock}">
     <Setter Property="VerticalAlignment" Value="Center" />
