@@ -117,10 +117,16 @@
             _profileNavigationButton = Template.FindName("ProfileNavigationButton", this) as RadioButton;
             _photoAlbumsNavigationButton = Template.FindName("PhotoAlbumsNavigationButton", this) as RadioButton;
             _searchTextBox = Template.FindName("SearchTextBox", this) as TextBox;
-            _searchTextBox.KeyDown += new KeyEventHandler(OnSearchTextBoxKeyDown);
+            if (_searchTextBox != null)
+            {
+                _searchTextBox.KeyDown += new KeyEventHandler(OnSearchTextBoxKeyDown);
+            }
 
             NotificationControl = Template.FindName("NotificationControl", this) as NotificationCountControl;
             InboxCountControl = Template.FindName("InboxCountControl", this) as NotificationCountControl;
+
+            // Update the navigation tab.
+            OnRootNavigatorChanged(ServiceProvider.ViewManager.CurrentRootNavigator);
         }
 
         public void OnRootNavigatorChanged(Navigator rootNavigator)

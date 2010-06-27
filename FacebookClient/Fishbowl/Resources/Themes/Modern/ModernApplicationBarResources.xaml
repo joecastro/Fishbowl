@@ -575,7 +575,6 @@
                   <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself" Tag="{DynamicResource PersonGeometry}" Content="Profile" />
                   <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos" Tag="{DynamicResource PicturesGeometry}" Content="Photos" />
 
-                  <!-- Divider (should be taller... where is this panel getting its height?) -->
                   <StackPanel Orientation="Horizontal">
                     <Rectangle Width="1" Fill="#7000" />
                     <Rectangle Width="1" Fill="#3FFF" />
@@ -583,9 +582,6 @@
 
                   <Button Tag="{DynamicResource SearchGeometry}" Content="Search" Style="{StaticResource NavigationButtonStyle}" />
                   <Button Tag="{DynamicResource FacebookLogoGeometry}" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Content="Facebook" Style="{StaticResource NavigationButtonStyle}" />
-
-                  <FacebookClient:CommandTextBox x:Name="SearchTextBox" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0" VerticalAlignment="Center" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource SearchTextBoxStyle}" Tag="Search" BannerText="Search" Visibility="Collapsed" />
-
                 </StackPanel>
               </Grid>
 
