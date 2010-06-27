@@ -8,4 +8,7 @@
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
   
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
 </ResourceDictionary>

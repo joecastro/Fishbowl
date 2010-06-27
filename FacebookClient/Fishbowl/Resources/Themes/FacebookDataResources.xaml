@@ -203,10 +203,7 @@
                 <Rectangle Fill="White" Margin="0,0,3,3" />
               </Grid>
 
-              <Grid Width="50" Height="50" HorizontalAlignment="Left" Margin="85,85,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5">
-                <Grid.RenderTransform>
-                  <RotateTransform Angle="-6"/>
-                </Grid.RenderTransform>
+              <Grid Width="50" Height="50" HorizontalAlignment="Left" Margin="85,85,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" RenderTransform="{DynamicResource FriendRenderTransform}">
                 <Grid.Style>
                   <Style TargetType="{x:Type Grid}">
                     <Setter Property="Visibility" Value="Visible" />
