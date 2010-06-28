@@ -31,11 +31,12 @@ namespace ClientManager.Controls
     }
 
     /// <summary>Container element for the primary content of the application.</summary>
-    public class MainContentContainer : ContentControl
+    public sealed class MainContentContainer : ContentControl
     {
         public event EventHandler<ContentChangedEventArgs> ContentChanged;
 
         private CustomContentState _contentStateToSave;
+        private DateTime _lastNavigation = new DateTime(0L);
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -44,9 +45,6 @@ namespace ClientManager.Controls
             Unloaded += OnUnloaded;
         }
 
-        /// <summary>
-        /// Virtual handler for loaded event.
-        /// </summary>
         private void OnLoaded()
         {
             ServiceProvider.ViewManager.Navigated += this.OnViewManagerNavigated;
@@ -60,13 +58,9 @@ namespace ClientManager.Controls
             {
                 ServiceProvider.ViewManager.NavigateByRefresh();
             }
-
         }
 
-        /// <summary>
-        /// Virtual handler for unloaded event.
-        /// </summary>
-        protected void OnUnloaded()
+        private void OnUnloaded()
         {
             ServiceProvider.ViewManager.Navigated -= this.OnViewManagerNavigated;
             NavigationService navigationService = NavigationService.GetNavigationService(this);
@@ -80,8 +74,11 @@ namespace ClientManager.Controls
         /// Does actual navigation - adds journal entry if necessary, etc.
         /// </summary>
         /// <param name="e">Details of the navigation event.</param>
-        protected void DoNavigation(ViewManagerNavigatedEventArgs e)
+        private void DoNavigation(ViewManagerNavigatedEventArgs e)
         {
+            DateTime newTimeOfNavigation = DateTime.UtcNow;
+            TimeSpan timeSinceLastNavigation = newTimeOfNavigation - _lastNavigation;
+
             if (_contentStateToSave != null && this.IsNewNavigation(e.NavigationMode))
             {
                 NavigationService navigationService = NavigationService.GetNavigationService(this);
@@ -89,7 +86,8 @@ namespace ClientManager.Controls
                 {
                     CustomContentState contentStateToSave = _contentStateToSave;
                     _contentStateToSave = null;
-                    if (!e.NewNavigator.ShouldReplaceNavigatorInJournal(e.OldNavigator))
+
+                    if (timeSinceLastNavigation > TimeSpan.FromSeconds(3) || !e.NewNavigator.ShouldReplaceNavigatorInJournal(e.OldNavigator))
                     {
                         navigationService.AddBackEntry(contentStateToSave);
                     }
@@ -102,6 +100,7 @@ namespace ClientManager.Controls
             }
 
             Content = e.Content;
+            _lastNavigation = newTimeOfNavigation;
         }
 
         /// <summary>
