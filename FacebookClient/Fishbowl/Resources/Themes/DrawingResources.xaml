@@ -20,6 +20,7 @@
   <StreamGeometry x:Key="RefreshGeometry">F1 M 394.441,269.118L 394.419,269.118 Z M 411.856,286.665C 411.853,277.027 404.08,269.188 394.431,269.118C 394.379,269.118 394.334,269.118 394.304,269.118C 389.338,269.117 384.832,271.193 381.643,274.519L 377.478,270.3L 377.478,282.561L 389.582,282.561L 385.379,278.303C 387.618,275.915 390.78,274.43 394.363,274.43L 394.385,274.43C 401.114,274.472 406.543,279.945 406.543,286.665L 406.543,286.761C 406.491,293.483 401.022,298.903 394.31,298.902L 394.204,298.902L 394.22,304.216L 394.31,304.216C 403.95,304.213 411.791,296.433 411.856,286.778L 411.856,286.749L 411.856,286.665 Z</StreamGeometry>
   <Geometry x:Key="CloseXGeometry">M0,0 L1,1 M0,1 L1,0</Geometry>
   <Geometry x:Key="RestoreGeometry">M-2,2 11,2 11,11 -2,11Z M3,-3 17,-3 17,7</Geometry>
+  <Geometry x:Key="DownLeftArrowGeometry">M64.54,0L98.15,33.60 57.44,74.31 80,96.86 0,96.86 0,16.86 23.84,40.70z</Geometry>
 
   <CombinedGeometry x:Key="BroadcastStatusGeometry" GeometryCombineMode="Intersect">
     <CombinedGeometry.Geometry1>
@@ -446,47 +447,13 @@
 
   <DrawingBrush x:Key="NotificationsPostDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <DrawingGroup>
-        <DrawingGroup.Children>
-          <GeometryDrawing Geometry="M20,100 H40 V60 H60 V100 H80">
-            <GeometryDrawing.Pen>
-              <Pen Brush="{DynamicResource IconForegroundBrush}" Thickness="3"/>
-            </GeometryDrawing.Pen>
-          </GeometryDrawing>
-          <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}">
-            <GeometryDrawing.Geometry>
-              <RectangleGeometry Rect="10,20, 80,50"/>
-            </GeometryDrawing.Geometry>
-          </GeometryDrawing>
-          <GeometryDrawing>
-            <GeometryDrawing.Geometry>
-              <RectangleGeometry Rect="40,15, 20,10" RadiusY="1" RadiusX="3"/>
-            </GeometryDrawing.Geometry>
-            <GeometryDrawing.Pen>
-              <Pen Brush="{DynamicResource IconForegroundBrush}" Thickness="3" />
-            </GeometryDrawing.Pen>
-          </GeometryDrawing>
-        </DrawingGroup.Children>
-      </DrawingGroup>
+      <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{DynamicResource FlagGeometry}"/>
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
   <DrawingBrush x:Key="EnvelopeDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
-      <DrawingGroup>
-        <DrawingGroup.Children>
-          <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}">
-            <GeometryDrawing.Geometry>
-              <RectangleGeometry RadiusX="3" RadiusY="1" Rect="0,0,60,35"/>
-            </GeometryDrawing.Geometry>
-          </GeometryDrawing>
-          <GeometryDrawing Geometry="M2,2 4,6 30,20 56,6 58,2 M2,33 17,20 M58,33 43,20">
-            <GeometryDrawing.Pen>
-              <Pen Brush="{DynamicResource IconBackgroundBrush}" Thickness="3" />
-            </GeometryDrawing.Pen>
-          </GeometryDrawing>
-        </DrawingGroup.Children>
-      </DrawingGroup>
+      <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{DynamicResource MailGeometry}"/>
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
@@ -537,7 +504,7 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="MiniModeIconDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="MiniModeIconDrawingBrush2" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
@@ -573,29 +540,19 @@
     </DrawingBrush.Drawing>
   </DrawingBrush>
 
-  <DrawingBrush x:Key="ClosingDoorDrawingBrush" Stretch="Uniform">
+  <DrawingBrush x:Key="MiniModeIconDrawingBrush" Stretch="Uniform">
     <DrawingBrush.Drawing>
       <DrawingGroup>
         <DrawingGroup.Children>
-          <GeometryDrawing Geometry="F1 M0,0 H13 V20 H0Z">
-            <GeometryDrawing.Pen>
-              <Pen Brush="{DynamicResource IconForegroundBrush}" Thickness="1" />
-            </GeometryDrawing.Pen>
-          </GeometryDrawing>
-          <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}">
-            <GeometryDrawing.Geometry>
-              <CombinedGeometry GeometryCombineMode="Xor">
-                <CombinedGeometry.Geometry1>
-                  <PathGeometry Figures="M0,0 L10,3 V23 L0,20Z" />
-                </CombinedGeometry.Geometry1>
-                <CombinedGeometry.Geometry2>
-                  <EllipseGeometry Center="8, 13" RadiusX=".7" RadiusY="2" />
-                </CombinedGeometry.Geometry2>
-              </CombinedGeometry>
-            </GeometryDrawing.Geometry>
-          </GeometryDrawing>
+          <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{DynamicResource DownLeftArrowGeometry}"/>
         </DrawingGroup.Children>
       </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+
+  <DrawingBrush x:Key="ClosingDoorDrawingBrush" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <GeometryDrawing Brush="{DynamicResource IconForegroundBrush}" Geometry="{DynamicResource ExitGeometry}"/>
     </DrawingBrush.Drawing>
   </DrawingBrush>
 

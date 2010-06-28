@@ -361,19 +361,6 @@
     </Setter>
   </Style>
 
-  <Style x:Key="MiniModeButtonStyle" TargetType="{x:Type Button}">
-    <Setter Property="SnapsToDevicePixels" Value="True" />
-    <Setter Property="OverridesDefaultStyle" Value="True" />
-    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="Template" Value="{StaticResource ToolbarButtonTemplate}" />
-    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-  </Style>
-
-  <Style x:Key="RefreshButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MiniModeButtonStyle}">
-    <Setter Property="Template" Value="{StaticResource SpinningToolbarButtonTemplate}" />
-    <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
-  </Style>
-
   <Style x:Key="NavigationButtonStyle" TargetType="{x:Type Button}">
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -588,7 +575,7 @@
               <!-- Caption Buttons -->
               <StackPanel HorizontalAlignment="Right" Margin="8,2" VerticalAlignment="Top" Orientation="Horizontal">
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
-                  <Path Width="10" Height="10" Data="M64.54,0L98.15,33.60 57.44,74.31 80,96.86 0,96.86 0,16.86 23.84,40.70z" Fill="White" Stretch="Fill" />
+                  <Path Width="10" Height="10" Data="{DynamicResource DownLeftArrowGeometry}" Fill="White" Stretch="Fill" />
                 </Button>
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MinimizeWindowCommand}">
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="0,0,0,3" />
