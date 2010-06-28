@@ -4,6 +4,7 @@ namespace FacebookClient
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Media;
     using Contigo;
@@ -23,6 +24,13 @@ namespace FacebookClient
             MiniMode,
         }
 
+        private class _ThemeInfo
+        {
+            public Uri ResourceDictionaryUri { get; set; }
+            public bool RequiresGlass { get; set; }
+            public string FallbackTheme { get; set; }
+        }
+
         public static FacebookClientApplication Current2
         {
             get { return (FacebookClientApplication)Application.Current; }
@@ -40,20 +48,26 @@ namespace FacebookClient
         private static readonly Uri _SupportUri = new Uri("http://www.fishbowlclient.com");
         private static readonly Uri _PrivacyUri = new Uri("http://go.microsoft.com/fwlink/?LinkId=167928");
 
-        private static readonly Dictionary<string, Uri> _ThemeLookup = new Dictionary<string,Uri>
+        private static readonly Dictionary<string, _ThemeInfo> _ThemeLookup = new Dictionary<string, _ThemeInfo>
         {
-            { "Blue",          new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) },
-            { "Dark",          new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) },
-            { "Facebook",      new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) },
-            { "Charcoal",      new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) },
-            { "Modern",        new Uri(@"Resources\Themes\Modern\Modern.xaml", UriKind.Relative) },
-            { "Modern Dark",   new Uri(@"Resources\Themes\ModernDark\ModernDark.xaml", UriKind.Relative) },
+            { "Blue",          new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Blue\Blue.xaml", UriKind.Relative) } },
+            { "Dark",          new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) } },
+            { "Facebook",      new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) } },
+            { "Charcoal",      new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) } },
+            { "Modern",        new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Modern\Modern.xaml", UriKind.Relative) } },
+            { "Modern Dark",   new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\ModernDark\ModernDark.xaml", UriKind.Relative) } },
+            { "Glass",         new _ThemeInfo 
+                               { 
+                                   ResourceDictionaryUri = new Uri(@"Resources\Themes\Glass\Glass.xaml", UriKind.Relative),
+                                   RequiresGlass = true, 
+                                   FallbackTheme = "Modern" } },
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
-            { "Red",      new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) },
+            { "Red", new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) } },
 #endif
         };
+
         private static readonly List<string> _ThemeNames = new List<string>(_ThemeLookup.Keys);
         private const string _DefaultThemeName = "Modern";
 
@@ -64,7 +78,19 @@ namespace FacebookClient
         private _WindowMode _viewMode = _WindowMode.Normal;
         private _WindowMode _previousViewMode = _WindowMode.Normal;
 
-        public static IEnumerable<string> AvailableThemes { get { return _ThemeNames.AsReadOnly(); } }
+        public static IEnumerable<string> AvailableThemes
+        { 
+            get 
+            {
+                if (SystemParameters2.Current.IsGlassEnabled)
+                {
+                    return _ThemeNames.AsReadOnly();
+                }
+                else return from themePair in _ThemeLookup
+                            where !themePair.Value.RequiresGlass
+                            select themePair.Key;
+            }
+        }
 
         public Uri SupportWebsite { get { return _SupportUri; } }
 
@@ -190,11 +216,11 @@ namespace FacebookClient
                 }
             }
 
-            Uri resourceUri = null;
-            if (!_ThemeLookup.TryGetValue(themeName, out resourceUri))
+            _ThemeInfo themeInfo = null;
+            if (!_ThemeLookup.TryGetValue(themeName, out themeInfo))
             {
                 themeName = _DefaultThemeName;
-                resourceUri = _ThemeLookup[themeName];
+                themeInfo = _ThemeLookup[themeName];
             }
 
             ThemeName = themeName;
@@ -204,7 +230,7 @@ namespace FacebookClient
                 this.Resources.MergedDictionaries.Remove(_currentThemeDictionary);
             }
             
-            _currentThemeDictionary = LoadComponent(resourceUri) as ResourceDictionary;
+            _currentThemeDictionary = LoadComponent(themeInfo.ResourceDictionaryUri) as ResourceDictionary;
             this.Resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
         }
 
