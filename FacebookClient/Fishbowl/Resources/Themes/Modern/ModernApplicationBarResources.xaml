@@ -420,7 +420,7 @@
     </Setter>
   </Style>
 
-  <Style x:Key="NavigationButtonStyle" TargetType="{x:Type Button}">
+  <Style x:Key="NavigationButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="SnapsToDevicePixels" Value="true" />
     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -435,7 +435,7 @@
     <Setter Property="Foreground" Value="White" />
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type Button}">
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
           <Grid Background="Transparent">
             <Grid.RowDefinitions>
               <RowDefinition Height="*" />
@@ -615,55 +615,6 @@
                       <Popup x:Name="StatusPopup" AllowsTransparency="True" Placement="Bottom" VerticalOffset="-15" IsOpen="{Binding ElementName=StatusControl, Path=IsActive}">
                         <Grid>
                           <FacebookClient:UpdateStatusControlModern x:Name="StatusControl" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Width="{Binding ElementName=StatusPopupToggle, Path=ActualWidth}" MinWidth="400" />
-                          <Grid Height="70" SnapsToDevicePixels="True" Margin="10" Visibility="Collapsed">
-                            <Grid.Effect>
-                              <DropShadowEffect ShadowDepth="2" Direction="-90" BlurRadius="8" Opacity="0.5" />
-                            </Grid.Effect>
-                            <Grid.RowDefinitions>
-                              <RowDefinition Height="Auto" />
-                              <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="*" />
-                              <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Path Data="M0,1 L0.5,0 L1,1 Z" Stretch="Fill" Width="23" Height="19" Fill="#6077ab" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,0,0,0" />
-                            <Border CornerRadius="4" Grid.Row="1" Grid.ColumnSpan="2">
-                              <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                  <GradientStop Color="#6077ab" Offset="0" />
-                                  <GradientStop Color="#3b5896" Offset="1" />
-                                </LinearGradientBrush>
-                              </Border.Background>
-                            </Border>
-
-                            <Border Background="White" Margin="6" Grid.Row="1" CornerRadius="3">
-                              <TextBox Grid.Row="1" Style="{StaticResource InvisibleTextBox}" Tag="What's on your mind?" TextWrapping="Wrap" Margin="4,3" FontFamily="Miramonte" />
-                            </Border>
-
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="1">
-
-                              <!--<Button Style="{StaticResource SmallNavigationButtonStyle}" Height="Auto" MinWidth="0" Width="40" Padding="4,10,4,2" Margin="0" Content="Share" FontSize="9" FontWeight="Normal" Tag="{DynamicResource CheckGeometry}" />
-                            <ToggleButton Style="{StaticResource SmallNavigationButtonStyle}" Height="Auto" MinWidth="0" Width="40" Padding="4,10,4,2" Margin="0" Content="Cancel" FontSize="9" FontWeight="Normal" Tag="{DynamicResource CancelGeometry}" />-->
-
-                              <!--<Grid>
-                              <StackPanel VerticalAlignment="Center" Margin="8,0">
-                                <Path Stretch="Uniform" Height="22" Width="18" Fill="White" Data="F1 M 438.099,224.399C 427.451,230.926 419.727,239.163 416.255,243.296L 407.753,236.635L 404,239.662L 418.689,254.601C 421.216,248.125 429.224,235.469 439,226.477L 438.099,224.399 Z " />
-                                <TextBlock FontFamily="Miramonte" FontSize="9" FontWeight="Normal" Text="Share" Foreground="White" />
-                              </StackPanel>
-
-                            </Grid>
-
-                            <Grid>
-                              <StackPanel VerticalAlignment="Center" Margin="8,0">
-                                <Path Stretch="Uniform" Fill="White" Width="14" Height="22" Data="" />
-                                <TextBlock FontFamily="Miramonte" FontSize="9" FontWeight="Normal" Text="Cancel" Foreground="White" />
-                              </StackPanel>
-                            </Grid>-->
-
-                            </StackPanel>
-
-                          </Grid>
                         </Grid>
                       </Popup>
                     </Grid>
@@ -682,7 +633,35 @@
                     <Rectangle Width="1" Fill="#3FFF" />
                   </StackPanel>
 
-                  <Button Tag="{DynamicResource SearchGeometry}" Content="Search" Style="{StaticResource NavigationButtonStyle}" />
+                  <Grid x:Name="SearchGrid">
+
+                    <FacebookClient:PopupToggle x:Name="SearchPopupToggle" Content="Search" Style="{StaticResource NavigationButtonStyle}" Cursor="Hand" Popup="{Binding ElementName=SearchPopup}" Tag="{DynamicResource SearchGeometry}" />
+
+                    <Popup x:Name="SearchPopup" AllowsTransparency="True" Placement="Bottom" VerticalOffset="-15" HorizontalOffset="-220">
+                      <Grid SnapsToDevicePixels="True" Margin="10" Width="320">
+                        <Grid.Effect>
+                          <DropShadowEffect ShadowDepth="2" Direction="-90" BlurRadius="8" Opacity="0.5" />
+                        </Grid.Effect>
+                        <Grid.RowDefinitions>
+                          <RowDefinition Height="Auto" />
+                          <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Path Data="M0,1 L0.5,0 L1,1 Z" Stretch="Fill" Width="23" Height="19" Fill="#6077ab" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,52,0" />
+                        <Border CornerRadius="4" Grid.Row="1" Grid.ColumnSpan="2">
+                          <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                              <GradientStop Color="#6077ab" Offset="0" />
+                              <GradientStop Color="#3b5896" Offset="1" />
+                            </LinearGradientBrush>
+                          </Border.Background>
+                        </Border>
+                        <Border Background="White" Margin="6" Grid.Row="1" CornerRadius="3" Height="23">
+                          <FacebookClient:CommandTextBox x:Name="SearchTextBox" Margin="4,3" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource InvisibleTextBox}" Tag="Search" BannerText="Search" />
+                        </Border>
+                      </Grid>
+                    </Popup>
+                  </Grid>
+
                   <Button Tag="{DynamicResource FacebookLogoGeometry}" Command="{x:Static FacebookClient:MainHeaderControl.GoToFacebookCommand}" Content="Facebook" Style="{StaticResource NavigationButtonStyle}" />
                 </StackPanel>
               </Grid>

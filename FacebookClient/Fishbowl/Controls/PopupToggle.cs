@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Controls.Primitives;
 using System.Windows;
+using System.Windows.Input;
 
 namespace FacebookClient
 {
@@ -36,6 +37,9 @@ namespace FacebookClient
                 this.Popup.Closed += new EventHandler(Popup_Closed);
                 this.Popup.IsOpen = true;
                 this.Popup.StaysOpen = false;
+
+                Action a = () => this.Popup.Focus();
+                Dispatcher.Invoke(a, System.Windows.Threading.DispatcherPriority.Background, null);
 
                 this.IsHitTestVisible = false;
             }
