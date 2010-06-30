@@ -124,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\UpdateStatusControlModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FacebookClientApplication.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -239,6 +243,7 @@
     <Compile Include="Controls\PhotoUploadWizard.xaml.cs">
       <DependentUpon>PhotoUploadWizard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PopupToggle.cs" />
     <Compile Include="Controls\ScaleScrollViewer.cs" />
     <Compile Include="Controls\SearchTextBlock.cs" />
     <Compile Include="Controls\SettingsDialog.xaml.cs">
@@ -250,6 +255,9 @@
     </Compile>
     <Compile Include="Controls\UpdateStatusControl.xaml.cs">
       <DependentUpon>UpdateStatusControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UpdateStatusControlModern.xaml.cs">
+      <DependentUpon>UpdateStatusControlModern.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ZapCommandItem.cs" />
     <Compile Include="Controls\ZapDecorator.cs" />
