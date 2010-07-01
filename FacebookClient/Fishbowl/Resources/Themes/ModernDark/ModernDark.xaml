@@ -4,13 +4,19 @@
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernMainPageResources.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernApplicationBarResources.xaml" />
+    <!--<ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />-->
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernDark/ModernDarkMainPageResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernDark/ModernDarkApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
+  <SolidColorBrush Color="White" x:Key="ActivityPostMessageTextBlockForeground" />
 
-  <SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
+  <SolidColorBrush Color="#20000000" x:Key="AnimatedSwoosh1" />
+  <SolidColorBrush Color="#18000000" x:Key="AnimatedSwoosh2" />
+
+
+
+  <!--<SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
   <SolidColorBrush x:Key="Foreground_ContentElement" Color="White"/>
 
   <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
@@ -20,7 +26,7 @@
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
 
-  <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+  LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
       <GradientStop Color="White" Offset="0"/>
       <GradientStop Color="White" Offset=".2"/>
@@ -118,12 +124,9 @@
   </LinearGradientBrush>
 
 
-  <SolidColorBrush Color="White" x:Key="ActivityPostMessageTextBlockForeground"/>
 
-  <SolidColorBrush Color="#13FFFFFF" x:Key="AnimatedSwoosh1"/>
-  <SolidColorBrush Color="#13FFFFFF" x:Key="AnimatedSwoosh2"/>
 
-  <SolidColorBrush Color="#404040" x:Key="MainContentBackgroundBrush" />
+  <SolidColorBrush Color="#FFFFFF" x:Key="MainContentBackgroundBrush" />
 
   <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush"
                      Color="#FFBDBDBD"  />
@@ -234,54 +237,8 @@
     <GradientStop Color="#808080" Offset="1" />
   </LinearGradientBrush>
 
-  <!--<ControlTemplate x:Key="FriendRadioButtonTemplate" TargetType="{x:Type RadioButton}">
-        <Grid Cursor="Hand">
-
-            <Rectangle x:Name="bevel1" Fill="{DynamicResource FriendViewerCategoryTabsBevel1}" Height="1" SnapsToDevicePixels="True" Margin="0,0,0,1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
-            <Rectangle x:Name="bevel2" Fill="{DynamicResource FriendViewerCategoryTabsBevel2}" Height="1" SnapsToDevicePixels="True" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
-            <Rectangle x:Name="hover" Fill="{DynamicResource FriendViewerCategoryTabsHoveredBrush}" Opacity="0" />
-            <Rectangle x:Name="selected" Fill="{DynamicResource FriendViewerCategoryTabsSelectedBrush}" Opacity="0" />
-
-            <TextBlock x:Name="ContentTextblock" HorizontalAlignment="Left" Margin="26,0,0,0" Foreground="{DynamicResource FriendViewerCategoryTabsUnSelectedTextBrush}" VerticalAlignment="Center" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Light" Text="{TemplateBinding Content}" />
-    </Grid>
-        <ControlTemplate.Triggers>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter TargetName="selected" Property="Opacity" Value="1" />
-                <Setter TargetName="ContentTextblock" Property="Foreground" Value="{DynamicResource FriendViewerCategoryTabsSelectedTextBrush}" />
-                <Setter TargetName="ContentTextblock" Property="FontWeight" Value="Medium" />
-            </Trigger>
-            <Trigger Property="Tag" Value="False">
-                <Setter TargetName="bevel1" Property="Opacity" Value="0" />
-                <Setter TargetName="bevel2" Property="Opacity" Value="0" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To=".5" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-                <Trigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.ExitActions>
-            </Trigger>
-        </ControlTemplate.Triggers>
-    </ControlTemplate>-->
-
-  <!--<SolidColorBrush x:Key="FriendViewerCategoryTabsBevel2"
-                     Color="#FF333333"  />
-    <SolidColorBrush x:Key="FriendViewerCategoryTabsBevel1"
-                     Color="#FF8B8B8B"  />-->
-
-  <!-- BaseResources -->
   <Color x:Key="IconDropShadowColor">#BBBBBB</Color>
 
-  <!-- SearchAndFilterControl -->
   <SolidColorBrush x:Key="FilterTabItemForeground1" Color="White"/>
   <SolidColorBrush x:Key="FilterTabItemForeground2" Color="White"/>
 
@@ -303,7 +260,6 @@
 
   <SolidColorBrush x:Key="FilterItemTextBrush" Color="#dedede"/>
 
-  <!-- Explorer Colors -->
   <Pen x:Key="Pen_ExplorerNodes" Brush="#40999999" Thickness="1"/>
   <SolidColorBrush x:Key="Background_ExplorerNode" Color="#777777" />
   <SolidColorBrush x:Key="Border_ExplorerNode" Color="#444444" />
@@ -314,7 +270,6 @@
   <Color x:Key="DropShadow_ExplorerNode">#BBBBBB</Color>
   <SolidColorBrush x:Key="Border_CommentNode" Color="#A0999999" />
 
-  <!-- Search Colors -->
   <SolidColorBrush x:Key="Foreground_PromptText" Color="#CCCCCC" />
-  <SolidColorBrush x:Key="Foreground_PromptAlternateText" Color="#EEEEEE" />
+  <SolidColorBrush x:Key="Foreground_PromptAlternateText" Color="#EEEEEE" />-->
 </ResourceDictionary>

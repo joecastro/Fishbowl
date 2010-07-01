@@ -9,14 +9,14 @@
   <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
   <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
 
-  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent"/>
-  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent"/>
-  
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent" />
+
   <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}">
-    <Setter Property="Margin" Value="0"/>
+    <Setter Property="Margin" Value="0" />
     <Style.Triggers>
       <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
-        <Setter Property="Margin" Value="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}"/>
+        <Setter Property="Margin" Value="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" />
       </DataTrigger>
     </Style.Triggers>
   </Style>

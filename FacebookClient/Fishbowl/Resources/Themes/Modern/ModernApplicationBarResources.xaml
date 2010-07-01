@@ -157,8 +157,8 @@
   </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="InactiveApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
-    <GradientStop Offset="0" Color="#8b9dc3" />
-    <GradientStop Offset="1" Color="#2B426F" />
+    <GradientStop Offset="0" Color="#5677ae" />
+    <GradientStop Offset="1" Color="#476195" />
   </LinearGradientBrush>
 
   <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0,0" EndPoint="0,1">
@@ -628,7 +628,7 @@
                   <RadioButton x:Name="ProfileNavigationButton" Command="{Binding Path=NavigationCommands.NavigateProfileCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="Check in on yourself" Tag="{DynamicResource PersonGeometry}" Content="Profile" />
                   <RadioButton x:Name="PhotoAlbumsNavigationButton" Command="{Binding Path=NavigationCommands.NavigatePhotoAlbumsCommand, Source={x:Static ClientManager:ServiceProvider.ViewManager}}" Style="{StaticResource NavigationRadioButtonStyle}" ToolTip="See everyone's photos" Tag="{DynamicResource PicturesGeometry}" Content="Photos" />
 
-                  <StackPanel Orientation="Horizontal">
+                  <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True">
                     <Rectangle Width="1" Fill="#7000" />
                     <Rectangle Width="1" Fill="#3FFF" />
                   </StackPanel>
@@ -667,7 +667,7 @@
               </Grid>
 
               <!-- Caption Buttons -->
-              <StackPanel HorizontalAlignment="Right" Margin="8,2" VerticalAlignment="Top" Orientation="Horizontal">
+              <StackPanel HorizontalAlignment="Right" Margin="8,2" VerticalAlignment="Top" Orientation="Horizontal" SnapsToDevicePixels="True">
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                   <Path Width="10" Height="10" Data="{DynamicResource DownLeftArrowGeometry}" Fill="White" Stretch="Fill" />
                 </Button>
