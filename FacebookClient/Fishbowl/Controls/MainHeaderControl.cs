@@ -16,6 +16,7 @@
         private RadioButton _profileNavigationButton;
         private RadioButton _photoAlbumsNavigationButton;
         private TextBox _searchTextBox;
+        private Popup _searchPopup;
 
         public static readonly DependencyProperty NotificationControlProperty = DependencyProperty.Register(
             "NotificationControl",
@@ -97,6 +98,7 @@
         public static RoutedCommand ShowSettingsCommand = new RoutedCommand("ShowSettings", typeof(MainHeaderControl));
         public static RoutedCommand SignOutCommand = new RoutedCommand("SignOut", typeof(MainHeaderControl));
         public static RoutedCommand RefreshCommand = new RoutedCommand("Refresh", typeof(MainHeaderControl));
+        public static RoutedCommand SearchCommand = new RoutedCommand("Search", typeof(MainHeaderControl));
 
         public MainHeaderControl()
         {
@@ -106,6 +108,7 @@
             CommandBindings.Add(new CommandBinding(ShowSettingsCommand,     OnShowSettingsCommand));
             CommandBindings.Add(new CommandBinding(SignOutCommand,          OnSignOutCommand));
             CommandBindings.Add(new CommandBinding(RefreshCommand,          OnRefreshCommand));
+            CommandBindings.Add(new CommandBinding(SearchCommand,           OnSearchCommand));
         }
 
         public override void OnApplyTemplate()
@@ -121,6 +124,8 @@
             {
                 _searchTextBox.KeyDown += new KeyEventHandler(OnSearchTextBoxKeyDown);
             }
+            // May be null
+            _searchPopup = Template.FindName("SearchPopup", this) as Popup;
 
             NotificationControl = Template.FindName("NotificationControl", this) as NotificationCountControl;
             InboxCountControl = Template.FindName("InboxCountControl", this) as NotificationCountControl;
@@ -146,6 +151,13 @@
             else if (rootNavigator == ServiceProvider.ViewManager.MasterNavigator.PhotoAlbumsNavigator)
             {
                 _photoAlbumsNavigationButton.IsChecked = true;
+            }
+            else
+            {
+                _homeNavigationButton.IsChecked = false;
+                _friendsNavigationButton.IsChecked = false;
+                _profileNavigationButton.IsChecked = false;
+                _photoAlbumsNavigationButton.IsChecked = false;
             }
         }
 
@@ -196,6 +208,16 @@
         private void OnRefreshCommand(object sender, ExecutedRoutedEventArgs e)
         {
             ServiceProvider.ViewManager.ActionCommands.StartSyncCommand.Execute(null);
+        }
+
+        private void OnSearchCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            ServiceProvider.ViewManager.NavigationCommands.NavigateSearchCommand.Execute(e.Parameter);
+            if (_searchPopup != null)
+            {
+                _searchPopup.IsOpen = false;
+            }
+
         }
 
     }

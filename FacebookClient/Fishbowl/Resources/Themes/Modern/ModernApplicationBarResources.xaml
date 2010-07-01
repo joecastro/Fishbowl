@@ -656,7 +656,7 @@
                           </Border.Background>
                         </Border>
                         <Border Background="White" Margin="6" Grid.Row="1" CornerRadius="3" Height="23">
-                          <FacebookClient:CommandTextBox x:Name="SearchTextBox" Margin="4,3" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource InvisibleTextBox}" Tag="Search" BannerText="Search" />
+                          <FacebookClient:CommandTextBox x:Name="SearchTextBox" Margin="4,3" CommitCommand="{x:Static FacebookClient:MainHeaderControl.SearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource InvisibleTextBox}" Tag="Search" BannerText="Search" />
                         </Border>
                       </Grid>
                     </Popup>
