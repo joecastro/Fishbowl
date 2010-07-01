@@ -173,7 +173,7 @@
 
   <SolidColorBrush x:Key="FooterBackground" Color="{DynamicResource FacebookBlue}" />
 
-  <SolidColorBrush x:Key="InactiveFooterBackground" Color="#8b9dc3" />
+  <SolidColorBrush x:Key="InactiveFooterBackground" Color="#5677ae" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
     <LinearGradientBrush.GradientStops>
@@ -734,7 +734,7 @@
               </Style>
             </Border.Style>
 
-            <Grid>
+            <Grid IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
               <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -744,7 +744,7 @@
                 </Border.Background>
               </Border>
 
-              <StackPanel IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
 
                 <!-- Inbox -->
                 <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource MailGeometry}" Padding="0,5,-4,5" Content="Inbox" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
