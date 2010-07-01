@@ -5,6 +5,7 @@ namespace FacebookClient
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Media;
     using Contigo;
@@ -117,7 +118,7 @@ namespace FacebookClient
                 if (value != Settings.Default.ThemeName)
                 {
                     Settings.Default.ThemeName = value;
-                    ((FacebookClientApplication)Application.Current).SwitchTheme(value);
+                    FacebookClientApplication.Current2.SwitchTheme(value);
                     _NotifyPropertyChanged("ThemeName");
                 }
             }
@@ -223,7 +224,28 @@ namespace FacebookClient
                 themeInfo = _ThemeLookup[themeName];
             }
 
-            ThemeName = themeName;
+            if (ThemeName != themeName)
+            {
+                ThemeName = themeName;
+                return;
+            }
+
+            Standard.SplashScreen splash = null;
+            if (_mainWindow != null)
+            {
+                SwitchToMainMode();
+
+                splash = new Standard.SplashScreen
+                {
+                    ImageFileName = SplashScreenOverlay.CustomSplashPath,
+                    ResourceAssembly = Assembly.GetEntryAssembly(),
+                    ResourceName = "resources/images/splash.png",
+                    CloseOnMainWindowCreation = false,
+                };
+
+                _mainWindow.Hide();
+                splash.Show();
+            }
 
             if (_currentThemeDictionary != null)
             {
@@ -232,6 +254,12 @@ namespace FacebookClient
             
             _currentThemeDictionary = LoadComponent(themeInfo.ResourceDictionaryUri) as ResourceDictionary;
             this.Resources.MergedDictionaries.Insert(0, _currentThemeDictionary);
+
+            if (_mainWindow != null)
+            {
+                splash.Close();
+                _mainWindow.Show();
+            }
         }
 
         internal static void PerformAggressiveCleanup()
