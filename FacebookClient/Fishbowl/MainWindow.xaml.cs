@@ -796,6 +796,11 @@ namespace FacebookClient
                             ApplicationCommands.SwitchToMiniModeCommand.Execute(this);
                             ret = true;
                             break;
+                        case "-chat":
+                        case "/chat":
+                            ApplicationCommands.ShowChatWindowCommand.Execute(this);
+                            ret = true;
+                            break;
                     }
                     ++argIndex;
                 }

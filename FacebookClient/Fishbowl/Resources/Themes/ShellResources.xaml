@@ -4,7 +4,8 @@
     xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell">
   
   <shell:JumpList x:Key="MainModeJumpList">
-    <shell:JumpTask Title="Switch to mini-mode" IconResourceIndex="-1" Arguments="-minimode" />  
+    <shell:JumpTask Title="Switch to mini-mode" IconResourceIndex="-1" Arguments="-minimode" />
+    <shell:JumpTask Title="Chat with friends" IconResourceIndex="-1" Arguments="-chat" />
     <shell:JumpTask Title="Go to Facebook.com" ApplicationPath="%SYSTEMROOT%\explorer.exe" Arguments="http://facebook.com" IconResourceIndex="-1" />
   </shell:JumpList>
 

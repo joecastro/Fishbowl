@@ -138,26 +138,41 @@
         {
             if (rootNavigator == ServiceProvider.ViewManager.MasterNavigator.HomeNavigator)
             {
-                _homeNavigationButton.IsChecked = true;
+                if (_homeNavigationButton != null)
+                {
+                    _homeNavigationButton.IsChecked = true;
+                }
             }
             else if (rootNavigator == ServiceProvider.ViewManager.MasterNavigator.FriendsNavigator)
             {
-                _friendsNavigationButton.IsChecked = true;
+                if (_friendsNavigationButton != null)
+                {
+                    _friendsNavigationButton.IsChecked = true;
+                }
             }
             else if (rootNavigator == ServiceProvider.ViewManager.MasterNavigator.ProfileNavigator)
             {
-                _profileNavigationButton.IsChecked = true;
+                if (_profileNavigationButton != null)
+                {
+                    _profileNavigationButton.IsChecked = true;
+                }
             }
             else if (rootNavigator == ServiceProvider.ViewManager.MasterNavigator.PhotoAlbumsNavigator)
             {
-                _photoAlbumsNavigationButton.IsChecked = true;
+                if (_photoAlbumsNavigationButton != null)
+                {
+                    _photoAlbumsNavigationButton.IsChecked = true;
+                }
             }
             else
             {
-                _homeNavigationButton.IsChecked = false;
-                _friendsNavigationButton.IsChecked = false;
-                _profileNavigationButton.IsChecked = false;
-                _photoAlbumsNavigationButton.IsChecked = false;
+                if (_homeNavigationButton != null)
+                { 
+                    _homeNavigationButton.IsChecked = false;
+                    _friendsNavigationButton.IsChecked = false;
+                    _profileNavigationButton.IsChecked = false;
+                    _photoAlbumsNavigationButton.IsChecked = false;
+                }
             }
         }
 

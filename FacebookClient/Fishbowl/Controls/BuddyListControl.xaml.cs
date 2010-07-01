@@ -40,7 +40,7 @@
 
         private void StartChatButton_Click(object sender, RoutedEventArgs e)
         {
-            ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowChatWindowCommand.Execute(Application.Current.MainWindow);
+            FacebookClientApplication.Current2.MainWindow.ApplicationCommands.ShowChatWindowCommand.Execute(Application.Current.MainWindow);
         }
     }
 }
