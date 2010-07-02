@@ -32,13 +32,13 @@
           Background="{DynamicResource PopupListControlBackgroundBrush}" 
           VerticalScrollBarVisibility="Auto" 
           HorizontalScrollBarVisibility="Hidden">
-        <FacebookClient:IncrementalLoadListBox x:Name="FriendList" 
+        <ListBox x:Name="FriendList" 
             ScrollViewer.VerticalScrollBarVisibility="Disabled" 
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             MinHeight="40" 
             Padding="5" 
             Background="{DynamicResource PopupListControlBackgroundBrush}"
-            ActualItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends}"
+            ItemsSource="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends}"
             BorderThickness="0">
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem">
@@ -111,7 +111,7 @@
               </DataTemplate.Triggers>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
-        </FacebookClient:IncrementalLoadListBox>
+        </ListBox>
       </ScrollViewer>
     </DockPanel>
   </Border>
