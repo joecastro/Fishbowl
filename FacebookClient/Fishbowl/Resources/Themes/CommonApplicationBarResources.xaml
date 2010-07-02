@@ -265,7 +265,7 @@
                   Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                   Style="{DynamicResource MiniModeButtonStyle}"
                   ToolTip="Switch to mini-mode window">
-                <Rectangle Margin="2" Width="18" Height="18" Fill="{DynamicResource MiniModeIconDrawingBrush}" />
+                <Rectangle Margin="4,3" Width="14" Height="14" Fill="{DynamicResource MiniModeIconDrawingBrush}" />
               </Button>
             </StackPanel>
 
@@ -324,40 +324,100 @@
     </Setter>
   </Style>
 
+  <Style x:Key="IconButton" TargetType="{x:Type ButtonBase}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="SnapsToDevicePixels" Value="true" />
+    <Setter Property="OverridesDefaultStyle" Value="true" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <StackPanel x:Name="Root" Background="Transparent" Orientation="Horizontal">
+            <Path x:Name="Icon" Margin="{TemplateBinding Padding}" Data="{TemplateBinding Tag}" Fill="#FFFFFF" Stretch="Uniform" Opacity="0.75" VerticalAlignment="Center" />
+            <ContentPresenter Margin="4,0" VerticalAlignment="Center" />
+          </StackPanel>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" To="1.0" Duration="00:00:00.1" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation Storyboard.TargetName="Icon" Storyboard.TargetProperty="Opacity" Duration="00:00:00.2" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Root" Property="RenderTransform">
+                <Setter.Value>
+                  <TranslateTransform Y="1" />
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Icon" Property="Opacity" Value="1.0" />
+              <Setter Property="Opacity" Value=".25" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type FacebookClient:FooterControl}">
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
-          <DockPanel x:Name="Footer" 
-              Height="24" 
-              Background="{DynamicResource ApplicationBarBackground}" 
-              IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
-            <DockPanel.Resources>
-              <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="FontSize" Value="{DynamicResource MediumFontSize}" />
-                <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
-                <Setter Property="FontWeight" Value="Light" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="Margin" Value="4,0" />
-              </Style>
-            </DockPanel.Resources>
+          <Border Height="32" Background="{DynamicResource ApplicationBarBackground}">
+            <Grid IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
+              <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
+                <Border.Background>
+                  <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#3000" />
+                    <GradientStop Offset="1" Color="#0000" />
+                  </LinearGradientBrush>
+                </Border.Background>
+              </Border>
 
-            <ToggleButton x:Name="ChatButton"
-                DockPanel.Dock="Right"
-                HorizontalAlignment="Right" 
-                Style="{DynamicResource FooterToggleButtonStyle}"
-                ToolTipService.Placement="Top"
-                ToolTip="See who else is around"
-                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}">
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Rectangle Width="26" Height="22" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource ChatDrawingBrush}" />
-                <TextBlock x:Name="ChatButtonText" Text="Who's Online" />
-                <FacebookClient:NotificationCountControl
-                      x:Name="ActiveFriendsCountControl" 
-                      HorizontalAlignment="Right" VerticalAlignment="Center"
-                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}" >
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
+
+                <!-- Inbox -->
+                <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource MailGeometry}" Padding="0,5,-4,5" Content="Inbox" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
+                <FacebookClient:NotificationCountControl DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}">
+                  <FacebookClient:NotificationCountControl.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#4c94d7" Offset="0" />
+                      <GradientStop Color="#1876cd" Offset="1" />
+                    </LinearGradientBrush>
+                  </FacebookClient:NotificationCountControl.Background>
+                </FacebookClient:NotificationCountControl>
+
+                <!-- Notifications -->
+                <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource FlagGeometry}" Padding="0,2,-4,2" Content="Notifications" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
+                <FacebookClient:NotificationCountControl x:Name="NotificationControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
+                  <FacebookClient:NotificationCountControl.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                      <GradientStop Color="#e25423" Offset="0" />
+                      <GradientStop Color="#dc2300" Offset="1" />
+                    </LinearGradientBrush>
+                  </FacebookClient:NotificationCountControl.Background>
+                </FacebookClient:NotificationCountControl>
+
+                <!-- Who's Online-->
+                <ToggleButton x:Name="ChatButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource PersonGeometry}" Padding="0,2,-4,2" Content="Who's Online" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See who else is around" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}" />
+                <FacebookClient:NotificationCountControl DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}">
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                       <GradientStop Color="#5da110" Offset="0" />
@@ -366,104 +426,14 @@
                   </FacebookClient:NotificationCountControl.Background>
                 </FacebookClient:NotificationCountControl>
               </StackPanel>
-            </ToggleButton>
 
-            <ToggleButton x:Name="NotificationsButton"
-                DockPanel.Dock="Right" 
-                Style="{StaticResource FooterToggleButtonStyle}" 
-                ToolTip="See new notifications" 
-                ToolTipService.Placement="Top"
-                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}">
-              <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource NotificationsPostDrawingBrush}" />
-                <TextBlock x:Name="NotificationsButtonText" Text="Notifications" />
-                <FacebookClient:NotificationCountControl 
-                      x:Name="NotificationControl"
-                      HorizontalAlignment="Right" VerticalAlignment="Center"
-                      DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
-                  <FacebookClient:NotificationCountControl.Background>
-                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                      <GradientStop Color="#e25423" Offset="0" />
-                      <GradientStop Color="#dc2300" Offset="1" />
-                    </LinearGradientBrush>
-                  </FacebookClient:NotificationCountControl.Background>
-                </FacebookClient:NotificationCountControl>
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Button Content="Settings" Tag="{DynamicResource GearGeometry}" Margin="12,0,0,0" Padding="0,3,-6,4" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="View and change settings" />
+                <Button Content="Sign Out" Tag="{DynamicResource ExitGeometry}" Margin="8,0,0,0" Padding="0,3,-4,3" Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Sign out" />
+                <Button Content="Refresh" Tag="{DynamicResource RefreshGeometry}" Margin="6,0,0,0" Padding="0,3,-8,3" Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Think you're missing something? Click to refresh now." />
               </StackPanel>
-            </ToggleButton>
-            <ToggleButton x:Name="InboxButton"
-                DockPanel.Dock="Right"
-                HorizontalAlignment="Right" 
-                Style="{StaticResource FooterToggleButtonStyle}" 
-                ToolTipService.Placement="Top"
-                ToolTip="See new messages"
-                IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}">
-              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Rectangle Width="20" HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource EnvelopeDrawingBrush}" />
-                <TextBlock x:Name="InboxButtonText" Text="Inbox" />
-                <FacebookClient:NotificationCountControl 
-                    x:Name="InboxCountControl" 
-                    HorizontalAlignment="Right" VerticalAlignment="Center"
-                    DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}" >
-                  <FacebookClient:NotificationCountControl.Background>
-                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                      <GradientStop Color="#4c94d7" Offset="0" />
-                      <GradientStop Color="#1876cd" Offset="1" />
-                    </LinearGradientBrush>
-                  </FacebookClient:NotificationCountControl.Background>
-                </FacebookClient:NotificationCountControl>
-              </StackPanel>
-            </ToggleButton>
-
-	    <Button
-                Margin="3,1"
-                DockPanel.Dock="Left"
-                MinHeight="20"
-		        VerticalAlignment="Center"
-                HorizontalAlignment="Left" 
-                VerticalContentAlignment="Center" 
-                HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" 
-                CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
-                Style="{DynamicResource MiniModeButtonStyle}" 
-                ToolTipService.Placement="Top"
-                ToolTip="View and change settings">
-              <StackPanel Orientation="Horizontal">
-                <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource SettingsDrawingBrush}" />
-                <TextBlock>Settings</TextBlock>
-              </StackPanel>
-            </Button>
-            <Button x:Name="SignOutButton" Margin="3,1"
-                DockPanel.Dock="Left"
-                MinHeight="20"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Left" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" 
-                Style="{DynamicResource MiniModeButtonStyle}"
-                ToolTipService.Placement="Top"
-                ToolTip="Sign Out">
-              <StackPanel Orientation="Horizontal">
-                <Rectangle Margin="0" Width="16" Height="16" Fill="{DynamicResource ClosingDoorDrawingBrush}" />
-                <TextBlock>Sign out</TextBlock>
-              </StackPanel>
-            </Button>
-            <Button Margin="3,1"
-                DockPanel.Dock="Left"
-                MinHeight="20"
-                VerticalAlignment="Center" 
-                HorizontalAlignment="Left" 
-                VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                Style="{DynamicResource MiniModeButtonStyle}"
-                ToolTipService.Placement="Top"
-                Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                ToolTip="Think you're missing something? Click to refresh now.">
-              <StackPanel Orientation="Horizontal">
-                <Path Data="{DynamicResource RefreshGeometry}" Fill="#FFFFFF" Stretch="Uniform" VerticalAlignment="Center" />
-                <TextBlock>Refresh</TextBlock>
-              </StackPanel>
-            </Button>
-
-          </DockPanel>
+            </Grid>
+          </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
