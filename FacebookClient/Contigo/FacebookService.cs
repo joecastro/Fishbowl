@@ -26,6 +26,7 @@
 
         private FacebookWebApi _facebookApi;
 
+        private bool _hasFetchedFriendsList = false;
         private readonly Dictionary<string, FacebookContact> _userLookup = new Dictionary<string, FacebookContact>();
         private readonly Dictionary<string, FacebookPhoto> _photoLookup = new Dictionary<string, FacebookPhoto>();
         private readonly List<FacebookContact> _interestingPeople = new List<FacebookContact>();
@@ -155,7 +156,7 @@
 
             // Default sort orders
             ContactSortOrder = ContactSortOrder.AscendingByLastName;
-            PhotoAlbumSortOrder = PhotoAlbumSortOrder.AscendingByFriend;
+            PhotoAlbumSortOrder = PhotoAlbumSortOrder.DescendingByUpdate;
 
             _refreshTimerDynamic = new DispatcherTimer(_RefreshThresholdDynamic, DispatcherPriority.Background, (sender2, e2) => _RefreshDynamic(), Dispatcher);
             _refreshTimerModerate = new DispatcherTimer(_RefreshThresholdModerate, DispatcherPriority.Background, (sender2, e2) => _RefreshModerate(), Dispatcher);
@@ -214,7 +215,7 @@
             _userLookup[UserId] = MeContact;
             _NotifyPropertyChanged("MeContact");
 
-            Refresh();
+            _RefreshFirstTime();
 
             _refreshTimerDynamic.Start();
             _refreshTimerModerate.Start();
@@ -340,6 +341,12 @@
                 {
                     Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(null, true, null));
                     return;
+                }
+
+                if (userId != this.UserId && !_hasFetchedFriendsList)
+                {
+                    _UpdateFriendsWorker(null);
+                    _hasFetchedFriendsList = true;
                 }
 
                 // Maybe this contact was found while the request was in the queue.
@@ -814,6 +821,15 @@
             _UpdateFiltersAsync();
         }
         
+        private void _RefreshFirstTime()
+        {
+            _UpdateFiltersAsync();
+            _UpdateNewsFeedAsync();
+            _UpdateFriendsAsync();
+            _UpdatePhotoAlbumsAsync();
+            _UpdateNotificationsAsync();
+        }
+
         public void Refresh()
         {
             _RefreshDynamic();
