@@ -80,6 +80,7 @@
   <Style x:Key="CommentButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type ButtonBase}">
     <Setter Property="Template" Value="{DynamicResource CommentButtonTemplate}" />
   </Style>
+  
   <ControlTemplate x:Key="ShowMoreCommentsButtonTemplate" TargetType="{x:Type ToggleButton}">
     <ContentPresenter x:Name="Presenter" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
     <ControlTemplate.Triggers>
@@ -91,9 +92,11 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+  
   <Style x:Key="ShowMoreCommentsButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type ButtonBase}">
     <Setter Property="Template" Value="{DynamicResource ShowMoreCommentsButtonTemplate}" />
   </Style>
+  
   <Style TargetType="{x:Type Hyperlink}">
     <Setter Property="Foreground" Value="{DynamicResource HyperlinkForegroundBrush}" />
     <Setter Property="TextDecorations" Value="None" />
@@ -108,7 +111,7 @@
   </Style>
   
   <ControlTemplate x:Key="RemoveCommentButtonTemplate" TargetType="{x:Type Button}">
-    <ContentPresenter x:Name="Presenter" Grid.Column="1" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
+    <ContentPresenter x:Name="Presenter" TextBlock.FontSize="{TemplateBinding FontSize}" TextBlock.FontWeight="{TemplateBinding FontWeight}" TextBlock.Foreground="{TemplateBinding Foreground}" />
     <ControlTemplate.Triggers>
       <Trigger Property="IsPressed" Value="True">
         <Setter TargetName="Presenter" Property="Opacity" Value="0.7" />
@@ -231,7 +234,46 @@
       </DataTrigger>
     </DataTemplate.Triggers>
   </DataTemplate>
-  
+
+  <DataTemplate x:Key="NewsFeedCommentNarrowTemplate" DataType="{x:Type Facebook:ActivityComment}">
+    <Grid x:Name="CommentPanel" MinHeight="65" Margin="0,0,0,5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      
+      <Rectangle Height="2" Grid.Row="1" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
+      
+      <FacebookClient:FriendButton Style="{DynamicResource SquareFriendButtonStyle}"
+                                   Friend="{Binding FromUser}" />
+      
+      <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
+        <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
+          <FacebookClient:BindableRun Text="{Binding FromUser.Name}" />
+        </Hyperlink>
+        <TextBlock Style="{StaticResource CreatedTextBlockStyle}" TextWrapping="Wrap">
+          <Span> at </Span>
+          <FacebookClient:BindableRun Text="{Binding Time, Converter={StaticResource DateTimeConverter}}"/>
+        </TextBlock>
+      </TextBlock>
+
+      <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="2,3,0,0" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
+        <FacebookClient:HyperlinkTextContent Text="{Binding Text}" />
+        <Button x:Name="RemoveCommentButton" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.RemoveCommentCommand}" CommandParameter="{Binding}" Content="Remove" Style="{StaticResource RemoveCommentButtonStyle}" Visibility="Collapsed" />
+      </TextBlock>
+    </Grid>
+    <DataTemplate.Triggers>
+      <DataTrigger Binding="{Binding CanRemove}" Value="True">
+        <Setter TargetName="RemoveCommentButton" Property="Visibility" Value="Visible" />
+      </DataTrigger>
+    </DataTemplate.Triggers>
+  </DataTemplate>
+
   <DataTemplate DataType="{x:Type Facebook:ActivityPostAttachment}">
     <Grid>
       <Grid>

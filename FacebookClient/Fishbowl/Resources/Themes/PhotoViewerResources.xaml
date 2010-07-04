@@ -516,7 +516,7 @@
                     Margin="10,0"
                     ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}"
                     ItemsSource="{Binding FacebookPhoto.Comments}"
-                    ItemTemplate="{StaticResource NewsFeedCommentTemplate}"/>
+                    ItemTemplate="{StaticResource NewsFeedCommentNarrowTemplate}"/>
                 <StackPanel Margin="7,5,0,7">
                   <FacebookClient:CommandTextBox x:Name="CommentTextBox" Margin="5,0" Panel.ZIndex="1" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddCommentToPhotoCommand}" FontSize="{DynamicResource MiddleFontSize}" SpellCheck.IsEnabled="True" TextWrapping="Wrap">
                     <FacebookClient:CommandTextBox.Style>
@@ -612,7 +612,7 @@
                 Margin="10,0"
                 ItemsPanel="{StaticResource VirtualizedItemsPanelTemplate}"
                 ItemsSource="{Binding FacebookPhoto.Comments}"
-                ItemTemplate="{StaticResource NewsFeedCommentTemplate}"/>
+                ItemTemplate="{StaticResource NewsFeedCommentNarrowTemplate}"/>
               <StackPanel Margin="7,5,0,7">
                 <FacebookClient:CommandTextBox x:Name="CommentTextBox" Margin="5,0" Panel.ZIndex="1" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddCommentToPhotoCommand}" FontSize="{DynamicResource MiddleFontSize}" SpellCheck.IsEnabled="True" TextWrapping="Wrap">
                   <FacebookClient:CommandTextBox.Style>
