@@ -310,6 +310,11 @@ namespace Standard
             return c.R | (c.G << 8) | (c.B << 16);
         }
 
+        public static int AlphaRGB(Color c)
+        {
+            return c.R | (c.G << 8) | (c.B << 16) | (c.A << 24);
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string GetHashString(string value)
         {

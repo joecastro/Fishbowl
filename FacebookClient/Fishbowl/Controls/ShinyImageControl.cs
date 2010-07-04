@@ -7,17 +7,24 @@
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using Contigo;
+    using Standard;
 
     public class ShinyImageControl : Control
     {
-        private static Dictionary<Color, LinearGradientBrush> _gradientBrushes = new Dictionary<Color, LinearGradientBrush>();
-        private static Pen _borderPen;
-        private static LinearGradientBrush _glareBrush;
-        private static ImageBrush _avatarBrush;
+        private static readonly Dictionary<long, LinearGradientBrush> _gradientBrushes = new Dictionary<long, LinearGradientBrush>();
+        private static readonly Dictionary<Color, Pen> _borderPens = new Dictionary<Color, Pen>();
+        private static readonly LinearGradientBrush _glareBrush;
+        private static readonly ImageBrush _avatarBrush;
 
         private LinearGradientBrush _gradientBrush;
         private ImageBrush _userImageBrush;
-        private Rect brushRect = Rect.Empty;
+        private Rect _brushRect = Rect.Empty;
+        private Pen _borderPen;
+
+        private static long _MakeColorGradientKey(Color top, Color bottom)
+        {
+            return (long)((ulong)(uint)Utility.AlphaRGB(top) << 32 | (ulong)(uint)Utility.AlphaRGB(bottom));
+        }
 
         public static readonly DependencyProperty FacebookImageProperty = DependencyProperty.Register(
             "FacebookImage",
@@ -74,9 +81,6 @@
             set { SetValue(FacebookImageDimensionsProperty, value); }
         }
 
-        /// <summary>
-        /// SizeBasedOnContent Dependency Property
-        /// </summary>
         public static readonly DependencyProperty SizeToContentProperty = DependencyProperty.Register(
             "SizeToContent",
             typeof(SizeToContent),
@@ -85,45 +89,47 @@
                 System.Windows.SizeToContent.Manual,
                 (d, e) => ((ShinyImageControl)d)._UpdateImage()));
 
-
         public SizeToContent SizeToContent
         {
             get { return (SizeToContent)GetValue(SizeToContentProperty); }
             set { SetValue(SizeToContentProperty, value); }
         }
-        /// <summary>
-        /// Corner radius to use for rounded rects.
-        /// </summary>
-        public double CornerRadius { get; set; }
 
-        /// <summary>
-        /// The amount of padding to use when framing the Image.
-        /// </summary>
-        public double ImagePadding
+        public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register(
+            "CornerRadius",
+            typeof(CornerRadius),
+            typeof(ShinyImageControl),
+            new FrameworkPropertyMetadata(default(CornerRadius), FrameworkPropertyMetadataOptions.AffectsRender));
+
+        public CornerRadius CornerRadius
         {
-            get { return (double)GetValue(ImagePaddingProperty); }
-            set { SetValue(ImagePaddingProperty, value); }
+            get { return (CornerRadius)GetValue(CornerRadiusProperty); }
+            set { SetValue(CornerRadiusProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ImagePadding.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ImagePaddingProperty = DependencyProperty.Register(
             "ImagePadding",
             typeof(double),
             typeof(ShinyImageControl),
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsRender));
 
-        /// <summary>
-        /// Indicates whether the 'glare' effect should be drawn.
-        /// </summary>
-        public bool ShowGlare { get; set; }
-
-        /// <summary>
-        /// Color to use in the gradient behind the user's photo.
-        /// </summary>
-        public Color ActivityColor
+        public double ImagePadding
         {
-            get { return (Color)GetValue(ActivityColorProperty); }
-            set { SetValue(ActivityColorProperty, value); }
+            get { return (double)GetValue(ImagePaddingProperty); }
+            set { SetValue(ImagePaddingProperty, value); }
+        }
+
+        public static readonly DependencyProperty ShowGlareProperty = DependencyProperty.Register(
+            "ShowGlare",
+            typeof(bool),
+            typeof(ShinyImageControl),
+            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+        /// <summary>Indicates whether the 'glare' effect should be drawn.</summary>
+        public bool ShowGlare
+        {
+            get { return (bool)GetValue(ShowGlareProperty); }
+            set { SetValue(ShowGlareProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ActivityColor.  This enables animation, styling, binding, etc...
@@ -133,19 +139,49 @@
             typeof(ShinyImageControl),
             new FrameworkPropertyMetadata(
                 Colors.White,
-                (d, e) => ((ShinyImageControl)d)._OnActivityColorChanged()));
+                (d, e) => ((ShinyImageControl)d)._OnFrameColorChanged()));
 
-        /// <summary>
-        /// Initializes static members of the ShinyImageControl class.
-        /// </summary>
+        /// <summary>Color to use in the gradient behind the user's photo.</summary>
+        public Color ActivityColor
+        {
+            get { return (Color)GetValue(ActivityColorProperty); }
+            set { SetValue(ActivityColorProperty, value); }
+        }
+
+        public static readonly DependencyProperty FrameColorProperty = DependencyProperty.Register(
+            "FrameColor",
+            typeof(Color),
+            typeof(ShinyImageControl),
+            new FrameworkPropertyMetadata(
+                Colors.White,
+                (d, e) => ((ShinyImageControl)d)._OnFrameColorChanged()));
+
+        public Color FrameColor
+        {
+            get { return (Color)GetValue(FrameColorProperty); }
+            set { SetValue(FrameColorProperty, value); }
+        }
+
+        public static readonly DependencyProperty PenColorProperty = DependencyProperty.Register(
+            "PenColor",
+            typeof(Color),
+            typeof(ShinyImageControl),
+            new FrameworkPropertyMetadata(
+                Colors.Pink,
+                FrameworkPropertyMetadataOptions.AffectsRender,
+                (d,e) => ((ShinyImageControl)d)._OnPenColorChanged()));
+
+        public Color PenColor
+        {
+            get { return (Color)GetValue(PenColorProperty); }
+            set { SetValue(PenColorProperty, value); }
+        }
+
         static ShinyImageControl()
         {
             VerticalAlignmentProperty.OverrideMetadata(typeof(ShinyImageControl), new FrameworkPropertyMetadata(VerticalAlignment.Stretch));
             HorizontalAlignmentProperty.OverrideMetadata(typeof(ShinyImageControl), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch));
             RenderOptions.BitmapScalingModeProperty.OverrideMetadata(typeof(ShinyImageControl), new FrameworkPropertyMetadata(BitmapScalingMode.Linear));
-
-            _borderPen = new Pen(Brushes.Silver, 0.8);
-            _borderPen.Freeze();
 
             _glareBrush = new LinearGradientBrush()
             {
@@ -172,22 +208,49 @@
 
         public ShinyImageControl()
         {
-            _OnActivityColorChanged();
+            _OnFrameColorChanged();
+            _OnPenColorChanged();
         }
 
-        private void _OnActivityColorChanged()
+        private void _OnFrameColorChanged()
         {
-            if (!_gradientBrushes.TryGetValue(ActivityColor, out _gradientBrush))
+            long key = _MakeColorGradientKey(FrameColor, ActivityColor);
+            if (!_gradientBrushes.TryGetValue(key, out _gradientBrush))
             {
-                _gradientBrush = _AddKnownGradient(ActivityColor);
+                var lgb = new LinearGradientBrush
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(0, 1),
+                    GradientStops = 
+                    {
+                        new GradientStop(FrameColor, 0.0),
+                        new GradientStop(ActivityColor, 1.0),
+                    }
+                };
+                lgb.Freeze();
+
+                _gradientBrushes.Add(key, lgb);
+                _gradientBrush = lgb;
             }
         }
 
+        private void _OnPenColorChanged()
+        {
+            if (!_borderPens.TryGetValue(PenColor, out _borderPen))
+            {
+                var pen = new Pen(new SolidColorBrush(PenColor), 0.8);
+                pen.Freeze();
+
+                _borderPens.Add(PenColor, pen);
+                _borderPen = pen;
+            }
+        }
+        
         protected override void OnRender(DrawingContext drawingContext)
         {
-            if (this.CornerRadius > 0)
+            if (this.CornerRadius != default(CornerRadius))
             {
-                drawingContext.DrawRoundedRectangle(this._gradientBrush, _borderPen, new Rect(0, 0, this.ActualWidth, this.ActualHeight), this.CornerRadius, this.CornerRadius);
+                drawingContext.DrawRoundedRectangle(this._gradientBrush, _borderPen, new Rect(0, 0, this.ActualWidth, this.ActualHeight), this.CornerRadius.TopLeft, this.CornerRadius.TopLeft);
             }
             else
             {
@@ -195,12 +258,13 @@
             }
 
             double pad = this.ImagePadding;
-            double width = this.ActualWidth - 2.0 * pad > 0.0 ? this.ActualWidth - 2.0 * pad : 0.0;
-            double height = this.ActualHeight - 2.0 * pad > 0.0 ? this.ActualHeight - 2.0 * pad : 0.0;
+            Size size = new Size(
+                this.ActualWidth - 2.0 * pad > 0.0 ? this.ActualWidth - 2.0 * pad : 0.0,
+                this.ActualHeight - 2.0 * pad > 0.0 ? this.ActualHeight - 2.0 * pad : 0.0);
 
-            if (brushRect.Width != width || brushRect.Height != height)
+            if (_brushRect.Size != size)
             {
-                brushRect = new Rect(pad, pad, width, height);
+                _brushRect = new Rect(new Point(pad, pad), size);
             }
 
             if (this.ImageSource != null && _userImageBrush == null)
@@ -220,35 +284,14 @@
             drawingContext.DrawRoundedRectangle(
                 _userImageBrush ?? _avatarBrush,
                 null,
-                brushRect, 
-                CornerRadius, 
-                CornerRadius);
+                _brushRect, 
+                CornerRadius.TopLeft, 
+                CornerRadius.TopLeft);
 
             if (this.ShowGlare)
             {
-                drawingContext.DrawRoundedRectangle(_glareBrush, null, brushRect, this.CornerRadius, this.CornerRadius);
+                drawingContext.DrawRoundedRectangle(_glareBrush, null, _brushRect, this.CornerRadius.TopLeft, this.CornerRadius.TopLeft);
             }
-        }
-
-        /// <summary>
-        /// Adds a new known gradient to the linear gradient cache.
-        /// </summary>
-        private static LinearGradientBrush _AddKnownGradient(Color color)
-        {
-            var lgb = new LinearGradientBrush
-            {
-                StartPoint = new Point(0, 0),
-                EndPoint = new Point(0, 1),
-                GradientStops = 
-                {
-                    new GradientStop(Colors.White, 0.0),
-                    new GradientStop(color, 1.0),
-                }
-            };
-            lgb.Freeze();
-
-            _gradientBrushes.Add(color, lgb);
-            return lgb;
         }
 
         private void _UpdateImage()
