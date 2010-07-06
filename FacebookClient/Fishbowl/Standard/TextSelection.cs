@@ -241,7 +241,8 @@ namespace Microsoft.Wpf.Samples.Documents
                 Hyperlink hyperlink = this.mouseDownHyperlink;
                 this.mouseDownHyperlink = null;
 
-                if (hyperlink.IsMouseOver && this.Selection.IsEmpty)
+                // hyperlink.IsMouseOver is insufficient because it isn't always accurate...
+                if (this.Selection.IsEmpty)
                 {
                     // Mouse up was done on the same hyperlink as mouse down
                     // and because the selection is empty nothing is highlighted
