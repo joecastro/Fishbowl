@@ -263,13 +263,14 @@
                   VerticalAlignment="Center" HorizontalAlignment="Center" 
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                   Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                  IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}"
                   Style="{DynamicResource MiniModeButtonStyle}"
                   ToolTip="Switch to mini-mode window">
                 <Rectangle Margin="4,3" Width="14" Height="14" Fill="{DynamicResource MiniModeIconDrawingBrush}" />
               </Button>
             </StackPanel>
 
-            <Grid x:Name="NavigationPanel" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="2,3,5,0" HorizontalAlignment="Right">
+            <Grid x:Name="NavigationPanel" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Margin="2,3,5,0" HorizontalAlignment="Right" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}">
               <Grid.Resources>
                 <Style TargetType="Rectangle">
                   <Setter Property="Height" Value="23" />
@@ -381,7 +382,20 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
           <Border Height="32" Background="{DynamicResource ApplicationBarBackground}">
-            <Grid IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}">
+            <Grid>
+              <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                  <Setter Property="IsEnabled" Value="True"/>
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive}" Value="True">
+                      <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Value="False">
+                      <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Grid.Style>
               <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
