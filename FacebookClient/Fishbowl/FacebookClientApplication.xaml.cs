@@ -57,15 +57,18 @@ namespace FacebookClient
             { "Charcoal",      new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) } },
             { "Modern",        new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Modern\Modern.xaml", UriKind.Relative) } },
             { "Modern Dark",   new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\ModernDark\ModernDark.xaml", UriKind.Relative) } },
-            { "Glass",         new _ThemeInfo 
-                               { 
-                                   ResourceDictionaryUri = new Uri(@"Resources\Themes\Glass\Glass.xaml", UriKind.Relative),
-                                   RequiresGlass = true, 
-                                   FallbackTheme = "Modern" } },
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
             { "Red", new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) } },
+
+            // In development.
+            { "Glass",         new _ThemeInfo 
+                { 
+                    ResourceDictionaryUri = new Uri(@"Resources\Themes\Glass\Glass.xaml", UriKind.Relative),
+                    RequiresGlass = true, 
+                    FallbackTheme = "Modern" } },
+
 #endif
         };
 

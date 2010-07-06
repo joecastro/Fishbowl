@@ -1,6 +1,7 @@
 <ClientManagerView:EventResourceDictionary x:Class="FacebookClient.ModernApplicationBarResourcesDictionary" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:FacebookClient="clr-namespace:FacebookClient" xmlns:ClientManager="clr-namespace:ClientManager" xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls" xmlns:ClientManagerView="clr-namespace:ClientManager.View" xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell">
 
   <FacebookClient:NotConverter x:Key="NotConverter" />
+  <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter"/>
 
   <Geometry x:Key="DownArrow">M0,0 L1,0 0.5,1Z</Geometry>
   <Geometry x:Key="UpArrow">M0,1 L1,1 0.5,0Z</Geometry>
@@ -593,11 +594,22 @@
                   </StackPanel>
 
                   <StackPanel SnapsToDevicePixels="True">
-                    <TextBlock Margin="16,0,0,0" FontFamily="{DynamicResource SansSerifFont}" FontSize="21" FontWeight="Bold" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.Name}" />
+                    <TextBlock Margin="16,0,0,0" FontFamily="{DynamicResource SansSerifFont}" FontSize="21" FontWeight="Bold" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" >
+                      <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                          <Setter Property="Text" Value="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.Name}" />
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.Name, Converter={StaticResource IsStringNullOrWhitespaceConverter}, FallbackValue=True}" Value="True">
+                                <Setter Property="Text" Value="Welcome to Fishbowl" />
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
                     <Grid x:Name="StatusGrid" Margin="16,-1,16,4">
                       <FacebookClient:PopupToggle x:Name="StatusPopupToggle" Style="{StaticResource EditToggle}" Cursor="Hand" Popup="{Binding ElementName=StatusPopup}" Padding="0" shell:WindowChrome.IsHitTestVisibleInChrome="True" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" HorizontalAlignment="Left">
-                        <TextBlock HorizontalAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontSize="14" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message}" IsHitTestVisible="False">
+                        <TextBlock HorizontalAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontSize="14" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" IsHitTestVisible="False">
                           <TextBlock.ToolTip>
                             <ToolTip Placement="Bottom">
                               <TextBlock TextWrapping="Wrap" MaxWidth="450">
@@ -610,6 +622,18 @@
                               </TextBlock>
                             </ToolTip>
                           </TextBlock.ToolTip>
+                          
+                          <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                              <Setter Property="Text" Value="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message, Converter={StaticResource IsStringNullOrWhitespaceConverter}, FallbackValue=True}" Value="True">
+                                  <Setter Property="Text" Value="What's on your mind?" />
+                                  <Setter Property="FontStyle" Value="Italic" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
                         </TextBlock>
                       </FacebookClient:PopupToggle>
                       <Popup x:Name="StatusPopup" AllowsTransparency="True" Placement="Bottom" VerticalOffset="-15" IsOpen="{Binding ElementName=StatusControl, Path=IsActive}">

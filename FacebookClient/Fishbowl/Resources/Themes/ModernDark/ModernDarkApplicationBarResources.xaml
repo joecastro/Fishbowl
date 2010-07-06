@@ -597,7 +597,7 @@
 
                     <Grid x:Name="StatusGrid" Margin="16,-1,16,4">
                       <FacebookClient:PopupToggle x:Name="StatusPopupToggle" Style="{StaticResource EditToggle}" Cursor="Hand" Popup="{Binding ElementName=StatusPopup}" Padding="0" shell:WindowChrome.IsHitTestVisibleInChrome="True" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" HorizontalAlignment="Left">
-                        <TextBlock HorizontalAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontSize="14" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message}" IsHitTestVisible="False">
+                        <TextBlock HorizontalAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontSize="14" Foreground="{DynamicResource HeaderStatusForegroundBrush}" TextTrimming="CharacterEllipsis" IsHitTestVisible="False">
                           <TextBlock.ToolTip>
                             <ToolTip Placement="Bottom">
                               <TextBlock TextWrapping="Wrap" MaxWidth="450">
@@ -610,6 +610,18 @@
                               </TextBlock>
                             </ToolTip>
                           </TextBlock.ToolTip>
+                          
+                          <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                              <Setter Property="Text" Value="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message}" />
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=MeContact.StatusMessage.Message, Converter={StaticResource IsStringNullOrWhitespaceConverter}, FallbackValue=True}" Value="True">
+                                  <Setter Property="Text" Value="What's on your mind?" />
+                                  <Setter Property="FontStyle" Value="Italic" />
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBlock.Style>
                         </TextBlock>
                       </FacebookClient:PopupToggle>
                       <Popup x:Name="StatusPopup" AllowsTransparency="True" Placement="Bottom" VerticalOffset="-15" IsOpen="{Binding ElementName=StatusControl, Path=IsActive}">
@@ -646,17 +658,10 @@
                           <RowDefinition Height="Auto" />
                           <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Path Data="M0,1 L0.5,0 L1,1 Z" Stretch="Fill" Width="23" Height="19" Fill="#6077ab" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,52,0" />
-                        <Border CornerRadius="4" Grid.Row="1" Grid.ColumnSpan="2">
-                          <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                              <GradientStop Color="#6077ab" Offset="0" />
-                              <GradientStop Color="#3b5896" Offset="1" />
-                            </LinearGradientBrush>
-                          </Border.Background>
-                        </Border>
+                        <Path Data="M0,1 L0.5,0 L1,1 Z" Stretch="Fill" Width="23" Height="19" Fill="{DynamicResource ModernPopupTopBrush}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,0,52,0" />
+                        <Border CornerRadius="4" Grid.Row="1" Grid.ColumnSpan="2" Background="{DynamicResource ModernPopupBrush}" />
                         <Border Background="White" Margin="6" Grid.Row="1" CornerRadius="3" Height="23">
-                          <FacebookClient:CommandTextBox x:Name="SearchTextBox" Margin="4,3" CommitCommand="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateSearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource InvisibleTextBox}" Tag="Search" BannerText="Search" />
+                          <FacebookClient:CommandTextBox x:Name="SearchTextBox" Margin="4,3" CommitCommand="{x:Static FacebookClient:MainHeaderControl.SearchCommand}" CommitCommandParameter="{Binding ElementName=SearchTextBox, Path=Text}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}" Style="{DynamicResource InvisibleTextBox}" Tag="Search" BannerText="Search" />
                         </Border>
                       </Grid>
                     </Popup>

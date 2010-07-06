@@ -1,4 +1,4 @@
-﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.FacebookDataResourcesDictionary"
+﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.CommonFacebookDataResourcesDictionary"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"

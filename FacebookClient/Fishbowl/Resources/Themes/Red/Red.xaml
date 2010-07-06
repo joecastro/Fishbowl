@@ -4,6 +4,7 @@
     
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFacebookDataResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonApplicationBarResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Red/RedMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Red/RedApplicationBarResources.xaml" />

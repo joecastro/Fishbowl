@@ -4,11 +4,21 @@
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Modern/ModernApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
   
   <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
   <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+  <Color x:Key="ModernContactFrameColor">#3b5998</Color>
+
+  <SolidColorBrush x:Key="ModernPopupTopBrush" Color="#6077ab"/>
+
+  <LinearGradientBrush x:Key="ModernPopupBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#6077ab" Offset="0" />
+    <GradientStop Color="#3b5896" Offset="1" />
+  </LinearGradientBrush>
 
 </ResourceDictionary>

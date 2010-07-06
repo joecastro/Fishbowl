@@ -8,6 +8,7 @@
        so they don't look disabled. -->
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Glass/GlassMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Glass/GlassApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>

@@ -4,20 +4,47 @@
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
     <!--<ResourceDictionary Source="pack://application:,,,/Resources/Themes/Charcoal/ExpressionDark.xaml" />-->
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernDark/ModernDarkMainPageResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernDark/ModernDarkApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <SolidColorBrush Color="White" x:Key="ActivityPostMessageTextBlockForeground" />
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+  <SolidColorBrush x:Key="ActivityPostMessageTextBlockForeground" Color="Black" />
+  <SolidColorBrush x:Key="Foreground_ContentElement" Color="#383838"/>
 
   <SolidColorBrush Color="#20000000" x:Key="AnimatedSwoosh1" />
   <SolidColorBrush Color="#18000000" x:Key="AnimatedSwoosh2" />
 
+  <Color x:Key="ModernContactFrameColor">Silver</Color>
 
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="#585858" />
+      <GradientStop Offset=".4" Color="#585858" />
+      <GradientStop Offset="1" Color="#383838" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="#585858" />
+      <GradientStop Offset=".4" Color="#585858" />
+      <GradientStop Offset="1" Color="#383838" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ModernPopupTopBrush" Color="#787878"/>
+
+  <LinearGradientBrush x:Key="ModernPopupBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#787878" Offset="0" />
+    <GradientStop Color="#585858" Offset="1" />
+  </LinearGradientBrush>
 
   <!--<SolidColorBrush Color="#4A4A4A" x:Key="ActivityPostCommentDividerBrush" />
-  <SolidColorBrush x:Key="Foreground_ContentElement" Color="White"/>
 
   <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
