@@ -4,6 +4,7 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Navigation;
+    using ClientManager;
 
     /// <summary>
     /// Interaction logic for MessageNotificationsControl.xaml
@@ -44,6 +45,15 @@
         private void ShowInboxButton_Click(object sender, RoutedEventArgs e)
         {
             ((MainWindow)Application.Current.MainWindow).ApplicationCommands.ShowInboxCommand.Execute(Application.Current.MainWindow);
+        }
+
+        private void _OnFriendClicked(object sender, RoutedEventArgs e)
+        {
+            var friendButton = (FriendButton)sender;
+            if (friendButton.Friend != null)
+            {
+                ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(friendButton.Friend);
+            }
         }
     }
 }

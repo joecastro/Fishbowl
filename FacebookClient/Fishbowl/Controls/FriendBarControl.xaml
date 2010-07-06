@@ -8,7 +8,11 @@
     Focusable="False">
   <UserControl.Resources>
     <DataTemplate x:Key="ItemTemplate">
-      <FacebookClient:FriendButton Friend="{Binding}" Style="{DynamicResource SmallFriendButtonStyle}" Margin="5" />
+      <FacebookClient:FriendButton
+          Friend="{Binding}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          Click="_OnFriendClicked" 
+          Margin="5" />
     </DataTemplate>
 
     <Style x:Key="FriendsBarListBoxItemStyle" TargetType="{x:Type ListBoxItem}">

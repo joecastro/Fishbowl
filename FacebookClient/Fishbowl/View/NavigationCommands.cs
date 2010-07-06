@@ -278,7 +278,11 @@ namespace ClientManager.View
 
         protected override void PerformNavigate(object parameter)
         {
-            Verify.IsNotNull(parameter, "parameter");
+            Assert.IsNotNull(parameter);
+            if (parameter == null)
+            {
+                return;
+            }
 
             parameter = _GetNavigatableContent(parameter);
             Assert.IsNotNull(parameter);

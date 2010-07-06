@@ -45,6 +45,7 @@
                     <FacebookClient:FriendButton
                         Friend="{Binding Sender}" 
                         Style="{DynamicResource TinyFriendButtonStyle}"
+                        Click="_OnFriendClicked"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Left"/>
 

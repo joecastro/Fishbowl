@@ -192,5 +192,10 @@ namespace FacebookClient
                 PhotoExplorerGrid.Visibility = Visibility.Collapsed;
             }
         }
+
+        private void OnNavigateToContentButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ClientManager.ServiceProvider.ViewManager.NavigateToContent(sender);
+        }
     }
 }

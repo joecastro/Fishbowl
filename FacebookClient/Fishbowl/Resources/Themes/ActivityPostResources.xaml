@@ -193,25 +193,12 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <Rectangle Height="2" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
-      <ClientManagerControls:FacebookImageDragContainer VerticalAlignment="Top" FacebookImage="{Binding FromUser.Image}">
-        <Button x:Name="NewsfeedProfilePhotoButton" 
-            RenderTransformOrigin="0.5,0.5" 
-            Width="60" 
-            Height="60" 
-            Margin="0,5"
-            Click="OnNavigateToContentButtonClicked" 
-            ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" 
-            Style="{DynamicResource AnimatedItemButton}"
-            RenderTransform="{DynamicResource CommentRenderTransform}">
-          <FacebookClient:ShinyImageControl FacebookImage="{Binding FromUser.Image}"
-              Width="50" Height="50" 
-              ShowGlare="False" 
-              FacebookImageDimensions="Square" 
-              CornerRadius="0" 
-              ImagePadding="2"
-              ActivityColor="White"/>
-        </Button>
-      </ClientManagerControls:FacebookImageDragContainer>
+      <FacebookClient:FriendButton
+        Margin="5,5,0,0"
+        Style="{DynamicResource SquareCommentFriendButtonStyle}"
+        Friend="{Binding FromUser}"
+        Click="OnNavigateToContentButtonClicked" 
+        ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" />
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">
         <TextBlock MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
@@ -249,8 +236,12 @@
       
       <Rectangle Height="2" Grid.Row="1" Grid.ColumnSpan="2" Margin="-10,0,-10,-3" VerticalAlignment="Bottom" Fill="{DynamicResource ActivityPostCommentDividerBrush}" SnapsToDevicePixels="True" />
       
-      <FacebookClient:FriendButton Style="{DynamicResource SquareFriendButtonStyle}"
-                                   Friend="{Binding FromUser}" />
+      <FacebookClient:FriendButton 
+        Margin="5,5,0,0"
+        Style="{DynamicResource SquareCommentFriendButtonStyle}"
+        Click="OnNavigateToContentButtonClicked" 
+        ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" 
+        Friend="{Binding FromUser}" />
       
       <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
         <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
@@ -463,6 +454,8 @@
             Friend="{Binding Actor}"
             Margin="10, 7, 0, 0"
             VerticalAlignment="Top"
+            Click="OnNavigateToContentButtonClicked" 
+            ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
             Style="{DynamicResource LargeFriendButtonStyle}"/>
 
         <Grid Grid.Column="1" Margin="15,7,0,0" HorizontalAlignment="Stretch">

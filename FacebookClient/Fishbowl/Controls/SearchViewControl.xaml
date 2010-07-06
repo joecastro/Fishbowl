@@ -5,6 +5,7 @@
     xmlns:ClientManager="clr-namespace:ClientManager"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View"
     FocusVisualStyle="{x:Null}">
   
   <UserControl.Resources>
@@ -138,259 +139,19 @@
 
     <!-- DataTemplate for explorer nodes that display an album  -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerAlbumNode}">
-      <Button Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" 
-              CommandParameter="{Binding}" 
-              Width="210" Height="160"
-              Cursor="Hand"
-              FocusVisualStyle="{x:Null}"
-              Panel.ZIndex="1"
-              >
-        <Button.Template>
-          <ControlTemplate TargetType="{x:Type Button}">
-            <Grid>
-              <ContentPresenter Focusable="False"/>
-            </Grid>
-          </ControlTemplate>
-        </Button.Template>
-        <Grid DataContext="{Binding Album}">
-            <Grid>
-              <Grid Name="EffectGrid" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Grid.Effect>
-                <DropShadowEffect BlurRadius="0" ShadowDepth="0" Color="{DynamicResource IconDropShadowColor}" Opacity=".8" />
-                </Grid.Effect>
-                <Grid Width="92" Height="92" HorizontalAlignment="Left" Margin="50,20,0,0" VerticalAlignment="Top">
-                  <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                      <Setter Property="Visibility" Value="Visible" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="1">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="2">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Grid.Style>
-                  <Rectangle Fill="White" Margin="0,0,3,3" />
-                </Grid>
-                <Grid Width="92" Height="92" HorizontalAlignment="Left" Margin="25,20,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-                  <Grid.RenderTransform>
-                    <RotateTransform Angle="-8"/>
-                  </Grid.RenderTransform>
-                  <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                      <Setter Property="Visibility" Value="Visible" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="1">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Grid.Style>
-                  <Rectangle Fill="White" Margin="0,0,3,3" />
-                </Grid>
-                <Grid Width="92" Height="92" HorizontalAlignment="Left" Margin="0,15,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-                  <Grid.RenderTransform>
-                    <RotateTransform Angle="-24"/>
-                  </Grid.RenderTransform>
-                  <Rectangle Fill="White" Margin="0,0,3,3" />
-                </Grid>
-
-                <Grid Background="White" Width="50" Height="50" HorizontalAlignment="Left" Margin="85,85,0,0" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" RenderTransform="{DynamicResource FriendRenderTransform}"/>
-              </Grid>
-              <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Grid x:Name="ThirdPhotoGrid"
-                    Width="92"
-                    Height="92"
-                    HorizontalAlignment="Left"
-                    Margin="50,20,0,0"
-                    VerticalAlignment="Top"
-                    RenderTransformOrigin="0.5,0.5">
-                  <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                      <Setter Property="Visibility" Value="Visible" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="1">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="2">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Grid.Style>
-                  <Grid>
-                    <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                    <ClientManagerControls:LargePhotoThumbnailControl FacebookImage="{Binding Path=ThirdPhoto.Image}"
-                                                                      Margin="4,4,6,16" 
-                                                                      Focusable="False" 
-                                                                      RenderTransformOrigin="0.5,0.5"/>
-                  </Grid>
-                </Grid>
-
-                <Grid x:Name="SecondPhotoGrid"
-              Width="92"
-              Height="92"
-              HorizontalAlignment="Left"
-              Margin="25,20,0,0"
-              VerticalAlignment="Top"
-              RenderTransformOrigin="0.5,0.5">
-                  <Grid.Style>
-                    <Style TargetType="{x:Type Grid}">
-                      <Setter Property="Visibility" Value="Visible" />
-                      <Style.Triggers>
-                        <DataTrigger Binding="{Binding Photos.Count}" Value="1">
-                          <Setter Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                      </Style.Triggers>
-                    </Style>
-                  </Grid.Style>
-                  <Grid.RenderTransform>
-                    <RotateTransform Angle="-8"/>
-                  </Grid.RenderTransform>
-                  <Image Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                  <ClientManagerControls:LargePhotoThumbnailControl
-                  Margin="4,4,6,16" 
-                  FacebookImage="{Binding Path=SecondPhoto.Image}"
-                  Focusable="False"
-                  RenderTransformOrigin="0.5,0.5"/>
-                </Grid>
-                <Grid
-              Width="92"
-              Height="92"
-              HorizontalAlignment="Left"
-              Margin="0,15,0,0"
-              VerticalAlignment="Top"
-              RenderTransformOrigin="0.5,0.5">
-                  <Grid.RenderTransform>
-                    <RotateTransform Angle="-24"/>
-                  </Grid.RenderTransform>
-                  <Image Source="pack://application:,,,/Resources/Images/photo_background.png"/>
-                  <ClientManagerControls:LargePhotoThumbnailControl
-                Margin="4,4,6,16"
-                FacebookImage="{Binding Path=FirstPhoto.Image}"
-                FacebookImageDimensions="Normal"
-                Focusable="False"
-                RenderTransformOrigin="0.5,0.5"/>
-                </Grid>
-              </Grid>
-              <Grid Margin="0,0,75,25"
-              VerticalAlignment="Bottom"
-              HorizontalAlignment="Right">
-                <FacebookClient:FriendButton 
-                  Friend="{Binding Owner}" 
-                  IsEnabled="False"
-                  Style="{DynamicResource SquareFriendButtonStyle}" />
-              </Grid>
-              <Grid.Triggers>
-                <EventTrigger RoutedEvent="Mouse.MouseEnter">
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
-                      </ObjectAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid"  Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="0"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid"  Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="0"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="6"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="6"/>
-                      </DoubleAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </BeginStoryboard>
-                </EventTrigger>
-                <EventTrigger RoutedEvent="Mouse.MouseLeave">
-                  <BeginStoryboard>
-                    <Storyboard>
-                      <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="00:00:00.25" Value="{x:Static Visibility.Collapsed}" />
-                      </ObjectAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="6"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="6"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="0"/>
-                      </DoubleAnimationUsingKeyFrames>
-                      <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectGrid" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
-                        <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="0"/>
-                      </DoubleAnimationUsingKeyFrames>
-                    </Storyboard>
-                  </BeginStoryboard>
-                </EventTrigger>
-              </Grid.Triggers>
-            </Grid>
-            <StackPanel VerticalAlignment="Bottom" Orientation="Vertical">
-              <TextBlock HorizontalAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource SmallFontSize1}" FontWeight="Light"
-                        Foreground="{DynamicResource AlbumInfoForeground}">
-              <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                  <Setter Property="Text">
-                    <Setter.Value>
-                      <Binding StringFormat="{}{0} photos" Path="Photos.Count"/>
-                    </Setter.Value>
-                  </Setter>
-                    
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=Photos.Count}" Value="1">
-                      <Setter Property="Text" Value="1 photo" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </TextBlock.Style>
-              </TextBlock>
-              <TextBlock
-                HorizontalAlignment="Left" 
-                FontFamily="{DynamicResource SansSerifFont}" 
-                FontSize="{DynamicResource SmallFontSize1}" 
-                FontWeight="Light"
-                Foreground="{DynamicResource AlbumInfoForeground}"                
-                Margin="0,2,0,0"
-                TextTrimming="CharacterEllipsis"
-                Text="{Binding Path=Title}"/>
-            </StackPanel>
-          </Grid>
-      </Button>
+      <FacebookClient:AlbumThumbnailButton 
+          FacebookPhotoAlbum="{Binding Path=Album}"
+          Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" 
+          CommandParameter="{Binding}" />
     </DataTemplate>
 
     <!-- DataTemplate for explorer nodes that display a contact -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerContactNode}">
-      <Button 
-          x:Name="ItemButton" 
-          VerticalAlignment="Top" 
-          Style="{DynamicResource AnimatedItemButton}"
-          RenderTransformOrigin="0.5,0.5"
+      <FacebookClient:FriendButton
+          Style="{DynamicResource MediumFriendButtonStyle}" 
+          Friend="{Binding Contact}"
           Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" 
-          CommandParameter="{Binding}"
-          RenderTransform="{DynamicResource FriendRenderTransform}">
-        <FacebookClient:ShinyImageControl FacebookImage="{Binding Contact.Image}"
-            Width="100" Height="100" 
-            ShowGlare="False" 
-            FacebookImageDimensions="Normal" 
-            CornerRadius="0" 
-            ImagePadding="4"
-            ActivityColor="White"/>
-      </Button>
+          CommandParameter="{Binding}"/>
     </DataTemplate>
 
     <!-- DataTemplate for explorer nodes that display a status post  -->
@@ -698,7 +459,10 @@
             <ListBox Style="{StaticResource SearchResultListBoxStyle}" ItemsSource="{Binding Albums}" >
               <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type Facebook:FacebookPhotoAlbum}">
-                  <FacebookClient:AlbumThumbnailButton FacebookPhotoAlbum="{Binding}"/>
+                  <FacebookClient:AlbumThumbnailButton 
+                    FacebookPhotoAlbum="{Binding}"
+                    Click="OnNavigateToContentButtonClicked" 
+                    ClientManagerView:ViewManager.NavigationContent="{Binding}" />
                 </DataTemplate>
               </ListBox.ItemTemplate>
               <ListBox.ItemsPanel>

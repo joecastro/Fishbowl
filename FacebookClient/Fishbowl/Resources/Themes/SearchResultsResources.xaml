@@ -11,6 +11,8 @@
     <FacebookClient:FriendButton
       Friend="{Binding}"
       Style="{DynamicResource MediumFriendButtonStyle}" 
+      Click="OnNavigateToContentButtonClicked" 
+      ClientManagerView:ViewManager.NavigationContent="{Binding}" 
       ToolTip="{Binding Name}"/>
   </DataTemplate>
 
@@ -21,10 +23,11 @@
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <FacebookClient:FriendButton 
-        x:Name="FriendButton" 
-        Friend="{Binding FromUser}" 
-        Style="{DynamicResource SmallFriendButtonStyle}" 
-        ToolTip="{Binding FromUser.Name}"/>
+          Friend="{Binding FromUser}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" 
+          ToolTip="{Binding FromUser.Name}"/>
       <Grid Grid.Column="2" x:Name="CommentGrid">
         <Button x:Name="CommentButton" Style="{StaticResource SimpleButtonStyle}" 
                     Click="OnNavigateToContentButtonClicked"
@@ -59,17 +62,16 @@
         <ColumnDefinition Width="20"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
-      <Grid Grid.Column="0" x:Name="FriendGrid">
-        <FacebookClient:FriendButton 
-          x:Name="FriendButton" 
+      <FacebookClient:FriendButton 
           Friend="{Binding Actor}" 
           Style="{DynamicResource SmallFriendButtonStyle}" 
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
           ToolTip="{Binding Actor.Name}"/>
-      </Grid>
       <Grid Grid.Column="2" x:Name="PostGrid">
         <Button x:Name="PostButton" Style="{StaticResource SimpleButtonStyle}" 
-                        Click="OnNavigateToContentButtonClicked"
-                        ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
+            Click="OnNavigateToContentButtonClicked"
+            ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
           <Grid Margin="5">
             <Grid.RowDefinitions>
               <RowDefinition Height="Auto"/>

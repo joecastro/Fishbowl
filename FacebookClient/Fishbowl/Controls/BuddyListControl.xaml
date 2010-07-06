@@ -73,6 +73,7 @@
                   <FacebookClient:FriendButton
                     Margin="2"
                     Friend="{Binding}" 
+                    Click="_OnFriendClicked" 
                     Style="{DynamicResource TinyFriendButtonStyle}"
                     VerticalAlignment="Center"/>
                   <StackPanel Margin="6,0,0,0" Grid.Column="1" Orientation="Horizontal">

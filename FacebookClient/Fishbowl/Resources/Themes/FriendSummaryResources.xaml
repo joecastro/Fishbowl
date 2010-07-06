@@ -28,8 +28,11 @@
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <FacebookClient:FriendButton VerticalAlignment="Top" Friend="{Binding}" Style="{DynamicResource MediumFriendButtonStyle}" />
-
+      <FacebookClient:FriendButton VerticalAlignment="Top" 
+                                   Friend="{Binding}" 
+                                   Style="{DynamicResource MediumFriendButtonStyle}" 
+                                   Click="OnNavigateToContentButtonClicked" 
+                                   ClientManagerView:ViewManager.NavigationContent="{Binding}" />
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
         <TextBlock DockPanel.Dock="Top" Style="{DynamicResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" >

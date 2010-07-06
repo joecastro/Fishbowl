@@ -4,6 +4,7 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Navigation;
+    using ClientManager;
 
     public partial class BuddyListControl : UserControl
     {
@@ -41,6 +42,12 @@
         private void StartChatButton_Click(object sender, RoutedEventArgs e)
         {
             FacebookClientApplication.Current2.MainWindow.ApplicationCommands.ShowChatWindowCommand.Execute(Application.Current.MainWindow);
+        }
+
+        private void _OnFriendClicked(object sender, RoutedEventArgs e)
+        {
+            var friendButton = (FriendButton)sender;
+            ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(friendButton.Friend);
         }
     }
 }

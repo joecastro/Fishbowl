@@ -167,7 +167,7 @@
             typeof(Color),
             typeof(ShinyImageControl),
             new FrameworkPropertyMetadata(
-                Colors.Pink,
+                Colors.Silver,
                 FrameworkPropertyMetadataOptions.AffectsRender,
                 (d,e) => ((ShinyImageControl)d)._OnPenColorChanged()));
 

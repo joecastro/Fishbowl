@@ -16,5 +16,17 @@
             get { return (FacebookPhotoAlbum)GetValue(FacebookPhotoAlbumProperty); }
             set { SetValue(FacebookPhotoAlbumProperty, value); }
         }
+
+        public static readonly DependencyProperty ShowOwnerOverlayProperty = DependencyProperty.Register(
+            "ShowOwnerOverlay",
+            typeof(bool), 
+            typeof(AlbumThumbnailButton),
+            new FrameworkPropertyMetadata(true));
+
+        public bool ShowOwnerOverlay
+        {
+            get { return (bool)GetValue(ShowOwnerOverlayProperty); }
+            set { SetValue(ShowOwnerOverlayProperty, value); }
+        }
     }
 }

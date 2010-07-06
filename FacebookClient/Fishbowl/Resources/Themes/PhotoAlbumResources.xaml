@@ -85,6 +85,8 @@
             Friend="{Binding Owner}" 
             Margin="10"
             Style="{DynamicResource MediumFriendButtonStyle}" 
+            Click="OnNavigateToContentButtonClicked" 
+            ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
             VerticalAlignment="Top" 
             HorizontalAlignment="Left" />
 

@@ -592,6 +592,8 @@
           <FacebookClient:FriendButton 
               Friend="{Binding Owner}" 
               Margin="10"
+              Click="OnNavigateToContentButtonClicked" 
+              ClientManagerView:ViewManager.NavigationContent="{Binding Owner}" 
               Style="{DynamicResource MediumFriendButtonStyle}"
               VerticalAlignment="Top" 
               HorizontalAlignment="Left"/>

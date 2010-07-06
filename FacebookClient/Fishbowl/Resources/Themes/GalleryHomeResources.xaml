@@ -21,7 +21,25 @@
 
   <!-- Template to display one photo and the album title, used on the homepage list view -->
   <DataTemplate x:Key="ListPhotoAlbumPreview">
-    <FacebookClient:AlbumThumbnailButton FacebookPhotoAlbum ="{Binding}"/>
+    <FacebookClient:AlbumThumbnailButton
+        FacebookPhotoAlbum="{Binding}"
+        Click="OnNavigateToContentButtonClicked" 
+        ClientManagerView:ViewManager.NavigationContent="{Binding}">
+      <FacebookClient:AlbumThumbnailButton.Style>
+        <Style TargetType="{x:Type FacebookClient:AlbumThumbnailButton}">
+          <Setter Property="Cursor" Value="Hand"/>
+          <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+          <Setter Property="Panel.ZIndex" Value="1"/>
+          <Setter Property="Template" Value="{DynamicResource AlbumThumbnailTemplate}"/>
+          <Setter Property="ShowOwnerOverlay" Value="True" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type FacebookClient:GalleryHomeControl}}, Path=ShowOwnerOverlay}" Value="False">
+              <Setter Property="ShowOwnerOverlay" Value="False" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </FacebookClient:AlbumThumbnailButton.Style>-->
+    </FacebookClient:AlbumThumbnailButton>
   </DataTemplate>
   
   <ControlTemplate x:Key="GalleryHome_Normal" TargetType="{x:Type FacebookClient:GalleryHomeControl}">

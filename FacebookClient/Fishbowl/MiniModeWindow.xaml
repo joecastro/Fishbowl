@@ -284,15 +284,13 @@
                   <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="{DynamicResource MiddleFontSize}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="White" />
                 </DockPanel>
 
-                <Button Grid.Row="1" Grid.Column="0" Margin="5,3,0,0"
-                        VerticalAlignment="Top"
-                        Click="_OnNavigateToContentButtonClicked" 
-                        ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"
-                        Style="{DynamicResource AnimatedItemButton}"
-                        RenderTransform="{DynamicResource FriendRenderTransform}">
-                  <!-- Using standard button because we want custom click handler. -->
-                  <FacebookClient:ShinyImageControl Width="70" Height="70" FacebookImage="{Binding Actor.Image}" ShowGlare="False" FacebookImageDimensions="Normal" CornerRadius="0" ImagePadding="3" ActivityColor="White"/>
-                </Button>
+                <FacebookClient:FriendButton 
+                   Friend="{Binding Actor}"
+                    Style="{DynamicResource SmallFriendButtonStyle}"
+                    Grid.Row="1" Grid.Column="0" Margin="5,3,0,0"
+                    VerticalAlignment="Top"
+                    Click="_OnNavigateToContentButtonClicked" 
+                    ClientManagerView:ViewManager.NavigationContent="{Binding Actor}"/>
 
                 <Button Grid.Row="2" Grid.Column="0" 
                     VerticalAlignment="Center" 

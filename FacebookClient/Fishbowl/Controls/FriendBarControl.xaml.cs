@@ -32,6 +32,12 @@
             this.FilmStrip.SelectedItem = item;
         }
 
+        private void _OnFriendClicked(object sender, RoutedEventArgs e)
+        {
+            var button = (FriendButton)sender;
+            ServiceProvider.ViewManager.NavigationCommands.NavigateToContentCommand.Execute(button.Friend);
+        }
+
         private void Friends_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             FacebookContactCollection friends = ServiceProvider.ViewManager.Friends;
