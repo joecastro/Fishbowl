@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls.Primitives;
-using System.Windows;
-using System.Windows.Input;
-
+﻿
 namespace FacebookClient
 {
+    using System;
+    using System.Linq;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
+
     /// <summary>
     /// A ToggleButton that manages its relationship with a Popup to avoid the strange behavior
     /// that one often gets when pinding the Popup.IsOpen to ToggleButton.IsChecked where
@@ -38,13 +37,52 @@ namespace FacebookClient
                 this.Popup.IsOpen = true;
                 this.Popup.StaysOpen = false;
 
-                Action a = () => this.Popup.Focus();
+                Action a = () =>
+                {
+                    TextBox tb = _FindTextBox(Popup);
+                    if (tb != null)
+                    {
+                        tb.Focus();
+                    }
+                    else
+                    {
+                        Popup.Focus();
+                    }
+                };
                 Dispatcher.Invoke(a, System.Windows.Threading.DispatcherPriority.Background, null);
 
                 this.IsHitTestVisible = false;
             }
             base.OnChecked(e);
         }
+
+        private static TextBox _FindTextBox(DependencyObject source)
+        {
+            if (source != null)
+            {
+                TextBox tb = (from object obj in LogicalTreeHelper.GetChildren(source)
+                              let iterTb = obj as TextBox
+                              where iterTb != null
+                              select iterTb).FirstOrDefault();
+
+                if (tb != null)
+                {
+                    return tb;
+                }
+
+                foreach (DependencyObject child in LogicalTreeHelper.GetChildren(source))
+                {
+                    tb = _FindTextBox(child);
+                    if (tb != null)
+                    {
+                        return tb;
+                    }
+                }
+            }
+
+            return null;
+        }
+
 
         protected override void OnMouseEnter(System.Windows.Input.MouseEventArgs e)
         {
