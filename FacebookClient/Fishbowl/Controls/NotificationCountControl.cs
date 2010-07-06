@@ -62,7 +62,7 @@ namespace FacebookClient
                         },
                         new Viewbox
                         {
-                            Margin = new Thickness(0,3,0,3),
+                            Margin = new Thickness(0,2,0,2),
                             Child = new TextBlock
                             {
                                 Foreground = Brushes.White,
@@ -70,7 +70,8 @@ namespace FacebookClient
                                 Text = DisplayCount.ToString(),
                                 VerticalAlignment = VerticalAlignment.Center,
                                 HorizontalAlignment = HorizontalAlignment.Center,
-                                // FontFamily = new FontFamily("Miramonte"),
+                                // Duplicated from CommonFontResources rather than dynamically looked up.
+                                FontFamily = new FontFamily(new System.Uri("pack://application:,,,/"), "./Resources/Fonts/#Miramonte")
                             },
                         },
                     },
