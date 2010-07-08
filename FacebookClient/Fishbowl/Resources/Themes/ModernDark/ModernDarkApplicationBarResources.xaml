@@ -690,11 +690,7 @@
                 <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                   <Path Width="10" Height="10" Data="{DynamicResource DownLeftArrowGeometry}" Fill="White" Stretch="Fill" />
                 </Button>
-                  <Button Width="24" Height="24" 
-                        Style="{StaticResource OpacityButton}" 
-                        Command="{x:Static FacebookClient:MainHeaderControl.ShowMiniModeCommand}" 
-                        CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                        IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsOnline}">
+                <Button Width="24" Height="24" Style="{StaticResource OpacityButton}" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MinimizeWindowCommand}">
                   <Border Width="12" Height="9" BorderBrush="White" BorderThickness="0,0,0,3" />
                 </Button>
                 <Button Width="24" Height="24" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.MaximizeWindowCommand}">
