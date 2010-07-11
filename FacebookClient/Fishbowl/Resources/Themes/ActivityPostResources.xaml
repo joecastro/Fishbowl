@@ -14,7 +14,14 @@
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
   <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
-  
+
+  <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
+    <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
+  </Style>
+
   <!-- like, remove like, comment, see more comments, etc. -->
   <Style x:Key="ActivityActionButtonStyle" TargetType="{x:Type ButtonBase}">
     <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
@@ -170,13 +177,6 @@
     <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
     <Setter Property="IsHyphenationEnabled" Value="True" />
     <Setter Property="TextWrapping" Value="Wrap" />
-  </Style>
-  
-  <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
-    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
-    <Setter Property="FontWeight" Value="SemiBold" />
-    <Setter Property="FontSize" Value="{DynamicResource LargeFontSize2}" />
-    <Setter Property="Foreground" Value="{DynamicResource ActivityPostUserNameForeground}"/>
   </Style>
   
   <Style x:Key="MessageTextBlockStyle" TargetType="TextBlock">
@@ -468,24 +468,7 @@
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
           <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-            <TextBlock Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
-              <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
-                <FacebookClient:BindableRun Text="{Binding Actor.Name}" />
-              </Hyperlink>
-              <InlineUIContainer>
-                <Grid x:Name="Status" HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
-                  <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                  <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                </Grid>
-              </InlineUIContainer>
-              <TextBlock x:Name="TargetBlock">
-                <Run FontFamily="Webdings" Foreground="{DynamicResource ActivityPostPersonToPersonArrowBrush}">4</Run>
-                <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Target}">
-                  <FacebookClient:BindableRun Text="{Binding Target.Name}" />
-                </Hyperlink>
-                <Run>:</Run>
-              </TextBlock>
-            </TextBlock>
+            <FacebookClient:ContactNameDisplayControl Foreground="{DynamicResource HyperlinkForegroundBrush}" FacebookContact="{Binding Actor}" TargetFacebookContact="{Binding Target}" />
             <TextBlock Margin="0,5,0,0" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource contentVisibilityConverter}}">
               <FacebookClient:HyperlinkTextContent Text="{Binding Message}" />
             </TextBlock>
@@ -646,25 +629,6 @@
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding ElementName=CommentButton, Path=IsChecked}" Value="True">
         <Setter TargetName="CommentTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=CommentTextBox}" />
-      </DataTrigger>
-      <DataTrigger Binding="{Binding Target}" Value="{x:Null}">
-        <Setter TargetName="TargetBlock" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Actor.OnlinePresence}" Value="Active">
-        <Setter TargetName="Status" Property="Visibility" Value="Visible" />
-        <Setter TargetName="Online" Property="Visibility" Value="Visible" />
-        <Setter TargetName="Away" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Actor.OnlinePresence}" Value="Idle">
-        <Setter TargetName="Status" Property="Visibility" Value="Visible" />
-        <Setter TargetName="Online" Property="Visibility" Value="Collapsed" />
-        <Setter TargetName="Away" Property="Visibility" Value="Visible" />
-      </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Actor.OnlinePresence}" Value="Offline">
-        <Setter TargetName="Status" Property="Visibility" Value="Collapsed" />
-      </DataTrigger>
-      <DataTrigger Binding="{Binding Path=Actor.OnlinePresence}" Value="Unknown">
-        <Setter TargetName="Status" Property="Visibility" Value="Collapsed" />
       </DataTrigger>
     </DataTemplate.Triggers>
   </DataTemplate>

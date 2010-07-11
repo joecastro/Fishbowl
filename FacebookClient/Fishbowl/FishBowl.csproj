@@ -215,6 +215,7 @@
     <Compile Include="Controls\ClientManager\Spinner.xaml.cs">
       <DependentUpon>Spinner.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ContactNameDisplayControl.cs" />
     <Compile Include="Controls\DelayedResizeDecorator.cs" />
     <Compile Include="Controls\EmbeddedBrowserControl.xaml.cs">
       <DependentUpon>EmbeddedBrowserControl.xaml</DependentUpon>
@@ -387,6 +388,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Themes\CommonFacebookDataResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\ContactNameDisplayResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

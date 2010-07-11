@@ -34,17 +34,7 @@
                                    Click="OnNavigateToContentButtonClicked" 
                                    ClientManagerView:ViewManager.NavigationContent="{Binding}" />
       <DockPanel Grid.Column="1" Margin="15,-5,5,10" VerticalAlignment="Top">
-        <TextBlock DockPanel.Dock="Top" Style="{DynamicResource ProfileNameTextBlockStyle}" TextWrapping="Wrap" TextTrimming="WordEllipsis">
-          <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" >
-            <FacebookClient:BindableRun Text="{Binding Name}"/>
-          </Hyperlink>
-          <InlineUIContainer>
-            <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center">
-              <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-              <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-            </Grid>
-          </InlineUIContainer>
-        </TextBlock>
+        <FacebookClient:ContactNameDisplayControl DockPanel.Dock="Top" Foreground="{DynamicResource HyperlinkForegroundBrush}" FacebookContact="{Binding}"/>
         
         <!-- Show current location, unless the sort order is by Birthdays -->
         <TextBlock DockPanel.Dock="Top"
@@ -105,17 +95,6 @@
 
       </DockPanel>
     </Grid>
-
-    <DataTemplate.Triggers>
-      <DataTrigger Binding="{Binding Path=OnlinePresence}" Value="Active">
-                <Setter TargetName="Online" Property="Visibility" Value="Visible" />
-                <Setter TargetName="Away" Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-      <DataTrigger Binding="{Binding Path=OnlinePresence}" Value="Idle">
-                <Setter TargetName="Online" Property="Visibility" Value="Collapsed" />
-                <Setter TargetName="Away" Property="Visibility" Value="Visible" />
-            </DataTrigger>
-    </DataTemplate.Triggers>
   </DataTemplate>
 
   <ControlTemplate TargetType="{x:Type FacebookClient:FriendSummaryControl}" x:Key="FriendSummaryTemplate">

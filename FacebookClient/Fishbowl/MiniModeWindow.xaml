@@ -265,7 +265,7 @@
             PlayTimeInterval="6000" IsPlaying="False" IsShuffled="False">
           <FacebookClient:ZapScroller.ItemTemplate>
             <DataTemplate>
-              <Grid Margin="8">
+              <Grid Margin="8,2">
                 <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
                   <RowDefinition Height="Auto" />
@@ -277,12 +277,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Large right margin because this is inline with the caption buttons. -->
-                <DockPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,60,0" HorizontalAlignment="Stretch">
-                  <Rectangle x:Name="Away" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusAwayDrawingBrush}" Visibility="Collapsed" />
-                  <Rectangle x:Name="Online" DockPanel.Dock="Right" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14" Fill="{DynamicResource StatusOnlineDrawingBrush}" Visibility="Collapsed" />
-
-                  <TextBlock HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Actor.Name}" FontSize="{DynamicResource MiddleFontSize}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Foreground="White" />
-                </DockPanel>
+                <FacebookClient:ContactNameDisplayControl Foreground="White" IsEnabled="False" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FacebookContact="{Binding Actor}" Margin="0,0,60,0" />
 
                 <FacebookClient:FriendButton 
                    Friend="{Binding Actor}"

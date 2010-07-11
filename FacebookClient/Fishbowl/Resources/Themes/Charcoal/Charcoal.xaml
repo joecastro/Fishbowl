@@ -179,7 +179,6 @@
   <SolidColorBrush x:Key="AttachmentDescriptionTextBlockForeground" Color="White"/>
 
   <SolidColorBrush x:Key="ActivityPostUserNameForeground" Color="#595959"/>
-  <SolidColorBrush x:Key="ActivityPostPersonToPersonArrowBrush" Color="#5C5C5C"/>
   <SolidColorBrush x:Key="ActivityActionButtonForeground" Color="#AAAAAA"/>
 
   <SolidColorBrush Color="#25FFFFFF" x:Key="NewsFeedCommentBackgroundBrush" />

@@ -76,40 +76,9 @@
                     Click="_OnFriendClicked" 
                     Style="{DynamicResource TinyFriendButtonStyle}"
                     VerticalAlignment="Center"/>
-                  <StackPanel Margin="6,0,0,0" Grid.Column="1" Orientation="Horizontal">
-                    <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Style="{DynamicResource ProfileNameTextBlockStyle}" FontSize="{DynamicResource MiddleFontSize}" FontWeight="Semibold">
-                      <Hyperlink 
-                          Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
-                          CommandParameter="{Binding}">
-                        <FacebookClient:BindableRun Text="{Binding Name}" />
-                      </Hyperlink>
-                    </TextBlock>
-                    <Button 
-                        Width="14" 
-                        Height="14" 
-                        Margin="6,0,0,0" 
-                        HorizontalAlignment="Left" 
-                        VerticalAlignment="Center" 
-                        Style="{StaticResource SimpleButtonStyle}"
-                        Click="StartChatButton_Click">
-                      <Grid>
-                        <Rectangle x:Name="Away" Fill="{DynamicResource StatusAwayDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                        <Rectangle x:Name="Online" Fill="{DynamicResource StatusOnlineDrawingBrush}" Width="14" Height="14" Visibility="Collapsed" />
-                      </Grid>
-                    </Button>
-                  </StackPanel>
+                  <FacebookClient:ContactNameDisplayControl Margin="6,0,0,0" Grid.Column="1" FacebookContact="{Binding}" Foreground="{DynamicResource HyperlinkForegroundBrush}" VerticalAlignment="Center"/>
                 </Grid>
               </DockPanel>
-              <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Path=OnlinePresence}" Value="Active">
-                  <Setter TargetName="Online" Property="Visibility" Value="Visible" />
-                  <Setter TargetName="Away" Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Path=OnlinePresence}" Value="Idle">
-                  <Setter TargetName="Online" Property="Visibility" Value="Collapsed" />
-                  <Setter TargetName="Away" Property="Visibility" Value="Visible" />
-                </DataTrigger>
-              </DataTemplate.Triggers>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ListBox>
