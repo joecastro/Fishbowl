@@ -50,6 +50,8 @@
         {
             { "&quot;",    "\"" },
             { "&amp;",     "&" },
+            { "&lt;",      "<" }, 
+            { "&gt;",      ">" },
         };
 
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(

@@ -9,15 +9,12 @@
     xmlns:ClientManager="clr-namespace:ClientManager"
     xmlns:ClientManagerView="clr-namespace:ClientManager.View">
 
-  <!-- Converter to clean HTML formatting out of displayed text -->
   <FacebookClient:AddConverter x:Key="AddConverter" />
-
-  <!-- Converter to format the application dates consistently -->
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
-
   <FacebookClient:RandomAngleToTransformConverter x:Key="randomAngleToTransformConverter" />
+  <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />
 
-  <!-- Template for a thumbnail displayed in the gallery home -->
+  <!-- Template for a thumbnail displayed in the album preview -->
   <DataTemplate x:Key="AlbumCoverItemTemplate">
     <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
       <Button
@@ -28,25 +25,22 @@
           RenderTransform="{Binding ., Converter={StaticResource randomAngleToTransformConverter}}">
         <Button.ToolTip>
           <StackPanel>
-            <TextBlock Text="{Binding Caption}" MaxWidth="300" TextTrimming="CharacterEllipsis" >
-              <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                  <Setter Property="Visibility" Value="Visible" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding Caption}" Value="">
-                      <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </TextBlock.Style>
-            </TextBlock>
+            <TextBlock Text="{Binding Caption}" MaxWidth="300" TextTrimming="CharacterEllipsis" Visibility="{Binding Caption, Converter={StaticResource ContentVisibilityConverter}}" />
             <TextBlock Text="{Binding Comments.Count, StringFormat=\{0\} comments}"  />
           </StackPanel>
         </Button.ToolTip>
         <Viewbox>
           <ContentControl Width="160" Height="160" Template="{DynamicResource StandardPhotoChromeContentControlTemplate}" Padding="4" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <DockPanel>
-              <TextBlock DockPanel.Dock="Bottom" Height="20" Margin="4" FontSize="{DynamicResource SmallFontSize2}" FontFamily="{DynamicResource ScriptFont}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="{Binding FirstComment.Text}" TextTrimming="CharacterEllipsis" />
+              <TextBlock DockPanel.Dock="Bottom" 
+                         Height="20" 
+                         Margin="4" 
+                         FontSize="{DynamicResource SmallFontSize2}" 
+                         FontFamily="{DynamicResource ScriptFont}" 
+                         VerticalAlignment="Bottom" 
+                         HorizontalAlignment="Left" 
+                         Text="{Binding FirstComment.Text}" 
+                         TextTrimming="CharacterEllipsis" />
               <ClientManagerControls:FacebookImageControl
                   FacebookImage="{Binding Image}" 
                   FacebookImageDimensions="Normal">

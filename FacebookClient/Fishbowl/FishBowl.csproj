@@ -191,6 +191,7 @@
     <Compile Include="ChatWindow.xaml.cs">
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ActivityPostControl.cs" />
     <Compile Include="Controls\AlbumThumbnailButton.cs" />
     <Compile Include="Controls\ClientManager\AnimatedSwooshes.xaml.cs">
       <DependentUpon>AnimatedSwooshes.xaml</DependentUpon>
@@ -235,6 +236,7 @@
     <Compile Include="Controls\NotificationsControl.xaml.cs">
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PhotoButton.cs" />
     <Compile Include="Controls\PhotoTaggerControl.xaml.cs">
       <DependentUpon>PhotoTaggerControl.xaml</DependentUpon>
     </Compile>

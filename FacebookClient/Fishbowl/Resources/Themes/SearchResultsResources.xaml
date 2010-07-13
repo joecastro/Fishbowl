@@ -95,24 +95,12 @@
   </DataTemplate>
 
   <DataTemplate x:Key="PhotoResultTemplate" DataType="{x:Type Facebook:FacebookPhoto}">
-    <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
-      <Button
+    <Viewbox>
+      <FacebookClient:PhotoButton
           Click="OnNavigateToContentButtonClicked"
           ClientManagerView:ViewManager.NavigationContent="{Binding}"                                        
-          Style="{DynamicResource AnimatedItemButton}">
-        <Viewbox>
-          <Grid Margin="2.5" Width="92" Height="92">
-            <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png"/>
-            <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Small">
-              <ClientManagerControls:FacebookImageControl.Template>
-                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                  <Image Margin="4,4,6,16" Stretch="UniformToFill" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                </ControlTemplate>
-              </ClientManagerControls:FacebookImageControl.Template>
-            </ClientManagerControls:FacebookImageControl>
-          </Grid>
-        </Viewbox>
-      </Button>
-    </ClientManagerControls:FacebookPhotoDragContainer>
+          Style="{DynamicResource SmallPhotoButtonStyle}"
+          Photo="{Binding Image}"/>
+    </Viewbox>
   </DataTemplate>
 </ClientManagerView:EventResourceDictionary>

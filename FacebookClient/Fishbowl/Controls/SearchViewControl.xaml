@@ -120,21 +120,11 @@
 
     <!-- DataTemplate for explorer nodes that display a photo -->
     <DataTemplate DataType="{x:Type ClientManagerControls:PhotoExplorerPhotoNode}">
-      <Button 
+      <FacebookClient:PhotoButton
+          Photo="{Binding Path=Photo.Image}"
           Command="ClientManagerControls:PhotoExplorerControl.SwitchCenterNodeCommand" 
           CommandParameter="{Binding}" 
-          Style="{DynamicResource AnimatedItemButton}">
-        <Grid Margin="2.5" Width="92" Height="92">
-          <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png"/>
-          <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Path=Photo.Image}" FacebookImageDimensions="Small">
-            <ClientManagerControls:FacebookImageControl.Template>
-              <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                <Image Margin="4,4,6,16" Stretch="UniformToFill" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-              </ControlTemplate>
-            </ClientManagerControls:FacebookImageControl.Template>
-          </ClientManagerControls:FacebookImageControl>
-        </Grid>
-      </Button>
+          Style="{DynamicResource SmallPhotoButtonStyle}"/>
     </DataTemplate>
 
     <!-- DataTemplate for explorer nodes that display an album  -->

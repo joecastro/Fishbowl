@@ -14,6 +14,7 @@
   <FacebookClient:MultiValueAggregator x:Key="MultiAggregator" />
   <FacebookClient:ShouldShowCommentBoxConverter x:Key="ShouldShowCommentBoxConverter" />
   <FacebookClient:IsStringNullOrWhitespaceConverter x:Key="IsStringNullOrWhitespaceConverter" />
+  <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />
 
   <Style x:Key="ProfileNameTextBlockStyle" TargetType="TextBlock">
     <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
@@ -44,9 +45,11 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+
   <Style x:Key="LikeButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="Button">
     <Setter Property="Template" Value="{DynamicResource LikeButtonTemplate}" />
   </Style>
+  
   <ControlTemplate x:Key="RemoveLikeButtonTemplate" TargetType="{x:Type Button}">
     <StackPanel Cursor="Hand" Orientation="Horizontal">
       <Image x:Name="Like" Width="13" Height="13" Margin="3,0" RenderTransformOrigin=".5,.5" Source="pack://application:,,,/Resources/Images/Icons/like_icon.png">
@@ -65,6 +68,7 @@
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+  
   <Style x:Key="RemoveLikeButtonStyle" BasedOn="{StaticResource ActivityActionButtonStyle}" TargetType="{x:Type Button}">
     <Setter Property="Template" Value="{DynamicResource RemoveLikeButtonTemplate}" />
   </Style>
@@ -198,7 +202,7 @@
         Style="{DynamicResource SquareCommentFriendButtonStyle}"
         Friend="{Binding FromUser}"
         Click="OnNavigateToContentButtonClicked" 
-        ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" />
+        ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" />
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">
         <TextBlock MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
@@ -240,7 +244,7 @@
         Margin="5,5,0,0"
         Style="{DynamicResource SquareCommentFriendButtonStyle}"
         Click="OnNavigateToContentButtonClicked" 
-        ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Friend}" 
+        ClientManagerView:ViewManager.NavigationContent="{Binding Path=FromUser}" 
         Friend="{Binding FromUser}" />
       
       <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
@@ -329,18 +333,7 @@
             </ItemsControl.ItemContainerStyle>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
-                  <Grid Width="92" Height="92" Margin="2.5">
-                    <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                    <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Small">
-                      <ClientManagerControls:FacebookImageControl.Template>
-                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                          <Image Margin="4,4,6,16" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" Stretch="UniformToFill" />
-                        </ControlTemplate>
-                      </ClientManagerControls:FacebookImageControl.Template>
-                    </ClientManagerControls:FacebookImageControl>
-                  </Grid>
-                </Button>
+                <FacebookClient:PhotoButton Photo="{Binding Image}" Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding}" Style="{DynamicResource SmallPhotoButtonStyle}"/>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
@@ -414,20 +407,11 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Button Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True" Style="{DynamicResource AnimatedItemButton}">
-                  <Grid Width="92" Height="92" Margin="2.5">
-                    <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png" />
-                    <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Image}" FacebookImageDimensions="Small">
-                      <ClientManagerControls:FacebookImageControl.Template>
-                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
-                          <Border Margin="4,4,6,16">
-                            <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                          </Border>
-                        </ControlTemplate>
-                      </ClientManagerControls:FacebookImageControl.Template>
-                    </ClientManagerControls:FacebookImageControl>
-                  </Grid>
-                </Button>
+                <FacebookClient:PhotoButton 
+                    Click="OnNavigateToContentButtonClicked"
+                    ClientManagerView:ViewManager.NavigationContent="{Binding Link}" 
+                    Photo="{Binding Image}"
+                    Style="{DynamicResource SmallPhotoButtonStyle}"/>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
@@ -438,9 +422,8 @@
       </Grid>
     </Grid>
   </DataTemplate>
-  <FacebookClient:ContentVisibilityConverter x:Key="contentVisibilityConverter" />
 
-  <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
+  <ControlTemplate x:Key="NewsfeedActivityPostTemplate" TargetType="{x:Type FacebookClient:ActivityPostControl}">
     <Grid x:Name="Root" MinHeight="130" MinWidth="400" Background="Transparent" HorizontalAlignment="Stretch">
       <Rectangle MaxWidth="800" Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" SnapsToDevicePixels="True" Fill="{DynamicResource NewsFeedItemDividerBrush}"/>
 
@@ -469,10 +452,10 @@
           </Grid.RowDefinitions>
           <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
             <FacebookClient:ContactNameDisplayControl Foreground="{DynamicResource HyperlinkForegroundBrush}" FacebookContact="{Binding Actor}" TargetFacebookContact="{Binding Target}" />
-            <TextBlock Margin="0,5,0,0" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource contentVisibilityConverter}}">
+            <TextBlock Margin="0,5,0,0" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap" Visibility="{Binding Message, Converter={StaticResource ContentVisibilityConverter}}">
               <FacebookClient:HyperlinkTextContent Text="{Binding Message}" />
             </TextBlock>
-            <ContentControl Margin="0,10,0,5" Content="{Binding Attachment}" Visibility="{Binding Attachment, Converter={StaticResource contentVisibilityConverter}}" />
+            <ContentControl Margin="0,10,0,5" Content="{Binding Attachment}" Visibility="{Binding Attachment, Converter={StaticResource ContentVisibilityConverter}}" />
             <WrapPanel Margin="0,10,5,0" Orientation="Horizontal">
               <ClientManagerControls:FacebookImageControl FacebookImage="{Binding Attachment.Icon}" FacebookImageDimensions="Small">
                 <ClientManagerControls:FacebookImageControl.Template>
@@ -487,7 +470,7 @@
               </ClientManagerControls:FacebookImageControl>
 
               <TextBlock Style="{StaticResource CreatedTextBlockStyle}" Text="{Binding Created, Converter={StaticResource DateTimeConverter}}" />
-              
+
               <Button x:Name="LikeButton" Margin="15,0,0,0" VerticalAlignment="Center" Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.AddLikeCommand}" CommandParameter="{Binding}" Content="like" IsEnabled="{Binding CanLike}" ToolTip="Like">
                 <Button.Style>
                   <Style BasedOn="{StaticResource LikeButtonStyle}" TargetType="Button">
@@ -547,7 +530,7 @@
                   <RowDefinition Height="Auto"/>
                   <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <Polygon RenderTransformOrigin="0,0" Points="5,0 10,10 0,10 5,0" Fill="{DynamicResource NewsFeedCommentBackgroundBrush}" HorizontalAlignment="Left" Margin="140,-10,0,0" VerticalAlignment="Top" StrokeThickness="0"/>
 
                 <Grid Margin="10" MinHeight="20">
@@ -564,7 +547,7 @@
                       </Style.Triggers>
                     </Style>
                   </Grid.Style>
-                  
+
                   <TextBlock TextWrapping="Wrap" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource MiddleFontSize}" >
                     <InlineUIContainer>
                       <Image Width="13" Height="13" Margin="3,0" Source="pack://application:,,,/Resources/Images/Icons/like_icon.png" />
@@ -586,6 +569,7 @@
                 </ItemsControl>
               </Grid>
             </Border>
+            
             <Border HorizontalAlignment="Left" Margin="0,0,0,3" Background="{DynamicResource NewsFeedCommentBackgroundBrush}" CornerRadius="0,0,6,6">
               <Border.Style>
                 <Style TargetType="Border">
@@ -626,12 +610,12 @@
         </Grid>
       </Grid>
     </Grid>
-    <DataTemplate.Triggers>
+    <ControlTemplate.Triggers>
       <DataTrigger Binding="{Binding ElementName=CommentButton, Path=IsChecked}" Value="True">
         <Setter TargetName="CommentTextBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=CommentTextBox}" />
       </DataTrigger>
-    </DataTemplate.Triggers>
-  </DataTemplate>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
 
   <Style x:Key="CommentTextBoxStyle" TargetType="{x:Type FacebookClient:CommandTextBox}">
     <Setter Property="SpellCheck.IsEnabled" Value="True" />
@@ -703,4 +687,13 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <Style TargetType="{x:Type FacebookClient:ActivityPostControl}" x:Key="NewsfeedActivityPostStyle">
+    <Setter Property="Template" Value="{StaticResource NewsfeedActivityPostTemplate}"/>
+  </Style>
+
+  <DataTemplate x:Key="NewsFeedItemTemplate" DataType="{x:Type Facebook:ActivityPost}">
+    <FacebookClient:ActivityPostControl ActivityPost="{Binding}" Style="{StaticResource NewsfeedActivityPostStyle}"/>
+  </DataTemplate>
+
 </ClientManagerView:EventResourceDictionary>

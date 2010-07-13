@@ -447,4 +447,32 @@
     <Setter Property="Panel.ZIndex" Value="1"/>
     <Setter Property="Template" Value="{StaticResource AlbumThumbnailTemplate}"/>
   </Style>
+
+  <Style TargetType="{x:Type FacebookClient:PhotoButton}" x:Key="SmallPhotoButtonStyle">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type FacebookClient:PhotoButton}">
+          <Button
+              RenderTransformOrigin=".5,.5"
+              Command="{TemplateBinding Command}"
+              CommandParameter="{TemplateBinding CommandParameter}"
+              Style="{DynamicResource AnimatedItemButton}">
+            <Grid Width="92" Height="92" Margin="2.5">
+              <Image Name="Placeholder" Source="pack://application:,,,/Resources/Images/photo_background.png" />
+              <ClientManagerControls:FacebookImageControl FacebookImage="{TemplateBinding Photo}" FacebookImageDimensions="Small">
+                <ClientManagerControls:FacebookImageControl.Template>
+                  <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                    <Border Margin="4,4,6,16">
+                      <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                    </Border>
+                  </ControlTemplate>
+                </ClientManagerControls:FacebookImageControl.Template>
+              </ClientManagerControls:FacebookImageControl>
+            </Grid>
+          </Button>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
 </ClientManagerView:EventResourceDictionary>
