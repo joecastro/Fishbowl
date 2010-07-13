@@ -1,0 +1,19 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- An alternative way to do this would be to tint the glass with a translucent background
+       to make things darker so the content on the glass could still be colored white.
+       If this was done then a transparent rect should be punched out over the caption buttons
+       so they don't look disabled. -->
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Glass/GlassMainPageResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Glass/GlassApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+  
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+</ResourceDictionary>

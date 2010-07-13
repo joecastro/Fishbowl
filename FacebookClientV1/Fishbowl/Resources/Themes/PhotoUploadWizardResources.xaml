@@ -1,0 +1,173 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"                      
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" >
+
+  <Geometry x:Key="DownArrowGeometry">M 0 0 L 3.5 4 L 7 0 Z</Geometry>
+
+  <Style x:Key="ComboBoxReadonlyToggleButton" TargetType="{x:Type ToggleButton}">
+    <Setter Property="OverridesDefaultStyle" Value="true"/>
+    <Setter Property="IsTabStop" Value="false"/>
+    <Setter Property="Focusable" Value="false"/>
+    <Setter Property="ClickMode" Value="Press"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ToggleButton}">
+          <Microsoft_Windows_Themes:ButtonChrome x:Name="Chrome" SnapsToDevicePixels="true" Background="{DynamicResource UploadWizardPrimaryBrush}" BorderBrush="{TemplateBinding BorderBrush}" RenderMouseOver="{TemplateBinding IsMouseOver}" RenderPressed="{TemplateBinding IsPressed}">
+            <Grid HorizontalAlignment="Right" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+              <Path Fill="Black" HorizontalAlignment="Center" Margin="3,1,0,0" x:Name="Arrow" VerticalAlignment="Center" Data="{StaticResource DownArrowGeometry}"/>
+            </Grid>
+          </Microsoft_Windows_Themes:ButtonChrome>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+              <Setter Property="RenderPressed" TargetName="Chrome" Value="true"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Setter Property="Fill" TargetName="Arrow" Value="#AFAFAF"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="RemoveItemButtonStyle" TargetType="{x:Type Button}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid>
+            <Border RenderTransformOrigin="3.5,1.287" Background="Black" CornerRadius="19"/>
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" RecognizesAccessKey="True"/>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsFocused" Value="True"/>
+            <Trigger Property="IsDefaulted" Value="True"/>
+            <Trigger Property="IsMouseOver" Value="True"/>
+            <Trigger Property="IsPressed" Value="True"/>
+            <Trigger Property="IsEnabled" Value="False"/>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="Foreground" Value="White"/>
+  </Style>
+
+  <Style x:Key="CaptionTextBoxStyle" TargetType="{x:Type TextBox}">
+    <Setter Property="SpellCheck.IsEnabled" Value="True" />
+    <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="AllowDrop" Value="true"/>
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="Background" Value="Black"/>
+    <Setter Property="MinHeight" Value="23"/>
+    <Setter Property="MaxHeight" Value="23"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="AcceptsReturn" Value="True"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type TextBox}">
+          <Grid x:Name="RootContainer">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="15" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="9" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="9" />
+              </Grid.RowDefinitions>
+
+              <Border CornerRadius="6.5" x:Name="CaptionTextBoxBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" Grid.ColumnSpan="3" Grid.RowSpan="3" />
+              <Border x:Name="FocusBacking" CornerRadius="6.5" Background="#FFFFFF" Grid.ColumnSpan="3" Grid.RowSpan="3" Opacity="0" />
+
+              <Image Grid.Column="0" Source="../Images/Controls/text_box_top_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Source="../Images/Controls/text_box_top.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Source="../Images/Controls/text_box_top_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+
+              <Image Grid.Column="0" Grid.Row="1" Source="../Images/Controls/text_box_left.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="1" Source="../Images/Controls/text_box_right.png" Stretch="Fill"/>
+
+              <Image Grid.Column="0" Grid.Row="2" Source="../Images/Controls/text_box_bottom_left.png" Stretch="Fill" Margin="0,0,-0.1,0" />
+              <Image Grid.Column="1" Grid.Row="2" Source="../Images/Controls/text_box_bottom.png" Stretch="Fill"/>
+              <Image Grid.Column="2" Grid.Row="2" Source="../Images/Controls/text_box_bottom_right.png" Stretch="Fill" Margin="-0.1,0,0,0" />
+            </Grid>
+
+            <TextBlock x:Name="HelpText" Margin="7,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                   FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" FontStyle="Italic"
+                                   Foreground="White" Text="{TemplateBinding ToolTip}" 
+                                   Visibility="Collapsed" FontSize="{DynamicResource SmallFontSize1}" />
+
+            <ScrollViewer x:Name="PART_ContentHost" Margin="7,2,5,0" FontWeight="Medium" Foreground="White" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsFocused" Value="False" />
+                <Condition Property="Text" Value="" />
+              </MultiTrigger.Conditions>
+              <Setter TargetName="HelpText" Property="Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter Property="Foreground" Value="Black" />
+              <Setter Property="Background" Value="White" />
+              <Setter TargetName="CaptionTextBoxBorder" Property="Background" Value="White" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="False">
+              <Setter Property="Foreground" Value="#FFFFFF" />
+              <Setter Property="Background" Value="#000000" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="MyComboBoxStyle" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ComboBox}">
+          <Grid x:Name="MainGrid" SnapsToDevicePixels="true">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+            </Grid.ColumnDefinitions>
+            <Popup Margin="1" x:Name="PART_Popup" AllowsTransparency="true" IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Bottom" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Grid.ColumnSpan="2">
+              <Microsoft_Windows_Themes:SystemDropShadowChrome MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding Path=ActualWidth, ElementName=MainGrid}" x:Name="Shdw" Color="Transparent">
+                <Border x:Name="DropDownBorder" Background="{DynamicResource UploadWizardPrimaryBrush}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1">
+                  <ScrollViewer CanContentScroll="true" Style="{DynamicResource MainScrollViewerStyle}">
+                    <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                  </ScrollViewer>
+                </Border>
+              </Microsoft_Windows_Themes:SystemDropShadowChrome>
+            </Popup>
+            <ToggleButton Style="{StaticResource ComboBoxReadonlyToggleButton}" Background="{TemplateBinding Background}" BorderBrush="DarkGray" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Grid.ColumnSpan="2"/>
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" IsHitTestVisible="false" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+              <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
+              <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
+            </Trigger>
+            <Trigger Property="HasItems" Value="false">
+              <Setter Property="Height" TargetName="DropDownBorder" Value="95"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+              <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+              <Setter Property="Background" Value="#FFF4F4F4"/>
+            </Trigger>
+            <Trigger Property="IsGrouping" Value="true">
+              <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

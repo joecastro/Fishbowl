@@ -1,0 +1,106 @@
+﻿<ClientManagerView:EventResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="FacebookClient.SearchResultsEventResourceDictionary"    
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View">
+
+  <DataTemplate x:Key="FriendResultTemplate" DataType="{x:Type Facebook:FacebookContact}">
+    <FacebookClient:FriendButton
+      Friend="{Binding}"
+      Style="{DynamicResource MediumFriendButtonStyle}" 
+      Click="OnNavigateToContentButtonClicked" 
+      ClientManagerView:ViewManager.NavigationContent="{Binding}" 
+      ToolTip="{Binding Name}"/>
+  </DataTemplate>
+
+  <DataTemplate x:Key="CommentResultTemplate" DataType="{x:Type Facebook:ActivityComment}">
+    <Grid Width="390">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <FacebookClient:FriendButton 
+          Friend="{Binding FromUser}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}" 
+          ToolTip="{Binding FromUser.Name}"/>
+      <Grid Grid.Column="2" x:Name="CommentGrid">
+        <Button x:Name="CommentButton" Style="{StaticResource SimpleButtonStyle}" 
+                    Click="OnNavigateToContentButtonClicked"
+                    ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
+          <Grid Margin="5">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="*"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <FacebookClient:SearchTextBlock Grid.Row="0" x:Name="CommentWriterName" 
+                                   InputText="{Binding FromUser.Name}" Margin="0" TextWrapping="Wrap" 
+                                   Style="{StaticResource ProfileNameTextBlockStyle}" 
+                                   HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <FacebookClient:SearchTextBlock Grid.Row="1" x:Name="CommentItem" 
+                                InputText="{Binding Text}" TextWrapping="Wrap"
+                                Style="{StaticResource MessageTextBlockStyle}"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Top" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Row="2" x:Name="CommentTime" Text="{Binding Time, StringFormat=\{0:MMMM d\, yyyy h:mm tt\}}" 
+                                       Margin="0,3,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                       Style="{StaticResource CreatedTextBlockStyle}" />
+          </Grid>
+        </Button>
+      </Grid>
+    </Grid>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PostResultTemplate" DataType="{x:Type Facebook:ActivityPost}">
+    <Grid Width="390">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="20"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <FacebookClient:FriendButton 
+          Friend="{Binding Actor}" 
+          Style="{DynamicResource SmallFriendButtonStyle}" 
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding Actor}" 
+          ToolTip="{Binding Actor.Name}"/>
+      <Grid Grid.Column="2" x:Name="PostGrid">
+        <Button x:Name="PostButton" Style="{StaticResource SimpleButtonStyle}" 
+            Click="OnNavigateToContentButtonClicked"
+            ClientManagerView:ViewManager.NavigationContent="{Binding Actor}">
+          <Grid Margin="5">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="*"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <FacebookClient:SearchTextBlock Grid.Row="0" InputText="{Binding Actor.Name}" Margin="0" TextWrapping="Wrap" 
+                                        Style="{StaticResource ProfileNameTextBlockStyle}"  
+                                        HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <FacebookClient:SearchTextBlock Grid.Row="1"
+                                InputText="{Binding Message}" TextWrapping="Wrap" 
+                                Style="{StaticResource MessageTextBlockStyle}"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Top" TextTrimming="CharacterEllipsis"/>
+            <TextBlock Grid.Row="2" Text="{Binding Created, StringFormat=\{0:MMMM d\, yyyy h:mm tt\}}" 
+                                        Margin="0,3,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                        Style="{StaticResource CreatedTextBlockStyle}" />
+          </Grid>
+        </Button>
+      </Grid>
+    </Grid>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PhotoResultTemplate" DataType="{x:Type Facebook:FacebookPhoto}">
+    <Viewbox>
+      <FacebookClient:PhotoButton
+          Click="OnNavigateToContentButtonClicked"
+          ClientManagerView:ViewManager.NavigationContent="{Binding}"                                        
+          Style="{DynamicResource SmallPhotoButtonStyle}"
+          Photo="{Binding Image}"/>
+    </Viewbox>
+  </DataTemplate>
+</ClientManagerView:EventResourceDictionary>

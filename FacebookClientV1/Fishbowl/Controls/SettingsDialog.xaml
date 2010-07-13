@@ -1,0 +1,46 @@
+﻿<UserControl
+  x:Class="FacebookClient.SettingsDialog"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:FacebookClient="clr-namespace:FacebookClient"
+  Loaded="_OnLoaded"
+  Unloaded="_OnUnloaded">
+    <Border Background="White" BorderBrush="DarkGray" BorderThickness="4" MinWidth="400" MinHeight="300">
+    <DockPanel>
+      <StackPanel DockPanel.Dock="Top" Background="{DynamicResource ApplicationBarBackground}" >
+        <Image Width="129" Height="19" Margin="4,6,4,0" Source="pack://application:,,,/Resources/Images/logo.png" VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <TextBlock Margin="6,0,10,0" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
+          <Run>An experiment application by uxLabs@microsoft.</Run>
+          <LineBreak />
+          <Run>Find out more at </Run>
+          <Hyperlink Foreground="White" Click="_OnSupportWebsiteClicked">
+            <FacebookClient:BindableRun Text="{Binding Source={x:Static FacebookClient:FacebookClientApplication.Current}, Path=SupportWebsite.OriginalString, Mode=OneWay}" />
+          </Hyperlink>
+        </TextBlock>
+        <!-- Set in code behind. -->
+        <TextBlock x:Name="VersionInfoTextBlock" Margin="6,0,10,10" Foreground="White" FontSize="{DynamicResource SmallFontSize1}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light" />
+        <TextBlock Margin="6" Foreground="White" FontSize="{DynamicResource LargeFontSize2}" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Bold">Settings</TextBlock>
+      </StackPanel>
+      <DockPanel DockPanel.Dock="Bottom">
+        <Button DockPanel.Dock="Right" Margin="5" Height="28" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Click="_OnClose" />
+        <TextBlock Margin="5" FontSize="{DynamicResource SmallFontSize1}" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
+          <Hyperlink Click="_OnPrivacyWebsiteClicked" Foreground="{DynamicResource SettingsDialogForeground}">Privacy statement</Hyperlink>
+        </TextBlock>
+      </DockPanel>
+      <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource MainScrollViewerStyle}">
+        <StackPanel Margin="10" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top">
+          <Button x:Name="ClearCacheButton" Click="_OnClearCacheButtonClicked" Margin="5,2" Height="28" Style="{DynamicResource StandardButtonStyle}" Width="Auto" HorizontalAlignment="Left" Content="Clear image cache" />
+          <TextBlock x:Name="ClearCacheInfoTextBlock" Margin="5,2" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Foreground="Gray" TextAlignment="Right" FontStyle="Italic">(Images will be purged when the application next shuts down)</TextBlock>
+          <StackPanel Orientation="Horizontal">
+            <Label Margin="10,2" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Foreground="{DynamicResource SettingsDialogForeground}">Visual Style</Label>
+            <ComboBox x:Name="VisualStyleBox" Margin="0,2"/>
+          </StackPanel>
+          <CheckBox x:Name="DisableUpdatesCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Disable automatic updates</CheckBox>
+          <CheckBox x:Name="OpenPagesInBrowserCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Open web content in external browser</CheckBox>
+          <CheckBox x:Name="KeepMiniModeOnTopCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep the mini-mode window on top of all others.</CheckBox>
+          <CheckBox x:Name="KeepMeLoggedInCheckBox" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" Margin="10,2" Foreground="{DynamicResource SettingsDialogForeground}">Keep me logged in.</CheckBox>
+        </StackPanel>
+      </ScrollViewer>
+    </DockPanel>
+  </Border>
+</UserControl>
