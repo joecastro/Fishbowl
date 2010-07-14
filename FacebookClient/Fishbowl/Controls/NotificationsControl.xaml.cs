@@ -8,9 +8,9 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Navigation;
+    using System.Windows.Shell;
     using ClientManager;
     using Contigo;
-    using Microsoft.Windows.Shell;
     using Standard;
 
     /// <summary>

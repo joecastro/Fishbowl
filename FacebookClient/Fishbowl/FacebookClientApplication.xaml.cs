@@ -8,6 +8,7 @@ namespace FacebookClient
     using System.Reflection;
     using System.Windows;
     using System.Windows.Media;
+    using System.Windows.Shell;
     using Contigo;
     using FacebookClient.Properties;
     using Microsoft.Windows.Shell;

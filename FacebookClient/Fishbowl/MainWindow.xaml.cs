@@ -16,6 +16,7 @@ namespace FacebookClient
     using System.Windows.Media;
     using System.Windows.Media.Animation;
     using System.Windows.Navigation;
+    using System.Windows.Shell;
     using ClientManager;
     using ClientManager.Controls;
     using ClientManager.View;
@@ -265,16 +266,16 @@ namespace FacebookClient
 
         private void _UpdateClipMargin()
         {
-            TaskbarItemInfo tbii = TaskbarItemInfo.GetTaskbarItemInfo(this);
-            if (ServiceProvider.ViewManager.Dialog == null)
-            {
-                Thickness margin = new Thickness(0, Header.ActualHeight, 0, Footer.ActualHeight);
-                tbii.ThumbnailClipMargin = margin;
-            }
-            else
-            {
-                tbii.ThumbnailClipMargin = default(Thickness);
-            }
+            //TaskbarItemInfo tbii = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            //if (ServiceProvider.ViewManager.Dialog == null)
+            //{
+            //    Thickness margin = new Thickness(0, Header.ActualHeight, 0, Footer.ActualHeight);
+            //    tbii.ThumbnailClipMargin = margin;
+            //}
+            //else
+            //{
+            //    tbii.ThumbnailClipMargin = default(Thickness);
+            //}
         }
 
         private Thickness _SubtractSizesToGetThickness(Size outerSize, Size innerSize)
@@ -314,31 +315,6 @@ namespace FacebookClient
                 }
             }
         }
-
-// This trick breaks introspection tools like Snoop and Visual Profiler.
-// If we need to inspect element count then this needs to be turned off.
-#if !SMAKE_APPLICATION_INSPECTABLE
-
-        // Trying desperately to turn off UI Automation because it destroys
-        // performance on touch enabled machines.
-        private class _FakeWindowsPeer : WindowAutomationPeer
-        {
-            public _FakeWindowsPeer(Window window)
-                : base(window)
-            { }
-
-            protected override List<AutomationPeer> GetChildrenCore()
-            {
-                return null;
-            }
-        }
-
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new _FakeWindowsPeer(this);
-        }
-
-#endif
 
         private void _OnApplicationUpdated(object sender, EventArgs e)
         {
@@ -821,14 +797,14 @@ namespace FacebookClient
 
         internal void SetTaskbarProgress(float percent)
         {
-            TaskbarItemInfo tbi = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            TaskbarItemInfo tbi = this.TaskbarItemInfo;
             tbi.ProgressState = TaskbarItemProgressState.Normal;
             tbi.ProgressValue = percent;
         }
 
         internal void ClearTaskbarProgress()
         {
-            TaskbarItemInfo tbi = TaskbarItemInfo.GetTaskbarItemInfo(this);
+            TaskbarItemInfo tbi = this.TaskbarItemInfo;
             tbi.ProgressState = TaskbarItemProgressState.None;
         }
     }

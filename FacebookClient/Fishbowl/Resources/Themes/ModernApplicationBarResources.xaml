@@ -354,7 +354,7 @@
         <ControlTemplate TargetType="{x:Type ButtonBase}">
           <StackPanel x:Name="Root" Background="Transparent" Orientation="Horizontal">
             <Path x:Name="Icon" Margin="{TemplateBinding Padding}" Data="{TemplateBinding Tag}" Fill="#FFFFFF" Stretch="Uniform" Opacity="0.75" VerticalAlignment="Center" />
-            <ContentPresenter Margin="4,0" VerticalAlignment="Center" />
+            <ContentPresenter Margin="8,0" VerticalAlignment="Center" />
           </StackPanel>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -719,25 +719,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type FacebookClient:FooterControl}">
-          <Border Height="32" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="1,0,1,1">
-            <Border.Style>
-              <Style TargetType="{x:Type Border}">
-                <Setter Property="Background" Value="{DynamicResource FooterBackground}" />
-                <Setter Property="CornerRadius" Value="0,0,6,6" />
-                <Style.Triggers>
-                  <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
-                    <Setter Property="CornerRadius" Value="0" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="False">
-                    <Setter Property="Background" Value="{DynamicResource InactiveFooterBackground}" />
-                  </DataTrigger>
-                  <DataTrigger Binding="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive}" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource InactiveFooterBackground}" />
-                  </DataTrigger>
-                </Style.Triggers>
-              </Style>
-            </Border.Style>
-
+          <Border Height="32" Background="{DynamicResource ApplicationBarBackground}">
             <Grid>
               <Grid.Style>
                 <Style TargetType="{x:Type Grid}">
@@ -752,7 +734,6 @@
                   </Style.Triggers>
                 </Style>
               </Grid.Style>
-
               <Border Height="6" VerticalAlignment="Top" BorderBrush="#5000" BorderThickness="0,1,0,0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -762,10 +743,10 @@
                 </Border.Background>
               </Border>
 
-              <StackPanel IsEnabled="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=IsDialogActive, Converter={StaticResource NotConverter}}" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0">
 
                 <!-- Inbox -->
-                <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource MailGeometry}" Padding="0,5,-4,5" Content="Inbox" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
+                <ToggleButton x:Name="InboxButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource MailGeometry}" Padding="0,5,0,5" Content="Inbox" Margin="12,0,0,0" ToolTipService.Placement="Top" ToolTip="See new messages" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsInboxToggled, Mode=TwoWay}" />
                 <FacebookClient:NotificationCountControl DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Inbox.Count}">
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -776,7 +757,7 @@
                 </FacebookClient:NotificationCountControl>
 
                 <!-- Notifications -->
-                <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource FlagGeometry}" Padding="0,2,-4,2" Content="Notifications" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
+                <ToggleButton x:Name="NotificationsButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource FlagGeometry}" Padding="0,2,0,2" Content="Notifications" Margin="12,0,0,0" ToolTipService.Placement="Top" ToolTip="See new notifications" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=AreNotificationsToggled, Mode=TwoWay}" />
                 <FacebookClient:NotificationCountControl x:Name="NotificationControl" DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Notifications.Count}">
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -787,7 +768,7 @@
                 </FacebookClient:NotificationCountControl>
 
                 <!-- Who's Online-->
-                <ToggleButton x:Name="ChatButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource PersonGeometry}" Padding="0,2,-4,2" Content="Who's Online" Margin="28,0,0,0" ToolTipService.Placement="Top" ToolTip="See who else is around" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}" />
+                <ToggleButton x:Name="ChatButton" Style="{DynamicResource IconButton}" Tag="{DynamicResource PersonGeometry}" Padding="0,2,0,2" Content="Who's Online" Margin="12,0,0,0" ToolTipService.Placement="Top" ToolTip="See who else is around" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsBuddyListToggled, Mode=TwoWay}" />
                 <FacebookClient:NotificationCountControl DisplayCount="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=OnlineFriends.Count}">
                   <FacebookClient:NotificationCountControl.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -799,9 +780,9 @@
               </StackPanel>
 
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <Button Content="Settings" Tag="{DynamicResource GearGeometry}" Margin="12,0,0,0" Padding="0,3,-6,4" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="View and change settings" />
-                <Button Content="Sign Out" Tag="{DynamicResource ExitGeometry}" Margin="8,0,0,0" Padding="0,3,-4,3" Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Sign out" />
-                <Button Content="Refresh" Tag="{DynamicResource RefreshGeometry}" Margin="6,0,0,0" Padding="0,3,-8,3" Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Think you're missing something? Click to refresh now." />
+                <Button Content="Settings" Tag="{DynamicResource GearGeometry}" Margin="12,0,0,0" Padding="0,3,0,4" Command="{x:Static FacebookClient:FooterControl.ShowSettingsCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="View and change settings" />
+                <Button Content="Sign Out" Tag="{DynamicResource ExitGeometry}" Margin="8,0,0,0" Padding="0,3,0,3" Command="{x:Static FacebookClient:FooterControl.SignOutCommand}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Sign out" />
+                <Button Content="Refresh" Tag="{DynamicResource RefreshGeometry}" Margin="6,0,0,0" Padding="0,3,0,3" Command="{x:Static FacebookClient:FooterControl.RefreshCommand}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource IconButton}" ToolTipService.Placement="Top" ToolTip="Think you're missing something? Click to refresh now." />
               </StackPanel>
             </Grid>
           </Border>

@@ -19,24 +19,24 @@
     PreviewKeyDown="Grid_PreviewKeyDown" 
     MouseWheel="OnWindow_MouseWheel"
     IsVisibleChanged="_IsVisibleChanged">
-  <shell:TaskbarItemInfo.TaskbarItemInfo>
-    <shell:TaskbarItemInfo 
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo 
         Overlay="{Binding ElementName=NotificationCountControl, Path=ImageSource}"
         Description="{Binding ElementName=PART_ZapScroller2, Path=CurrentItem.Message}" ThumbnailClipMargin="0,0,0,33">
-      <shell:TaskbarItemInfo.ThumbButtonInfos>
-                <shell:ThumbButtonInfo Command="MediaCommands.PreviousTrack" CommandTarget="{Binding ElementName=RootPanel}">
-          <shell:ThumbButtonInfo.ImageSource>
+      <TaskbarItemInfo.ThumbButtonInfos>
+        <ThumbButtonInfo Command="MediaCommands.PreviousTrack" CommandTarget="{Binding ElementName=RootPanel}">
+          <ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource LeftArrowLightToolbarDrawing}"/>
-          </shell:ThumbButtonInfo.ImageSource>
-        </shell:ThumbButtonInfo>
-                <shell:ThumbButtonInfo Command="MediaCommands.NextTrack"  CommandTarget="{Binding ElementName=RootPanel}">
-          <shell:ThumbButtonInfo.ImageSource>
+          </ThumbButtonInfo.ImageSource>
+        </ThumbButtonInfo>
+        <ThumbButtonInfo Command="MediaCommands.NextTrack"  CommandTarget="{Binding ElementName=RootPanel}">
+          <ThumbButtonInfo.ImageSource>
             <DrawingImage Drawing="{DynamicResource RightArrowLightToolbarDrawing}"/>
-          </shell:ThumbButtonInfo.ImageSource>
-        </shell:ThumbButtonInfo>
-      </shell:TaskbarItemInfo.ThumbButtonInfos>
-    </shell:TaskbarItemInfo>
-  </shell:TaskbarItemInfo.TaskbarItemInfo>
+          </ThumbButtonInfo.ImageSource>
+        </ThumbButtonInfo>
+      </TaskbarItemInfo.ThumbButtonInfos>
+    </TaskbarItemInfo>
+  </Window.TaskbarItemInfo>
 
   <Window.Resources>
     <FacebookClient:AddConverter x:Key="AddConverter" />

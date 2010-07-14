@@ -11,23 +11,24 @@ namespace Standard
     /// </summary>
     internal static class Enumerable2
     {
-        public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
-        {
-            Verify.IsNotNull(first, "first");
-            Verify.IsNotNull(second, "second");
+        // Unnecessary in .Net 4.
+        //public static IEnumerable<TResult> Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
+        //{
+        //    Verify.IsNotNull(first, "first");
+        //    Verify.IsNotNull(second, "second");
 
-            return _Zip(first, second, func);
-        }
+        //    return _Zip(first, second, func);
+        //}
 
-        private static IEnumerable<TResult> _Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
-        {
-            IEnumerator<TFirst> ie1 = first.GetEnumerator();
-            IEnumerator<TSecond> ie2 = second.GetEnumerator();
-            while (ie1.MoveNext() && ie2.MoveNext())
-            {
-                yield return func(ie1.Current, ie2.Current);
-            }
-        }
+        //private static IEnumerable<TResult> _Zip<TFirst, TSecond, TResult>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> func)
+        //{
+        //    IEnumerator<TFirst> ie1 = first.GetEnumerator();
+        //    IEnumerator<TSecond> ie2 = second.GetEnumerator();
+        //    while (ie1.MoveNext() && ie2.MoveNext())
+        //    {
+        //        yield return func(ie1.Current, ie2.Current);
+        //    }
+        //}
 
         /// <summary>Partition a collection into two, based on whether the items match a predicate.</summary>
         /// <typeparam name="T">The type of the enumeration.</typeparam>

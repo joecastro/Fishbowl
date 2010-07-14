@@ -206,11 +206,11 @@
       <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0">
         <TextBlock MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
-            <FacebookClient:BindableRun Text="{Binding FromUser.Name}" />
+            <Run Text="{Binding FromUser.Name, Mode=OneWay}" />
           </Hyperlink>
           <TextBlock Style="{StaticResource CreatedTextBlockStyle}" TextWrapping="Wrap">
             <Span> at </Span>
-            <FacebookClient:BindableRun Text="{Binding Time, Converter={StaticResource DateTimeConverter}}"/>
+            <Run Text="{Binding Time, Converter={StaticResource DateTimeConverter}, Mode=OneWay}"/>
           </TextBlock>
         </TextBlock>
         <TextBlock Margin="0" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource MessageTextBlockStyle}" TextWrapping="Wrap">
@@ -249,11 +249,11 @@
       
       <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" MaxWidth="550" FontSize="{DynamicResource MiddleFontSize}" Style="{StaticResource ProfileNameTextBlockStyle}" TextWrapping="Wrap">
         <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding FromUser}">
-          <FacebookClient:BindableRun Text="{Binding FromUser.Name}" />
+          <Run Text="{Binding FromUser.Name, Mode=OneWay}" />
         </Hyperlink>
         <TextBlock Style="{StaticResource CreatedTextBlockStyle}" TextWrapping="Wrap">
           <Span> at </Span>
-          <FacebookClient:BindableRun Text="{Binding Time, Converter={StaticResource DateTimeConverter}}"/>
+          <Run Text="{Binding Time, Converter={StaticResource DateTimeConverter}, Mode=OneWay}"/>
         </TextBlock>
       </TextBlock>
 
@@ -285,7 +285,7 @@
         <StackPanel Orientation="Vertical">
           <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
-              <FacebookClient:BindableRun Text="{Binding Name}"/>
+              <Run Text="{Binding Name, Mode=OneWay}"/>
             </Hyperlink>
           </TextBlock>
           <TextBlock Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
@@ -363,7 +363,7 @@
 
         <TextBlock Grid.Column="1" Grid.Row="0" Style="{StaticResource AttachmentTitleTextBlockStyle}">
           <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
-            <FacebookClient:BindableRun Text="{Binding Name}"/>
+            <Run Text="{Binding Name, Mode=OneWay}"/>
           </Hyperlink>
         </TextBlock>
         <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />
@@ -385,7 +385,7 @@
         <StackPanel Orientation="Vertical">
           <TextBlock Style="{StaticResource AttachmentTitleTextBlockStyle}">
             <Hyperlink Click="OnNavigateToContentButtonClicked" ClientManagerView:ViewManager.NavigationContent="{Binding Link}" IsEnabled="True">
-              <FacebookClient:BindableRun Text="{Binding Name}"/>
+              <Run Text="{Binding Name, Mode=OneWay}"/>
             </Hyperlink>
           </TextBlock>
           <TextBlock x:Name="CaptionText" Style="{StaticResource AttachmentCaptionTextBlockStyle}" Text="{Binding Caption}" />

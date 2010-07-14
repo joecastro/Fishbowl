@@ -69,10 +69,6 @@ namespace FacebookClient
             // When the window loses focus take it as an opportunity to trim our workingset.
             Deactivated += (sender, e) => FacebookClientApplication.PerformAggressiveCleanup();
 
-            // Tricks with WS_THICKFRAME make the window's template not cover the full client area.
-            // Stretch the root panel with negative margins to correct for this.
-            RootPanel.Margin = new Thickness(0, 0, SystemParameters.ResizeFrameVerticalBorderWidth * -2, SystemParameters.ResizeFrameHorizontalBorderHeight * -2);
-
             SourceInitialized += (sender, e) =>
             {
                 IntPtr hwnd = new WindowInteropHelper(this).Handle;

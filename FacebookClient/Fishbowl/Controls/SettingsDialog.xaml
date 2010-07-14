@@ -14,7 +14,7 @@
           <LineBreak />
           <Run>Find out more at </Run>
           <Hyperlink Foreground="White" Click="_OnSupportWebsiteClicked">
-            <FacebookClient:BindableRun Text="{Binding Source={x:Static FacebookClient:FacebookClientApplication.Current}, Path=SupportWebsite.OriginalString, Mode=OneWay}" />
+            <Run Text="{Binding Source={x:Static FacebookClient:FacebookClientApplication.Current}, Path=SupportWebsite.OriginalString, Mode=OneWay}" />
           </Hyperlink>
         </TextBlock>
         <!-- Set in code behind. -->

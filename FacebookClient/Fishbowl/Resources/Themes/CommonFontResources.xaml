@@ -16,8 +16,8 @@
   <!-- The real fonts to use in the app. -->
   <!-- Currently going with pure SansSerif in the app.  Keeping this resource key to minimize change, and allow a switch back.
   <FontFamily x:Key="SerifFont">../Fonts/#Pescadero</FontFamily> -->
-  <FontFamily x:Key="SerifFont">../Fonts/#Miramonte</FontFamily>
-  <FontFamily x:Key="SansSerifFont">../Fonts/#Miramonte</FontFamily>
+  <FontFamily x:Key="SerifFont">Segoe UI</FontFamily>
+  <FontFamily x:Key="SansSerifFont">Segoe UI</FontFamily>
   <FontFamily x:Key="ScriptFont">../Fonts/#Lindsey</FontFamily>
 
   <system:Double x:Key="LargeFontSize5">42</system:Double>

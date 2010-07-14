@@ -54,7 +54,7 @@
                         <Hyperlink 
                             Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
                             CommandParameter="{Binding Sender}">
-                          <FacebookClient:BindableRun Text="{Binding Sender.Name}" />
+                          <Run Text="{Binding Sender.Name, Mode=OneWay}" />
                         </Hyperlink>
                       </TextBlock>
 
@@ -66,18 +66,18 @@
                         <Hyperlink 
                             Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=NavigationCommands.NavigateToContentCommand}" 
                             CommandParameter="{Binding Link}">
-                          <FacebookClient:BindableRun>
-                            <FacebookClient:BindableRun.Style>
-                              <Style TargetType="{x:Type FacebookClient:BindableRun}">
-                                <Setter Property="Text" Value="{Binding Title}"/>
+                          <Run>
+                            <Run.Style>
+                              <Style TargetType="{x:Type Run}">
+                                <Setter Property="Text" Value="{Binding Title, Mode=OneWay}"/>
                                 <Style.Triggers>
                                   <DataTrigger Binding="{Binding Title}" Value="">
                                     <Setter Property="Text" Value="(No Subject)"/>
                                   </DataTrigger>
                                 </Style.Triggers>
                               </Style>
-                            </FacebookClient:BindableRun.Style>
-                          </FacebookClient:BindableRun>
+                            </Run.Style>
+                          </Run>
                         </Hyperlink>
                       </TextBlock>
                           

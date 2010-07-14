@@ -71,7 +71,7 @@ namespace FacebookClient
                                 VerticalAlignment = VerticalAlignment.Center,
                                 HorizontalAlignment = HorizontalAlignment.Center,
                                 // Duplicated from CommonFontResources rather than dynamically looked up.
-                                FontFamily = new FontFamily(new System.Uri("pack://application:,,,/"), "./Resources/Fonts/#Miramonte")
+                                FontFamily = new FontFamily("Segoe UI")
                             },
                         },
                     },

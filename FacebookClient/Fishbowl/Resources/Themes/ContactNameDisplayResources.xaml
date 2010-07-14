@@ -17,7 +17,7 @@
           Foreground="{TemplateBinding Foreground}"
           Click="OnNavigateToContentButtonClicked" 
           ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact}">
-        <FacebookClient:BindableRun Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name}" />
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name, Mode=OneWay}" />
       </Hyperlink>
       <InlineUIContainer>
         <Grid HorizontalAlignment="Left" VerticalAlignment="Center" Width="14" Height="14">
@@ -44,7 +44,7 @@
           Foreground="{TemplateBinding Foreground}"
           Click="OnNavigateToContentButtonClicked" 
           ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact}">
-        <FacebookClient:BindableRun Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact.Name}" />
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact.Name, Mode=OneWay}" />
       </Hyperlink>
       <InlineUIContainer>
         <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14">
@@ -81,7 +81,7 @@
           Foreground="{TemplateBinding Foreground}"
           Click="OnNavigateToContentButtonClicked" 
           ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact}">
-        <FacebookClient:BindableRun Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name}" />
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name, Mode=OneWay}" />
       </Hyperlink>
       <InlineUIContainer>
         <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14">
