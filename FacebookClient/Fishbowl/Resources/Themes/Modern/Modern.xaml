@@ -72,4 +72,33 @@
 
   <system:Boolean x:Key="UseGlass">False</system:Boolean>
 
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush" Color="#e3e7f0" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush" Color="#3b5998" />
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsHoveredBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBrush" Color="#b3c4e9" />
+
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="FilterBorderBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterButtonHoverBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#35528c" />
+
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
+
+  <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
+    <GradientStop Offset="0.25" Color="#DF35528C" />
+    <GradientStop Offset="1" Color="#8F35528C" />
+  </LinearGradientBrush>
+
 </ResourceDictionary>
