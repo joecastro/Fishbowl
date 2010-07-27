@@ -18,7 +18,7 @@ namespace StandardTests
     [TestClass]
     public class MergeableCollectionTests
     {
-        private class _UO : INotifyPropertyChanged, IComparable<_UO>, IEquatable<_UO>, IMergeable<_UO>
+        private class _UO : INotifyPropertyChanged, IComparable<_UO>, IEquatable<_UO>, IMergeable<string, _UO>
         {
             private int _sortValue;
             private string _id;
@@ -158,7 +158,7 @@ namespace StandardTests
             };
 
             sourceList.Reverse();
-            var collection = new MergeableCollection<_UO>(sourceList);
+            var collection = new MergeableCollection<string, _UO>(sourceList);
             sourceList.Reverse();
 
             UTVerify2.CollectionsAreEqual(sourceList, collection);
@@ -194,7 +194,7 @@ namespace StandardTests
                 new _UO("E", 5),
             };
 
-            var collection = new MergeableCollection<_UO>(sourceList);
+            var collection = new MergeableCollection<string, _UO>(sourceList);
             collection.Merge(updateList, true);
 
             updateList.Sort();
@@ -213,7 +213,7 @@ namespace StandardTests
                 sourceList.Add(new _UO(c++.ToString(), i));
             }
 
-            var collection = new MergeableCollection<_UO>(sourceList);
+            var collection = new MergeableCollection<string, _UO>(sourceList);
             collection.Add(new _UO("Z", 0));
 
             sourceList.Insert(0, new _UO("Z", 0));
@@ -237,7 +237,7 @@ namespace StandardTests
                 sourceList.Add(new _UO(c++.ToString(), i));
             }
 
-            var collection = new MergeableCollection<_UO>(sourceList);
+            var collection = new MergeableCollection<string, _UO>(sourceList);
 
             var zItem = new _UO("Z", 0);
             collection.Add(zItem);

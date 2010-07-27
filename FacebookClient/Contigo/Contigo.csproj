@@ -145,6 +145,8 @@
     <Compile Include="FacebookImage.cs" />
     <Compile Include="FacebookImageLink.cs" />
     <Compile Include="FacebookLoginService.cs" />
+    <Compile Include="FacebookMergeableClasses.cs" />
+    <Compile Include="FacebookObjectId.cs" />
     <Compile Include="FacebookPhotoTag.cs" />
     <Compile Include="FacebookCollection.cs" />
     <Compile Include="FacebookWebApi.cs" />

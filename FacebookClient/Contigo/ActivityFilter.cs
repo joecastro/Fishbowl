@@ -4,7 +4,7 @@
     using Standard;
     using System;
 
-    public class ActivityFilter : IFacebookObject, INotifyPropertyChanged, IMergeable<ActivityFilter>, IComparable<ActivityFilter>
+    public class ActivityFilter : IFacebookObject, INotifyPropertyChanged, IFBMergeable<ActivityFilter>, IComparable<ActivityFilter>
     {
         internal ActivityFilter(FacebookService service)
         {
@@ -109,9 +109,9 @@
 
         #endregion
 
-        #region IMergeable<ActivityFilter> Members
+        #region IFBMergeable<ActivityFilter> Members
 
-        string IMergeable<ActivityFilter>.FKID
+        string IMergeable<string, ActivityFilter>.FKID
         {
             get 
             {
@@ -120,7 +120,7 @@
             }
         }
 
-        void IMergeable<ActivityFilter>.Merge(ActivityFilter other)
+        void IMergeable<string, ActivityFilter>.Merge(ActivityFilter other)
         {
             Verify.IsNotNull(other, "other");
             if (other.Key != this.Key)

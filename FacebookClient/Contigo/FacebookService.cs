@@ -73,12 +73,12 @@
 
         private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
 
-        internal MergeableCollection<Notification> RawNotifications { get; private set; }
+        internal FBMergeableCollection<Notification> RawNotifications { get; private set; }
 
-        internal MergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
-        internal MergeableCollection<FacebookContact> RawFriends { get; private set; }
-        internal MergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
-        internal MergeableCollection<ActivityFilter> RawFilters { get; private set; }
+        internal FBMergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
+        internal FBMergeableCollection<FacebookContact> RawFriends { get; private set; }
+        internal FBMergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
+        internal FBMergeableCollection<ActivityFilter> RawFilters { get; private set; }
 
         public FacebookCollection<ActivityFilter> ActivityFilters { get; private set; }
         public FacebookCollection<Notification> Notifications { get; private set; }
@@ -91,7 +91,7 @@
         public SearchIndex SearchIndex { get; private set; }
 
         public FacebookCollection<MessageNotification> InboxNotifications { get; private set; }
-        internal MergeableCollection<MessageNotification> RawInbox { get; private set; }
+        internal FBMergeableCollection<MessageNotification> RawInbox { get; private set; }
 
         /// <summary>Utility for methods that require a valid session key.</summary>
         private void _VerifyOnline()
@@ -139,18 +139,18 @@
 
             SearchIndex = new SearchIndex(this);
 
-            RawNewsFeed = new MergeableCollection<ActivityPost>();
-            RawFriends = new MergeableCollection<FacebookContact>();
-            RawPhotoAlbums = new MergeableCollection<FacebookPhotoAlbum>();
-            RawNotifications = new MergeableCollection<Notification>();
-            RawFilters = new MergeableCollection<ActivityFilter>();
+            RawNewsFeed = new FBMergeableCollection<ActivityPost>();
+            RawFriends = new FBMergeableCollection<FacebookContact>();
+            RawPhotoAlbums = new FBMergeableCollection<FacebookPhotoAlbum>();
+            RawNotifications = new FBMergeableCollection<Notification>();
+            RawFilters = new FBMergeableCollection<ActivityFilter>();
 
             NewsFeed = new ActivityPostCollection(RawNewsFeed, this, true);
             Friends = new FacebookContactCollection(RawFriends, this, false);
             OnlineFriends = new FacebookContactCollection(RawFriends, this, true);
             PhotoAlbums = new FacebookPhotoAlbumCollection(RawPhotoAlbums, this, null);
             Notifications = new FacebookCollection<Notification>(RawNotifications, this);
-            RawInbox = new MergeableCollection<MessageNotification>();
+            RawInbox = new FBMergeableCollection<MessageNotification>();
             InboxNotifications = new FacebookCollection<MessageNotification>(RawInbox, this);
             ActivityFilters = new FacebookCollection<ActivityFilter>(RawFilters, this);
 
@@ -393,11 +393,11 @@
         }
 
         /* Unused
-        internal MergeableCollection<FacebookPhotoTag> GetPhotoTags(FacebookPhoto photo)
+        internal FBMergeableCollection<FacebookPhotoTag> GetPhotoTags(FacebookPhoto photo)
         {
             Verify.IsNotNull(photo, "photo");
 
-            var tagCollection = new MergeableCollection<FacebookPhotoTag>();
+            var tagCollection = new FBMergeableCollection<FacebookPhotoTag>();
             _photoInfoDispatcher.QueueRequest(
                 delegate
                 {
@@ -481,7 +481,7 @@
                     {
                         throw new FacebookException("The application album could not be created.", null);
                     }
-                    appAlbum.RawPhotos = new MergeableCollection<FacebookPhoto>(new[] { photo });
+                    appAlbum.RawPhotos = new FBMergeableCollection<FacebookPhoto>(new[] { photo });
                     RawPhotoAlbums.Add(appAlbum);
                 }
             }, null);
@@ -1333,7 +1333,7 @@
                 for (; batchAlbumList.Count < batchCount && i < albums.Count; ++i)
                 {
                     // Do we already know about this album?
-                    FacebookPhotoAlbum sourceAlbum = RawPhotoAlbums.FindFKID(((IMergeable<FacebookPhotoAlbum>)albums[i]).FKID);
+                    FacebookPhotoAlbum sourceAlbum = RawPhotoAlbums.FindFKID(((IFBMergeable<FacebookPhotoAlbum>)albums[i]).FKID);
                     if (sourceAlbum == null || sourceAlbum.LastModified != albums[i].LastModified)
                     {
                         batchAlbumList.Add(albums[i]);
@@ -1360,7 +1360,7 @@
 
                 for (int currentAlbum = 0; currentAlbum < batchAlbumList.Count; ++currentAlbum)
                 {
-                    batchAlbumList[currentAlbum].RawPhotos = new MergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
+                    batchAlbumList[currentAlbum].RawPhotos = new FBMergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
                 }
 
                 if (!IsOnline)

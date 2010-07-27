@@ -8,7 +8,7 @@ namespace Contigo
     using Standard;
     using System.Globalization;
 
-    public sealed class FacebookPhotoAlbum : INotifyPropertyChanged, IFacebookObject, IMergeable<FacebookPhotoAlbum>, IComparable<FacebookPhotoAlbum>
+    public sealed class FacebookPhotoAlbum : INotifyPropertyChanged, IFacebookObject, IFBMergeable<FacebookPhotoAlbum>, IComparable<FacebookPhotoAlbum>
     {
         #region Sort Delegates
 
@@ -289,7 +289,7 @@ namespace Contigo
             }
         }
 
-        internal MergeableCollection<FacebookPhoto> RawPhotos { get; set; }
+        internal FBMergeableCollection<FacebookPhoto> RawPhotos { get; set; }
 
         public FacebookPhotoCollection Photos
         {
@@ -453,14 +453,14 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<FacebookPhotoAlbum> Members
+        #region IFBMergeable<FacebookPhotoAlbum> Members
 
-        string IMergeable<FacebookPhotoAlbum>.FKID
+        string IMergeable<string, FacebookPhotoAlbum>.FKID
         {
             get { return AlbumId; }
         }
 
-        void IMergeable<FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
+        void IMergeable<string, FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
         {
             Verify.IsNotNull(other, "other");
             if (other.AlbumId != this.AlbumId)

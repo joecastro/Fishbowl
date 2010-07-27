@@ -4,7 +4,7 @@
 
     public class ActivityCommentCollection : FacebookCollection<ActivityComment>
     {
-        internal ActivityCommentCollection(MergeableCollection<ActivityComment> rawCollection, FacebookService service)
+        internal ActivityCommentCollection(FBMergeableCollection<ActivityComment> rawCollection, FacebookService service)
             : base(rawCollection, service)
         { }
     }

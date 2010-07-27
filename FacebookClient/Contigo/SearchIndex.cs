@@ -371,7 +371,7 @@
             return objects.ToArray();
         }
 
-        private void IndexContacts(MergeableCollection<FacebookContact> friends)
+        private void IndexContacts(FBMergeableCollection<FacebookContact> friends)
         {
             lock (friends.SyncRoot)
             {
@@ -383,7 +383,7 @@
             }
         }
 
-        private void IndexPosts(MergeableCollection<ActivityPost> posts)
+        private void IndexPosts(FBMergeableCollection<ActivityPost> posts)
         {
             lock (posts.SyncRoot)
             {
@@ -396,7 +396,7 @@
             }
         }
 
-        private void IndexComments(MergeableCollection<ActivityComment> comments)
+        private void IndexComments(FBMergeableCollection<ActivityComment> comments)
         {
             lock (comments)
             {
@@ -408,7 +408,7 @@
             }
         }
 
-        private void IndexAlbums(MergeableCollection<FacebookPhotoAlbum> albums)
+        private void IndexAlbums(FBMergeableCollection<FacebookPhotoAlbum> albums)
         {
             lock (albums.SyncRoot)
             {
@@ -689,7 +689,7 @@
         #endregion
     }
 
-    internal class MergeableSearchResultsCollection : MergeableCollection<object>
+    internal class MergeableSearchResultsCollection : FBMergeableCollection<object>
     {
         public MergeableSearchResultsCollection(IEnumerable<object> dataObjects)
             : base(dataObjects)
@@ -706,7 +706,7 @@
         private ReadOnlyCollection<FacebookPhotoAlbum> _albums;
         private ReadOnlyCollection<FacebookPhoto> _photos;
 
-        internal SearchResults(MergeableCollection<object> rawCollection, FacebookService service, string searchText)
+        internal SearchResults(FBMergeableCollection<object> rawCollection, FacebookService service, string searchText)
             : base(rawCollection, service)
         {
             this.SearchText = searchText;

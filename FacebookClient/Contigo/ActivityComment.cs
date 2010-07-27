@@ -5,7 +5,7 @@ namespace Contigo
     using System.ComponentModel;
     using Standard;
 
-    public class ActivityComment : INotifyPropertyChanged, IFacebookObject, IMergeable<ActivityComment>, IComparable<ActivityComment>
+    public class ActivityComment : INotifyPropertyChanged, IFacebookObject, IFBMergeable<ActivityComment>, IComparable<ActivityComment>
     {
         internal enum Type : byte
         {
@@ -149,11 +149,11 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<ActivityComment> Members
+        #region IFBMergeable<ActivityComment> Members
 
-        string IMergeable<ActivityComment>.FKID { get { return CommentId; } }
+        string IMergeable<string, ActivityComment>.FKID { get { return CommentId; } }
 
-        void IMergeable<ActivityComment>.Merge(ActivityComment other)
+        void IMergeable<string, ActivityComment>.Merge(ActivityComment other)
         {}
 
         #endregion

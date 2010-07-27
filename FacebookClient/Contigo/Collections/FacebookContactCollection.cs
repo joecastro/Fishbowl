@@ -25,8 +25,8 @@ namespace Contigo
 
     public class FacebookContactCollection : FacebookCollection<FacebookContact>
     {
-        private readonly MergeableCollection<FacebookContact> _filteredCollection;
-        private readonly MergeableCollection<FacebookContact> _rawCollection;
+        private readonly FBMergeableCollection<FacebookContact> _filteredCollection;
+        private readonly FBMergeableCollection<FacebookContact> _rawCollection;
         private readonly Dictionary<FacebookContact, bool> _onlineMap;
 
         private static bool _IsOnline(FacebookContact contact)
@@ -35,14 +35,14 @@ namespace Contigo
                 || contact.OnlinePresence == OnlinePresence.Idle;
         }
 
-        internal FacebookContactCollection(MergeableCollection<FacebookContact> sourceCollection, FacebookService service, bool includeOnlyOnlineContacts)
+        internal FacebookContactCollection(FBMergeableCollection<FacebookContact> sourceCollection, FacebookService service, bool includeOnlyOnlineContacts)
             : base(sourceCollection, service)
         {
             if (includeOnlyOnlineContacts)
             {
                 _onlineMap = new Dictionary<FacebookContact, bool>();
                 _rawCollection = sourceCollection;
-                _filteredCollection = new MergeableCollection<FacebookContact>(from buddy in sourceCollection where _IsOnline(buddy) select buddy, true);
+                _filteredCollection = new FBMergeableCollection<FacebookContact>(from buddy in sourceCollection where _IsOnline(buddy) select buddy, true);
                 _filteredCollection.CustomComparison = FacebookContact.GetComparison(ContactSortOrder.AscendingByOnlinePresence);
                 base.ReplaceSourceCollection(_filteredCollection);
 

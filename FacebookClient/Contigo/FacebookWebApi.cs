@@ -781,7 +781,7 @@ namespace Contigo
             string createAlbumResponse = Utility.FailableFunction(() => _SendRequest(createMap));
 
             FacebookPhotoAlbum album = _serializer.DeserializeUploadAlbumResponse(createAlbumResponse);
-            album.RawPhotos = new MergeableCollection<FacebookPhoto>();
+            album.RawPhotos = new FBMergeableCollection<FacebookPhoto>();
             return album;
         }
 
@@ -859,8 +859,8 @@ namespace Contigo
                 LikeUrl = null,
                 Message = message,
                 PostId = "-1",
-                RawComments = new MergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
+                RawComments = new FBMergeableCollection<ActivityComment>(),
+                RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(),
                 Updated = DateTime.Now,
             };
         }
@@ -895,8 +895,8 @@ namespace Contigo
                 LikeUrl = null,
                 Message = newStatus,
                 PostId = "FakeStatusId",
-                RawComments = new MergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
+                RawComments = new FBMergeableCollection<ActivityComment>(),
+                RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(),
                 TargetUserId = null,
                 Updated = DateTime.Now,
             };

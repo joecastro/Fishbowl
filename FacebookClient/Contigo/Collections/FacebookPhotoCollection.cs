@@ -14,7 +14,7 @@
             : base(photos)
         {}
 
-        internal FacebookPhotoCollection(MergeableCollection<FacebookPhoto> rawCollection, FacebookService service)
+        internal FacebookPhotoCollection(FBMergeableCollection<FacebookPhoto> rawCollection, FacebookService service)
             : base(rawCollection, service)
         {}
     }

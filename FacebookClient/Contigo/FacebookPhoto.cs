@@ -7,7 +7,7 @@ namespace Contigo
     using System.Linq;
     using Standard;
 
-    public class FacebookPhoto : IFacebookObject, INotifyPropertyChanged, IMergeable<FacebookPhoto>, IComparable<FacebookPhoto>
+    public class FacebookPhoto : IFacebookObject, INotifyPropertyChanged, IFBMergeable<FacebookPhoto>, IComparable<FacebookPhoto>
     {
         private SmallString _photoId;
         private SmallString _albumId;
@@ -19,8 +19,8 @@ namespace Contigo
         private ActivityComment _firstComment;
         private bool _canComment = false;
         private DateTime _lastCommentSync;
-        internal readonly MergeableCollection<FacebookPhotoTag> RawTags;
-        internal readonly MergeableCollection<ActivityComment> RawComments;
+        internal readonly FBMergeableCollection<FacebookPhotoTag> RawTags;
+        internal readonly FBMergeableCollection<ActivityComment> RawComments;
         
         // Light constructor for Attachment provided photos
         internal FacebookPhoto(FacebookService service, string albumId, string photoId, Uri source)
@@ -31,16 +31,16 @@ namespace Contigo
             Created = default(DateTime);
             Link = null;
             Image = new FacebookImage(service, source);
-            RawComments = new MergeableCollection<ActivityComment>();
-            RawTags = new MergeableCollection<FacebookPhotoTag>();
+            RawComments = new FBMergeableCollection<ActivityComment>();
+            RawTags = new FBMergeableCollection<FacebookPhotoTag>();
         }
 
         internal FacebookPhoto(FacebookService service)
         {
             Assert.IsNotNull(service);
             SourceService = service;
-            RawComments = new MergeableCollection<ActivityComment>();
-            RawTags = new MergeableCollection<FacebookPhotoTag>();
+            RawComments = new FBMergeableCollection<ActivityComment>();
+            RawTags = new FBMergeableCollection<FacebookPhotoTag>();
         }
 
         public string PhotoId
@@ -262,9 +262,9 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<FacebookPhoto> Members
+        #region IFBMergeable<FacebookPhoto> Members
 
-        string IMergeable<FacebookPhoto>.FKID
+        string IMergeable<string, FacebookPhoto>.FKID
         { 
             get 
             {
@@ -273,7 +273,7 @@ namespace Contigo
             }
         }
 
-        void IMergeable<FacebookPhoto>.Merge(FacebookPhoto other)
+        void IMergeable<string, FacebookPhoto>.Merge(FacebookPhoto other)
         {
         }
 

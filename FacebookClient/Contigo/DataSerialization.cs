@@ -568,7 +568,7 @@ namespace Contigo
                 post.LikeUrl = _SafeGetElementUri(likesElement, ns + "likes", ns + "href");
                 XElement friendsElement = likesElement.Element(ns + "friends");
                 XElement sampleElement = likesElement.Element(ns + "sample");
-                post.RawPeopleWhoLikeThisIds = new MergeableCollection<string>(
+                post.RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(
                     Enumerable.Union(
                         sampleElement == null
                             ? new string[0]
@@ -592,13 +592,13 @@ namespace Contigo
                                        where (comment.Post = post) != null
                                        select comment;
 
-                    post.RawComments = new MergeableCollection<ActivityComment>(commentNodes);
+                    post.RawComments = new FBMergeableCollection<ActivityComment>(commentNodes);
                 }
             }
 
             if (post.RawComments == null)
             {
-                post.RawComments = new MergeableCollection<ActivityComment>();
+                post.RawComments = new FBMergeableCollection<ActivityComment>();
             }
 
             // post.Comments = null;

@@ -6,7 +6,7 @@
     using System.Linq;
     using Standard;
 
-    public class ActivityPost : IFacebookObject, INotifyPropertyChanged, IMergeable<ActivityPost>, IComparable<ActivityPost>
+    public class ActivityPost : IFacebookObject, INotifyPropertyChanged, IFBMergeable<ActivityPost>, IComparable<ActivityPost>
     {
         private FacebookContact _actor;
         private FacebookContact _target;
@@ -20,7 +20,7 @@
         private SmallString _targetUserId;
         private SmallString _postId;
         private SmallUri _likeUri;
-        private MergeableCollection<FacebookContact> _mergeableLikers;
+        private FBMergeableCollection<FacebookContact> _mergeableLikers;
         private ActivityPostAttachment _attachment;
         private DateTime _created;
         private DateTime _updated;
@@ -151,7 +151,7 @@
             }
         }
 
-        internal MergeableCollection<string> RawPeopleWhoLikeThisIds { get; set; }
+        internal FBMergeableCollection<string> RawPeopleWhoLikeThisIds { get; set; }
 
         public FacebookContactCollection PeopleWhoLikeThis
         {
@@ -164,7 +164,7 @@
 
                 if (_likers == null)
                 {
-                    _mergeableLikers = new MergeableCollection<FacebookContact>();
+                    _mergeableLikers = new FBMergeableCollection<FacebookContact>();
                     _likers = new FacebookContactCollection(_mergeableLikers, SourceService, false);
                     _likers.CollectionChanged += (sender, e) => _NotifyPropertyChanged("PeopleWhoLikeThis");
                     foreach (string uid in RawPeopleWhoLikeThisIds)
@@ -229,7 +229,7 @@
 
         public bool HasMoreComments { get { return CommentCount != Comments.Count; } }
 
-        internal MergeableCollection<ActivityComment> RawComments { get; set; }
+        internal FBMergeableCollection<ActivityComment> RawComments { get; set; }
 
         public ActivityCommentCollection Comments
         {
@@ -368,14 +368,14 @@
             return this.Message + " @" + Created + ", Updated @" + Updated;
         }
 
-        #region IMergeable<ActivityPost> Members
+        #region IFBMergeable<ActivityPost> Members
 
-        string IMergeable<ActivityPost>.FKID
+        string IMergeable<string, ActivityPost>.FKID
         {
             get { return PostId; }
         }
 
-        void IMergeable<ActivityPost>.Merge(ActivityPost other)
+        void IMergeable<string, ActivityPost>.Merge(ActivityPost other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(PostId, other.PostId, "other", "Can't merge two ActivityPosts with different Ids.");

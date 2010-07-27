@@ -5,7 +5,7 @@ namespace Contigo
     using System.ComponentModel;
     using Standard;
 
-    public class Notification : IFacebookObject, INotifyPropertyChanged, IMergeable<Notification>
+    public class Notification : IFacebookObject, INotifyPropertyChanged, IFBMergeable<Notification>
     {
         internal Notification(FacebookService service)
         {
@@ -301,9 +301,9 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<Notification> Members
+        #region IFBMergeable<Notification> Members
 
-        string IMergeable<Notification>.FKID
+        string IMergeable<string, Notification>.FKID
         {
             get
             {
@@ -312,7 +312,7 @@ namespace Contigo
             }
         }
 
-        void IMergeable<Notification>.Merge(Notification other)
+        void IMergeable<string, Notification>.Merge(Notification other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(NotificationId, other.NotificationId, "other", "This can only be merged with a Notification with the same Id.");
@@ -412,20 +412,20 @@ namespace Contigo
     // public class GroupInviteRequestNotification : Notification {}
     // public class EventInviteRequestNotification : Notification {}
 
-    public class MessageNotification : Notification, IMergeable<MessageNotification>
+    public class MessageNotification : Notification, IFBMergeable<MessageNotification>
     {
         internal MessageNotification(FacebookService service)
             : base(service)
         {}
 
-        #region IMergeable<MessageNotification> Members
+        #region IFBMergeable<MessageNotification> Members
 
-        string IMergeable<MessageNotification>.FKID
+        string IMergeable<string, MessageNotification>.FKID
         {
-            get { return ((IMergeable<Notification>)this).FKID; }
+            get { return ((IFBMergeable<Notification>)this).FKID; }
         }
 
-        void IMergeable<MessageNotification>.Merge(MessageNotification other)
+        void IMergeable<string, MessageNotification>.Merge(MessageNotification other)
         {
         }
 

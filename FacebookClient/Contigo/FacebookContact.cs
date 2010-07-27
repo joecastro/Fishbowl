@@ -180,7 +180,7 @@
     }
     */
 
-    public sealed class FacebookContact : IFacebookObject, INotifyPropertyChanged, IMergeable<FacebookContact>, IComparable<FacebookContact>
+    public sealed class FacebookContact : IFacebookObject, INotifyPropertyChanged, IFBMergeable<FacebookContact>, IComparable<FacebookContact>
     {
         #region Sort Delegates
 
@@ -415,7 +415,7 @@
         internal FacebookContact(FacebookService service)
         {
             SourceService = service;
-            RawRecentActivity = new MergeableCollection<ActivityPost>(null);
+            RawRecentActivity = new FBMergeableCollection<ActivityPost>(null);
         }
 
         public DateTime ProfileUpdateTime
@@ -815,7 +815,7 @@
             }
         }
 
-        internal MergeableCollection<ActivityPost> RawRecentActivity { get; private set; }
+        internal FBMergeableCollection<ActivityPost> RawRecentActivity { get; private set; }
 
         public ActivityPostCollection RecentActivity
         {
@@ -931,11 +931,11 @@
 
         #endregion
 
-        #region IMergeable<FacebookContact> Members
+        #region IFBMergeable<FacebookContact> Members
 
-        string IMergeable<FacebookContact>.FKID { get { return UserId; } }
+        string IMergeable<string, FacebookContact>.FKID { get { return UserId; } }
 
-        void IMergeable<FacebookContact>.Merge(FacebookContact other) { Merge(other); }
+        void IMergeable<string, FacebookContact>.Merge(FacebookContact other) { Merge(other); }
 
         internal void Merge(FacebookContact other)
         {
