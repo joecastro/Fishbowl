@@ -7,17 +7,28 @@ namespace Standard
     internal struct SmallString : IEquatable<SmallString>, IComparable<SmallString>
     {
         private static readonly System.Text.UTF8Encoding s_Encoder = new System.Text.UTF8Encoding(false /* do not emit BOM */, true /* throw on error */);
+        private readonly bool _isInt64;
         private readonly byte[] _utf8String;
 
         public SmallString(string value)
         {
             if (!string.IsNullOrEmpty(value))
             {
+                long numValue;
+                if (long.TryParse(value, System.Globalization.NumberStyles.None, null, out numValue))
+                {
+                    _isInt64 = true;
+                    _utf8String = BitConverter.GetBytes(numValue);
+                    return;
+                }
+
+                _isInt64 = false;
                 _utf8String = s_Encoder.GetBytes(value);
                 Assert.IsNotNull(_utf8String);
             }
             else
             {
+                _isInt64 = false;
                 _utf8String = null;
             }
         }
@@ -33,6 +44,10 @@ namespace Standard
         public override int GetHashCode()
         {
             // Intentionally hashes similarly to the expanded strings.
+            if (_isInt64)
+            {
+                return BitConverter.ToInt64(_utf8String, 0).GetHashCode();
+            }
             return GetString().GetHashCode();
         }
 
@@ -54,6 +69,11 @@ namespace Standard
 
         public bool Equals(SmallString other)
         {
+            if (_isInt64 != other._isInt64)
+            {
+                return false;
+            }
+
             if (_utf8String == null)
             {
                 return other._utf8String == null;
@@ -67,6 +87,11 @@ namespace Standard
             if (_utf8String.Length != other._utf8String.Length)
             {
                 return false;
+            }
+
+            if (_isInt64)
+            {
+                return BitConverter.ToInt64(_utf8String, 0) == BitConverter.ToInt64(other._utf8String, 0);
             }
 
             // Note that this is doing a literal binary comparison of the two strings.
@@ -83,6 +108,12 @@ namespace Standard
             {
                 return "";
             }
+
+            if (_isInt64)
+            {
+                return BitConverter.ToInt64(_utf8String, 0).ToString();
+            }
+
             return s_Encoder.GetString(_utf8String);
         }
 
