@@ -362,31 +362,32 @@
                 {
                     contact = _facebookApi.GetUser(userId);
                     Assert.IsNotNull(contact);
-
-                    lock (_userLookup)
-                    {
-                        if (_userLookup.ContainsKey(userId))
-                        {
-                            contact = _userLookup[userId];
-                        }
-                        else
-                        {
-                            // If we have a persisted interest level for this contact then apply it before returning.
-                            double? interestLevel = _settings.GetInterestLevel(userId);
-                            if (interestLevel.HasValue)
-                            {
-                                contact.InterestLevel = interestLevel.Value;
-                            }
-
-                            _userLookup.Add(userId, contact);
-                        }
-                    }
                 }
-                catch (Exception e)
+                catch (FacebookException e)
                 {
                     Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(e, false, null));
                     return;
                 }
+
+                lock (_userLookup)
+                {
+                    if (_userLookup.ContainsKey(userId))
+                    {
+                        contact = _userLookup[userId];
+                    }
+                    else
+                    {
+                        // If we have a persisted interest level for this contact then apply it before returning.
+                        double? interestLevel = _settings.GetInterestLevel(userId);
+                        if (interestLevel.HasValue)
+                        {
+                            contact.InterestLevel = interestLevel.Value;
+                        }
+
+                        _userLookup.Add(userId, contact);
+                    }
+                }
+
                 callback(this, new AsyncCompletedEventArgs(null, false, contact));
                 return;
             }, null);
@@ -1094,7 +1095,7 @@
                 }
                 else
                 {
-                    if (filterKey != null)
+                    if (filterKey != default(FacebookObjectId))
                     {
                         return;
                     }

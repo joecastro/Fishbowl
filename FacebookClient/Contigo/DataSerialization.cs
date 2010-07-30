@@ -379,7 +379,7 @@ namespace Contigo
             {
                 contact.StatusMessage = new ActivityPost(_service)
                 {
-                    PostId = new FacebookObjectId("status_" + contact.UserId),
+                    PostId = new FacebookObjectId("status_" + contact.UserId.ToString()),
                     ActorUserId = _SafeGetElementId(elt, ns + "uid"),
                     Created = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,
                     Updated = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,

@@ -909,10 +909,6 @@
 
         public override int GetHashCode()
         {
-            if (UserId == null)
-            {
-                return 0;
-            }
             return UserId.GetHashCode();
         }
 

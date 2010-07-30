@@ -22,7 +22,7 @@
         /// <param name="path">The inital path.</param>
         /// <param name="remainder">The remainder of the path after extraction.</param>
         /// <returns>The text before the first separator.</returns>
-        public static string ExtractFirstChildPath(string path, out string remainder)
+        public static FacebookObjectId ExtractFirstChildPath(string path, out string remainder)
         {
             string childPath = path;
             remainder = String.Empty;
@@ -45,24 +45,24 @@
                 childPath = Uri.UnescapeDataString(childPath);
             }
 
-            return childPath;
+            return FacebookObjectId.Create(childPath);
         }
 
-        protected Navigator(object content, string guid, Navigator parent)
+        protected Navigator(object content, FacebookObjectId guid, Navigator parent)
         {
             Verify.IsNotNull(content, "content");
-            Verify.IsNeitherNullNorEmpty(guid, "guid");
+            Verify.IsTrue(FacebookObjectId.IsValid(guid), "Invalid guid");
             Content = content;
 
             Guid = guid;
             if (parent != null)
             {
                 Parent = parent;
-                Path = Parent.Path + "/" + Uri.EscapeDataString(Guid);
+                Path = Parent.Path + "/" + Uri.EscapeDataString(Guid.ToString());
             }
             else
             {
-                Path = Uri.EscapeDataString(Guid);
+                Path = Uri.EscapeDataString(Guid.ToString());
             }
         }
       
@@ -70,7 +70,7 @@
         public object Content { get; private set; }
         /// <summary>Gets the path for the Navigator.  Navigators must provide a serializable path or locator for their object that can be stored in the navigation journal.</summary>
         public string Path { get; private set; }
-        public string Guid { get; private set; }
+        public FacebookObjectId Guid { get; private set; }
         public Navigator Parent { get; private set; }
 
         public virtual bool IncludeInJournal { get { return true; } }
@@ -78,7 +78,7 @@
         // Tag property a parent can use to look up relative siblings.
         internal int ParentIndex { get; set; }
 
-        protected virtual Navigator GetChildNavigatorWithGuid(string guid) { return null; }
+        protected virtual Navigator GetChildNavigatorWithGuid(FacebookObjectId guid) { return null; }
         protected virtual Navigator GetPreviousChild(Navigator navigator) { return null; }
         protected virtual Navigator GetNextChild(Navigator navigator) { return null; }
         public virtual bool CanGetChildNavigatorWithContent(object content) { return GetChildNavigatorWithContent(content) != null; }
@@ -93,8 +93,8 @@
             // Extract the first guid in the path and match it to a child navigator. If there is no child separator,
             // treat the entire path as the child's guid
             string remainder;
-            string childGuid = ExtractFirstChildPath(path, out remainder);
-            Assert.IsNeitherNullNorEmpty(childGuid);
+            FacebookObjectId childGuid = ExtractFirstChildPath(path, out remainder);
+            Assert.IsTrue(FacebookObjectId.IsValid(childGuid));
 
             Navigator childNavigator = GetChildNavigatorWithGuid(childGuid);
             if (childNavigator == null)
@@ -203,7 +203,7 @@
             : this(contact, contact.UserId, parent)
         {}
 
-        public ContactNavigator(FacebookContact contact, string guid, Navigator parent)
+        public ContactNavigator(FacebookContact contact, FacebookObjectId guid, Navigator parent)
             : base(contact, guid, parent)
         { }
     }
@@ -211,7 +211,7 @@
     public class SearchNavigator : Navigator
     {
         public SearchNavigator(SearchResults searchResults)
-            : base(searchResults, "[search]" + searchResults.SearchText, null)
+            : base(searchResults, FacebookObjectId.Create("[search]" + searchResults.SearchText), null)
         { }
     }
 
@@ -228,15 +228,15 @@
     {
         private FacebookContactCollection _contacts;
 
-        public ContactCollectionNavigator(FacebookContactCollection contacts, string guid, Navigator parent)
+        public ContactCollectionNavigator(FacebookContactCollection contacts, FacebookObjectId guid, Navigator parent)
             : base(contacts, guid, parent)
         {
             _contacts = contacts;
         }
 
-        protected override Navigator GetChildNavigatorWithGuid(string guid)
+        protected override Navigator GetChildNavigatorWithGuid(FacebookObjectId guid)
         {
-            Verify.IsNeitherNullNorEmpty(guid, "guid");
+            Verify.IsTrue(FacebookObjectId.IsValid(guid), "Invalid guid");
             _contacts.VerifyAccess();
 
             for (int index = 0; index < _contacts.Count; ++index)
@@ -292,7 +292,7 @@
             return null;
         }
 
-        public Navigator GetContactWithId(string id)
+        public Navigator GetContactWithId(FacebookObjectId id)
         {
             _contacts.VerifyAccess();
 
@@ -408,15 +408,15 @@
     {
         private FacebookPhotoAlbumCollection _albums;
 
-        public PhotoAlbumCollectionNavigator(FacebookPhotoAlbumCollection albumCollection, string guid, Navigator parent)
+        public PhotoAlbumCollectionNavigator(FacebookPhotoAlbumCollection albumCollection, FacebookObjectId guid, Navigator parent)
             : base(albumCollection, guid, parent)
         {
             _albums = albumCollection;
         }
 
-        protected override Navigator GetChildNavigatorWithGuid(string guid)
+        protected override Navigator GetChildNavigatorWithGuid(FacebookObjectId guid)
         {
-            Verify.IsNeitherNullNorEmpty(guid, "guid");
+            Verify.IsTrue(FacebookObjectId.IsValid(guid), "Invalid guid");
             _albums.VerifyAccess();
 
             for (int index = 0; index < _albums.Count; ++index)
@@ -504,10 +504,10 @@
             return null;
         }
 
-        public Navigator GetPhotoWithId(string ownerId, string photoId)
+        public Navigator GetPhotoWithId(FacebookObjectId ownerId, FacebookObjectId photoId)
         {
-            Verify.IsNeitherNullNorEmpty(ownerId, "ownerId");
-            Verify.IsNeitherNullNorEmpty(photoId, "photoId");
+            Verify.IsTrue(FacebookObjectId.IsValid(ownerId), "Invalid ownerId");
+            Verify.IsTrue(FacebookObjectId.IsValid(photoId), "Invalid photoId");
             _albums.VerifyAccess();
 
             for (int index = 0; index < _albums.Count; ++index)
@@ -637,9 +637,9 @@
             _album = album;
         }
 
-        protected override Navigator GetChildNavigatorWithGuid(string guid)
+        protected override Navigator GetChildNavigatorWithGuid(FacebookObjectId guid)
         {
-            Verify.IsNeitherNullNorEmpty(guid, "guid");
+            Verify.IsTrue(FacebookObjectId.IsValid(guid), "Invalid guid");
             _album.VerifyAccess();
 
             for (int index = 0; index < _album.Photos.Count; ++index)

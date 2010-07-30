@@ -22,7 +22,7 @@ namespace FacebookClient
         private class _Navigator : Navigator
         {
             public _Navigator(LoginPage page, Dispatcher dispatcher)
-                : base(page, "[Login Page]", null)
+                : base(page, FacebookObjectId.Create("[Login Page]"), null)
             { }
 
             public override bool IncludeInJournal { get { return false; } }

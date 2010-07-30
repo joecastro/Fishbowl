@@ -22,6 +22,9 @@
 
         public override bool Equals(object obj)
         {
+            // This is a struct type.  Why is it being compared to something that is nullable?
+            // When I've seen this it's always been a caller error.
+            Assert.IsNotNull(obj);
             try
             {
                 return Equals((FacebookObjectId)obj);
@@ -67,19 +70,9 @@
             return id != default(FacebookObjectId);
         }
 
-        public static FacebookObjectId Create(string name)
+        public static FacebookObjectId Create(string id)
         {
-            return new FacebookObjectId(name);
-        }
-
-        public static implicit operator FacebookObjectId(string name)
-        {
-            return new FacebookObjectId(name);
-        }
-
-        public static implicit operator string(FacebookObjectId id)
-        {
-            return id.ToString();
+            return new FacebookObjectId(id);
         }
     }
 }

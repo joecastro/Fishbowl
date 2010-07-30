@@ -57,11 +57,11 @@ namespace ClientManager
             }
         }
 
-        public static void GoOnline(string sessionKey, string sessionSecret, string userId)
+        public static void GoOnline(string sessionKey, string sessionSecret, FacebookObjectId userId)
         {
             Verify.IsNeitherNullNorEmpty(sessionKey, "sessionKey");
             Verify.IsNeitherNullNorEmpty(sessionSecret, "sessionSecret");
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "invalid userId");
 
             if (FacebookService.IsOnline)
             {

@@ -114,15 +114,16 @@ namespace ClientManager.View
                     }
                 }
 
-                if (!string.IsNullOrEmpty(id))
+                FacebookObjectId fbId = FacebookObjectId.Create(id);
+                if (FacebookObjectId.IsValid(fbId))
                 {
                     var me = (FacebookContact)ViewManager.MasterNavigator.ProfileNavigator.Content;
-                    if (me.UserId.Equals(id))
+                    if (me.UserId.Equals(fbId))
                     {
                         return ViewManager.MasterNavigator.ProfileNavigator;
                     }
 
-                    Navigator nav = ((ContactCollectionNavigator)ViewManager.MasterNavigator.FriendsNavigator).GetContactWithId(id);
+                    Navigator nav = ((ContactCollectionNavigator)ViewManager.MasterNavigator.FriendsNavigator).GetContactWithId(fbId);
                     if (nav != null)
                     {
                         return nav;
@@ -171,7 +172,9 @@ namespace ClientManager.View
 
                     if (!string.IsNullOrEmpty(id))
                     {
-                        Navigator nav = ((PhotoAlbumCollectionNavigator)ViewManager.MasterNavigator.PhotoAlbumsNavigator).GetPhotoWithId(userId, id);
+                        FacebookObjectId fbUserId = FacebookObjectId.Create(userId);
+                        FacebookObjectId fbPhotoId = FacebookObjectId.Create(id);
+                        Navigator nav = ((PhotoAlbumCollectionNavigator)ViewManager.MasterNavigator.PhotoAlbumsNavigator).GetPhotoWithId(fbUserId, fbPhotoId);
                         if (nav != null)
                         {
                             return nav;

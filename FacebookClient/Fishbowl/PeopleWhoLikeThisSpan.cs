@@ -189,7 +189,7 @@ namespace FacebookClient
                     FacebookContact contact = ActivityPost.PeopleWhoLikeThis[i];
                     var hyperlink = new Hyperlink
                     {
-                        NavigateUri = new Uri("http://facebook.com/profile.php?id=" + contact.UserId)
+                        NavigateUri = new Uri("http://facebook.com/profile.php?id=" + contact.UserId.ToString())
                     };
                     hyperlink.RequestNavigate += _OnRequestNavigate;
 

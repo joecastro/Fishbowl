@@ -397,7 +397,7 @@ namespace ClientManager.Controls
                 Directory.CreateDirectory(path);
             }
 
-            path = Path.Combine(path, this.FacebookPhotoAlbum.AlbumId);
+            path = Path.Combine(path, FacebookPhotoAlbum.AlbumId.ToString());
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);

@@ -1,13 +1,15 @@
 ﻿
-using System.Windows.Threading;
 namespace ClientManager.View
 {
+    using System.Windows.Threading;
+    using Contigo;
+    
     public class HomePage
     {
         private class _Navigator : Navigator 
         {
             public _Navigator(Navigator parent, HomePage page, Dispatcher dispatcher)
-                : base(page, "[homepage]", parent)
+                : base(page, FacebookObjectId.Create("[homepage]"), parent)
             { }
         }
 

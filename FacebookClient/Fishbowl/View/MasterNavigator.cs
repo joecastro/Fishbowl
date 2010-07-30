@@ -31,9 +31,9 @@
             _viewManager = viewManager;
             
             HomeNavigator = new HomePage().GetNavigator(null, facebookService.Dispatcher);
-            PhotoAlbumsNavigator = new PhotoAlbumCollectionNavigator(facebookService.PhotoAlbums, "Photo Albums", null);
-            FriendsNavigator = new ContactCollectionNavigator(facebookService.Friends, "Friends", null);
-            ProfileNavigator = new ContactNavigator(facebookService.MeContact, "Me", null);
+            PhotoAlbumsNavigator = new PhotoAlbumCollectionNavigator(facebookService.PhotoAlbums, FacebookObjectId.Create("Photo Albums"), null);
+            FriendsNavigator = new ContactCollectionNavigator(facebookService.Friends, FacebookObjectId.Create("Friends"), null);
+            ProfileNavigator = new ContactNavigator(facebookService.MeContact, FacebookObjectId.Create("Me"), null);
 
             _children = new[] { HomeNavigator, PhotoAlbumsNavigator, FriendsNavigator, ProfileNavigator };
 
@@ -94,7 +94,7 @@
             }
 
             string childPath;
-            string guid = Navigator.ExtractFirstChildPath(path, out childPath);
+            FacebookObjectId guid = Navigator.ExtractFirstChildPath(path, out childPath);
 
             foreach (var topNav in _children)
             {

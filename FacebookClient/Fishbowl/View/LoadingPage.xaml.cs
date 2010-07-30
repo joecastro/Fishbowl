@@ -3,6 +3,7 @@
     using System.Windows;
     using System.Windows.Media.Animation;
     using System.Windows.Threading;
+    using Contigo;
 
     /// <summary>
     /// Interaction logic for LoadingPage.xaml
@@ -12,7 +13,7 @@
         private class _Navigator : Navigator
         {
             public _Navigator(LoadingPage page, Dispatcher dispatcher)
-                : base(page, "[Loading Page]", null)
+                : base(page, FacebookObjectId.Create("[Loading Page]"), null)
             { }
 
             public override bool IncludeInJournal { get { return false; } }
