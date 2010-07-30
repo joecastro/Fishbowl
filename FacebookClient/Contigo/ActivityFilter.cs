@@ -12,18 +12,13 @@
             SourceService = service;
         }
 
-        private SmallString _key { get; set; }
         private SmallString _name { get; set; }
         private SmallString _filterType { get; set; }
         private int _rank;
         private bool _isVisible;
 
         // Not raising property change notifications because this should never change.
-        public string Key
-        {
-            get { return _key.GetString(); }
-            internal set { _key = new SmallString(value); }
-        }
+        public FacebookObjectId Key { get; internal set; }
 
         public string Name
         {
@@ -111,16 +106,16 @@
 
         #region IFBMergeable<ActivityFilter> Members
 
-        string IMergeable<string, ActivityFilter>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, ActivityFilter>.FKID
         {
             get 
             {
-                Assert.IsNeitherNullNorEmpty(Key);
+                Assert.IsTrue(FacebookObjectId.IsValid(Key));
                 return Key; 
             }
         }
 
-        void IMergeable<string, ActivityFilter>.Merge(ActivityFilter other)
+        void IMergeable<FacebookObjectId, ActivityFilter>.Merge(ActivityFilter other)
         {
             Verify.IsNotNull(other, "other");
             if (other.Key != this.Key)
@@ -157,7 +152,7 @@
                 return false;
             }
 
-            return _key.Equals(other._key);
+            return Key == other.Key;
         }
 
         #endregion

@@ -474,9 +474,8 @@
             }
         }
 
-        // Not a SmallString because this property is frequently accessed for identity operations.
         // Does not raise change notifications because it should never be changing.
-        public string UserId { get; internal set; }
+        public FacebookObjectId UserId { get; internal set; }
 
         public string AboutMe
         {
@@ -933,15 +932,15 @@
 
         #region IFBMergeable<FacebookContact> Members
 
-        string IMergeable<string, FacebookContact>.FKID { get { return UserId; } }
+        FacebookObjectId IMergeable<FacebookObjectId, FacebookContact>.FKID { get { return UserId; } }
 
-        void IMergeable<string, FacebookContact>.Merge(FacebookContact other) { Merge(other); }
+        void IMergeable<FacebookObjectId, FacebookContact>.Merge(FacebookContact other) { Merge(other); }
 
         internal void Merge(FacebookContact other)
         {
             if (other == null)
             {
-                UserId = null;
+                UserId = default(FacebookObjectId);
                 return;
             }
 
@@ -951,7 +950,7 @@
             }
 
             // Special case the empty MeContact.
-            if (!string.IsNullOrEmpty(UserId))
+            if (FacebookObjectId.IsValid(UserId))
             {
                 if (UserId != other.UserId)
                 {

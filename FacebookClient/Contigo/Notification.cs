@@ -16,9 +16,6 @@ namespace Contigo
         private SmallString _title;
         private SmallString _description;
         private SmallUri _href;
-        private SmallString _notificationId;
-        private SmallString _senderId;
-        private SmallString _recipientId;
         // private int _appId;
 
         private SmallString _titleText;
@@ -30,29 +27,9 @@ namespace Contigo
         private FacebookContact _sender;
         private bool _isSenderUpdateInProgress;
 
-        internal string NotificationId
-        {
-            get { return _notificationId.GetString(); }
-            set
-            {
-                Assert.IsDefault(_notificationId);
-                _notificationId = new SmallString(value);
-            }
-        }
+        internal FacebookObjectId NotificationId { get; set; }
 
-        internal string SenderId
-        {
-            get { return _senderId.GetString(); }
-            set
-            {
-                SmallString newValue = new SmallString(value);
-                if (_senderId != newValue)
-                {
-                    _senderId = newValue;
-                    _NotifyPropertyChanged("SenderId");
-                }
-            }
-        }
+        internal FacebookObjectId SenderId { get; set; }
 
         public FacebookContact Sender
         {
@@ -76,19 +53,7 @@ namespace Contigo
             _isSenderUpdateInProgress = false;
         }
 
-        internal string RecipientId
-        {
-            get { return _recipientId.GetString(); }
-            set
-            {
-                SmallString newValue = new SmallString(value);
-                if (_recipientId != newValue)
-                {
-                    _recipientId = newValue;
-                    _NotifyPropertyChanged("RecipientId");
-                }
-            }
-        }
+        internal FacebookObjectId RecipientId { get; set; }
 
         public string TitleText
         {
@@ -303,16 +268,16 @@ namespace Contigo
 
         #region IFBMergeable<Notification> Members
 
-        string IMergeable<string, Notification>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, Notification>.FKID
         {
             get
             {
-                Assert.IsNeitherNullNorEmpty(NotificationId);
-                return NotificationId.ToString(); 
+                Assert.IsTrue(FacebookObjectId.IsValid(NotificationId));
+                return NotificationId; 
             }
         }
 
-        void IMergeable<string, Notification>.Merge(Notification other)
+        void IMergeable<FacebookObjectId, Notification>.Merge(Notification other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(NotificationId, other.NotificationId, "other", "This can only be merged with a Notification with the same Id.");
@@ -366,14 +331,14 @@ namespace Contigo
         private const string _friendRequestFormat = "<div><a href=\"{0}\">{1}</a> wants to be your friend!</div>";
         private const string _friendRequestTextFormat = "{0} wants to be your friend!";
 
-        internal FriendRequestNotification(FacebookService service, string userId)
+        internal FriendRequestNotification(FacebookService service, FacebookObjectId userId)
             : base(service)
         {
             Created = default(DateTime);
             Updated = default(DateTime);
             IsHidden = false;
             IsUnread = true;
-            NotificationId = "FriendRequest_" + userId;
+            NotificationId = new FacebookObjectId("FriendRequest_" + userId.ToString());
             RecipientId = service.UserId;
             SenderId = userId;
             Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
@@ -420,12 +385,12 @@ namespace Contigo
 
         #region IFBMergeable<MessageNotification> Members
 
-        string IMergeable<string, MessageNotification>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, MessageNotification>.FKID
         {
             get { return ((IFBMergeable<Notification>)this).FKID; }
         }
 
-        void IMergeable<string, MessageNotification>.Merge(MessageNotification other)
+        void IMergeable<FacebookObjectId, MessageNotification>.Merge(MessageNotification other)
         {
         }
 

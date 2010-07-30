@@ -16,9 +16,6 @@
         private ActivityCommentCollection _comments;
         private FacebookContactCollection _likers;
         private SmallString _message;
-        private SmallString _actorUserId;
-        private SmallString _targetUserId;
-        private SmallString _postId;
         private SmallUri _likeUri;
         private FBMergeableCollection<FacebookContact> _mergeableLikers;
         private ActivityPostAttachment _attachment;
@@ -95,17 +92,9 @@
             }
         }
 
-        internal string ActorUserId
-        {
-            get { return _actorUserId.GetString(); }
-            set { _actorUserId = new SmallString(value); }
-        }
+        internal FacebookObjectId ActorUserId { get; set; }
         
-        internal string TargetUserId
-        {
-            get { return _targetUserId.GetString(); }
-            set { _targetUserId = new SmallString(value); }
-        }
+        internal FacebookObjectId TargetUserId { get; set; }
 
         public bool CanLike
         {
@@ -151,7 +140,7 @@
             }
         }
 
-        internal FBMergeableCollection<string> RawPeopleWhoLikeThisIds { get; set; }
+        internal List<FacebookObjectId> RawPeopleWhoLikeThisIds { get; set; }
 
         public FacebookContactCollection PeopleWhoLikeThis
         {
@@ -167,7 +156,7 @@
                     _mergeableLikers = new FBMergeableCollection<FacebookContact>();
                     _likers = new FacebookContactCollection(_mergeableLikers, SourceService, false);
                     _likers.CollectionChanged += (sender, e) => _NotifyPropertyChanged("PeopleWhoLikeThis");
-                    foreach (string uid in RawPeopleWhoLikeThisIds)
+                    foreach (FacebookObjectId uid in RawPeopleWhoLikeThisIds)
                     {
                         SourceService.GetUserAsync(uid, _OnGetUserCompleted);
                     }
@@ -249,11 +238,7 @@
             }
         }
 
-        internal string PostId
-        {
-            get { return _postId.GetString(); }
-            set { _postId = new SmallString(value); }
-        }
+        internal FacebookObjectId PostId { get; set; }
 
         public Uri LikeUrl
         {
@@ -277,7 +262,7 @@
                 {
                     _isActorUpdateInProgress = true;
                     SourceService.GetUserAsync(this.ActorUserId, _OnGetActorCompleted);
-                                    }
+                }
 
                 return _actor;
             }
@@ -287,7 +272,7 @@
         {
             get
             {
-                if (this.TargetUserId == string.Empty)
+                if (!FacebookObjectId.IsValid(TargetUserId))
                 {
                     return null;
                 }
@@ -370,12 +355,12 @@
 
         #region IFBMergeable<ActivityPost> Members
 
-        string IMergeable<string, ActivityPost>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, ActivityPost>.FKID
         {
             get { return PostId; }
         }
 
-        void IMergeable<string, ActivityPost>.Merge(ActivityPost other)
+        void IMergeable<FacebookObjectId, ActivityPost>.Merge(ActivityPost other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(PostId, other.PostId, "other", "Can't merge two ActivityPosts with different Ids.");
@@ -406,7 +391,8 @@
                 _NotifyPropertyChanged("HasMoreComments");
             }
             // TODO: This isn't going to quite work...
-            RawPeopleWhoLikeThisIds.Merge(other.RawPeopleWhoLikeThisIds, false);
+            RawPeopleWhoLikeThisIds.Clear();
+            RawPeopleWhoLikeThisIds.AddRange(other.RawPeopleWhoLikeThisIds);
             TargetUserId = other.TargetUserId;
             Updated = other.Updated;
         }

@@ -10,6 +10,12 @@
 
         internal FacebookObjectId(string id)
         {
+            if (string.IsNullOrEmpty(id))
+            {
+                _id = default(SmallString);
+                _cachedHashCode = 0;
+            }
+
             _id = new SmallString(id);
             _cachedHashCode = _id.GetHashCode();
         }
@@ -59,6 +65,16 @@
         public static bool IsValid(FacebookObjectId id)
         {
             return id != default(FacebookObjectId);
+        }
+
+        public static FacebookObjectId Create(string name)
+        {
+            return new FacebookObjectId(name);
+        }
+
+        public static implicit operator FacebookObjectId(string name)
+        {
+            return new FacebookObjectId(name);
         }
 
         public static implicit operator string(FacebookObjectId id)

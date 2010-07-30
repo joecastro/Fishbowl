@@ -150,13 +150,11 @@ namespace Contigo
         private SmallString _title;
         private SmallString _lowerTitleSmallString;
         private SmallString _description;
-        private SmallString _coverPicPid;
-        private SmallString _ownerId;
+        private FacebookObjectId _coverPicPid;
+        private FacebookObjectId _ownerId;
         private SmallUri _link;
         private DateTime _created;
         private DateTime _lastModified;
-        // Used too frequently to be a small string.
-        private string _albumId;
 
         internal FacebookPhotoAlbum(FacebookService service)
         {
@@ -164,33 +162,21 @@ namespace Contigo
             SourceService = service;
         }
         
-        public string OwnerId
+        public FacebookObjectId OwnerId
         {
-            get { return _ownerId.GetString(); }
+            get { return _ownerId; }
             internal set
             {
-                var newValue = new SmallString(value);
-                if (newValue != _ownerId)
+                if (value != _ownerId)
                 {
-                    _ownerId = newValue;
+                    _ownerId = value;
                     _NotifyPropertyChanged("OwnerId");
                     _UpdateOwner();
                 }
             }
         }
 
-        public string AlbumId
-        {
-            get { return _albumId ?? ""; }
-            internal set
-            {
-                if (value != (_albumId ?? ""))
-                {
-                    _albumId = value;
-                    _NotifyPropertyChanged("AlbumId");
-                }
-            }
-        }
+        public FacebookObjectId AlbumId { get; internal set; }
 
         public string Location
         {
@@ -249,15 +235,14 @@ namespace Contigo
             }
         }
 
-        internal string CoverPicPid
+        internal FacebookObjectId CoverPicPid
         {
-            get { return _coverPicPid.GetString(); }
+            get { return _coverPicPid; }
             set
             {
-                var newValue = new SmallString(value);
-                if (_coverPicPid != newValue)
+                if (_coverPicPid != value)
                 {
-                    _coverPicPid = newValue;
+                    _coverPicPid = value;
                     _UpdateCoverPic();
                 }
             }
@@ -366,12 +351,12 @@ namespace Contigo
 
         private void _UpdateOwner()
         {
-            if (_ownerId == default(SmallString))
+            if (!FacebookObjectId.IsValid(OwnerId))
             {
                 return;
             }
 
-            SourceService.GetUserAsync(_ownerId.GetString(), _OnGetOwnerCompleted);
+            SourceService.GetUserAsync(OwnerId, _OnGetOwnerCompleted);
         }
 
         private void _OnGetOwnerCompleted(object sender, AsyncCompletedEventArgs e)
@@ -431,7 +416,7 @@ namespace Contigo
 
         public override int GetHashCode()
         {
-            return _albumId.GetHashCode();
+            return AlbumId.GetHashCode();
         }
 
         public override string ToString()
@@ -455,12 +440,12 @@ namespace Contigo
 
         #region IFBMergeable<FacebookPhotoAlbum> Members
 
-        string IMergeable<string, FacebookPhotoAlbum>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, FacebookPhotoAlbum>.FKID
         {
             get { return AlbumId; }
         }
 
-        void IMergeable<string, FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
+        void IMergeable<FacebookObjectId, FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
         {
             Verify.IsNotNull(other, "other");
             if (other.AlbumId != this.AlbumId)

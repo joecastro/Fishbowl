@@ -63,6 +63,24 @@ namespace Contigo
             return elt.Value;
         }
 
+        private static FacebookObjectId _SafeGetElementId(XElement elt, params XName[] names)
+        {
+            if (elt == null)
+            {
+                return default(FacebookObjectId);
+            }
+
+            foreach (var name in names)
+            {
+                elt = elt.Element(name);
+                if (elt == null)
+                {
+                    return default(FacebookObjectId);
+                }
+            }
+            return new FacebookObjectId(elt.Value);
+        }
+
         private static DateTime? _SafeGetElementDateTime(XElement elt, params XName[] names)
         {
             long? ticks = _SafeGetElementInt64(elt, names);
@@ -184,9 +202,9 @@ namespace Contigo
             return ret;
         }
 
-        private static string _SafeGetUniqueId()
+        private static FacebookObjectId _SafeGetUniqueId()
         {
-            return "FacebookGotItWrongCount_" + _badFacebookCounter++;
+            return new FacebookObjectId("FacebookGotItWrongCount_" + _badFacebookCounter++);
         }
 
         private static bool _IsValidXmlCharacter(char c)
@@ -259,10 +277,10 @@ namespace Contigo
             return new ActivityComment(_service)
             {
                 CommentType = ActivityComment.Type.ActivityPost,
-                FromUserId = _SafeGetElementValue(elt, ns + "fromid"),
+                FromUserId = _SafeGetElementId(elt, ns + "fromid"),
                 Time = _SafeGetElementDateTime(elt, ns + "time") ?? _UnixEpochTime,
                 Text = _SafeGetElementValue(elt, ns + "text"),
-                CommentId = _SafeGetElementValue(elt, ns + "id"),
+                CommentId = _SafeGetElementId(elt, ns + "id"),
             };
         }
 
@@ -352,7 +370,7 @@ namespace Contigo
                 TV = _SafeGetElementValue(elt, ns + "tv"),
                 Website = _SafeGetElementValue(elt, "website"),
                 ProfileUri = _SafeGetElementUri(elt, ns + "profile_url"),
-                UserId = _SafeGetElementValue(elt, ns + "uid"),
+                UserId = _SafeGetElementId(elt, ns + "uid"),
                 ProfileUpdateTime = _SafeGetElementDateTime(elt, ns + "profile_update_time") ?? _UnixEpochTime,
                 OnlinePresence = _DeserializePresenceNode(ns, elt),
             };
@@ -361,12 +379,12 @@ namespace Contigo
             {
                 contact.StatusMessage = new ActivityPost(_service)
                 {
-                    PostId = "status_" + contact.UserId,
-                    ActorUserId = _SafeGetElementValue(elt, ns + "uid"),
+                    PostId = new FacebookObjectId("status_" + contact.UserId),
+                    ActorUserId = _SafeGetElementId(elt, ns + "uid"),
                     Created = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,
                     Updated = _SafeGetElementDateTime(elt, ns + "status", ns + "time") ?? _UnixEpochTime,
                     Message = _SafeGetElementValue(elt, ns + "status", ns + "message"),
-                    TargetUserId = "",
+                    TargetUserId = default(FacebookObjectId),
                     CanLike = false,
                     HasLiked = false,
                     LikedCount = 0,
@@ -393,7 +411,7 @@ namespace Contigo
             // and probably a base class.
             var page = new FacebookContact(_service)
             {
-                UserId = _SafeGetElementValue(elt, ns + "page_id"),
+                UserId = _SafeGetElementId(elt, ns + "page_id"),
                 Name = _SafeGetElementValue(elt, ns + "name"),
                 ProfileUri = _SafeGetElementUri(elt, ns + "page_url"),
                 Image = new FacebookImage(_service, sourceUri, sourceBigUri ?? sourceLargeUri, sourceSmallUri, sourceSquareUri),
@@ -490,8 +508,8 @@ namespace Contigo
 
             var tag = new FacebookPhotoTag(_service) 
             {
-                PhotoId = _SafeGetElementValue(elt, ns + "pid"),
-                ContactId = _SafeGetElementValue(elt, ns + "subject"),
+                PhotoId = _SafeGetElementId(elt, ns + "pid"),
+                ContactId = _SafeGetElementId(elt, ns + "subject"),
                 Text = _SafeGetElementValue(elt, ns + "text"),
                 Offset = new System.Windows.Point(xcoord, ycoord),
             };
@@ -545,18 +563,18 @@ namespace Contigo
 
             XElement commentsElement = elt.Element(ns + "comments");
 
-            post.PostId = _SafeGetElementValue(elt, ns + "post_id");
-            if (string.IsNullOrEmpty(post.PostId))
+            post.PostId = _SafeGetElementId(elt, ns + "post_id");
+            if (!FacebookObjectId.IsValid(post.PostId))
             {
                 // Massive Facebook failure.
                 // This happens too frequently for the assert to be useful.
                 // Assert.Fail();
                 post.PostId = _SafeGetUniqueId();
             }
-            post.ActorUserId = _SafeGetElementValue(elt, ns + "actor_id");
+            post.ActorUserId = _SafeGetElementId(elt, ns + "actor_id");
             post.Created = _SafeGetElementDateTime(elt, ns + "created_time") ?? _UnixEpochTime;
             post.Message = _SafeGetElementValue(elt, ns + "message");
-            post.TargetUserId = _SafeGetElementValue(elt, ns + "target_id");
+            post.TargetUserId = _SafeGetElementId(elt, ns + "target_id");
             post.Updated = _SafeGetElementDateTime(elt, ns + "updated_time") ?? _UnixEpochTime;
 
             XElement likesElement = elt.Element(ns + "likes");
@@ -568,14 +586,14 @@ namespace Contigo
                 post.LikeUrl = _SafeGetElementUri(likesElement, ns + "likes", ns + "href");
                 XElement friendsElement = likesElement.Element(ns + "friends");
                 XElement sampleElement = likesElement.Element(ns + "sample");
-                post.RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(
+                post.RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(
                     Enumerable.Union(
                         sampleElement == null
-                            ? new string[0]
-                            : from uidElement in sampleElement.Elements(ns + "uid") select uidElement.Value,
+                            ? new FacebookObjectId[0]
+                            : from uidElement in sampleElement.Elements(ns + "uid") select new FacebookObjectId(uidElement.Value),
                         friendsElement == null
-                            ? new string[0]
-                            : from uidElement in friendsElement.Elements(ns + "uid") select uidElement.Value));
+                            ? new FacebookObjectId[0]
+                            : from uidElement in friendsElement.Elements(ns + "uid") select new FacebookObjectId(uidElement.Value)));
             }
 
             post.CanComment = _SafeGetElementValue(commentsElement, ns + "can_post") == "1";
@@ -622,12 +640,12 @@ namespace Contigo
                              let link = _SafeGetElementUri(smElement, ns + "href")
                              select new FacebookPhoto(
                                  _service,
-                                 _SafeGetElementValue(photoElement, ns + "aid"),
-                                 _SafeGetElementValue(photoElement, ns + "pid"),
+                                 _SafeGetElementId(photoElement, ns + "aid"),
+                                 _SafeGetElementId(photoElement, ns + "pid"),
                                  _SafeGetElementUri(smElement, ns + "src"))
                                  {
                                      Link = link,
-                                     OwnerId = _SafeGetElementValue(photoElement, ns + "owner"),
+                                     OwnerId = _SafeGetElementId(photoElement, ns + "owner"),
                                  };
             attachment.Photos = FacebookPhotoCollection.CreateStaticCollection(photosEnum);
 
@@ -743,13 +761,13 @@ namespace Contigo
             return new List<FacebookContact>(contacts);
         }
 
-        public Dictionary<string, OnlinePresence> DeserializeUserPresenceList(string xml)
+        public Dictionary<FacebookObjectId, OnlinePresence> DeserializeUserPresenceList(string xml)
         {
             XDocument xdoc = SafeParseDocument(xml);
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
 
             var items = from userNode in xdoc.Root.Elements(ns + "user")
-                        let uid = _SafeGetElementValue(userNode, ns + "uid")
+                        let uid = _SafeGetElementId(userNode, ns + "uid")
                         let presence = _DeserializePresenceNode(ns, userNode)
                         select new { UserId = uid, Presence = presence };
             return items.ToDictionary(item => item.UserId, item => item.Presence);
@@ -779,7 +797,7 @@ namespace Contigo
 
             var profile = new FacebookContact(_service)
             {
-                UserId = _SafeGetElementValue(elt, ns + "id"),
+                UserId = _SafeGetElementId(elt, ns + "id"),
                 Name = _SafeGetElementValue(elt, ns + "name"),
                 Image = new FacebookImage(_service, sourceUri, sourceBigUri, sourceSmallUri, sourceSquareUri),
                 ProfileUri = _SafeGetElementUri(elt, ns + "url"),
@@ -830,7 +848,7 @@ namespace Contigo
             {
                 // "uid" maps to the current user's UID.
                 // "value" is a sometimes nil integer value.  Not sure what it's for.
-                Key = _SafeGetElementValue(elt, ns + "filter_key"),
+                Key = _SafeGetElementId(elt, ns + "filter_key"),
                 Name = _SafeGetElementValue(elt, ns + "name"),
                 Rank = _SafeGetElementInt32(elt, ns + "rank") ?? Int32.MaxValue,
                 // Facebook gives us an image map of both selected and not versions of the icon.
@@ -895,13 +913,13 @@ namespace Contigo
             return commentList;
         }
 
-        public static void DeserializeSessionInfo(string xml, out string sessionKey, out string userId)
+        public static void DeserializeSessionInfo(string xml, out string sessionKey, out FacebookObjectId userId)
         {
             XDocument xdoc = SafeParseDocument(xml);
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
 
             sessionKey = _SafeGetElementValue(xdoc.Root, ns + "session_key");
-            userId = _SafeGetElementValue(xdoc.Root, ns + "uid");
+            userId = _SafeGetElementId(xdoc.Root, ns + "uid");
         }
 
         public List<FacebookPhoto> DeserializePhotosGetResponse(string xml)
@@ -933,9 +951,9 @@ namespace Contigo
 
             var photo = new FacebookPhoto(_service)
             {
-                PhotoId = _SafeGetElementValue(elt, ns + "pid"),
-                AlbumId = _SafeGetElementValue(elt, ns + "aid"),
-                OwnerId = _SafeGetElementValue(elt, ns + "owner"),
+                PhotoId = _SafeGetElementId(elt, ns + "pid"),
+                AlbumId = _SafeGetElementId(elt, ns + "aid"),
+                OwnerId = _SafeGetElementId(elt, ns + "owner"),
                 Caption = _SafeGetElementValue(elt, ns + "caption"),
                 Created = _SafeGetElementDateTime(elt, ns + "created") ?? _UnixEpochTime,
                 Image = new FacebookImage(_service, sourceUri, bigUri, smallUri, null),
@@ -983,9 +1001,9 @@ namespace Contigo
 
             var album = new FacebookPhotoAlbum(_service)
             {
-                AlbumId = _SafeGetElementValue(elt, ns + "aid"),
-                CoverPicPid = _SafeGetElementValue(elt, ns + "cover_pid"),
-                OwnerId = _SafeGetElementValue(elt, ns + "owner"),
+                AlbumId = _SafeGetElementId(elt, ns + "aid"),
+                CoverPicPid = _SafeGetElementId(elt, ns + "cover_pid"),
+                OwnerId = _SafeGetElementId(elt, ns + "owner"),
                 Title = _SafeGetElementValue(elt, ns + "name"),
                 Created = _SafeGetElementDateTime(elt, ns + "created") ?? _UnixEpochTime,
                 LastModified = _SafeGetElementDateTime(elt, ns + "modified") ?? _UnixEpochTime,
@@ -1029,8 +1047,8 @@ namespace Contigo
             // Get friend requests
             notificationList.AddRange(
                 from XElement elt in ((XElement)xdoc.FirstNode).Element(ns + "friend_requests").Elements(ns + "uid")
-                let uid = _SafeGetElementValue(elt)
-                where !string.IsNullOrEmpty(uid)
+                let uid = _SafeGetElementId(elt)
+                where FacebookObjectId.IsValid(uid)
                 select (Notification)new FriendRequestNotification(_service, uid));
 
             unreadMessageCount = _SafeGetElementInt32((XElement)xdoc.FirstNode, ns + "messages", ns + "unread") ?? 0;
@@ -1074,9 +1092,9 @@ namespace Contigo
                 IsHidden = _SafeGetElementValue(elt, ns + "is_hidden") == "1",
                 IsUnread = _SafeGetElementValue(elt, ns + "is_unread") == "1",
                 Link = _SafeGetElementUri(elt, ns + "href"),
-                NotificationId = _SafeGetElementValue(elt, ns + "notification_id"),
-                RecipientId = _SafeGetElementValue(elt, ns + "recipient_id"),
-                SenderId = _SafeGetElementValue(elt, ns + "sender_id"),
+                NotificationId = _SafeGetElementId(elt, ns + "notification_id"),
+                RecipientId = _SafeGetElementId(elt, ns + "recipient_id"),
+                SenderId = _SafeGetElementId(elt, ns + "sender_id"),
                 Title = titleHtml,
                 TitleText = _SafeGetElementValue(elt, ns + "title_text"),
                 Updated = _SafeGetElementDateTime(elt, ns + "updated_time") ?? _UnixEpochTime,
@@ -1085,10 +1103,10 @@ namespace Contigo
             return notification;
         }
 
-        public string DeserializeAddCommentResponse(string xml)
+        public FacebookObjectId DeserializeAddCommentResponse(string xml)
         {
             XDocument xdoc = SafeParseDocument(xml);
-            return xdoc.Root.Value;
+            return new FacebookObjectId(xdoc.Root.Value);
         }
 
         public List<ActivityComment> DeserializePhotoCommentsResponse(string xml)
@@ -1109,8 +1127,8 @@ namespace Contigo
             var comment = new ActivityComment(_service)
             {
                 CommentType = ActivityComment.Type.Photo,
-                CommentId = _SafeGetElementValue(elt, ns + "pcid"),
-                FromUserId = _SafeGetElementValue(elt, ns + "from"),
+                CommentId = _SafeGetElementId(elt, ns + "pcid"),
+                FromUserId = _SafeGetElementId(elt, ns + "from"),
                 Time = _SafeGetElementDateTime(elt, ns + "time") ?? _UnixEpochTime,
                 Text = _SafeGetElementValue(elt, ns + "body"),
             };
@@ -1123,10 +1141,10 @@ namespace Contigo
             return xdoc.Root.Value == "1";
         }
 
-        public string DeserializePhotoAddCommentResponse(string xml)
+        public FacebookObjectId DeserializePhotoAddCommentResponse(string xml)
         {
             XDocument xdoc = SafeParseDocument(xml);
-            return xdoc.Root.Value;
+            return new FacebookObjectId(xdoc.Root.Value);
         }
 
         public string DeserializeStreamPublishResponse(string xml)
@@ -1162,15 +1180,15 @@ namespace Contigo
                 IsUnread = _SafeGetElementValue(elt, ns + "unread") == "1",
                 DescriptionText = _SafeGetElementValue(elt, ns + "snippet"),
                 IsHidden = false,
-                NotificationId = _SafeGetElementValue(elt, ns + "thread_id"),
+                NotificationId = _SafeGetElementId(elt, ns + "thread_id"),
                 // TODO: This is actually a list of recipients.
-                RecipientId = _SafeGetElementValue(elt, ns + "recipients", ns + "uid"),
-                SenderId = _SafeGetElementValue(elt, ns + "snippet_author"),
+                RecipientId = _SafeGetElementId(elt, ns + "recipients", ns + "uid"),
+                SenderId = _SafeGetElementId(elt, ns + "snippet_author"),
                 Title = _SafeGetElementValue(elt, ns + "subject"),
                 Updated = _SafeGetElementDateTime(elt, ns + "updated_time") ?? DateTime.Now,
             };
 
-            if (!string.IsNullOrEmpty(message.NotificationId))
+            if (FacebookObjectId.IsValid(message.NotificationId))
             {
                 message.Link = new Uri(string.Format("http://www.facebook.com/inbox/#/inbox/?folder=[fb]messages&page=1&tid={0}", message.NotificationId));
             }

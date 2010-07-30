@@ -10,8 +10,6 @@ namespace Contigo
         private SmallString _text;
         private FacebookContact _contact;
         private bool _fetchingContact;
-        private SmallString _contactId;
-        private SmallString _photoId;
 
         internal FacebookPhotoTag(FacebookService service)
         {
@@ -23,7 +21,7 @@ namespace Contigo
         { 
             get
             {
-                if (!_fetchingContact && _contact == null && !string.IsNullOrEmpty(ContactId))
+                if (!_fetchingContact && _contact == null && FacebookObjectId.IsValid(ContactId))
                 {
                     _fetchingContact = true;
                     SourceService.GetUserAsync(ContactId, _OnGetUserCompleted);
@@ -45,17 +43,9 @@ namespace Contigo
 
         public Point Offset { get; internal set; }
 
-        internal string PhotoId
-        {
-            get { return _photoId.GetString(); }
-            set { _photoId = new SmallString(value); }
-        }
+        internal FacebookObjectId PhotoId { get; set; }
 
-        internal string ContactId
-        {
-            get { return _contactId.GetString(); }
-            set { _contactId = new SmallString(value); }
-        }
+        internal FacebookObjectId ContactId { get; set; }
 
         public string Text
         {

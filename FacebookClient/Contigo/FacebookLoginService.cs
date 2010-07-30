@@ -95,7 +95,7 @@ namespace Contigo
 
         public string SessionKey { get { return _settings.SessionKey; } }
         public string SessionSecret { get { return _settings.SessionSecret; } }
-        public string UserId { get { return _settings.UserId; } }
+        public FacebookObjectId UserId { get { return _settings.UserId; } }
 
         public bool HasCachedSessionInfo { get; private set; }
 
@@ -209,7 +209,7 @@ namespace Contigo
                 throw badSessionInfoException;
             }
 
-            _settings.SetSessionInfo(sessionKey.ToString(), secret.ToString(), userId.ToString());
+            _settings.SetSessionInfo(sessionKey.ToString(), secret.ToString(), new FacebookObjectId(userId.ToString()));
             _settings.Save();
 
             _facebookApi = new FacebookWebApi(ApplicationKey, SessionKey, UserId, SessionSecret);

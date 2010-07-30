@@ -22,12 +22,12 @@ namespace Contigo
         private const string _UserSettingsFileName = "UserSettings.xml";
 
         private readonly string _settingsRootPath;
-        private readonly Dictionary<string, double> _userLookupInterestLevels = new Dictionary<string, double>();
-        private readonly HashSet<string> _ignoredFriendRequests = new HashSet<string>();
+        private readonly Dictionary<FacebookObjectId, double> _userLookupInterestLevels = new Dictionary<FacebookObjectId, double>();
+        private readonly HashSet<FacebookObjectId> _ignoredFriendRequests = new HashSet<FacebookObjectId>();
 
         public string SessionKey { get; private set; }
         public string SessionSecret { get; private set; }
-        public string UserId { get; private set; }
+        public FacebookObjectId UserId { get; private set; }
 
         private bool _hasUserInfo = false;
 
@@ -74,7 +74,7 @@ namespace Contigo
             ClearUserInfo();
             try
             {
-                string userPath = Path.Combine(_settingsRootPath, UserId);
+                string userPath = Path.Combine(_settingsRootPath, UserId.ToString());
                 Utility.EnsureDirectory(userPath);
 
                 string userSettingPath = Path.Combine(userPath, _UserSettingsFileName);
@@ -97,7 +97,7 @@ namespace Contigo
                         from contactNode in contactsElement.Elements("contact")
                         select new
                         {
-                            UserId = (string)contactNode.Attribute("uid"),
+                            UserId = new FacebookObjectId((string)contactNode.Attribute("uid")),
                             InterestLevel = (double)contactNode.Attribute("interestLevel")
                         })
                     {
@@ -110,7 +110,7 @@ namespace Contigo
                 {
                     foreach (var requestInfo in
                         from contactNode in knownFriendRequestsElement.Elements("contact")
-                        select (string)contactNode.Attribute("uid"))
+                        select new FacebookObjectId((string)contactNode.Attribute("uid")))
                     {
                         _ignoredFriendRequests.Add(requestInfo);
                     }
@@ -145,13 +145,13 @@ namespace Contigo
             {
                 SessionKey = (string)sessionInfoElement.Element("sessionKey");
                 SessionSecret = (string)sessionInfoElement.Element("sessionSecret");
-                UserId = (string)sessionInfoElement.Element("userId");
+                UserId = new FacebookObjectId((string)sessionInfoElement.Element("userId"));
             }
 
             return HasSessionInfo;
         }
 
-        public bool IsFriendRequestKnown(string uid)
+        public bool IsFriendRequestKnown(FacebookObjectId uid)
         {
             lock (_lock)
             {
@@ -159,7 +159,7 @@ namespace Contigo
             }
         }
 
-        public void MarkFriendRequestAsRead(string userId)
+        public void MarkFriendRequestAsRead(FacebookObjectId userId)
         {
             lock (_lock)
             {
@@ -173,7 +173,7 @@ namespace Contigo
         // We don't want to keep a list of people who have requested friend status
         // but who have been either friended or really ignored from the website.
         // FacebookService should call this periodically to keep the list trimmed.
-        public void RemoveKnownFriendRequestsExcept(List<string> uids)
+        public void RemoveKnownFriendRequestsExcept(List<FacebookObjectId> uids)
         {
             lock (_lock)
             {
@@ -181,16 +181,16 @@ namespace Contigo
             }
         }
 
-        public void SetInterestLevel(string userId, double value)
+        public void SetInterestLevel(FacebookObjectId userId, double value)
         {
             lock (_lock)
             {
-                Assert.IsNeitherNullNorEmpty(userId);
+                Assert.IsTrue(FacebookObjectId.IsValid(userId));
                 _userLookupInterestLevels[userId] = value;
             }
         }
 
-        public double? GetInterestLevel(string userId)
+        public double? GetInterestLevel(FacebookObjectId userId)
         {
             lock (_lock)
             {
@@ -220,7 +220,7 @@ namespace Contigo
             }
         }
 
-        public void SetSessionInfo(string sessionKey, string sessionSecret, string userId)
+        public void SetSessionInfo(string sessionKey, string sessionSecret, FacebookObjectId userId)
         {
             lock (_lock)
             {
@@ -240,8 +240,8 @@ namespace Contigo
             get
             {
                 return !string.IsNullOrEmpty(SessionKey) 
-                    && !string.IsNullOrEmpty(SessionSecret) 
-                    && !string.IsNullOrEmpty(UserId);
+                    && !string.IsNullOrEmpty(SessionSecret)
+                    && FacebookObjectId.IsValid(UserId);
             }
         }
 
@@ -257,7 +257,7 @@ namespace Contigo
                         new XElement("userId", UserId)));
                 sessionXml.Save(Path.Combine(_settingsRootPath, _SessionSettingsFileName));
 
-                if (!string.IsNullOrEmpty(UserId))
+                if (FacebookObjectId.IsValid(UserId))
                 {
                     XElement userXml = new XElement("userSettings",
                         new XAttribute("v", 1),
@@ -271,7 +271,7 @@ namespace Contigo
                             from uid in _ignoredFriendRequests
                             select new XElement("contact",
                                 new XAttribute("uid", uid))));
-                    userXml.Save(Path.Combine(Path.Combine(_settingsRootPath, UserId), _UserSettingsFileName));
+                    userXml.Save(Path.Combine(Path.Combine(_settingsRootPath, UserId.ToString()), _UserSettingsFileName));
                 }
             }
         }

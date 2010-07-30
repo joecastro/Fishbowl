@@ -27,8 +27,8 @@
         private FacebookWebApi _facebookApi;
 
         private bool _hasFetchedFriendsList = false;
-        private readonly Dictionary<string, FacebookContact> _userLookup = new Dictionary<string, FacebookContact>();
-        private readonly Dictionary<string, FacebookPhoto> _photoLookup = new Dictionary<string, FacebookPhoto>();
+        private readonly Dictionary<FacebookObjectId, FacebookContact> _userLookup = new Dictionary<FacebookObjectId, FacebookContact>();
+        private readonly Dictionary<FacebookObjectId, FacebookPhoto> _photoLookup = new Dictionary<FacebookObjectId, FacebookPhoto>();
         private readonly List<FacebookContact> _interestingPeople = new List<FacebookContact>();
 
         private DispatcherPool _userInteractionDispatcher;
@@ -66,7 +66,7 @@
         /// <summary>Once logged in, the key provided by the Facebook servers that identifies this session.</summary>
         public string SessionKey { get; private set; }
         /// <summary>The ID of the currently logged in user.  Requests to the server are made with this context.</summary>
-        public string UserId { get; private set; }
+        public FacebookObjectId UserId { get; private set; }
         public bool IsOnline { get { return !string.IsNullOrEmpty(SessionKey); } }
 
         internal AsyncWebGetter WebGetter { get; private set; }
@@ -168,12 +168,12 @@
         /// </summary>
         /// <param name="sessionKey"></param>
         /// <param name="userId"></param>
-        public void RecoverSession(string sessionKey, string sessionSecret, string userId)
+        public void RecoverSession(string sessionKey, string sessionSecret, FacebookObjectId userId)
         {
             Dispatcher.VerifyAccess();
             _VerifyNotOnline();
             Verify.IsNeitherNullNorEmpty(sessionKey, "sessionKey");
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
             Verify.IsNeitherNullNorEmpty(sessionSecret, "sessionSecret");
 
             SessionKey = sessionKey;
@@ -259,7 +259,7 @@
             */
 
             SessionKey = null;
-            UserId = null;
+            UserId = default(FacebookObjectId);
 
             RawNewsFeed.Clear();
             RawFriends.Clear();
@@ -316,9 +316,9 @@
             }
         }
 
-        public void GetUserAsync(string userId, AsyncCompletedEventHandler callback)
+        public void GetUserAsync(FacebookObjectId userId, AsyncCompletedEventHandler callback)
         {
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
             Verify.IsNotNull(callback, "callback");
 
             FacebookContact fastContact;
@@ -469,7 +469,7 @@
         public FacebookPhoto AddPhotoToApplicationAlbum(string caption, string imageFile)
         {
             _VerifyOnline();
-            FacebookPhoto photo = _facebookApi.AddPhotoToAlbum(null, caption, imageFile);
+            FacebookPhoto photo = _facebookApi.AddPhotoToAlbum(default(FacebookObjectId), caption, imageFile);
 
             _photoInfoDispatcher.QueueRequest(delegate
             {
@@ -538,7 +538,7 @@
                     // attachments, aren't showing up as true statuses...
                     // Since we don't have a PostId with the status.set call, I need to know how to remove it.
                     // This seems like a bug in Facebook's APIs though, so maybe I can change this back soon.
-                    Assert.AreEqual("FakeStatusId", updatedStatus.PostId);
+                    Assert.AreEqual(new FacebookObjectId("FakeStatusId"), updatedStatus.PostId);
 
                     // If there are multiple fake status updates then this will replace the last one.
                     RawNewsFeed.Add(updatedStatus);
@@ -585,8 +585,8 @@
                 _userInteractionDispatcher.QueueRequest(
                 delegate
                 {
-                    string commentId = _facebookApi.AddComment(post, comment);
-                    if (!string.IsNullOrEmpty(commentId))
+                    FacebookObjectId commentId = _facebookApi.AddComment(post, comment);
+                    if (FacebookObjectId.IsValid(commentId))
                     {
                         var activityComment = new ActivityComment(this)
                         {
@@ -618,8 +618,8 @@
                 _userInteractionDispatcher.QueueRequest(
                 delegate
                 {
-                    string commentId = _facebookApi.AddPhotoComment(photo.PhotoId, comment);
-                    if (!string.IsNullOrEmpty(commentId))
+                    FacebookObjectId commentId = _facebookApi.AddPhotoComment(photo.PhotoId, comment);
+                    if (FacebookObjectId.IsValid(commentId))
                     {
                         var activityComment = new ActivityComment(this)
                         {
@@ -773,7 +773,7 @@
                 notification.IsUnread = false;
                 RawNotifications.Remove(notification);
 
-                if (!string.IsNullOrEmpty(notification.NotificationId))
+                if (FacebookObjectId.IsValid(notification.NotificationId))
                 {
                     _userInteractionDispatcher.QueueRequest((obj) => _facebookApi.MarkNotificationsAsRead(notification.NotificationId), null);
                 }
@@ -884,13 +884,13 @@
 
         private void _UpdatePhotoAlbumsAsync()
         {
-            _photoInfoDispatcher.QueueRequest(_UpdateInterestingPhotoAlbumsWorker, null);
+            _photoInfoDispatcher.QueueRequest(_UpdateInterestingPhotoAlbumsWorker, default(FacebookObjectId));
             _photoInfoDispatcher.QueueRequest(_UpdateFriendsPhotoAlbumsWorker, null);
         }
 
-        internal void GetActivityPostsByUserAsync(string userId, AsyncCompletedEventHandler callback)
+        internal void GetActivityPostsByUserAsync(FacebookObjectId userId, AsyncCompletedEventHandler callback)
         {
-            Assert.IsNeitherNullNorEmpty(userId);
+            Assert.IsTrue(FacebookObjectId.IsValid(userId));
             Assert.IsNotNull(callback);
 
             _friendInfoDispatcher.QueueRequest(unused =>
@@ -1007,7 +1007,7 @@
             List<ActivityPost> posts;
             List<FacebookContact> users;
 
-            string filterKey = null;
+            FacebookObjectId filterKey = default(FacebookObjectId);
             if (_newsFeedFilter != null)
             {
                 filterKey = _newsFeedFilter.Key;
@@ -1102,7 +1102,7 @@
 
                 if (IsOnline)
                 {
-                    ActivityPost fakeStatusPost = RawNewsFeed.FindFKID("FakeStatusId");
+                    ActivityPost fakeStatusPost = RawNewsFeed.FindFKID(new FacebookObjectId("FakeStatusId"));
                     if (fakeStatusPost != null)
                     {
                         ActivityPost realStatusPost = posts.FirstOrDefault(post => string.Equals(post.Message, fakeStatusPost.Message, StringComparison.Ordinal));
@@ -1239,7 +1239,7 @@
                 return;
             }
 
-            Dictionary<string, OnlinePresence> statusMap = _facebookApi.GetFriendsOnlineStatus();
+            Dictionary<FacebookObjectId, OnlinePresence> statusMap = _facebookApi.GetFriendsOnlineStatus();
 
             // If the friend list has obviously changed then just do a full refresh.
             bool updatedSuccessfully = false;
@@ -1291,9 +1291,9 @@
                 return;
             }
 
-            var userId = (string)userIdParameter;
+            var userId = (FacebookObjectId)userIdParameter;
 
-            if (string.IsNullOrEmpty(userId))
+            if (!FacebookObjectId.IsValid(userId))
             {
                 FacebookContact[] interestingCopy;
                 lock (_localLock)
@@ -1419,7 +1419,7 @@
             }
         }
 
-        internal double GetInterestLevelForUserId(string userId)
+        internal double GetInterestLevelForUserId(FacebookObjectId userId)
         {
             lock (_userLookup)
             {

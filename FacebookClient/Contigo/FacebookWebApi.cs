@@ -141,7 +141,7 @@ namespace Contigo
         private readonly string _ApplicationKey;
         private readonly string _SessionKey;
         private readonly string _Secret;
-        private readonly string _UserId;
+        private readonly FacebookObjectId _UserId;
         private readonly FacebookService _Service;
         private bool _disposed;
 
@@ -268,7 +268,7 @@ namespace Contigo
             Assert.AreEqual(knownPermissionCount, _PermissionLookup.Count);
         }
 
-        public FacebookWebApi(string applicationId, string sessionKey, string userId, string secret)
+        public FacebookWebApi(string applicationId, string sessionKey, FacebookObjectId userId, string secret)
         {
             _ApplicationKey = applicationId;
             _SessionKey = sessionKey;
@@ -630,14 +630,14 @@ namespace Contigo
             return _serializer.DeserializeFilterList(result);
         }
 
-        public FacebookContact GetUser(string userId)
+        public FacebookContact GetUser(FacebookObjectId userId)
         {
             _Verify(true);
 
             var userMap = new METHOD_MAP
             {
                 { "method", "users.GetInfo" },
-                { "uids", userId },
+                { "uids", userId.ToString() },
                 { "fields", _UserColumns },
             };
 
@@ -725,30 +725,30 @@ namespace Contigo
             return photo;
         }
 
-        public List<FacebookPhotoTag> GetPhotoTags(string photoId)
+        public List<FacebookPhotoTag> GetPhotoTags(FacebookObjectId photoId)
         {
             var tagMap = new METHOD_MAP
             {
                 { "method", "photos.getTags" },
-                { "pids", photoId },
+                { "pids", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(tagMap));
             return _serializer.DeserializePhotoTagsList(response);
         }
 
-        public List<FacebookPhotoTag> AddPhotoTag(string photoId, string userId, float x, float y)
+        public List<FacebookPhotoTag> AddPhotoTag(FacebookObjectId photoId, FacebookObjectId userId, float x, float y)
         {
-            Verify.IsNeitherNullNorWhitespace(userId, "userId");
-            Verify.IsNeitherNullNorWhitespace(photoId, "photoId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(photoId), "Invalid photoId");
 
             x *= 100;
             y *= 100;
             var tagMap = new METHOD_MAP
             {
                 { "method", "photos.addTag" },
-                { "pid", photoId },
-                { "tag_uid", userId },
+                { "pid", photoId.ToString() },
+                { "tag_uid", userId.ToString() },
                 { "x", string.Format("{0:0.##}", x) },
                 { "y", string.Format("{0:0.##}", y) },
             };
@@ -785,7 +785,7 @@ namespace Contigo
             return album;
         }
 
-        public FacebookPhoto AddPhotoToAlbum(string albumId, string caption, string imageFile)
+        public FacebookPhoto AddPhotoToAlbum(FacebookObjectId albumId, string caption, string imageFile)
         {
             _Verify(true);
 
@@ -794,9 +794,9 @@ namespace Contigo
                 { "method", "photos.upload" },
             };
 
-            if (!string.IsNullOrEmpty(albumId))
+            if (FacebookObjectId.IsValid(albumId))
             {
-                updateMap.Add("aid", albumId);
+                updateMap.Add("aid", albumId.ToString());
             }
 
             if (!string.IsNullOrEmpty(caption))
@@ -808,14 +808,14 @@ namespace Contigo
             return _serializer.DeserializePhotoUploadResponse(response);
         }
 
-        public FacebookPhotoAlbum GetAlbum(string albumId)
+        public FacebookPhotoAlbum GetAlbum(FacebookObjectId albumId)
         {
-            Verify.IsNeitherNullNorEmpty(albumId, "albumId");
+            Verify.IsTrue(FacebookObjectId.IsValid(albumId), "Invalid albumId");
 
             var albumMap = new METHOD_MAP
             {
                 { "method", "photos.getAlbums" },
-                { "aids", albumId },
+                { "aids", albumId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(albumMap));
@@ -831,13 +831,13 @@ namespace Contigo
             return albumsResponse[0];
         }
 
-        public ActivityPost PublishStream(string targetId, string message)
+        public ActivityPost PublishStream(FacebookObjectId targetId, string message)
         {
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.publish" },
                 { "message", message },
-                { "target_id", targetId },
+                { "target_id", targetId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(streamMap));
@@ -858,9 +858,9 @@ namespace Contigo
                 LikedCount = 0,
                 LikeUrl = null,
                 Message = message,
-                PostId = "-1",
+                PostId = new FacebookObjectId("-1"),
                 RawComments = new FBMergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(),
+                RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(),
                 Updated = DateTime.Now,
             };
         }
@@ -871,7 +871,7 @@ namespace Contigo
             {
                 { "method", "status.set" },
                 { "status", newStatus },
-                { "uid", _UserId },
+                { "uid", _UserId.ToString() },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(statusMap));
@@ -894,10 +894,10 @@ namespace Contigo
                 LikedCount = 0,
                 LikeUrl = null,
                 Message = newStatus,
-                PostId = "FakeStatusId",
+                PostId = new FacebookObjectId("FakeStatusId"),
                 RawComments = new FBMergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new FBMergeableCollection<string>(),
-                TargetUserId = null,
+                RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(),
+                TargetUserId = default(FacebookObjectId),
                 Updated = DateTime.Now,
             };
         }
@@ -918,22 +918,22 @@ namespace Contigo
             Utility.FailableFunction(() => _SendRequest(statusMap));
         }
 
-        public List<ActivityPost> GetStreamPosts(string userId)
+        public List<ActivityPost> GetStreamPosts(FacebookObjectId userId)
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamPostsQueryString, userId)));
             return _serializer.DeserializePostDataList(result, true);
         }
 
-        public void GetStream(string filterKey, int limit, DateTime getItemsSince, out List<ActivityPost> posts, out List<FacebookContact> users)
+        public void GetStream(FacebookObjectId filterKey, int limit, DateTime getItemsSince, out List<ActivityPost> posts, out List<FacebookContact> users)
         {
             Assert.IsTrue(limit > 0);
 
             // Facebook changed the semantics of the default feed, so we need to explicitly 
             // request the newsfeed filter to keep things working as expected.
             // I think everyone should have a filter with this key, but this is unfortunately fragile.
-            if (string.IsNullOrEmpty(filterKey))
+            if (!FacebookObjectId.IsValid(filterKey))
             {
-                filterKey = "nf";
+                filterKey = new FacebookObjectId("nf");
             }
 
             long startTime = DataSerialization.GetUnixTimestampFromDateTime(getItemsSince);
@@ -942,10 +942,10 @@ namespace Contigo
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.get" },
-                { "viewer_id", _UserId },
+                { "viewer_id", _UserId.ToString() },
                 { "start_time", startTime.ToString("G") },
                 { "limit", limit.ToString("G") },
-                { "filter_key", filterKey },
+                { "filter_key", filterKey.ToString() },
                 { "metadata", "[albums, profiles, photo_tags]" },
             };
 
@@ -954,12 +954,12 @@ namespace Contigo
             _serializer.DeserializeStreamData(result, out posts, out users);
         }
 
-        public string AddComment(ActivityPost post, string comment)
+        public FacebookObjectId AddComment(ActivityPost post, string comment)
         {
             var commentMap = new METHOD_MAP
                 {
                     { "method", "stream.addComment" },
-                    { "post_id", post.PostId },
+                    { "post_id", post.PostId.ToString() },
                     { "comment", comment },
                 };
 
@@ -975,16 +975,16 @@ namespace Contigo
             var commentMap = new METHOD_MAP
             {
                 { "method", "stream.getComments" },
-                { "post_id", post.PostId },
+                { "post_id", post.PostId.ToString() },
             };
 
             string response = Utility.FailableFunction(10, () => _SendRequest(commentMap));
             return _serializer.DeserializeCommentsDataList(post, response);
         }
 
-        public void RemoveComment(string commentId)
+        public void RemoveComment(FacebookObjectId commentId)
         {
-            if (string.IsNullOrEmpty(commentId))
+            if (!FacebookObjectId.IsValid(commentId))
             {
                 // If we're removing a comment that we haven't yet posted we can't remove it.
                 return;
@@ -992,29 +992,29 @@ namespace Contigo
             var commentMap = new METHOD_MAP
             { 
                 { "method", "stream.removeComment" },
-                { "comment_id", commentId },
+                { "comment_id", commentId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(commentMap));
         }
 
-        public void AddLike(string postId)
+        public void AddLike(FacebookObjectId postId)
         {
             var likeMap = new METHOD_MAP
             {
                 { "method", "stream.addLike" },
-                { "post_id", postId },
+                { "post_id", postId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(likeMap));
         }
 
-        public void RemoveLike(string postId)
+        public void RemoveLike(FacebookObjectId postId)
         {
             var likeMap = new METHOD_MAP
             {
                 { "method", "stream.removeLike" },
-                { "post_id", postId },
+                { "post_id", postId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(likeMap));
@@ -1026,7 +1026,7 @@ namespace Contigo
             {
                 { "method", "pages.getInfo" },
                 { "fields", _PageColumns },
-                { "uid", _UserId },
+                { "uid", _UserId.ToString() },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(pagesMap));
@@ -1060,7 +1060,7 @@ namespace Contigo
             return _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
         }
 
-        public Dictionary<string, OnlinePresence> GetFriendsOnlineStatus()
+        public Dictionary<FacebookObjectId, OnlinePresence> GetFriendsOnlineStatus()
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId)));
             return _serializer.DeserializeUserPresenceList(result);
@@ -1072,18 +1072,18 @@ namespace Contigo
             return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
-        public List<FacebookPhoto>[] GetPhotosWithTags(IEnumerable<string> albumIds)
+        public List<FacebookPhoto>[] GetPhotosWithTags(IEnumerable<FacebookObjectId> albumIds)
         {
             var names = new List<string>();
             var queries = new List<string>();
 
             int albumCount = 0;
-            foreach (string albumId in albumIds)
+            foreach (FacebookObjectId albumId in albumIds)
             {
                 names.Add("get_photos" + albumCount);
                 names.Add("get_tags" + albumCount);
 
-                queries.Add(string.Format(_GetPhotosFromAlbumQueryString, albumId));
+                queries.Add(string.Format(_GetPhotosFromAlbumQueryString, albumId.ToString()));
                 queries.Add(string.Format(_GetPhotoTagsMultiQueryString, "get_photos" + albumCount));
                 ++albumCount;
             }
@@ -1096,7 +1096,7 @@ namespace Contigo
             var photoCollections = new List<FacebookPhoto>[albumCount];
 
             albumCount = 0;
-            foreach (string albumId in albumIds)
+            foreach (FacebookObjectId albumId in albumIds)
             {
                 photoCollections[albumCount] = new List<FacebookPhoto>();
                 XElement photosResponseNode = (from descendant in xdoc.Descendants(ns + "name") 
@@ -1124,36 +1124,36 @@ namespace Contigo
             return photoCollections;
         }
 
-        public List<ActivityComment> GetPhotoComments(string photoId)
+        public List<ActivityComment> GetPhotoComments(FacebookObjectId photoId)
         {
             var commentMap = new METHOD_MAP
             {
                 { "method", "photos.getComments" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(commentMap));
             return _serializer.DeserializePhotoCommentsResponse(response);
         }
 
-        public bool GetPhotoCanComment(string photoId)
+        public bool GetPhotoCanComment(FacebookObjectId photoId)
         {
             var commentMap = new METHOD_MAP
             {
                 { "method", "photos.canComment" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(commentMap));
             return _serializer.DeserializePhotoCanCommentResponse(response);
         }
 
-        public string AddPhotoComment(string photoId, string comment)
+        public FacebookObjectId AddPhotoComment(FacebookObjectId photoId, string comment)
         {
             var addMap = new METHOD_MAP
             {
                 { "method", "photos.addComment" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
                 { "body", comment },
             };
 
@@ -1161,29 +1161,29 @@ namespace Contigo
             return _serializer.DeserializePhotoAddCommentResponse(response);
         }
 
-        public List<FacebookPhotoAlbum> GetUserAlbums(string userId)
+        public List<FacebookPhotoAlbum> GetUserAlbums(FacebookObjectId userId)
         {
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
 
             string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleUserAlbumsQueryString, userId)));
             return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
-        public void MarkNotificationsAsRead(params string[] notificationIds)
+        public void MarkNotificationsAsRead(params FacebookObjectId[] notificationIds)
         {
             Verify.IsNotNull(notificationIds, "notificationIds");
             
             var sb = new StringBuilder();
             bool isFirst = true;
-            foreach (string id in notificationIds)
+            foreach (FacebookObjectId id in notificationIds)
             {
-                if (!string.IsNullOrEmpty(id))
+                if (FacebookObjectId.IsValid(id))
                 {
                     if (!isFirst)
                     {
                         sb.Append(",");
                     }
-                    sb.Append(id);
+                    sb.Append(id.ToString());
                 }
             }
 

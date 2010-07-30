@@ -15,8 +15,7 @@ namespace Contigo
         }
 
         private FacebookContact _fromUser;
-        private SmallString _fromUserId;
-        private SmallString _commentId;
+        private FacebookObjectId _fromUserId;
         private SmallString _text;
         private DateTime _timestamp;
         private bool _isFromUserUpdateInProgress;
@@ -29,15 +28,14 @@ namespace Contigo
 
         internal global::Contigo.ActivityComment.Type CommentType { get; set; }
 
-        internal string FromUserId
+        internal FacebookObjectId FromUserId
         {
-            get { return _fromUserId.GetString(); }
+            get { return _fromUserId; }
             set
             {
-                var newValue = new SmallString(value);
-                if (newValue != _fromUserId)
+                if (value != _fromUserId)
                 {
-                    _fromUserId = new SmallString(value);
+                    _fromUserId = value;
                     _UpdateFromUser();
                 }
             }
@@ -70,11 +68,7 @@ namespace Contigo
             }
         }
 
-        internal string CommentId
-        {
-            get { return _commentId.GetString(); }
-            set { _commentId = new SmallString(value); }
-        }
+        internal FacebookObjectId CommentId { get; set; }
 
         internal ActivityPost Post { get; set; }
 
@@ -108,7 +102,7 @@ namespace Contigo
         {
             get
             {
-                return IsMine && _commentId != default(SmallString) && CommentType == Type.ActivityPost;
+                return IsMine && FacebookObjectId.IsValid(CommentId) && CommentType == Type.ActivityPost;
             }
         }
 
@@ -151,9 +145,9 @@ namespace Contigo
 
         #region IFBMergeable<ActivityComment> Members
 
-        string IMergeable<string, ActivityComment>.FKID { get { return CommentId; } }
+        FacebookObjectId IMergeable<FacebookObjectId, ActivityComment>.FKID { get { return CommentId; } }
 
-        void IMergeable<string, ActivityComment>.Merge(ActivityComment other)
+        void IMergeable<FacebookObjectId, ActivityComment>.Merge(ActivityComment other)
         {}
 
         #endregion

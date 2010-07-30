@@ -7,10 +7,10 @@ namespace Contigo
 {
     using Standard;
 
-    internal interface IFBMergeable<T> : IMergeable<string, T>
+    internal interface IFBMergeable<T> : IMergeable<FacebookObjectId, T>
     { }
 
-    internal class FBMergeableCollection<T> : MergeableCollection<string, T> where T : class
+    internal class FBMergeableCollection<T> : MergeableCollection<FacebookObjectId, T> where T : class
     {
         public FBMergeableCollection() : base()
         {}

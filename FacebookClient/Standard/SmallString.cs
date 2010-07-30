@@ -43,6 +43,11 @@ namespace Standard
 
         public override int GetHashCode()
         {
+            if (_utf8String == null)
+            {
+                return 0;
+            }
+
             // Intentionally hashes similarly to the expanded strings.
             if (_isInt64)
             {

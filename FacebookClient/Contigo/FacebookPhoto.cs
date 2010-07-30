@@ -9,10 +9,7 @@ namespace Contigo
 
     public class FacebookPhoto : IFacebookObject, INotifyPropertyChanged, IFBMergeable<FacebookPhoto>, IComparable<FacebookPhoto>
     {
-        private SmallString _photoId;
-        private SmallString _albumId;
         private SmallString _caption;
-        private SmallString _ownerId;
         private SmallUri _link;
         private FacebookPhotoTagCollection _tags;
         private ActivityCommentCollection _comments;
@@ -23,7 +20,7 @@ namespace Contigo
         internal readonly FBMergeableCollection<ActivityComment> RawComments;
         
         // Light constructor for Attachment provided photos
-        internal FacebookPhoto(FacebookService service, string albumId, string photoId, Uri source)
+        internal FacebookPhoto(FacebookService service, FacebookObjectId albumId, FacebookObjectId photoId, Uri source)
         {
             SourceService = service;
             AlbumId = albumId;
@@ -43,11 +40,7 @@ namespace Contigo
             RawTags = new FBMergeableCollection<FacebookPhotoTag>();
         }
 
-        public string PhotoId
-        {
-            get { return _photoId.GetString(); }
-            internal set { _photoId = new SmallString(value); }
-        }
+        public FacebookObjectId PhotoId { get; internal set; }
 
         public Uri Link
         {
@@ -63,11 +56,7 @@ namespace Contigo
             }
         }
 
-        public string AlbumId
-        {
-            get { return _albumId.GetString(); }
-            internal set { _albumId = new SmallString(value); }
-        }
+        public FacebookObjectId AlbumId { get; internal set; }
 
         public string Caption
         {
@@ -82,11 +71,7 @@ namespace Contigo
 
         public FacebookImage Image { get; internal set; }
 
-        internal string OwnerId
-        {
-            get { return _ownerId.GetString(); }
-            set { _ownerId = new SmallString(value); }
-        }
+        internal FacebookObjectId OwnerId { get; set; }
 
         private FacebookPhotoAlbum _album;
 
@@ -176,7 +161,7 @@ namespace Contigo
 
         public bool CanTag
         {
-            get { return _ownerId.GetString() == SourceService.UserId; }
+            get { return OwnerId == SourceService.UserId; }
         }
 
         public bool CanComment
@@ -264,16 +249,16 @@ namespace Contigo
 
         #region IFBMergeable<FacebookPhoto> Members
 
-        string IMergeable<string, FacebookPhoto>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, FacebookPhoto>.FKID
         { 
             get 
             {
-                Assert.IsNeitherNullNorEmpty(PhotoId);
+                Assert.IsTrue(FacebookObjectId.IsValid(PhotoId));
                 return PhotoId;
             }
         }
 
-        void IMergeable<string, FacebookPhoto>.Merge(FacebookPhoto other)
+        void IMergeable<FacebookObjectId, FacebookPhoto>.Merge(FacebookPhoto other)
         {
         }
 
