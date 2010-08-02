@@ -11,6 +11,19 @@ namespace Microsoft.Windows.Shell
     using System.Windows.Data;
     using Standard;
 
+    public enum ResizeGripDirection
+    {
+        None,
+        TopLeft,
+        Top,
+        TopRight,
+        Right,
+        BottomRight,
+        Bottom,
+        BottomLeft,
+        Left,
+    }
+
     public class WindowChrome : Freezable
     {
         private struct _SystemParameterBoundProperty
@@ -106,6 +119,38 @@ namespace Microsoft.Windows.Shell
                 throw new ArgumentException("The element must be a DependencyObject", "inputElement");
             }
             dobj.SetValue(IsHitTestVisibleInChromeProperty, hitTestVisible);
+        }
+
+        public static readonly DependencyProperty ResizeGripDirectionProperty = DependencyProperty.RegisterAttached(
+            "ResizeGripDirection",
+            typeof(ResizeGripDirection),
+            typeof(WindowChrome),
+            new FrameworkPropertyMetadata(ResizeGripDirection.None, FrameworkPropertyMetadataOptions.Inherits));
+
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        public static ResizeGripDirection GetResizeGripDirection(IInputElement inputElement)
+        {
+            Verify.IsNotNull(inputElement, "inputElement");
+            var dobj = inputElement as DependencyObject;
+            if (dobj == null)
+            {
+                throw new ArgumentException("The element must be a DependencyObject", "inputElement");
+            }
+            return (ResizeGripDirection)dobj.GetValue(ResizeGripDirectionProperty);
+        }
+
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", MessageId = "0")]
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        public static void SetResizeGripDirection(IInputElement inputElement, ResizeGripDirection direction)
+        {
+            Verify.IsNotNull(inputElement, "inputElement");
+            var dobj = inputElement as DependencyObject;
+            if (dobj == null)
+            {
+                throw new ArgumentException("The element must be a DependencyObject", "inputElement");
+            }
+            dobj.SetValue(ResizeGripDirectionProperty, direction);
         }
 
         #endregion

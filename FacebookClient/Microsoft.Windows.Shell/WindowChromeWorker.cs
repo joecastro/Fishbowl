@@ -515,6 +515,32 @@ namespace Microsoft.Windows.Shell
             return new IntPtr((int)WVR.REDRAW);
         }
 
+        private HT _GetHTFromResizeGripDirection(ResizeGripDirection direction)
+        {
+            bool compliment = _window.FlowDirection == FlowDirection.RightToLeft;
+            switch (direction)
+            {
+                case ResizeGripDirection.Bottom:
+                    return HT.BOTTOM;
+                case ResizeGripDirection.BottomLeft:
+                    return compliment ? HT.BOTTOMRIGHT : HT.BOTTOMLEFT;
+                case ResizeGripDirection.BottomRight:
+                    return compliment ? HT.BOTTOMLEFT : HT.BOTTOMRIGHT;
+                case ResizeGripDirection.Left:
+                    return compliment ? HT.RIGHT : HT.LEFT;
+                case ResizeGripDirection.Right:
+                    return compliment ? HT.LEFT : HT.RIGHT;
+                case ResizeGripDirection.Top:
+                    return HT.TOP;
+                case ResizeGripDirection.TopLeft:
+                    return compliment ? HT.TOPRIGHT : HT.TOPLEFT;
+                case ResizeGripDirection.TopRight:
+                    return compliment ? HT.TOPLEFT : HT.TOPRIGHT;
+                default:
+                    return HT.NOWHERE;
+            }
+        }
+
         private IntPtr _HandleNCHitTest(WM uMsg, IntPtr wParam, IntPtr lParam, out bool handled)
         {
             // Let the system know if we consider the mouse to be in our effective non-client area.
@@ -529,10 +555,20 @@ namespace Microsoft.Windows.Shell
             // This allows apps to set the glass frame to be non-empty, still cover it with WPF content to hide all the glass,
             // yet still get DWM to draw a drop shadow.
             IInputElement inputElement = _window.InputHitTest(mousePosWindow);
-            if (inputElement != null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement))
+            if (inputElement != null)
             {
-                handled = true;
-                return new IntPtr((int)HT.CLIENT);
+                if (WindowChrome.GetIsHitTestVisibleInChrome(inputElement))
+                {
+                    handled = true;
+                    return new IntPtr((int)HT.CLIENT);
+                }
+
+                ResizeGripDirection direction = WindowChrome.GetResizeGripDirection(inputElement);
+                if (direction != ResizeGripDirection.None)
+                {
+                    handled = true;
+                    return new IntPtr((int)_GetHTFromResizeGripDirection(direction));
+                }
             }
 
             // It's not opted out, so offer up the hittest to DWM, then to our custom non-client area logic.
