@@ -343,8 +343,8 @@ namespace Contigo
             SenderId = userId;
             Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
             TitleText = string.Format(_friendRequestTextFormat, "Someone");
-            service.GetUserAsync(userId, _UpdateTitle);
             Link = new Uri("http://facebook.com/profile.php?id=" + userId);
+            service.GetUserAsync(userId, _UpdateTitle);
             //this.Description = "";
         }
 
@@ -366,11 +366,52 @@ namespace Contigo
 
         public override string ToString()
         {
-            if (Sender != null)
+            return TitleText;
+        }
+    }
+
+    // Defriend or unfriend?  Oxford American Dictionary thinks "Unfriend"...
+    public class UnfriendNotification : Notification
+    {
+        private const string _friendRemovalFormat = "<div><a href=\"{0}\">{1}</a> is no longer your friend...</div>";
+        private const string _friendRemovalTextFormat = "{0} is no longer your friend...";
+
+        internal UnfriendNotification(FacebookService service, FacebookObjectId userId)
+            : base(service)
+        {
+            Created = default(DateTime);
+            Updated = default(DateTime);
+            IsHidden = false;
+            IsUnread = true;
+            NotificationId = new FacebookObjectId("Unfriended_" + userId.ToString());
+            RecipientId = service.UserId;
+            SenderId = userId;
+            Title = string.Format(_friendRemovalFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
+            TitleText = string.Format(_friendRemovalTextFormat, "Someone");
+            Link = new Uri("http://facebook.com/profile.php?id=" + userId);
+            service.GetUserAsync(userId, _UpdateTitle);
+            //this.Description = "";
+        }
+
+        private void _UpdateTitle(object sender, AsyncCompletedEventArgs e)
+        {
+            if (e.Error != null || e.Cancelled)
             {
-                return Sender.Name + " wants to be your friend.";
+                return;
             }
-            return "Someone wants to be your friend.";
+
+            Sender = e.UserState as FacebookContact;
+            if (!string.IsNullOrEmpty(Sender.Name))
+            {
+                Title = string.Format(_friendRemovalFormat, Sender.ProfileUri, Sender.Name);
+                TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
+                Link = Sender.ProfileUri;
+            }
+        }
+
+        public override string ToString()
+        {
+            return TitleText;
         }
     }
 

@@ -171,6 +171,9 @@
         public void RecoverSession(string sessionKey, string sessionSecret, FacebookObjectId userId)
         {
             Dispatcher.VerifyAccess();
+
+            _settings.SetSessionInfo(sessionKey, sessionSecret, userId);
+
             _VerifyNotOnline();
             Verify.IsNeitherNullNorEmpty(sessionKey, "sessionKey");
             Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
@@ -762,6 +765,13 @@
                 return;
             }
 
+            var unfriendNotification = notification as UnfriendNotification;
+            if (unfriendNotification != null)
+            {
+                _ReadUnfriendNotification(unfriendNotification);
+                return;
+            }
+
             // Near as I can tell there's currently no way to mark messages as read.  Silently do nothing... :(
             var message = notification as MessageNotification;
             if (message != null)
@@ -786,6 +796,13 @@
             friendRequest.IsUnread = false;
             RawNotifications.Remove(friendRequest);
             _userInteractionDispatcher.QueueRequest((obj) => _settings.MarkFriendRequestAsRead(friendRequest.SenderId), null);
+        }
+
+        private void _ReadUnfriendNotification(UnfriendNotification unfriendNotification)
+        {
+            unfriendNotification.IsUnread = false;
+            RawNotifications.Remove(unfriendNotification);
+            _userInteractionDispatcher.QueueRequest((obj) => _settings.MarkUnfriendNotificationAsRead(unfriendNotification.SenderId), null);
         }
 
         // Refresh data that needs to be frequently requeried.
@@ -1030,6 +1047,11 @@
                 return;
             }
 
+            if (!IsOnline)
+            {
+                return;
+            }
+
             bool foundNewFriend = false;
 
             lock (_userLookup)
@@ -1153,6 +1175,10 @@
 
             _settings.RemoveKnownFriendRequestsExcept((from notification in requests where notification is FriendRequestNotification select notification.SenderId).ToList());
             notifications.AddRange(from req in requests where !_settings.IsFriendRequestKnown(req.SenderId) select req);
+
+            List<FacebookObjectId> unfriendIds = _settings.GetUnfriendNotifications();
+            notifications.AddRange(from id in unfriendIds select new UnfriendNotification(this, id));
+
             RawNotifications.Merge(notifications, false);
 
             if (!IsOnline)
@@ -1201,33 +1227,34 @@
             }
 
             List<FacebookContact> friendsList = _facebookApi.GetFriends();
-              
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            _settings.UpdateInterestLevels(friendsList);
+            _settings.UpdateCurrentFriends(friendsList);
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            RawFriends.Merge(friendsList, false);
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
             lock (_userLookup)
             {
-                if (IsOnline)
+                foreach (FacebookContact friend in friendsList)
                 {
-                    RawFriends.Merge(friendsList, false);
-                }
-
-                if (IsOnline)
-                {
-                    foreach (FacebookContact friend in friendsList)
+                    if (!_userLookup.ContainsKey(friend.UserId))
                     {
-                        FacebookContact lookedUpFriend;
-                        if (!_userLookup.TryGetValue(friend.UserId, out lookedUpFriend))
-                        {
-                            // If we have a persisted interest level for this contact then apply it before returning.
-                            double? interestLevel = _settings.GetInterestLevel(friend.UserId);
-                            if (interestLevel.HasValue)
-                            {
-                                friend.InterestLevel = interestLevel.Value;
-                            }
-                            _userLookup.Add(friend.UserId, friend);
-                        }
-                        else
-                        {
-                            lookedUpFriend.Merge(friend);
-                        }
+                        _userLookup.Add(friend.UserId, friend);
                     }
                 }
             }

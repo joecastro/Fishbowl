@@ -8,8 +8,45 @@ namespace Contigo
     using System.Xml.Linq;
     using Standard;
 
+    // Extension methods to make XAttributes usable.
+    internal static class XAttributeExtensions
+    {
+        public static XElement NewXAttribute(this XElement element, XName name, object value)
+        {
+            Verify.IsNotNull(element, "element");
+            if (value != null)
+            {
+                element.Add(new XAttribute(name, value));
+            }
+
+            return element;
+        }
+    }
+
     internal class ServiceSettings
     {
+        private class _LiteContact
+        {
+            public _LiteContact()
+            { }
+
+            public _LiteContact(FacebookContact c)
+            {
+                UserId = c.UserId;
+                InterestLevel = c.NullableInterestLevel;
+                Name = c.Name;
+            }
+
+            public FacebookObjectId UserId { get; set; }
+            public string Name { get; set; }
+            public double? InterestLevel { get; set; }
+
+            public override string ToString()
+            {
+                return Name ?? UserId.ToString();
+            }
+        }
+
         private static readonly object s_lock = new object();
         private readonly object _lock = new object();
 
@@ -17,17 +54,20 @@ namespace Contigo
 
         // This object is physically split into two files.  One is at the root and contains session information
         // and the UserId associated with it.
-        private const string _SessionSettingsFileName = "SessionSettings.xml";
+        private const string _SessionSettingsFileName = "SessionSettings.2.xml";
         // The second file is specific to each user and contained in a subfolder based on the UserId.
-        private const string _UserSettingsFileName = "UserSettings.xml";
+        private const string _UserSettingsFileName = "UserSettings.2.xml";
 
         private readonly string _settingsRootPath;
-        private readonly Dictionary<FacebookObjectId, double> _userLookupInterestLevels = new Dictionary<FacebookObjectId, double>();
+        private readonly Dictionary<FacebookObjectId, _LiteContact> _friendLookup = new Dictionary<FacebookObjectId, _LiteContact>();
         private readonly HashSet<FacebookObjectId> _ignoredFriendRequests = new HashSet<FacebookObjectId>();
+        private readonly HashSet<FacebookObjectId> _readMessages = new HashSet<FacebookObjectId>();
+        private readonly HashSet<FacebookObjectId> _unknownFriendRemovals = new HashSet<FacebookObjectId>();
+        private readonly _LiteContact _user = new _LiteContact();
 
         public string SessionKey { get; private set; }
         public string SessionSecret { get; private set; }
-        public FacebookObjectId UserId { get; private set; }
+        public FacebookObjectId UserId { get { return _user.UserId; } }
 
         private bool _hasUserInfo = false;
 
@@ -70,8 +110,8 @@ namespace Contigo
 
         private void _GetUserInfo()
         {
-            // Even if this fails we want to purge partial data.
-            ClearUserInfo();
+            _ClearUserInfo();
+
             try
             {
                 string userPath = Path.Combine(_settingsRootPath, UserId.ToString());
@@ -85,42 +125,55 @@ namespace Contigo
 
                 XDocument xdoc = XDocument.Load(userSettingPath);
 
-                if (1 != (int)xdoc.Root.Attribute("v"))
+                // Currently not providing a migration path from v1 settings.  
+                // Consider doing this in the future, or a path from 2 if we add a v3.
+                // It's also worth noting that if an older version gets run, the way these are implemented will tend to stomp over each other.
+                if (2 != (int)xdoc.Root.Attribute("v"))
                 {
                     return;
                 }
 
-                XElement contactsElement = xdoc.Root.Element("contacts");
+                XElement contactsElement = xdoc.Root.Element("friends");
                 if (contactsElement != null)
                 {
-                    foreach (var interestInfo in
+                    double il = 0;
+                    foreach (var contact in
                         from contactNode in contactsElement.Elements("contact")
-                        select new
+                        let isDouble = double.TryParse((string)contactNode.Attribute("interestLevel"), out il)
+                        select new _LiteContact
                         {
                             UserId = new FacebookObjectId((string)contactNode.Attribute("uid")),
-                            InterestLevel = (double)contactNode.Attribute("interestLevel")
+                            Name = (string)contactNode.Attribute("name"),
+                            InterestLevel = (isDouble ? (double?)il : null)
                         })
                     {
-                        _userLookupInterestLevels.Add(interestInfo.UserId, interestInfo.InterestLevel);
+                        _friendLookup.Add(contact.UserId, contact);
                     }
                 }
 
                 XElement knownFriendRequestsElement = xdoc.Root.Element("knownFriendRequests");
                 if (knownFriendRequestsElement != null)
                 {
-                    foreach (var requestInfo in
-                        from contactNode in knownFriendRequestsElement.Elements("contact")
-                        select new FacebookObjectId((string)contactNode.Attribute("uid")))
-                    {
-                        _ignoredFriendRequests.Add(requestInfo);
-                    }
+                    _ignoredFriendRequests.AddRange(from contactNode in knownFriendRequestsElement.Elements("contact") select new FacebookObjectId((string)contactNode.Attribute("uid")));
+                }
+
+                XElement unknownFriendRemovalsElement = xdoc.Root.Element("unreadUnfriendings");
+                if (unknownFriendRemovalsElement != null)
+                {
+                    _unknownFriendRemovals.AddRange(from contactNode in knownFriendRequestsElement.Elements("contact") select new FacebookObjectId((string)contactNode.Attribute("uid")));
+                }
+
+                XElement readMessagesElement = xdoc.Root.Element("readMessages");
+                if (readMessagesElement != null)
+                {
+                    _readMessages.AddRange(from messageNode in readMessagesElement.Elements("message") select new FacebookObjectId((string)messageNode.Attribute("id")));
                 }
 
                 _hasUserInfo = true;
             }
             catch
             {
-                ClearUserInfo();
+                _ClearUserInfo();
                 throw;
             }
         }
@@ -145,7 +198,7 @@ namespace Contigo
             {
                 SessionKey = (string)sessionInfoElement.Element("sessionKey");
                 SessionSecret = (string)sessionInfoElement.Element("sessionSecret");
-                UserId = new FacebookObjectId((string)sessionInfoElement.Element("userId"));
+                _user.UserId = new FacebookObjectId((string)sessionInfoElement.Element("userId"));
             }
 
             return HasSessionInfo;
@@ -155,7 +208,79 @@ namespace Contigo
         {
             lock (_lock)
             {
+                _VerifyHasUserInformation();
+
                 return _ignoredFriendRequests.Contains(uid);
+            }
+        }
+
+        public void UpdateInterestLevels(List<FacebookContact> friendsList)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                foreach (FacebookContact friend in friendsList)
+                {
+                    double? interestLevel = GetInterestLevel(friend.UserId);
+                    if (interestLevel != null)
+                    {
+                        friend.InterestLevel = interestLevel.Value;
+                    }
+                }
+            }
+        }
+
+        public void UpdateCurrentFriends(List<FacebookContact> friendsList)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+
+                var friendsLite = new Dictionary<FacebookObjectId, _LiteContact>();
+                friendsLite.AddRange(from c in friendsList select new KeyValuePair<FacebookObjectId, _LiteContact>(c.UserId, new _LiteContact(c)));
+
+                List<FacebookObjectId> missingFriends = _friendLookup.Keys.Except(friendsLite.Keys).ToList();
+                _friendLookup.Clear();
+                _friendLookup.AddRange(friendsLite.AsEnumerable());
+
+                _AddUnfriendNotifications(missingFriends);
+            }
+        }
+
+        private void _AddUnfriendNotifications(List<FacebookObjectId> unfriends)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+
+                _unknownFriendRemovals.AddRange(unfriends);
+            }
+        }
+
+        public void MarkMessageAsRead(FacebookObjectId messageId)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                _readMessages.Add(messageId);
+            }
+        }
+
+        public bool IsMessageRead(FacebookObjectId messageId)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                return _readMessages.Contains(messageId);
+            }
+        }
+
+        public void RemoveReadMessagesExcept(IEnumerable<FacebookObjectId> messageIds)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                _readMessages.RemoveWhere(id => !messageIds.Contains(id));
             }
         }
 
@@ -163,10 +288,20 @@ namespace Contigo
         {
             lock (_lock)
             {
+                _VerifyHasUserInformation();
                 if (!_ignoredFriendRequests.Contains(userId))
                 {
                     _ignoredFriendRequests.Add(userId);
                 }
+            }
+        }
+
+        public void MarkUnfriendNotificationAsRead(FacebookObjectId userId)
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                _unknownFriendRemovals.Remove(userId);
             }
         }
 
@@ -177,7 +312,17 @@ namespace Contigo
         {
             lock (_lock)
             {
+                _VerifyHasUserInformation();
                 _ignoredFriendRequests.RemoveWhere(uid => !uids.Contains(uid));
+            }
+        }
+
+        public List<FacebookObjectId> GetUnfriendNotifications()
+        {
+            lock (_lock)
+            {
+                _VerifyHasUserInformation();
+                return _unknownFriendRemovals.ToList();
             }
         }
 
@@ -185,8 +330,17 @@ namespace Contigo
         {
             lock (_lock)
             {
-                Assert.IsTrue(FacebookObjectId.IsValid(userId));
-                _userLookupInterestLevels[userId] = value;
+                _VerifyHasUserInformation();
+
+                Assert.IsNotDefault(userId);
+
+                if (userId == _user.UserId)
+                {
+                    _user.InterestLevel = value;
+                    return;
+                }
+
+                _friendLookup[userId].InterestLevel = value;
             }
         }
 
@@ -194,10 +348,19 @@ namespace Contigo
         {
             lock (_lock)
             {
-                double i;
-                if (_userLookupInterestLevels.TryGetValue(userId, out i))
+                _VerifyHasUserInformation();
+
+                Assert.IsNotDefault(userId);
+
+                if (userId == UserId)
                 {
-                    return i;
+                    return _user.InterestLevel;
+                }
+
+                _LiteContact c;
+                if (_friendLookup.TryGetValue(userId, out c))
+                {
+                    return c.InterestLevel;
                 }
                 return null;
             }
@@ -205,16 +368,16 @@ namespace Contigo
 
         public void ClearSessionInfo()
         {
-            // Don't clear the user id just because we're clearing session info.
-            SetSessionInfo(null, null, UserId);
+            SetSessionInfo(null, null, default(FacebookObjectId));
         }
 
-        public void ClearUserInfo()
+        private void _ClearUserInfo()
         {
             lock (_lock)
             {
                 _ignoredFriendRequests.Clear();
-                _userLookupInterestLevels.Clear();
+                _unknownFriendRemovals.Clear();
+                _friendLookup.Clear();
 
                 _hasUserInfo = false;
             }
@@ -226,11 +389,15 @@ namespace Contigo
             {
                 SessionKey = sessionKey;
                 SessionSecret = sessionSecret;
-                UserId = userId;
+                _user.UserId = userId;
 
                 if (HasSessionInfo)
                 {
                     _GetUserInfo();
+                }
+                else
+                {
+                    _ClearUserInfo();
                 }
             }
         }
@@ -240,7 +407,7 @@ namespace Contigo
             get
             {
                 return !string.IsNullOrEmpty(SessionKey) 
-                    && !string.IsNullOrEmpty(SessionSecret)
+                    && !string.IsNullOrEmpty(SessionSecret) 
                     && FacebookObjectId.IsValid(UserId);
             }
         }
@@ -260,17 +427,25 @@ namespace Contigo
                 if (FacebookObjectId.IsValid(UserId))
                 {
                     XElement userXml = new XElement("userSettings",
-                        new XAttribute("v", 1),
-                        new XElement("contacts",
-                            from pair in _userLookupInterestLevels
-                            where pair.Value != FacebookContact.DefaultInterestLevel
-                            select new XElement("contact",
-                                new XAttribute("interestLevel", pair.Value),
-                                new XAttribute("uid", pair.Key))),
+                        new XAttribute("v", 2),
+                        new XElement("friends",
+                            from c in _friendLookup.Values
+                            select (new XElement("contact"))
+                                .NewXAttribute("interestLevel", c.InterestLevel)
+                                .NewXAttribute("name", c.Name)
+                                .NewXAttribute("uid", c.UserId)),
                         new XElement("knownFriendRequests",
                             from uid in _ignoredFriendRequests
                             select new XElement("contact",
-                                new XAttribute("uid", uid))));
+                                new XAttribute("uid", uid))),
+                        new XElement("unreadUnfriendings",
+                            from uid in _unknownFriendRemovals
+                            select new XElement("contact",
+                                new XAttribute("uid", uid))),
+                        new XElement("readMessages",
+                            from messageId in _readMessages
+                            select new XElement("message",
+                                new XAttribute("id", messageId))));
                     userXml.Save(Path.Combine(Path.Combine(_settingsRootPath, UserId.ToString()), _UserSettingsFileName));
                 }
             }

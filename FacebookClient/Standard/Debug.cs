@@ -16,6 +16,7 @@ namespace Standard
     using System;
     using System.Diagnostics;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>A static class for verifying assumptions.</summary>
     internal static class Assert
@@ -76,6 +77,29 @@ namespace Standard
         [Conditional("DEBUG")]
         public static void AreEqual<T>(T expected, T actual)
         {
+            if (null == expected)
+            {
+                // Two nulls are considered equal, regardless of type semantics.
+                if (null != actual && !actual.Equals(expected))
+                {
+                    _Break();
+                }
+            }
+            else if (!expected.Equals(actual))
+            {
+                _Break();
+            }
+        }
+
+        [Conditional("DEBUG")]
+        public static void LazyAreEqual<T>(Func<T> expectedResult, Func<T> actualResult)
+        {
+            Assert.IsNotNull(expectedResult);
+            Assert.IsNotNull(actualResult);
+
+            T actual = actualResult();
+            T expected = expectedResult();
+
             if (null == expected)
             {
                 // Two nulls are considered equal, regardless of type semantics.
@@ -379,7 +403,8 @@ namespace Standard
         [Conditional("DEBUG")]
         public static void IsNotOnMainThread()
         {
-            if (System.Windows.Application.Current.Dispatcher.CheckAccess())
+            Application app = System.Windows.Application.Current;
+            if (app != null && app.Dispatcher.CheckAccess())
             {
                 _Break();
             }

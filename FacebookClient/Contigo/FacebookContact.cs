@@ -406,7 +406,6 @@
         private SmallString _tv;
         private SmallString _website;
 
-        private double? _nullableInterestLevel;
         private DateTime _lastActivitySync = DateTime.MinValue;
 
         private SmallString _lowerNameSmallString;
@@ -869,18 +868,20 @@
             }
         }
 
+        internal double? NullableInterestLevel { get; private set; }
+
         /// <summary>
         /// A percentage value to indicate how much information we should pull for a person.
         /// </summary>
         public double InterestLevel
         {
-            get { return _nullableInterestLevel ?? DefaultInterestLevel; }
+            get { return NullableInterestLevel ?? DefaultInterestLevel; }
             set
             {
                 double boundedValue = Math.Min(1, Math.Max(value, 0));
-                if (_nullableInterestLevel != boundedValue)
+                if (NullableInterestLevel != boundedValue)
                 {
-                    _nullableInterestLevel = boundedValue;
+                    NullableInterestLevel = boundedValue;
                     SourceService.TagAsInteresting(this);
                     _NotifyPropertyChanged("InterestLevel");
                 }
@@ -986,7 +987,7 @@
             Website = other.Website;
 
             // Only merge InterestLevel if it's been explicitly set.
-            if (other._nullableInterestLevel.HasValue)
+            if (other.NullableInterestLevel.HasValue)
             {
                 this.InterestLevel = other.InterestLevel;
             }
