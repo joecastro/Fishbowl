@@ -641,8 +641,15 @@ namespace Contigo
                 { "fields", _UserColumns },
             };
 
-            string result = Utility.FailableFunction(10, () => _SendRequest(userMap));
-            List<FacebookContact> contactList = _serializer.DeserializeUsersList(result);
+            // Facebook bogusly errors this call fairly frequently.
+            List<FacebookContact> contactList = null;
+            int reaskCount = 0;
+            do
+            {
+                string result = Utility.FailableFunction(5, () => _SendRequest(userMap));
+                contactList = _serializer.DeserializeUsersList(result);
+            } while (contactList.Count == 0 && ++reaskCount < 3);
+
             if (contactList.Count == 0)
             {
                 throw new FacebookException("Unable to obtain information about the user.", null);
