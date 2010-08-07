@@ -375,8 +375,11 @@ namespace Contigo
                         bool needToQueue = false;
                         lock (_localLock)
                         {
-                            needToQueue = !_asyncPhotoPool.HasPendingRequests;
-                            _activePhotoRequests.Push(activeRequest);
+                            if (_asyncPhotoPool != null)
+                            {
+                                needToQueue = !_asyncPhotoPool.HasPendingRequests;
+                                _activePhotoRequests.Push(activeRequest);
+                            }
                         }
 
                         if (needToQueue)

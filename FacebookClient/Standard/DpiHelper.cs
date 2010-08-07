@@ -67,5 +67,20 @@ namespace Standard
 
             return new Rect(topLeft, bottomRight);
         }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static Size LogicalSizeToDevice(Size logicalSize)
+        {
+            Point pt = LogicalPixelsToDevice(new Point(logicalSize.Width, logicalSize.Height));
+
+            return new Size { Width = pt.X, Height = pt.Y };
+        }
+
+        public static Size DeviceSizeToLogical(Size deviceSize)
+        {
+            Point pt = DevicePixelsToLogical(new Point(deviceSize.Width, deviceSize.Height));
+
+            return new Size(pt.X, pt.Y);
+        }
     }
 }

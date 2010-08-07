@@ -102,18 +102,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Standard\ComGuids.cs">
+      <Link>Standard\ComGuids.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Debug.cs">
+      <Link>Standard\Debug.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\DoubleUtil.cs">
+      <Link>Standard\DoubleUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\DpiHelper.cs">
+      <Link>Standard\DpiHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\ErrorCodes.cs">
+      <Link>Standard\ErrorCodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\MessageWindow.cs">
+      <Link>Standard\MessageWindow.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\NativeMethods.cs">
+      <Link>Standard\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\ShellProvider.cs">
+      <Link>Standard\ShellProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\StreamHelper.cs">
+      <Link>Standard\StreamHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Utilities.cs">
+      <Link>Standard\Utilities.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Verify.cs">
+      <Link>Standard\Verify.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Standard\ComGuids.cs" />
-    <Compile Include="Standard\Debug.cs" />
-    <Compile Include="Standard\DoubleUtil.cs" />
-    <Compile Include="Standard\DpiHelper.cs" />
-    <Compile Include="Standard\ErrorCodes.cs" />
-    <Compile Include="Standard\MessageWindow.cs" />
-    <Compile Include="Standard\NativeMethods.cs" />
-    <Compile Include="Standard\ShellProvider.cs" />
-    <Compile Include="Standard\StreamHelper.cs" />
-    <Compile Include="Standard\Utilities.cs" />
-    <Compile Include="Standard\Verify.cs" />
     <Compile Include="SystemCommands.cs" />
     <Compile Include="SystemParameters2.cs" />
     <Compile Include="WindowChrome.cs" />

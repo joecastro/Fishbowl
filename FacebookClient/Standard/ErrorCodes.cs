@@ -64,7 +64,10 @@ namespace Standard
         public static readonly Win32Error ERROR_NESTING_NOT_ALLOWED = new Win32Error(215);
         /// <summary>Illegal operation attempted on a registry key that has been marked for deletion.</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
-        public static readonly Win32Error ERROR_KEY_DELETED = new Win32Error(1018); 
+        public static readonly Win32Error ERROR_KEY_DELETED = new Win32Error(1018);
+        /// <summary>Element not found.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly Win32Error ERROR_NOT_FOUND = new Win32Error(1168);
         /// <summary>There was no match for the specified key in the index.</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly Win32Error ERROR_NO_MATCH = new Win32Error(1169);
@@ -202,6 +205,9 @@ namespace Standard
         /// <summary>S_FALSE</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT S_FALSE = new HRESULT(0x00000001);
+        /// <summary>E_PENDING</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        public static readonly HRESULT E_PENDING = new HRESULT(0x8000000A);
         /// <summary>E_NOTIMPL</summary>
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         public static readonly HRESULT E_NOTIMPL = new HRESULT(0x80004001);

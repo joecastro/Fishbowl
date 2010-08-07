@@ -32,13 +32,63 @@ namespace Standard
     }
 
     /// <summary>
+    /// HIGHCONTRAST flags
+    /// </summary>
+    [Flags]
+    internal enum HCF
+    {
+        HIGHCONTRASTON = 0x00000001,
+        AVAILABLE = 0x00000002,
+        HOTKEYACTIVE = 0x00000004,
+        CONFIRMHOTKEY = 0x00000008,
+        HOTKEYSOUND = 0x00000010,
+        INDICATOR = 0x00000020,
+        HOTKEYAVAILABLE = 0x00000040,
+    }
+
+    /// <summary>
     /// BITMAPINFOHEADER Compression type.  BI_*.
     /// </summary>
     internal enum BI
     {
         RGB = 0,
     }
-    
+
+    /// <summary>
+    /// CombingRgn flags.  RGN_*
+    /// </summary>
+    internal enum RGN
+    {
+        /// <summary>
+        /// Creates the intersection of the two combined regions.
+        /// </summary>
+        AND = 1,
+        /// <summary>
+        /// Creates the union of two combined regions.
+        /// </summary>
+        OR = 2,
+        /// <summary>
+        /// Creates the union of two combined regions except for any overlapping areas.
+        /// </summary>
+        XOR = 3,
+        /// <summary>
+        /// Combines the parts of hrgnSrc1 that are not part of hrgnSrc2.
+        /// </summary>
+        DIFF = 4,
+        /// <summary>
+        /// Creates a copy of the region identified by hrgnSrc1.
+        /// </summary>
+        COPY = 5,
+    }
+
+    internal enum CombineRgnResult
+    {
+        ERROR = 0,
+        NULLREGION = 1,
+        SIMPLEREGION = 2,
+        COMPLEXREGION = 3,
+    }
+
     /// <summary>
     /// For IWebBrowser2.  OLECMDEXECOPT_*
     /// </summary>
@@ -335,8 +385,238 @@ namespace Standard
     /// </summary>
     internal enum SPI
     {
-        SETDESKWALLPAPER = 20,
-        GETNONCLIENTMETRICS = 41,
+        GETBEEP = 0x0001,
+        SETBEEP = 0x0002,
+        GETMOUSE = 0x0003,
+        SETMOUSE = 0x0004,
+        GETBORDER = 0x0005,
+        SETBORDER = 0x0006,
+        GETKEYBOARDSPEED = 0x000A,
+        SETKEYBOARDSPEED = 0x000B,
+        LANGDRIVER = 0x000C,
+        ICONHORIZONTALSPACING = 0x000D,
+        GETSCREENSAVETIMEOUT = 0x000E,
+        SETSCREENSAVETIMEOUT = 0x000F,
+        GETSCREENSAVEACTIVE = 0x0010,
+        SETSCREENSAVEACTIVE = 0x0011,
+        GETGRIDGRANULARITY = 0x0012,
+        SETGRIDGRANULARITY = 0x0013,
+        SETDESKWALLPAPER = 0x0014,
+        SETDESKPATTERN = 0x0015,
+        GETKEYBOARDDELAY = 0x0016,
+        SETKEYBOARDDELAY = 0x0017,
+        ICONVERTICALSPACING = 0x0018,
+        GETICONTITLEWRAP = 0x0019,
+        SETICONTITLEWRAP = 0x001A,
+        GETMENUDROPALIGNMENT = 0x001B,
+        SETMENUDROPALIGNMENT = 0x001C,
+        SETDOUBLECLKWIDTH = 0x001D,
+        SETDOUBLECLKHEIGHT = 0x001E,
+        GETICONTITLELOGFONT = 0x001F,
+        SETDOUBLECLICKTIME = 0x0020,
+        SETMOUSEBUTTONSWAP = 0x0021,
+        SETICONTITLELOGFONT = 0x0022,
+        GETFASTTASKSWITCH = 0x0023,
+        SETFASTTASKSWITCH = 0x0024,
+
+        SETDRAGFULLWINDOWS = 0x0025,
+        GETDRAGFULLWINDOWS = 0x0026,
+        GETNONCLIENTMETRICS = 0x0029,
+        SETNONCLIENTMETRICS = 0x002A,
+        GETMINIMIZEDMETRICS = 0x002B,
+        SETMINIMIZEDMETRICS = 0x002C,
+        GETICONMETRICS = 0x002D,
+        SETICONMETRICS = 0x002E,
+        SETWORKAREA = 0x002F,
+        GETWORKAREA = 0x0030,
+        SETPENWINDOWS = 0x0031,
+        GETHIGHCONTRAST = 0x0042,
+        SETHIGHCONTRAST = 0x0043,
+        GETKEYBOARDPREF = 0x0044,
+        SETKEYBOARDPREF = 0x0045,
+        GETSCREENREADER = 0x0046,
+        SETSCREENREADER = 0x0047,
+        GETANIMATION = 0x0048,
+        SETANIMATION = 0x0049,
+        GETFONTSMOOTHING = 0x004A,
+        SETFONTSMOOTHING = 0x004B,
+        SETDRAGWIDTH = 0x004C,
+        SETDRAGHEIGHT = 0x004D,
+        SETHANDHELD = 0x004E,
+        GETLOWPOWERTIMEOUT = 0x004F,
+        GETPOWEROFFTIMEOUT = 0x0050,
+        SETLOWPOWERTIMEOUT = 0x0051,
+        SETPOWEROFFTIMEOUT = 0x0052,
+        GETLOWPOWERACTIVE = 0x0053,
+        GETPOWEROFFACTIVE = 0x0054,
+        SETLOWPOWERACTIVE = 0x0055,
+        SETPOWEROFFACTIVE = 0x0056,
+        SETCURSORS = 0x0057,
+        SETICONS = 0x0058,
+        GETDEFAULTINPUTLANG = 0x0059,
+        SETDEFAULTINPUTLANG = 0x005A,
+        SETLANGTOGGLE = 0x005B,
+        GETWINDOWSEXTENSION = 0x005C,
+        SETMOUSETRAILS = 0x005D,
+        GETMOUSETRAILS = 0x005E,
+        SETSCREENSAVERRUNNING = 0x0061,
+        SCREENSAVERRUNNING = SETSCREENSAVERRUNNING,
+        GETFILTERKEYS = 0x0032,
+        SETFILTERKEYS = 0x0033,
+        GETTOGGLEKEYS = 0x0034,
+        SETTOGGLEKEYS = 0x0035,
+        GETMOUSEKEYS = 0x0036,
+        SETMOUSEKEYS = 0x0037,
+        GETSHOWSOUNDS = 0x0038,
+        SETSHOWSOUNDS = 0x0039,
+        GETSTICKYKEYS = 0x003A,
+        SETSTICKYKEYS = 0x003B,
+        GETACCESSTIMEOUT = 0x003C,
+        SETACCESSTIMEOUT = 0x003D,
+
+        GETSERIALKEYS = 0x003E,
+        SETSERIALKEYS = 0x003F,
+        GETSOUNDSENTRY = 0x0040,
+        SETSOUNDSENTRY = 0x0041,
+        GETSNAPTODEFBUTTON = 0x005F,
+        SETSNAPTODEFBUTTON = 0x0060,
+        GETMOUSEHOVERWIDTH = 0x0062,
+        SETMOUSEHOVERWIDTH = 0x0063,
+        GETMOUSEHOVERHEIGHT = 0x0064,
+        SETMOUSEHOVERHEIGHT = 0x0065,
+        GETMOUSEHOVERTIME = 0x0066,
+        SETMOUSEHOVERTIME = 0x0067,
+        GETWHEELSCROLLLINES = 0x0068,
+        SETWHEELSCROLLLINES = 0x0069,
+        GETMENUSHOWDELAY = 0x006A,
+        SETMENUSHOWDELAY = 0x006B,
+
+        GETWHEELSCROLLCHARS = 0x006C,
+        SETWHEELSCROLLCHARS = 0x006D,
+
+        GETSHOWIMEUI = 0x006E,
+        SETSHOWIMEUI = 0x006F,
+
+        GETMOUSESPEED = 0x0070,
+        SETMOUSESPEED = 0x0071,
+        GETSCREENSAVERRUNNING = 0x0072,
+        GETDESKWALLPAPER = 0x0073,
+
+        GETAUDIODESCRIPTION = 0x0074,
+        SETAUDIODESCRIPTION = 0x0075,
+
+        GETSCREENSAVESECURE = 0x0076,
+        SETSCREENSAVESECURE = 0x0077,
+
+        GETHUNGAPPTIMEOUT = 0x0078,
+        SETHUNGAPPTIMEOUT = 0x0079,
+        GETWAITTOKILLTIMEOUT = 0x007A,
+        SETWAITTOKILLTIMEOUT = 0x007B,
+        GETWAITTOKILLSERVICETIMEOUT = 0x007C,
+        SETWAITTOKILLSERVICETIMEOUT = 0x007D,
+        GETMOUSEDOCKTHRESHOLD = 0x007E,
+        SETMOUSEDOCKTHRESHOLD = 0x007F,
+        GETPENDOCKTHRESHOLD = 0x0080,
+        SETPENDOCKTHRESHOLD = 0x0081,
+        GETWINARRANGING = 0x0082,
+        SETWINARRANGING = 0x0083,
+        GETMOUSEDRAGOUTTHRESHOLD = 0x0084,
+        SETMOUSEDRAGOUTTHRESHOLD = 0x0085,
+        GETPENDRAGOUTTHRESHOLD = 0x0086,
+        SETPENDRAGOUTTHRESHOLD = 0x0087,
+        GETMOUSESIDEMOVETHRESHOLD = 0x0088,
+        SETMOUSESIDEMOVETHRESHOLD = 0x0089,
+        GETPENSIDEMOVETHRESHOLD = 0x008A,
+        SETPENSIDEMOVETHRESHOLD = 0x008B,
+        GETDRAGFROMMAXIMIZE = 0x008C,
+        SETDRAGFROMMAXIMIZE = 0x008D,
+        GETSNAPSIZING = 0x008E,
+        SETSNAPSIZING = 0x008F,
+        GETDOCKMOVING = 0x0090,
+        SETDOCKMOVING = 0x0091,
+
+        GETACTIVEWINDOWTRACKING = 0x1000,
+        SETACTIVEWINDOWTRACKING = 0x1001,
+        GETMENUANIMATION = 0x1002,
+        SETMENUANIMATION = 0x1003,
+        GETCOMBOBOXANIMATION = 0x1004,
+        SETCOMBOBOXANIMATION = 0x1005,
+        GETLISTBOXSMOOTHSCROLLING = 0x1006,
+        SETLISTBOXSMOOTHSCROLLING = 0x1007,
+        GETGRADIENTCAPTIONS = 0x1008,
+        SETGRADIENTCAPTIONS = 0x1009,
+        GETKEYBOARDCUES = 0x100A,
+        SETKEYBOARDCUES = 0x100B,
+        GETMENUUNDERLINES = GETKEYBOARDCUES,
+        SETMENUUNDERLINES = SETKEYBOARDCUES,
+        GETACTIVEWNDTRKZORDER = 0x100C,
+        SETACTIVEWNDTRKZORDER = 0x100D,
+        GETHOTTRACKING = 0x100E,
+        SETHOTTRACKING = 0x100F,
+        GETMENUFADE = 0x1012,
+        SETMENUFADE = 0x1013,
+        GETSELECTIONFADE = 0x1014,
+        SETSELECTIONFADE = 0x1015,
+        GETTOOLTIPANIMATION = 0x1016,
+        SETTOOLTIPANIMATION = 0x1017,
+        GETTOOLTIPFADE = 0x1018,
+        SETTOOLTIPFADE = 0x1019,
+        GETCURSORSHADOW = 0x101A,
+        SETCURSORSHADOW = 0x101B,
+        GETMOUSESONAR = 0x101C,
+        SETMOUSESONAR = 0x101D,
+        GETMOUSECLICKLOCK = 0x101E,
+        SETMOUSECLICKLOCK = 0x101F,
+        GETMOUSEVANISH = 0x1020,
+        SETMOUSEVANISH = 0x1021,
+        GETFLATMENU = 0x1022,
+        SETFLATMENU = 0x1023,
+        GETDROPSHADOW = 0x1024,
+        SETDROPSHADOW = 0x1025,
+        GETBLOCKSENDINPUTRESETS = 0x1026,
+        SETBLOCKSENDINPUTRESETS = 0x1027,
+
+        GETUIEFFECTS = 0x103E,
+        SETUIEFFECTS = 0x103F,
+
+        GETDISABLEOVERLAPPEDCONTENT = 0x1040,
+        SETDISABLEOVERLAPPEDCONTENT = 0x1041,
+        GETCLIENTAREAANIMATION = 0x1042,
+        SETCLIENTAREAANIMATION = 0x1043,
+        GETCLEARTYPE = 0x1048,
+        SETCLEARTYPE = 0x1049,
+        GETSPEECHRECOGNITION = 0x104A,
+        SETSPEECHRECOGNITION = 0x104B,
+
+        GETFOREGROUNDLOCKTIMEOUT = 0x2000,
+        SETFOREGROUNDLOCKTIMEOUT = 0x2001,
+        GETACTIVEWNDTRKTIMEOUT = 0x2002,
+        SETACTIVEWNDTRKTIMEOUT = 0x2003,
+        GETFOREGROUNDFLASHCOUNT = 0x2004,
+        SETFOREGROUNDFLASHCOUNT = 0x2005,
+        GETCARETWIDTH = 0x2006,
+        SETCARETWIDTH = 0x2007,
+
+        GETMOUSECLICKLOCKTIME = 0x2008,
+        SETMOUSECLICKLOCKTIME = 0x2009,
+        GETFONTSMOOTHINGTYPE = 0x200A,
+        SETFONTSMOOTHINGTYPE = 0x200B,
+
+        GETFONTSMOOTHINGCONTRAST = 0x200C,
+        SETFONTSMOOTHINGCONTRAST = 0x200D,
+
+        GETFOCUSBORDERWIDTH = 0x200E,
+        SETFOCUSBORDERWIDTH = 0x200F,
+        GETFOCUSBORDERHEIGHT = 0x2010,
+        SETFOCUSBORDERHEIGHT = 0x2011,
+
+        GETFONTSMOOTHINGORIENTATION = 0x2012,
+        SETFONTSMOOTHINGORIENTATION = 0x2013,
+
+        GETMINIMUMHITRADIUS = 0x2014,
+        SETMINIMUMHITRADIUS = 0x2015,
+        GETMESSAGEDURATION = 0x2016,
+        SETMESSAGEDURATION = 0x2017,
     }
 
     /// <summary>
@@ -348,6 +628,43 @@ namespace Standard
         None = 0,
         UPDATEINIFILE = 0x01,
         SENDWININICHANGE = 0x02,
+    }
+
+    [Flags]
+    internal enum STATE_SYSTEM
+    {
+        UNAVAILABLE = 0x00000001, // Disabled
+        SELECTED = 0x00000002,
+        FOCUSED = 0x00000004,
+        PRESSED = 0x00000008,
+        CHECKED = 0x00000010,
+        MIXED = 0x00000020,  // 3-state checkbox or toolbar button
+        INDETERMINATE = MIXED,
+        READONLY = 0x00000040,
+        HOTTRACKED = 0x00000080,
+        DEFAULT = 0x00000100,
+        EXPANDED = 0x00000200,
+        COLLAPSED = 0x00000400,
+        BUSY = 0x00000800,
+        FLOATING = 0x00001000,  // Children "owned" not "contained" by parent
+        MARQUEED = 0x00002000,
+        ANIMATED = 0x00004000,
+        INVISIBLE = 0x00008000,
+        OFFSCREEN = 0x00010000,
+        SIZEABLE = 0x00020000,
+        MOVEABLE = 0x00040000,
+        SELFVOICING = 0x00080000,
+        FOCUSABLE = 0x00100000,
+        SELECTABLE = 0x00200000,
+        LINKED = 0x00400000,
+        TRAVERSED = 0x00800000,
+        MULTISELECTABLE = 0x01000000,  // Supports multiple selection
+        EXTSELECTABLE = 0x02000000,  // Supports extended selection
+        ALERT_LOW = 0x04000000,  // This information is of low priority
+        ALERT_MEDIUM = 0x08000000,  // This information is of medium priority
+        ALERT_HIGH = 0x10000000,  // This information is of high priority
+        PROTECTED = 0x20000000,  // access to this is restricted
+        VALID = 0x3FFFFFFF,
     }
 
     internal enum StockObject : int
@@ -568,6 +885,8 @@ namespace Standard
         DWMNCRENDERINGCHANGED = 0x031F,
         DWMCOLORIZATIONCOLORCHANGED = 0x0320,
         DWMWINDOWMAXIMIZEDCHANGE = 0x0321,
+
+        GETTITLEBARINFOEX = 0x033F,
 
         #region Windows 7
         DWMSENDICONICTHUMBNAIL = 0x0323,
@@ -992,6 +1311,18 @@ namespace Standard
         OPAQUE = 4,
     }
 
+    internal enum WVR
+    {
+        ALIGNTOP = 0x0010,
+        ALIGNLEFT = 0x0020,
+        ALIGNBOTTOM = 0x0040,
+        ALIGNRIGHT = 0x0080,
+        HREDRAW = 0x0100,
+        VREDRAW = 0x0200,
+        VALIDRECTS = 0x0400,
+        REDRAW = HREDRAW | VREDRAW,
+    }
+
     #endregion
 
     #region SafeHandles
@@ -1295,6 +1626,16 @@ namespace Standard
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    internal struct HIGHCONTRAST
+    {
+        public int cbSize;
+        public HCF dwFlags;
+        //[MarshalAs(UnmanagedType.LPWStr, SizeConst=80)]
+        //public String lpszDefaultScheme;
+        public IntPtr lpszDefaultScheme;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     internal struct RGBQUAD
     {
         public byte rgbBlue;
@@ -1366,6 +1707,39 @@ namespace Standard
         public int fAnyOperationsAborted;
         public IntPtr hNameMappings;
         public string lpszProgressTitle;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct TITLEBARINFO
+    {
+        public int cbSize;
+        public RECT rcTitleBar;
+        public STATE_SYSTEM rgstate_TitleBar;
+        public STATE_SYSTEM rgstate_Reserved;
+        public STATE_SYSTEM rgstate_MinimizeButton;
+        public STATE_SYSTEM rgstate_MaximizeButton;
+        public STATE_SYSTEM rgstate_HelpButton;
+        public STATE_SYSTEM rgstate_CloseButton;
+    }
+
+    // New to Vista.
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct TITLEBARINFOEX
+    {
+        public int cbSize;
+        public RECT rcTitleBar;
+        public STATE_SYSTEM rgstate_TitleBar;
+        public STATE_SYSTEM rgstate_Reserved;
+        public STATE_SYSTEM rgstate_MinimizeButton;
+        public STATE_SYSTEM rgstate_MaximizeButton;
+        public STATE_SYSTEM rgstate_HelpButton;
+        public STATE_SYSTEM rgstate_CloseButton;
+        public RECT rgrect_TitleBar;
+        public RECT rgrect_Reserved;
+        public RECT rgrect_MinimizeButton;
+        public RECT rgrect_MaximizeButton;
+        public RECT rgrect_HelpButton;
+        public RECT rgrect_CloseButton;
     }
 
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
@@ -1723,6 +2097,37 @@ namespace Standard
             get { return new SIZE { cx = Width, cy = Height }; }
         }
 
+        public static RECT Union(RECT rect1, RECT rect2)
+        {
+            return new RECT
+            {
+                Left = Math.Min(rect1.Left, rect2.Left),
+                Top = Math.Min(rect1.Top, rect2.Top),
+                Right = Math.Max(rect1.Right, rect2.Right),
+                Bottom = Math.Max(rect1.Bottom, rect2.Bottom),
+            };
+        }
+
+        public override bool Equals(object obj)
+        {
+            try
+            {
+                var rc = (RECT)obj;
+                return rc._bottom == _bottom
+                    && rc._left == _left
+                    && rc._right == _right
+                    && rc._top == _top;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return (_left << 16 | Utility.LOWORD(_right)) ^ (_top << 16 | Utility.LOWORD(_bottom));
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -1894,6 +2299,58 @@ namespace Standard
         public MOUSEINPUT mi;
     };
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct UNSIGNED_RATIO
+    {
+        public uint uiNumerator;
+        public uint uiDenominator;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    internal struct DWM_TIMING_INFO
+    {
+        public int cbSize;
+        public UNSIGNED_RATIO rateRefresh;
+        public ulong qpcRefreshPeriod;
+        public UNSIGNED_RATIO rateCompose;
+        public ulong qpcVBlank;
+        public ulong cRefresh;
+        public uint cDXRefresh;
+        public ulong qpcCompose;
+        public ulong cFrame;
+        public uint cDXPresent;
+        public ulong cRefreshFrame;
+        public ulong cFrameSubmitted;
+        public uint cDXPresentSubmitted;
+        public ulong cFrameConfirmed;
+        public uint cDXPresentConfirmed;
+        public ulong cRefreshConfirmed;
+        public uint cDXRefreshConfirmed;
+        public ulong cFramesLate;
+        public uint cFramesOutstanding;
+        public ulong cFrameDisplayed;
+        public ulong qpcFrameDisplayed;
+        public ulong cRefreshFrameDisplayed;
+        public ulong cFrameComplete;
+        public ulong qpcFrameComplete;
+        public ulong cFramePending;
+        public ulong qpcFramePending;
+        public ulong cFramesDisplayed;
+        public ulong cFramesComplete;
+        public ulong cFramesPending;
+        public ulong cFramesAvailable;
+        public ulong cFramesDropped;
+        public ulong cFramesMissed;
+        public ulong cRefreshNextDisplayed;
+        public ulong cRefreshNextPresented;
+        public ulong cRefreshesDisplayed;
+        public ulong cRefreshesPresented;
+        public ulong cRefreshStarted;
+        public ulong cPixelsReceived;
+        public ulong cPixelsDrawn;
+        public ulong cBuffersEmpty;
+    }
+
     #endregion
 
     #region Interfaces
@@ -2001,6 +2458,10 @@ namespace Standard
             filterInfo = filterstruct.ExtStatus;
             return HRESULT.S_OK;
         }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("gdi32.dll")]
+        public static extern CombineRgnResult CombineRgn(IntPtr hrgnDest, IntPtr hrgnSrc1, IntPtr hrgnSrc2, RGN fnCombineMode);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("shell32.dll", EntryPoint = "CommandLineToArgvW", CharSet = CharSet.Unicode)]
@@ -2186,6 +2647,56 @@ namespace Standard
         public static extern void DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS pMarInset);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("dwmapi.dll", EntryPoint = "DwmGetColorizationColor", PreserveSig = true)]
+        private static extern HRESULT _DwmGetColorizationColor(out uint pcrColorization, [Out, MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
+
+        public static bool DwmGetColorizationColor(out uint pcrColorization, out bool pfOpaqueBlend)
+        {
+            // Make this call safe to make on downlevel OSes...
+            if (Utility.IsOSVistaOrNewer && IsThemeActive())
+            {
+                HRESULT hr = _DwmGetColorizationColor(out pcrColorization, out pfOpaqueBlend);
+                if (hr.Succeeded)
+                {
+                    return true;
+                }
+            }
+
+            // Default values.  If for some reason the native DWM API fails it's never enough of a reason
+            // to bring down the app.  Empirically it still sometimes returns errors even when the theme service is on.
+            // We'll still use the boolean return value to allow the caller to respond if they care.
+            pcrColorization = 0xFF000000;
+            pfOpaqueBlend = true;
+
+            return false;
+        }
+
+        //#define DWM_SIT_DISPLAYFRAME    0x00000001  // Display a window frame around the provided bitmap
+
+        [DllImport("dwmapi.dll", EntryPoint = "DwmGetCompositionTimingInfo")]
+        private static extern HRESULT _DwmGetCompositionTimingInfo(IntPtr hwnd, ref DWM_TIMING_INFO pTimingInfo);
+
+        public static DWM_TIMING_INFO? DwmGetCompositionTimingInfo(IntPtr hwnd)
+        {
+            if (!Utility.IsOSVistaOrNewer)
+            {
+                // API was new to Vista.
+                return null;
+            }
+
+            var dti = new DWM_TIMING_INFO { cbSize = Marshal.SizeOf(typeof(DWM_TIMING_INFO)) };
+            HRESULT hr = _DwmGetCompositionTimingInfo(hwnd, ref dti);
+            if (hr == HRESULT.E_PENDING)
+            {
+                // The system isn't yet ready to respond.  Return null rather than throw.
+                return null;
+            }
+            hr.ThrowIfFailed();
+
+            return dti;
+        }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("dwmapi.dll", EntryPoint = "DwmIsCompositionEnabled", PreserveSig = false)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _DwmIsCompositionEnabled();
@@ -2313,6 +2824,37 @@ namespace Standard
 
             return pt;
         }
+
+        [DllImport("uxtheme.dll", EntryPoint = "GetCurrentThemeName", CharSet = CharSet.Unicode)]
+        private static extern HRESULT _GetCurrentThemeName(
+            StringBuilder pszThemeFileName,
+            int dwMaxNameChars,
+            StringBuilder pszColorBuff,
+            int cchMaxColorChars,
+            StringBuilder pszSizeBuff,
+            int cchMaxSizeChars);
+
+        public static void GetCurrentThemeName(out string themeFileName, out string color, out string size)
+        {
+            // Not expecting strings longer than MAX_PATH.  We will return the error 
+            var fileNameBuilder = new StringBuilder((int)Win32Value.MAX_PATH);
+            var colorBuilder = new StringBuilder((int)Win32Value.MAX_PATH);
+            var sizeBuilder = new StringBuilder((int)Win32Value.MAX_PATH);
+
+            // This will throw if the theme service is not active (e.g. not UxTheme!IsThemeActive).
+            _GetCurrentThemeName(fileNameBuilder, fileNameBuilder.Capacity,
+                                 colorBuilder, colorBuilder.Capacity,
+                                 sizeBuilder, sizeBuilder.Capacity)
+                .ThrowIfFailed();
+
+            themeFileName = fileNameBuilder.ToString();
+            color = colorBuilder.ToString();
+            size = sizeBuilder.ToString();
+        }
+
+        [DllImport("uxtheme.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool IsThemeActive();
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [Obsolete("Use SafeDC.GetDC instead.", true)]
@@ -2695,17 +3237,57 @@ namespace Standard
         public static extern Win32Error SHFileOperation(ref SHFILEOPSTRUCT lpFileOp);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        [DllImport("user32.dll", EntryPoint = "SystemParametersInfo", SetLastError = true)]
+        [DllImport("user32.dll", EntryPoint = "SystemParametersInfoW", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool _SystemParametersInfo(SPI uiAction, int uiParam, [MarshalAs(UnmanagedType.LPWStr)] string pvParam, SPIF fWinIni);
+        private static extern bool _SystemParametersInfo_String(SPI uiAction, int uiParam, [MarshalAs(UnmanagedType.LPWStr)] string pvParam, SPIF fWinIni);
+
+        /// <summary>Overload of SystemParametersInfo for getting and setting NONCLIENTMETRICS.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("user32.dll", EntryPoint = "SystemParametersInfoW", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _SystemParametersInfo_NONCLIENTMETRICS(SPI uiAction, int uiParam, [In, Out] ref NONCLIENTMETRICS pvParam, SPIF fWinIni);
+
+        /// <summary>Overload of SystemParametersInfo for getting and setting HIGHCONTRAST.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DllImport("user32.dll", EntryPoint = "SystemParametersInfoW", SetLastError = true, CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool _SystemParametersInfo_HIGHCONTRAST(SPI uiAction, int uiParam, [In, Out] ref HIGHCONTRAST pvParam, SPIF fWinIni);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static void SystemParametersInfo(SPI uiAction, int uiParam, string pvParam, SPIF fWinIni)
         {
-            if (!_SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni))
+            if (!_SystemParametersInfo_String(uiAction, uiParam, pvParam, fWinIni))
             {
-                throw new Win32Exception();
+                HRESULT.ThrowLastError();
             }
+        }
+
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static NONCLIENTMETRICS SystemParameterInfo_GetNONCLIENTMETRICS()
+        {
+            var metrics = Utility.IsOSVistaOrNewer
+                ? NONCLIENTMETRICS.VistaMetricsStruct
+                : NONCLIENTMETRICS.XPMetricsStruct;
+
+            if (!_SystemParametersInfo_NONCLIENTMETRICS(SPI.GETNONCLIENTMETRICS, metrics.cbSize, ref metrics, SPIF.None))
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return metrics;
+        }
+
+        [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
+        public static HIGHCONTRAST SystemParameterInfo_GetHIGHCONTRAST()
+        {
+            var hc = new HIGHCONTRAST { cbSize = Marshal.SizeOf(typeof(HIGHCONTRAST)) };
+
+            if (!_SystemParametersInfo_HIGHCONTRAST(SPI.GETHIGHCONTRAST, hc.cbSize, ref hc, SPIF.None))
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return hc;
         }
 
         // This function is strange in that it returns a BOOL if TPM_RETURNCMD isn't specified, but otherwise the command Id.
@@ -2747,6 +3329,14 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int SendInput(int nInputs, ref INPUT pInputs, int cbSize);
+
+        // Depending on the message, callers may want to call GetLastError based on the return value.
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, WM Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ShowWindow(IntPtr hwnd, SW nCmdShow);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [DllImport("user32.dll", EntryPoint = "UnregisterClass", SetLastError = true)]

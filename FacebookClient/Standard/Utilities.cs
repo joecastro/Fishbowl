@@ -32,8 +32,9 @@ namespace Standard
     }
 
     internal static partial class Utility
-    {        
+    {
         private static readonly Version _osVersion = Environment.OSVersion.Version;
+        private static readonly Version _presentationFrameworkVersion = Assembly.GetAssembly(typeof(Window)).GetName().Version;
         private static readonly Random _randomNumberGenerator = new Random();
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
@@ -200,116 +201,71 @@ namespace Standard
             return s_bitDepth;
         }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static BitmapFrame GetBestMatch(IList<BitmapFrame> frames, int width, int height)
         {
             return _GetBestMatch(frames, _GetBitDepth(), width, height);
         }
 
-        private static BitmapFrame _GetBestMatch(IList<BitmapFrame> frames, int bitDepth, int width, int height)
+        private static int _MatchImage(BitmapFrame frame, int bitDepth, int width, int height, int bpp)
         {
-            return (from frame in frames
-                    let frameBitDepth = frame.Decoder is IconBitmapDecoder
-                        ? frame.Thumbnail.Format.BitsPerPixel
-                        : frame.Format.BitsPerPixel
-                    // Always prefer using the frame with the best dimensions.
-                    orderby Math.Abs(frame.PixelWidth - width) + Math.Abs(frame.PixelHeight - height)
-                    // If there are multiple frames that are equally good, prefer the one with the closest,
-                    // but not exceeding, bit depth.
-                    orderby frameBitDepth <= bitDepth ? bitDepth - frameBitDepth : int.MaxValue
-                    select frame)
-                .FirstOrDefault();
+            int score = 2 * _WeightedAbs(bpp, bitDepth, false) +
+                    _WeightedAbs(frame.PixelWidth, width, true) +
+                    _WeightedAbs(frame.PixelHeight, height, true);
+
+            return score;
         }
 
-        // Caller is responsible for destroying the HICON
-        // Caller is responsible to ensure that GDI+ has been initialized.
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public static IntPtr GenerateHICON(ImageSource image, Size dimensions)
+        private static int _WeightedAbs(int valueHave, int valueWant, bool fPunish)
         {
-            if (image == null)
+            int diff = (valueHave - valueWant);
+
+            if (diff < 0)
             {
-                return IntPtr.Zero;
+                diff = (fPunish ? -2 : -1) * diff;
             }
 
-            // If we're getting this from a ".ico" resource, then it comes through as a BitmapFrame.
-            // We can use leverage this as a shortcut to get the right 16x16 representation
-            // because DrawImage doesn't do that for us.
-            var bf = image as BitmapFrame;
-            if (bf != null)
-            {
-                bf = GetBestMatch(bf.Decoder.Frames, (int)dimensions.Width, (int)dimensions.Height);
-            }
-            else
-            {
-                // Constrain the dimensions based on the aspect ratio.
-                var drawingDimensions = new Rect(0, 0, dimensions.Width, dimensions.Height);
+            return diff;
+        }
 
-                // There's no reason to assume that the requested image dimensions are square.
-                double renderRatio = dimensions.Width / dimensions.Height;
-                double aspectRatio = image.Width / image.Height;
+        /// From a list of BitmapFrames find the one that best matches the requested dimensions.
+        /// The methods used here are copied from Win32 sources.  We want to be consistent with
+        /// system behaviors.
+        private static BitmapFrame _GetBestMatch(IList<BitmapFrame> frames, int bitDepth, int width, int height)
+        {
+            int bestScore = int.MaxValue;
+            int bestBpp = 0;
+            int bestIndex = 0;
 
-                // If it's smaller than the requested size, then place it in the middle and pad the image.
-                if (image.Width <= dimensions.Width && image.Height <= dimensions.Height)
+            bool isBitmapIconDecoder = frames[0].Decoder is IconBitmapDecoder;
+
+            for (int i = 0; i < frames.Count && bestScore != 0; ++i)
+            {
+                int currentIconBitDepth = isBitmapIconDecoder ? frames[i].Thumbnail.Format.BitsPerPixel : frames[i].Format.BitsPerPixel;
+
+                if (currentIconBitDepth == 0)
                 {
-                    drawingDimensions = new Rect((dimensions.Width - image.Width) / 2, (dimensions.Height - image.Height) / 2, image.Width, image.Height);
-                }
-                else if (renderRatio > aspectRatio)
-                {
-                    double scaledRenderWidth = (image.Width / image.Height) * dimensions.Width;
-                    drawingDimensions = new Rect((dimensions.Width - scaledRenderWidth) / 2, 0, scaledRenderWidth, dimensions.Height);
-                }
-                else if (renderRatio < aspectRatio)
-                {
-                    double scaledRenderHeight = (image.Height / image.Width) * dimensions.Height;
-                    drawingDimensions = new Rect(0, (dimensions.Height - scaledRenderHeight) / 2, dimensions.Width, scaledRenderHeight);
+                    currentIconBitDepth = 8;
                 }
 
-                var dv = new DrawingVisual();
-                DrawingContext dc = dv.RenderOpen();
-                dc.DrawImage(image, drawingDimensions);
-                dc.Close();
-
-                var bmp = new RenderTargetBitmap((int)dimensions.Width, (int)dimensions.Height, 96, 96, PixelFormats.Pbgra32);
-                bmp.Render(dv);
-                bf = BitmapFrame.Create(bmp);
-            }
-
-            // Using GDI+ to convert to an HICON.
-            // I'd rather not duplicate their code.
-            using (MemoryStream memstm = new MemoryStream())
-            {
-                BitmapEncoder enc = new PngBitmapEncoder();
-                enc.Frames.Add(bf);
-                enc.Save(memstm);
-
-                using (var istm = new ManagedIStream(memstm))
+                int score = _MatchImage(frames[i], bitDepth, width, height, currentIconBitDepth);
+                if (score < bestScore)
                 {
-                    // We are not bubbling out GDI+ errors when creating the native image fails.
-                    IntPtr bitmap = IntPtr.Zero;
-                    try
+                    bestIndex = i;
+                    bestBpp = currentIconBitDepth;
+                    bestScore = score;
+                }
+                else if (score == bestScore)
+                {
+                    // Tie breaker: choose the higher color depth.  If that fails, choose first one.
+                    if (bestBpp < currentIconBitDepth)
                     {
-                        Status gpStatus = NativeMethods.GdipCreateBitmapFromStream(istm, out bitmap);
-                        if (Status.Ok != gpStatus)
-                        {
-                            return IntPtr.Zero;
-                        }
-
-                        IntPtr hicon;
-                        gpStatus = NativeMethods.GdipCreateHICONFromBitmap(bitmap, out hicon);
-                        if (Status.Ok != gpStatus)
-                        {
-                            return IntPtr.Zero;
-                        }
-
-                        // Caller is responsible for freeing this.
-                        return hicon;
-                    }
-                    finally
-                    {
-                        Utility.SafeDisposeImage(ref bitmap);
+                        bestIndex = i;
+                        bestBpp = currentIconBitDepth;
                     }
                 }
             }
+
+            return frames[bestIndex];
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
@@ -321,6 +277,18 @@ namespace Standard
         public static int AlphaRGB(Color c)
         {
             return c.R | (c.G << 8) | (c.B << 16) | (c.A << 24);
+        }
+
+        /// <summary>Convert a native integer that represent a color with an alpha channel into a Color struct.</summary>
+        /// <param name="color">The integer that represents the color.  Its bits are of the format 0xAARRGGBB.</param>
+        /// <returns>A Color representation of the parameter.</returns>
+        public static Color ColorFromArgbDword(uint color)
+        {
+            return Color.FromArgb(
+                (byte)((color & 0xFF000000) >> 24),
+                (byte)((color & 0x00FF0000) >> 16),
+                (byte)((color & 0x0000FF00) >> 8),
+                (byte)((color & 0x000000FF) >> 0));
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
@@ -540,6 +508,110 @@ namespace Standard
         }
 
         /// <summary>
+        /// Is this using WPF4?
+        /// </summary>
+        /// <remarks>
+        /// There are a few specific bugs in Window in 3.5SP1 and below that require workarounds
+        /// when handling WM_NCCALCSIZE on the HWND.
+        /// </remarks>
+        public static bool IsPresentationFrameworkVersionLessThan4
+        {
+            get { return _presentationFrameworkVersion < new Version(4, 0); }
+        }
+
+        // Caller is responsible for destroying the HICON
+        // Caller is responsible to ensure that GDI+ has been initialized.
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static IntPtr GenerateHICON(ImageSource image, Size dimensions)
+        {
+            if (image == null)
+            {
+                return IntPtr.Zero;
+            }
+
+            // If we're getting this from a ".ico" resource, then it comes through as a BitmapFrame.
+            // We can use leverage this as a shortcut to get the right 16x16 representation
+            // because DrawImage doesn't do that for us.
+            var bf = image as BitmapFrame;
+            if (bf != null)
+            {
+                bf = GetBestMatch(bf.Decoder.Frames, (int)dimensions.Width, (int)dimensions.Height);
+            }
+            else
+            {
+                // Constrain the dimensions based on the aspect ratio.
+                var drawingDimensions = new Rect(0, 0, dimensions.Width, dimensions.Height);
+
+                // There's no reason to assume that the requested image dimensions are square.
+                double renderRatio = dimensions.Width / dimensions.Height;
+                double aspectRatio = image.Width / image.Height;
+
+                // If it's smaller than the requested size, then place it in the middle and pad the image.
+                if (image.Width <= dimensions.Width && image.Height <= dimensions.Height)
+                {
+                    drawingDimensions = new Rect((dimensions.Width - image.Width) / 2, (dimensions.Height - image.Height) / 2, image.Width, image.Height);
+                }
+                else if (renderRatio > aspectRatio)
+                {
+                    double scaledRenderWidth = (image.Width / image.Height) * dimensions.Width;
+                    drawingDimensions = new Rect((dimensions.Width - scaledRenderWidth) / 2, 0, scaledRenderWidth, dimensions.Height);
+                }
+                else if (renderRatio < aspectRatio)
+                {
+                    double scaledRenderHeight = (image.Height / image.Width) * dimensions.Height;
+                    drawingDimensions = new Rect(0, (dimensions.Height - scaledRenderHeight) / 2, dimensions.Width, scaledRenderHeight);
+                }
+
+                var dv = new DrawingVisual();
+                DrawingContext dc = dv.RenderOpen();
+                dc.DrawImage(image, drawingDimensions);
+                dc.Close();
+
+                var bmp = new RenderTargetBitmap((int)dimensions.Width, (int)dimensions.Height, 96, 96, PixelFormats.Pbgra32);
+                bmp.Render(dv);
+                bf = BitmapFrame.Create(bmp);
+            }
+
+            // Using GDI+ to convert to an HICON.
+            // I'd rather not duplicate their code.
+            using (MemoryStream memstm = new MemoryStream())
+            {
+                BitmapEncoder enc = new PngBitmapEncoder();
+                enc.Frames.Add(bf);
+                enc.Save(memstm);
+
+                using (var istm = new ManagedIStream(memstm))
+                {
+                    // We are not bubbling out GDI+ errors when creating the native image fails.
+                    IntPtr bitmap = IntPtr.Zero;
+                    try
+                    {
+                        Status gpStatus = NativeMethods.GdipCreateBitmapFromStream(istm, out bitmap);
+                        if (Status.Ok != gpStatus)
+                        {
+                            return IntPtr.Zero;
+                        }
+
+                        IntPtr hicon;
+                        gpStatus = NativeMethods.GdipCreateHICONFromBitmap(bitmap, out hicon);
+                        if (Status.Ok != gpStatus)
+                        {
+                            return IntPtr.Zero;
+                        }
+
+                        // Caller is responsible for freeing this.
+                        return hicon;
+                    }
+                    finally
+                    {
+                        Utility.SafeDisposeImage(ref bitmap);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Wrapper around File.Copy to provide feedback as to whether the file wasn't copied because it didn't exist.
         /// </summary>
         /// <param name="cachePath"></param>
@@ -602,6 +674,18 @@ namespace Standard
             if (IntPtr.Zero != p)
             {
                 NativeMethods.DestroyIcon(p);
+            }
+        }
+
+        /// <summary>GDI's DeleteObject</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        public static void SafeDeleteObject(ref IntPtr gdiObject)
+        {
+            IntPtr p = gdiObject;
+            gdiObject = IntPtr.Zero;
+            if (IntPtr.Zero != p)
+            {
+                NativeMethods.DeleteObject(p);
             }
         }
 
@@ -899,7 +983,7 @@ namespace Standard
                     decoder.AddByte((byte)' ');
                     continue;
                 }
-                
+
                 if (ch == '%' && i < length - 2)
                 {
                     // decode %uXXXX into a Unicode character.
@@ -932,11 +1016,11 @@ namespace Standard
                         }
                     }
                 }
-                    
+
                 // Add any 7bit character as a byte.
                 if ((ch & 0xFF80) == 0)
                 {
-                    decoder.AddByte((byte) ch);
+                    decoder.AddByte((byte)ch);
                 }
                 else
                 {
@@ -1147,6 +1231,66 @@ namespace Standard
                     yield return Path.Combine(directory, primaryFileName) + " (" + _randomNumberGenerator.Next(41, 9999) + ")" + extension;
                 }
             }
+        }
+
+        public static bool IsThicknessNonNegative(Thickness thickness)
+        {
+            if (!IsDoubleFiniteAndNonNegative(thickness.Top))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(thickness.Left))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(thickness.Bottom))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(thickness.Right))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsCornerRadiusValid(CornerRadius cornerRadius)
+        {
+            if (!IsDoubleFiniteAndNonNegative(cornerRadius.TopLeft))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(cornerRadius.TopRight))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(cornerRadius.BottomLeft))
+            {
+                return false;
+            }
+
+            if (!IsDoubleFiniteAndNonNegative(cornerRadius.BottomRight))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsDoubleFiniteAndNonNegative(double d)
+        {
+            if (double.IsNaN(d) || double.IsInfinity(d) || d < 0)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
