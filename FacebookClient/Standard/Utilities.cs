@@ -24,9 +24,17 @@ namespace Standard
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
+    internal enum SafeCopyFileOptions
+    {
+        PreserveOriginal,
+        Overwrite,
+        FindBetterName,
+    }
+
     internal static partial class Utility
     {        
         private static readonly Version _osVersion = Environment.OSVersion.Version;
+        private static readonly Random _randomNumberGenerator = new Random();
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         private static bool _MemCmp(IntPtr left, IntPtr right, long cb)
@@ -529,6 +537,44 @@ namespace Standard
         public static bool IsOSWindows7OrNewer
         {
             get { return _osVersion >= new Version(6, 1); }
+        }
+
+        /// <summary>
+        /// Wrapper around File.Copy to provide feedback as to whether the file wasn't copied because it didn't exist.
+        /// </summary>
+        /// <param name="cachePath"></param>
+        /// <param name="suggestedPath"></param>
+        /// <param name="overwrite"></param>
+        /// <returns></returns>
+        public static string SafeCopyFile(string sourceFileName, string destFileName, SafeCopyFileOptions options)
+        {
+            switch (options)
+            {
+                case SafeCopyFileOptions.PreserveOriginal:
+                    if (!File.Exists(destFileName))
+                    {
+                        File.Copy(sourceFileName, destFileName);
+                        return destFileName;
+                    }
+                    return null;
+                case SafeCopyFileOptions.Overwrite:
+                    File.Copy(sourceFileName, destFileName, true);
+                    return destFileName;
+                case SafeCopyFileOptions.FindBetterName:
+                    string directoryPart = Path.GetDirectoryName(destFileName);
+                    string fileNamePart = Path.GetFileNameWithoutExtension(destFileName);
+                    string extensionPart = Path.GetExtension(destFileName);
+                    foreach (string path in GenerateFileNames(directoryPart, fileNamePart, extensionPart))
+                    {
+                        if (!File.Exists(path))
+                        {
+                            File.Copy(sourceFileName, path);
+                            return path;
+                        }
+                    }
+                    return null;
+            }
+            throw new ArgumentException("Invalid enumeration value", "options");
         }
 
         /// <summary>
@@ -1063,5 +1109,44 @@ namespace Standard
             dpd.RemoveValueChanged(component, listener);
         }
 
+        public static string MakeValidFileName(string invalidPath)
+        {
+            return invalidPath
+                .Replace('\\', '_')
+                .Replace('/', '_')
+                .Replace(':', '_')
+                .Replace('*', '_')
+                .Replace('?', '_')
+                .Replace('\"', '_')
+                .Replace('<', '_')
+                .Replace('>', '_')
+                .Replace('|', '_');
+        }
+
+        public static IEnumerable<string> GenerateFileNames(string directory, string primaryFileName, string extension)
+        {
+            Verify.IsNeitherNullNorEmpty(directory, "directory");
+            Verify.IsNeitherNullNorEmpty(primaryFileName, "primaryFileName");
+
+            primaryFileName = MakeValidFileName(primaryFileName);
+
+            for (int i = 0; i <= 50; ++i)
+            {
+                if (0 == i)
+                {
+                    yield return Path.Combine(directory, primaryFileName) + extension;
+                }
+                else if (40 >= i)
+                {
+                    yield return Path.Combine(directory, primaryFileName) + " (" + i.ToString((IFormatProvider)null) + ")" + extension;
+                }
+                else
+                {
+                    // At this point we're hitting pathological cases.  This should stir things up enough that it works.
+                    // If this fails because of naming conflicts after an extra 10 tries, then I don't care.
+                    yield return Path.Combine(directory, primaryFileName) + " (" + _randomNumberGenerator.Next(41, 9999) + ")" + extension;
+                }
+            }
+        }
     }
 }
