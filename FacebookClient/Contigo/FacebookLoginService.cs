@@ -204,7 +204,10 @@ namespace Contigo
 
             if (!sessionMap.TryGetValue("session_key", out sessionKey)
                 || !sessionMap.TryGetValue("uid", out userId)
-                || !sessionMap.TryGetValue("secret", out secret))
+                || !sessionMap.TryGetValue("secret", out secret)
+                || string.IsNullOrEmpty(sessionKey.ToString())
+                || string.IsNullOrEmpty(userId.ToString())
+                || string.IsNullOrEmpty(secret.ToString()))
             {
                 throw badSessionInfoException;
             }
