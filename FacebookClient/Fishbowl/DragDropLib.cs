@@ -12,52 +12,6 @@ namespace DragDropLib
 
 #endregion // DragDropLibCore\DragDropHelper.cs
 
-#region DragDropLibCore\IDragSourceHelper.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Runtime.InteropServices.ComTypes;
-
-    [ComVisible(true)]
-    [ComImport]
-    [Guid("DE5BF786-477A-11D2-839D-00C04FD918D0")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IDragSourceHelper
-    {
-        void InitializeFromBitmap(
-            [In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject);
-
-        void InitializeFromWindow(
-            [In] IntPtr hwnd,
-            [In] ref Win32Point pt,
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject);
-    }
-
-    [ComVisible(true)]
-    [ComImport]
-    [Guid("83E07D0D-0C5F-4163-BF1A-60B274051E40")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IDragSourceHelper2
-    {
-        void InitializeFromBitmap(
-            [In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject);
-
-        void InitializeFromWindow(
-            [In] IntPtr hwnd,
-            [In] ref Win32Point pt,
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject);
-
-        void SetFlags(
-            [In] int dwFlags);
-    }
-}
-
-#endregion // DragDropLibCore\IDragSourceHelper.cs
-
 #region DragDropLibCore\IDropTargetHelper.cs
 
 namespace DragDropLib
@@ -1422,7 +1376,7 @@ namespace System.Windows
         public static void AllowDropDescription(bool allow)
         {
             IDragSourceHelper2 sourceHelper = (IDragSourceHelper2)new DragDropHelper();
-            sourceHelper.SetFlags(allow ? 1 : 0);
+            sourceHelper.SetFlags(allow ? DSH.ALLOWDROPDESCRIPTIONTEXT : 0);
         }
 
         /// <summary>
@@ -1932,14 +1886,14 @@ namespace System.Windows
         /// <param name="cursorOffset">The location of the cursor relative to the image.</param>
         private static void SetDragImage(this IDataObject dataObject, Bitmap bitmap, Point cursorOffset)
         {
-            ShDragImage shdi = new ShDragImage();
+            var shdi = new SHDRAGIMAGE();
 
-            Win32Size size;
+            SIZE size;
             size.cx = bitmap.Width;
             size.cy = bitmap.Height;
             shdi.sizeDragImage = size;
 
-            Win32Point wpt;
+            POINT wpt;
             wpt.x = (int)cursorOffset.X;
             wpt.y = (int)cursorOffset.Y;
             shdi.ptOffset = wpt;
