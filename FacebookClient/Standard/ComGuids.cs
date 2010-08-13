@@ -12,6 +12,9 @@ namespace Standard
         public const string ConnectionPoint = "B196B286-BAB4-101A-B69C-00AA00341D07";
         /// <summary>IID_IConnectionPointContainer</summary>
         public const string ConnectionPointContainer = "B196B284-BAB4-101A-B69C-00AA00341D07";
+        public const string DragSourceHelper = "DE5BF786-477A-11D2-839D-00C04FD918D0";
+        public const string DragSourceHelper2 = "83E07D0D-0C5F-4163-BF1A-60B274051E40";
+        public const string DropTargetHelper = "4657278B-411B-11D2-839A-00C04FD918D0";
         /// <summary>IID_IEnumConnectionPoints</summary>
         public const string EnumConnectionPoints = "B196B285-BAB4-101A-B69C-00AA00341D07";
         /// <summary>IID_IEnumConnections</summary>
@@ -119,6 +122,8 @@ namespace Standard
         /// <summary>CLSID_ApplicationAssociationRegistration</summary>
         /// <remarks>IID_IApplicationAssociationRegistration</remarks>
         public const string ApplicationAssociationRegistration = "591209c7-767b-42b2-9fba-44ee4615f2c7";
+        /// <summary>CLSID_DragDropHelper</summary>
+        public const string DragDropHelper = "4657278A-411B-11d2-839A-00C04FD918D0";
         /// <summary>CLSID_FileOpenDialog</summary>
         /// <remarks>IID_IFileOpenDialog</remarks>
         public const string FileOpenDialog = "DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7";

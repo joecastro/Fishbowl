@@ -46,6 +46,31 @@ namespace Standard
         HOTKEYAVAILABLE = 0x00000040,
     }
 
+    internal enum DROPEFFECT
+    {
+        NONE = 0,
+        COPY = 1,
+        MOVE = 2,
+        LINK = 4,
+        SCROLL = unchecked((int)0x80000000),
+    }
+
+    /// <summary>
+    /// DROPIMAGE_*
+    /// </summary>
+    internal enum DROPIMAGETYPE
+    {
+        INVALID = -1,
+        NONE = 0,
+        COPY = DROPEFFECT.COPY,
+        MOVE = DROPEFFECT.MOVE,
+        LINK = DROPEFFECT.LINK,
+        LABEL = 6,
+        WARNING = 7,
+        // Windows 7 and later
+        NOIMAGE = 8,
+    }
+
     /// <summary>
     /// BITMAPINFOHEADER Compression type.  BI_*.
     /// </summary>
@@ -1323,6 +1348,11 @@ namespace Standard
         REDRAW = HREDRAW | VREDRAW,
     }
 
+    internal enum DSH
+    {
+        ALLOWDROPDESCRIPTIONTEXT = 1,
+    }
+
     #endregion
 
     #region SafeHandles
@@ -2351,16 +2381,78 @@ namespace Standard
         public ulong cBuffersEmpty;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SHDRAGIMAGE
+    {
+        public SIZE sizeDragImage;
+        public POINT ptOffset;
+        public IntPtr hbmpDragImage;
+        public int crColorKey;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Size = 1044)]
+    internal struct DROPDESCRIPTION
+    {
+        public DROPIMAGETYPE type;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string szMessage;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string szInsert;
+    }
+
     #endregion
 
     #region Interfaces
 
-    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [Guid(IID.ServiceProvider)]
+    [
+        ComImport,
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
+        Guid(IID.ServiceProvider)
+    ]
     internal interface IServiceProvider
     {
         [return: MarshalAs(UnmanagedType.IUnknown)]
         object QueryService(ref Guid guidService, ref Guid riid);
+    }
+
+    [
+        ComImport,
+        Guid(IID.DragSourceHelper),
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown)
+    ]
+    internal interface IDragSourceHelper
+    {
+        void InitializeFromBitmap([In] ref SHDRAGIMAGE pshdi, [In] IDataObject pDataObject);
+        void InitializeFromWindow(IntPtr hwnd, [In] ref POINT ppt, [In] IDataObject pDataObject);
+    }
+
+    [
+        ComImport,
+        Guid(IID.DragSourceHelper2),
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown)
+    ]
+    internal interface IDragSourceHelper2 : IDragSourceHelper
+    {
+        #region IDragSourceHelper redeclaration
+        new void InitializeFromBitmap([In] ref SHDRAGIMAGE pshdi, [In] IDataObject pDataObject);
+        new void InitializeFromWindow(IntPtr hwnd, [In] ref POINT ppt, [In] IDataObject pDataObject);
+        #endregion
+
+        void SetFlags(DSH dwFlags);
+    }
+
+    [
+        ComImport,
+        Guid(IID.DropTargetHelper),
+        InterfaceType(ComInterfaceType.InterfaceIsIUnknown)
+    ]
+    internal interface IDropTargetHelper
+    {
+        void DragEnter(IntPtr hwndTarget, IDataObject pDataObject, ref POINT ppt, int effect);
+        void DragLeave();
+        void DragOver(ref POINT ppt, int effect);
+        void Drop(IDataObject dataObject, ref POINT ppt, int effect);
+        void Show([MarshalAs(UnmanagedType.Bool)] bool fShow);
     }
 
     #endregion
@@ -3424,8 +3516,19 @@ namespace Standard
             }
         }
 
-        [DllImport("user32.dll", SetLastError=true)]
-        public static extern uint RegisterClipboardFormat(string lpszFormatName);
+        [DllImport("user32.dll", SetLastError=true, EntryPoint="RegisterClipboardFormatW", CharSet=CharSet.Unicode)]
+        private static extern uint _RegisterClipboardFormat(string lpszFormatName);
+
+        public static uint RegisterClipboardFormat(string formatName)
+        {
+            uint ret = _RegisterClipboardFormat(formatName);
+            if (ret == 0)
+            {
+                HRESULT.ThrowLastError();
+            }
+
+            return ret;
+        }
 
         [DllImport("ole32.dll")]
         public static extern void ReleaseStgMedium(ref STGMEDIUM pmedium);

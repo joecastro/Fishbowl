@@ -389,6 +389,11 @@ namespace Standard
             _value = i;
         }
 
+        public HRESULT(int i)
+        {
+            _value = unchecked((uint)i);
+        }
+
         /// <summary>
         /// Convert an HRESULT to an int.  Used for COM interface declarations out of our control.
         /// </summary>
