@@ -1,4 +1,4 @@
-﻿//#define USE_STANDARD_DRAGDROP
+﻿#define USE_STANDARD_DRAGDROP
 
 namespace ClientManager.Controls
 {
@@ -12,8 +12,9 @@ namespace ClientManager.Controls
     using System.Windows.Media.Imaging;
     using System.Windows.Media;
     using System.Runtime.InteropServices;
-
-
+    using Standard;
+    using FacebookClient;
+    
     public class DragContainerEventArgs : RoutedEventArgs
     {
         public DragContainerEventArgs(RoutedEvent routedEvent, Point initialPoint, Point currentPoint)
@@ -36,7 +37,10 @@ namespace ClientManager.Controls
             DragCompleted += new EventHandler<DragContainerEventArgs>(HandleDragCompleted);
         }
 
-        public static readonly DependencyProperty IsDragEnabledProperty = DependencyProperty.Register("IsDragEnabled", typeof(bool), typeof(DragContainer),
+        public static readonly DependencyProperty IsDragEnabledProperty = DependencyProperty.Register(
+            "IsDragEnabled",
+            typeof(bool), 
+            typeof(DragContainer),
             new FrameworkPropertyMetadata(true));
 
         public bool IsDragEnabled
@@ -46,20 +50,23 @@ namespace ClientManager.Controls
         }
 
 
-        public static readonly RoutedEvent DragStartedEvent = EventManager.RegisterRoutedEvent("DragStarted",
-                                                                                               RoutingStrategy.Bubble,
-                                                                                               typeof (EventHandler<DragContainerEventArgs>),
-                                                                                               typeof (DragContainer));
+        public static readonly RoutedEvent DragStartedEvent = EventManager.RegisterRoutedEvent(
+            "DragStarted",
+            RoutingStrategy.Bubble,
+            typeof (EventHandler<DragContainerEventArgs>),
+            typeof (DragContainer));
 
-        public static readonly RoutedEvent DragDeltaEvent = EventManager.RegisterRoutedEvent("DragDelta",
-                                                                                               RoutingStrategy.Bubble,
-                                                                                               typeof(EventHandler<DragContainerEventArgs>),
-                                                                                               typeof(DragContainer));
+        public static readonly RoutedEvent DragDeltaEvent = EventManager.RegisterRoutedEvent(
+            "DragDelta",
+            RoutingStrategy.Bubble,
+            typeof(EventHandler<DragContainerEventArgs>),
+            typeof(DragContainer));
 
-        public static readonly RoutedEvent DragCompletedEvent = EventManager.RegisterRoutedEvent("DragCompleted",
-                                                                                               RoutingStrategy.Bubble,
-                                                                                               typeof(EventHandler<DragContainerEventArgs>),
-                                                                                               typeof(DragContainer));
+        public static readonly RoutedEvent DragCompletedEvent = EventManager.RegisterRoutedEvent(
+            "DragCompleted",
+            RoutingStrategy.Bubble,
+            typeof(EventHandler<DragContainerEventArgs>),
+            typeof(DragContainer));
 
         public event EventHandler<DragContainerEventArgs> DragStarted
         {
@@ -78,9 +85,7 @@ namespace ClientManager.Controls
             add { AddHandler(DragCompletedEvent, value); }
             remove { RemoveHandler(DragCompletedEvent, value); }
         }
-
-
-
+        
         /// <summary>
         /// PreviewMouseLeftButtonDown event handler.
         /// </summary>
@@ -122,16 +127,13 @@ namespace ClientManager.Controls
 
             base.OnPreviewMouseMove(e);
         }
-
-
-
+        
         private void HandleDragStarted(object sender, DragContainerEventArgs e)
         {
             this.dragStartPoint = e.InitialPosition;
             this.isMouseDown = true;
         }
-
-
+        
         private void HandleDragDelta(object sender, DragContainerEventArgs e)
         {
             // Don't actually start the drag unless the mouse has moved for enough away
@@ -162,7 +164,7 @@ namespace ClientManager.Controls
                     Point mousePoint = new Point(0.5 * width, 0.5 * height);
 
 #if USE_STANDARD_DRAGDROP
-                    DataObject dataObject = new DataObject();
+                    var dataObject = new System.Windows.DataObject();
                     var items = GetData();
                     foreach (var item in items)
                     {
@@ -192,8 +194,7 @@ namespace ClientManager.Controls
         {
             this.isMouseDown = false;
         }
-
-
+        
         protected virtual bool IsDataAvailable()
         {
             return false;
@@ -268,9 +269,9 @@ namespace ClientManager.Controls
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();
             encoder.QualityLevel = 90;
             encoder.Frames.Add(BitmapFrame.Create(resizedImage));
-            string resizedFile = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".jpg");
+            string resizedFile = Path.ChangeExtension(Path.GetTempFileName(), ".jpg");
 
-            using (FileStream outStream = new FileStream(resizedFile, FileMode.Create))
+            using (FileStream outStream = new FileStream(resizedFile, FileMode.OpenOrCreate))
             {
                 encoder.Save(outStream);
             }
@@ -291,45 +292,12 @@ namespace ClientManager.Controls
         private Point dragStartPoint;
     }
 
-    public class FacebookPhotoDragContainer : DragContainer
-    {
-        public static readonly DependencyProperty FacebookPhotoProperty = DependencyProperty.Register("FacebookPhoto", 
-            typeof(FacebookPhoto), typeof(FacebookPhotoDragContainer));
-
-        public FacebookPhoto FacebookPhoto
-        {
-            get { return (FacebookPhoto)GetValue(FacebookPhotoProperty); }
-            set { SetValue(FacebookPhotoProperty, value); }
-        }
-
-        protected override bool IsDataAvailable()
-        {
-            bool isCached = this.FacebookPhoto.Image.IsCached(FacebookImageDimensions.Big);
-            if (!isCached)
-            {
-                // Add this to the asynchronous download queue.
-                this.FacebookPhoto.Image.GetImageAsync(FacebookImageDimensions.Big, new GetImageSourceAsyncCallback(OnGetImageSourceCompleted));
-            }
-
-            return isCached;
-        }
-
-        protected override KeyValuePair<string, object>[] GetData()
-        {
-            string path = this.FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
-            KeyValuePair<string, object> data = new KeyValuePair<string, object>(DataFormats.FileDrop, new string[] { path });
-            return new KeyValuePair<string, object>[] { data };
-        }
-
-        private void OnGetImageSourceCompleted(object sender, GetImageSourceCompletedEventArgs e)
-        {
-        }
-    }
-
     public class FacebookImageDragContainer : DragContainer
     {
-        public static readonly DependencyProperty FacebookImageProperty = DependencyProperty.Register("FacebookImage", 
-            typeof(FacebookImage), typeof(FacebookImageDragContainer));
+        public static readonly DependencyProperty FacebookImageProperty = DependencyProperty.Register(
+            "FacebookImage", 
+            typeof(FacebookImage),
+            typeof(FacebookImageDragContainer));
 
         public FacebookImage FacebookImage
         {
@@ -337,34 +305,35 @@ namespace ClientManager.Controls
             set { SetValue(FacebookImageProperty, value); }
         }
 
+        private string _cachePath = null;
+
         protected override bool IsDataAvailable()
         {
-            bool isCached = this.FacebookImage.IsCached(FacebookImageDimensions.Big);
-            if (!isCached)
+            if (string.IsNullOrEmpty(_cachePath))
             {
-                // Add this to the asynchronous download queue.
-                this.FacebookImage.GetImageAsync(FacebookImageDimensions.Big, new GetImageSourceAsyncCallback(OnGetImageSourceCompleted));
+                // Asynchronously get the file, if it doesn't already exist locally.
+                FacebookImage.SaveToFile(FacebookImageDimensions.Big, Path.Combine(Path.GetTempPath(), "Fishbowl Photo"), true, FacebookImageSaveOptions.Overwrite, (sender, e) => _cachePath = e.ImagePath, null);
             }
-
-            return isCached;
+            return !string.IsNullOrEmpty(_cachePath);
         }
 
         protected override KeyValuePair<string, object>[] GetData()
         {
-            string path = this.FacebookImage.GetCachePath(FacebookImageDimensions.Big);
-            KeyValuePair<string, object> data = new KeyValuePair<string, object>(DataFormats.FileDrop, new string[] { path });
-            return new KeyValuePair<string, object>[] { data };
-        }
-
-        private void OnGetImageSourceCompleted(object sender, GetImageSourceCompletedEventArgs e)
-        {
+            if (IsDataAvailable())
+            {
+                Assert.IsNeitherNullNorEmpty(_cachePath);
+                return new[] { new KeyValuePair<string, object>(DataFormats.FileDrop, new string[] { _cachePath }) };
+            }
+            return new KeyValuePair<string, object>[] {};
         }
     }
 
     public class FacebookPhotoAlbumDragContainer : DragContainer
     {
-        public static readonly DependencyProperty FacebookPhotoAlbumProperty = DependencyProperty.Register("FacebookPhotoAlbum", 
-            typeof(FacebookPhotoAlbum), typeof(FacebookPhotoAlbumDragContainer));
+        public static readonly DependencyProperty FacebookPhotoAlbumProperty = DependencyProperty.Register(
+            "FacebookPhotoAlbum", 
+            typeof(FacebookPhotoAlbum),
+            typeof(FacebookPhotoAlbumDragContainer));
 
         public FacebookPhotoAlbum FacebookPhotoAlbum
         {
@@ -381,7 +350,7 @@ namespace ClientManager.Controls
                 if (!photo.Image.IsCached(FacebookImageDimensions.Big))
                 {
                     // Add this to the asynchronous download queue.
-                    photo.Image.GetImageAsync(FacebookImageDimensions.Big, new GetImageSourceAsyncCallback(OnGetImageSourceCompleted));
+                    photo.Image.GetImageAsync(FacebookImageDimensions.Big, (sender, e) => { });
                     isCached = false;
                 }
             }
@@ -391,7 +360,7 @@ namespace ClientManager.Controls
 
         protected override KeyValuePair<string, object>[] GetData()
         {
-            string path = Path.Combine(Path.GetTempPath(), @"Faboolous");
+            string path = Path.Combine(Path.GetTempPath(), @"Fishbowl");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -403,36 +372,8 @@ namespace ClientManager.Controls
                 Directory.Delete(path, true);
             }
 
-            this.FacebookPhotoAlbum.SaveToFolder(path);
-            KeyValuePair<string, object> data = new KeyValuePair<string, object>(DataFormats.FileDrop, new string[] { path });
-            return new KeyValuePair<string, object>[] { data };
-        }
-
-        private void OnGetImageSourceCompleted(object sender, GetImageSourceCompletedEventArgs e)
-        {
-        }
-    }
-
-    public class FacebookContactDragContainer : DragContainer
-    {
-        public static readonly DependencyProperty FacebookContactProperty = DependencyProperty.Register("FacebookContact", 
-            typeof(FacebookContact), typeof(FacebookContactDragContainer));
-
-        public FacebookContact FacebookContact
-        {
-            get { return (FacebookContact)GetValue(FacebookContactProperty); }
-            set { SetValue(FacebookContactProperty, value); }
-        }
-
-        protected override bool IsDataAvailable()
-        {
-            return true;
-        }
-
-        protected override KeyValuePair<string, object>[] GetData()
-        {
-            KeyValuePair<string, object> data = new KeyValuePair<string, object>(DataFormats.StringFormat, this.FacebookContact.UserId); // todo: we need a custom application format.
-            return new KeyValuePair<string, object>[] { data };
+            FacebookPhotoAlbum.SaveToFolder(path, (sender, e) => { }, null);
+            return new[] { new KeyValuePair<string, object>(DataFormats.FileDrop, new[] { path }) };
         }
     }
 }

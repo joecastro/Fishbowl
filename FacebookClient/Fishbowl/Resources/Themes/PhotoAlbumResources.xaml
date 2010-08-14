@@ -16,7 +16,7 @@
 
   <!-- Template for a thumbnail displayed in the album preview -->
   <DataTemplate x:Key="AlbumCoverItemTemplate">
-    <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
+    <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Image}">
       <Button
           RenderTransformOrigin=".5,.5"
           Click="OnNavigateToContentButtonClicked"
@@ -63,7 +63,7 @@
           </ContentControl>
         </Viewbox>
       </Button>
-    </ClientManagerControls:FacebookPhotoDragContainer>
+    </ClientManagerControls:FacebookImageDragContainer>
   </DataTemplate>
 
   <!-- Control template for the photo album control -->
@@ -131,7 +131,7 @@
               Style="{DynamicResource StandardButtonStyle}"
               Height="26"
               Margin="2"
-              Command="FacebookClient:PhotoAlbumControl.SaveAlbumCommand" 
+              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SaveAlbumCommand}"
               CommandParameter="{Binding}">
             <StackPanel Orientation="Horizontal">
               <Rectangle Height="18" Width="18" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}"/>

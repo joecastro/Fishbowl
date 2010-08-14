@@ -1,4 +1,4 @@
-//#define USE_STANDARD_DRAGDROP
+#define USE_STANDARD_DRAGDROP
 
 namespace FacebookClient
 {

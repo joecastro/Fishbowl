@@ -1129,7 +1129,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        void SetFileTypes(uint cFileTypes, [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] COMDLG_FILTERSPEC[] rgFilterSpec);
+        void SetFileTypes(uint cFileTypes, [In] ref COMDLG_FILTERSPEC rgFilterSpec);
 
         void SetFileTypeIndex(uint iFileType);
 
@@ -1191,7 +1191,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        new void SetFileTypes(uint cFileTypes, [In] COMDLG_FILTERSPEC[] rgFilterSpec);
+        new void SetFileTypes(uint cFileTypes, [In] ref COMDLG_FILTERSPEC rgFilterSpec);
         new void SetFileTypeIndex(uint iFileType);
         new uint GetFileTypeIndex();
         new uint Advise(IFileDialogEvents pfde);
@@ -1237,7 +1237,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        new void SetFileTypes(uint cFileTypes, [In] COMDLG_FILTERSPEC[] rgFilterSpec);
+        new void SetFileTypes(uint cFileTypes, [In] ref COMDLG_FILTERSPEC rgFilterSpec);
         new void SetFileTypeIndex(uint iFileType);
         new uint GetFileTypeIndex();
         new uint Advise(IFileDialogEvents pfde);

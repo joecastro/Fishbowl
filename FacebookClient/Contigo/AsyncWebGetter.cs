@@ -20,7 +20,7 @@ namespace Contigo
             public bool Canceled { get; set; }
             public SmallUri SmallUri { get; set; }
             public object UserState { get; set; }
-            public GetImageSourceAsyncCallback Callback { get; set; }
+            public Delegate Callback { get; set; }
         }
 
         private readonly string _cachePath;
@@ -82,20 +82,10 @@ namespace Contigo
             string key = ssUri.GetString();
             if (key.Length > 100)
             {
-                key = Utility.GetHashString(key) + key.Substring(key.Length - 100);
+                key = "hash(" + Utility.GetHashString(key) + ")_" + key.Substring(key.Length - 80);
             }
-            string filePart = key
-                .Replace('\\', '_')
-                .Replace('/', '_')
-                .Replace(':', '_')
-                .Replace('*', '_')
-                .Replace('?', '_')
-                .Replace('\"', '_')
-                .Replace('<', '_')
-                .Replace('>', '_')
-                .Replace('|', '_');
 
-            return Path.Combine(_cachePath, filePart);
+            return Path.Combine(_cachePath, Utility.MakeValidFileName(key));
         }
 
         public AsyncWebGetter(Dispatcher dispatcher, string settingsPath)
@@ -126,7 +116,8 @@ namespace Contigo
 
             //Verify.UriIsAbsolute(uri, "uri");
 
-            if (IsImageCached(ssUri))
+            string path;
+            if (TryGetImageFile(ssUri, out path))
             {
                 return;
             }
@@ -145,6 +136,56 @@ namespace Contigo
                 // that the work can be shared.
                 _asyncWebRequestPool.QueueRequest(DispatcherPriority.Background, _ProcessNextWebRequest, null);
                 _asyncWebRequestPool.QueueRequest(DispatcherPriority.Background, _ProcessNextWebRequest, null);
+            }
+        }
+
+        public void GetLocalImagePathAsync(object sender, object userState, SmallUri ssUri, SaveImageAsyncCallback callback)
+        { 
+            //Verify.UriIsAbsolute(uri, "uri");
+            Verify.IsNotNull(sender, "sender");
+            // UserState may be null.
+            // Verify.IsNotNull(userState, "userState");
+            Verify.IsNotNull(callback, "callback");
+
+            if (_disposed)
+            {
+                callback(this, new SaveImageCompletedEventArgs(new ObjectDisposedException("this"), false, userState));
+                return;
+            }
+
+            if (default(SmallUri) == ssUri)
+            {
+                callback(this, new SaveImageCompletedEventArgs(new ArgumentException("The requested image doesn't exist.", "ssUri"), false, userState));
+                return;
+            }
+
+            string cacheLocation = _GetCacheLocation(ssUri);
+            if (cacheLocation != null)
+            {
+                callback(this, new SaveImageCompletedEventArgs(cacheLocation, userState));
+                return;
+            }
+
+            // Make asynchronous request to download the image and get the local path.
+            var imageRequest = new _DataRequest
+            {
+                Sender = sender,
+                UserState = userState,
+                SmallUri = ssUri,
+                Callback = callback,
+            };
+
+            bool needToQueue = false;
+            lock (_webLock)
+            {
+                needToQueue = !_asyncWebRequestPool.HasPendingRequests;
+                _activeWebRequests.Push(imageRequest);
+            }
+
+            if (needToQueue)
+            {
+                _asyncWebRequestPool.QueueRequest(_ProcessNextWebRequest, null);
+                _asyncWebRequestPool.QueueRequest(_ProcessNextWebRequest, null);
             }
         }
 
@@ -219,16 +260,11 @@ namespace Contigo
             return null;
         }
 
-        public bool IsImageCached(SmallUri ssUri)
+        public bool TryGetImageFile(SmallUri ssUri, out string path)
         {
             _Verify();
-            return _GetCacheLocation(ssUri) != null;
-        }
-
-        public string GetImageFile(SmallUri ssUri)
-        {
-            _Verify();
-            return _GetCacheLocation(ssUri);
+            path = _GetCacheLocation(ssUri);
+            return path != null;
         }
 
         private void _ProcessNextLocalRequest(object unused)
@@ -246,10 +282,11 @@ namespace Contigo
                     while (_activePhotoRequests.Count > 0)
                     {
                         _DataRequest nextDataRequest = _activePhotoRequests.Pop();
+                        Assert.IsTrue(nextDataRequest.Callback is GetImageSourceAsyncCallback);
                         if (!nextDataRequest.Canceled)
                         {
                             sender = nextDataRequest.Sender;
-                            callback = nextDataRequest.Callback;
+                            callback = (GetImageSourceAsyncCallback)nextDataRequest.Callback;
                             userState = nextDataRequest.UserState;
                             ssUri = nextDataRequest.SmallUri;
                             break;
@@ -321,6 +358,7 @@ namespace Contigo
                     while (_activeWebRequests.Count > 0)
                     {
                         activeRequest = _activeWebRequests.Pop();
+                        Assert.IsNotNull(activeRequest);
                         if (!activeRequest.Canceled)
                         {
                             ssUri = activeRequest.SmallUri;
@@ -372,6 +410,14 @@ namespace Contigo
 
                     if (!isPassive)
                     {
+                        // If the _DataRequest has a SaveImageAsyncCallback then we're done.
+                        var saveImageCallback = activeRequest.Callback as SaveImageAsyncCallback;
+                        if (saveImageCallback != null)
+                        {
+                            saveImageCallback(this, new SaveImageCompletedEventArgs(localCachePath, activeRequest.UserState));
+                            return;
+                        }
+
                         bool needToQueue = false;
                         lock (_localLock)
                         {

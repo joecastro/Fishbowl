@@ -1,158 +1,154 @@
-#region DragDropLibCore\DragDropHelper.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Runtime.InteropServices;
-
-    [ComImport]
-    [Guid("4657278A-411B-11d2-839A-00C04FD918D0")]
-    public class DragDropHelper { }
-}
-
-#endregion // DragDropLibCore\DragDropHelper.cs
-
-#region DragDropLibCore\IDropTargetHelper.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Runtime.InteropServices.ComTypes;
-
-    [ComVisible(true)]
-    [ComImport]
-    [Guid("4657278B-411B-11D2-839A-00C04FD918D0")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IDropTargetHelper
-    {
-        void DragEnter(
-            [In] IntPtr hwndTarget,
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
-            [In] ref Win32Point pt,
-            [In] int effect);
-
-        void DragLeave();
-
-        void DragOver(
-            [In] ref Win32Point pt,
-            [In] int effect);
-
-        void Drop(
-            [In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
-            [In] ref Win32Point pt,
-            [In] int effect);
-
-        void Show(
-            [In] bool show);
-    }
-}
-
-#endregion // DragDropLibCore\IDropTargetHelper.cs
-
-#region DragDropLibCore\NativeStructures.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Runtime.InteropServices;
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Win32Point
-    {
-        public int x;
-        public int y;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct Win32Size
-    {
-        public int cx;
-        public int cy;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct ShDragImage
-    {
-        public Win32Size sizeDragImage;
-        public Win32Point ptOffset;
-        public IntPtr hbmpDragImage;
-        public int crColorKey;
-    }
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Size = 1044)]
-    public struct DropDescription
-    {
-        public int type;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string szMessage;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string szInsert;
-    }
-}
-
-#endregion // DragDropLibCore\NativeStructures.cs
 
 #region DragDropLibCore\DataObjectExtensions.cs
 
-namespace System.Runtime.InteropServices.ComTypes
+namespace FacebookClient
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.IO;
     using System.Runtime.InteropServices;
     using System.Runtime.InteropServices.ComTypes;
-    using System.Text;
-    using DragDropLib;
-    using System.ComponentModel;
-    using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
     using Standard;
-    
+
     /// <summary>
     /// Provides extended functionality for the COM IDataObject interface.
     /// </summary>
-    public static class ComDataObjectExtensions
+    internal static class ComDataObjectExtensions
     {
-        #region Native constants
+        // Identifies data that we need to do custom marshaling on
+        private static readonly Guid ManagedDataStamp = new Guid("63A5245D-83F4-41CC-BFBC-0EC680CF19DD");
 
         // CFSTR_DROPDESCRIPTION
         private const string DropDescriptionFormat = "DropDescription";
 
-        #endregion // Native constants
+        // Combination of all non-null TYMEDs
+        private const TYMED _TYMED_ANY =
+            TYMED.TYMED_ENHMF
+            | TYMED.TYMED_FILE
+            | TYMED.TYMED_GDI
+            | TYMED.TYMED_HGLOBAL
+            | TYMED.TYMED_ISTORAGE
+            | TYMED.TYMED_ISTREAM
+            | TYMED.TYMED_MFPICT;
+
+        private static FORMATETC _FillFormatETC(string format, TYMED tymed)
+        {
+            return new FORMATETC
+            {
+                cfFormat = (short)NativeMethods.RegisterClipboardFormat(format),
+                dwAspect = DVASPECT.DVASPECT_CONTENT,
+                lindex = -1,
+                ptd = IntPtr.Zero,
+                tymed = tymed,
+            };
+        }
+
+        private static object _GetAsSerializable(object obj)
+        {
+            // If the data is directly serializable, run with it
+            if (obj.GetType().IsSerializable)
+            {
+                return obj;
+            }
+
+            // Attempt type conversion to a string, but only if we know it can be converted back
+            TypeConverter conv = _GetTypeConverterForType(obj.GetType());
+            if (conv != null && conv.CanConvertTo(typeof(string)) && conv.CanConvertFrom(typeof(string)))
+            {
+                return conv.ConvertToInvariantString(obj);
+            }
+
+            throw new NotSupportedException("Cannot serialize the object");
+        }
+
+        private static STGMEDIUM _GetMediumFromObject(object data)
+        {
+            // We'll serialize to a managed stream temporarily
+            var stream = new MemoryStream();
+
+            // Write an indentifying stamp, so we can recognize this as custom marshaled data.
+            stream.Write(ManagedDataStamp.ToByteArray(), 0, Marshal.SizeOf(typeof(Guid)));
+
+            // Now serialize the data. Note, if the data is not directly serializable,
+            // we'll try type conversion. Also, we serialize the type. That way,
+            // during deserialization, we know which type to convert back to, if
+            // appropriate.
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, data.GetType());
+            formatter.Serialize(stream, _GetAsSerializable(data));
+
+            // Now copy to an HGLOBAL
+            byte[] bytes = stream.GetBuffer();
+            IntPtr p = Marshal.AllocHGlobal(bytes.Length);
+            try
+            {
+                Marshal.Copy(bytes, 0, p, bytes.Length);
+
+                var ret = new STGMEDIUM
+                {
+                    unionmember = p,
+                    tymed = TYMED.TYMED_HGLOBAL,
+                    pUnkForRelease = null,
+                };
+
+                p = IntPtr.Zero;
+                return ret;
+            }
+            finally
+            {
+                Utility.SafeFreeHGlobal(ref p);
+            }
+        }
+
+        private static TypeConverter _GetTypeConverterForType(Type dataType)
+        {
+            return (TypeConverter)(from TypeConverterAttribute attr in dataType.GetCustomAttributes(typeof(TypeConverterAttribute), true) select Activator.CreateInstance(Type.GetType(attr.ConverterTypeName))).FirstOrDefault();
+        }
+
+        private static object _ConvertDataFromString(string data, Type dataType)
+        {
+            TypeConverter conv = _GetTypeConverterForType(dataType);
+            if (conv != null && conv.CanConvertFrom(typeof(string)))
+            {
+                return conv.ConvertFromInvariantString(data);
+            }
+
+            throw new NotSupportedException("Cannot convert data");
+        }
 
         /// <summary>
         /// Sets the drop description for the drag image manager.
         /// </summary>
         /// <param name="dataObject">The DataObject to set.</param>
         /// <param name="dropDescription">The drop description.</param>
-        public static void SetDropDescription(this IDataObject dataObject, DropDescription dropDescription)
+        public static void SetDropDescription(this IDataObject dataObject, DROPDESCRIPTION dropDescription)
         {
-            ComTypes.FORMATETC formatETC;
-            FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
+            FORMATETC formatETC = _FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL);
 
-            // We need to set the drop description as an HGLOBAL.
-            // Allocate space ...
-            IntPtr pDD = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DropDescription)));
+            IntPtr p = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DROPDESCRIPTION)));
             try
             {
-                // ... and marshal the data
-                Marshal.StructureToPtr(dropDescription, pDD, false);
+                Marshal.StructureToPtr(dropDescription, p, false);
 
-                // The medium wraps the HGLOBAL
-                System.Runtime.InteropServices.ComTypes.STGMEDIUM medium;
-                medium.pUnkForRelease = null;
-                medium.tymed = ComTypes.TYMED.TYMED_HGLOBAL;
-                medium.unionmember = pDD;
+                var medium = new STGMEDIUM
+                {
+                    pUnkForRelease = null,
+                    tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL,
+                    unionmember = p,
+                };
 
-                // Set the data
-                ComTypes.IDataObject dataObjectCOM = (ComTypes.IDataObject)dataObject;
-                dataObjectCOM.SetData(ref formatETC, ref medium, true);
+
+                dataObject.SetData(ref formatETC, ref medium, true);
+
+                p = IntPtr.Zero;
+
             }
-            catch
+            finally
             {
-                // If we failed, we need to free the HGLOBAL memory
-                Marshal.FreeHGlobal(pDD);
-                throw;
+                Utility.SafeFreeHGlobal(ref p);
             }
         }
 
@@ -163,16 +159,15 @@ namespace System.Runtime.InteropServices.ComTypes
         /// <returns>The DropDescription, if set.</returns>
         public static object GetDropDescription(this IDataObject dataObject)
         {
-            ComTypes.FORMATETC formatETC;
-            FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
+            FORMATETC formatETC = _FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL);
 
             if (0 == dataObject.QueryGetData(ref formatETC))
             {
-                ComTypes.STGMEDIUM medium;
+                STGMEDIUM medium;
                 dataObject.GetData(ref formatETC, out medium);
                 try
                 {
-                    return (DropDescription)Marshal.PtrToStructure(medium.unionmember, typeof(DropDescription));
+                    return (DROPDESCRIPTION)Marshal.PtrToStructure(medium.unionmember, typeof(DROPDESCRIPTION));
                 }
                 finally
                 {
@@ -182,17 +177,7 @@ namespace System.Runtime.InteropServices.ComTypes
 
             return null;
         }
-
-        // Combination of all non-null TYMEDs
-        private const TYMED TYMED_ANY = 
-            TYMED.TYMED_ENHMF 
-            | TYMED.TYMED_FILE 
-            | TYMED.TYMED_GDI 
-            | TYMED.TYMED_HGLOBAL 
-            | TYMED.TYMED_ISTORAGE 
-            | TYMED.TYMED_ISTREAM 
-            | TYMED.TYMED_MFPICT;
-
+        
         /// <summary>
         /// Sets up an advisory connection to the data object.
         /// </summary>
@@ -204,33 +189,13 @@ namespace System.Runtime.InteropServices.ComTypes
         public static int Advise(this IDataObject dataObject, IAdviseSink sink, string format, ADVF advf)
         {
             // Internally, we'll listen for any TYMED
-            FORMATETC formatETC;
-            FillFormatETC(format, TYMED_ANY, out formatETC);
+            FORMATETC formatETC = _FillFormatETC(format, _TYMED_ANY);
 
             int connection;
-            int hr = dataObject.DAdvise(ref formatETC, advf, sink, out connection);
-            if (hr != 0)
-                Marshal.ThrowExceptionForHR(hr);
+            HRESULT hr = new HRESULT(dataObject.DAdvise(ref formatETC, advf, sink, out connection));
+            hr.ThrowIfFailed();
             return connection;
         }
-
-        /// <summary>
-        /// Fills a FORMATETC structure.
-        /// </summary>
-        /// <param name="format">The format name.</param>
-        /// <param name="tymed">The accepted TYMED.</param>
-        /// <param name="formatETC">The structure to fill.</param>
-        private static void FillFormatETC(string format, TYMED tymed, out FORMATETC formatETC)
-        {
-            formatETC.cfFormat = (short)NativeMethods.RegisterClipboardFormat(format);
-            formatETC.dwAspect = DVASPECT.DVASPECT_CONTENT;
-            formatETC.lindex = -1;
-            formatETC.ptd = IntPtr.Zero;
-            formatETC.tymed = tymed;
-        }
-
-        // Identifies data that we need to do custom marshaling on
-        private static readonly Guid ManagedDataStamp = new Guid("D98D9FD6-FA46-4716-A769-F3451DFBE4B4");
 
         /// <summary>
         /// Sets managed data to a clipboard DataObject.
@@ -245,12 +210,10 @@ namespace System.Runtime.InteropServices.ComTypes
         public static void SetManagedData(this IDataObject dataObject, string format, object data)
         {
             // Initialize the format structure
-            ComTypes.FORMATETC formatETC;
-            FillFormatETC(format, TYMED.TYMED_HGLOBAL, out formatETC);
+            FORMATETC formatETC = _FillFormatETC(format, TYMED.TYMED_HGLOBAL);
 
             // Serialize/marshal our data into an unmanaged medium
-            ComTypes.STGMEDIUM medium;
-            GetMediumFromObject(data, out medium);
+            STGMEDIUM medium = _GetMediumFromObject(data);
             try
             {
                 // Set the data on our data object
@@ -272,8 +235,7 @@ namespace System.Runtime.InteropServices.ComTypes
         /// <returns>The data object instance.</returns>
         public static object GetManagedData(this IDataObject dataObject, string format)
         {
-            FORMATETC formatETC;
-            FillFormatETC(format, TYMED.TYMED_HGLOBAL, out formatETC);
+            FORMATETC formatETC = _FillFormatETC(format, TYMED.TYMED_HGLOBAL);
 
             // Get the data as a stream
             STGMEDIUM medium;
@@ -295,11 +257,13 @@ namespace System.Runtime.InteropServices.ComTypes
 
 
             // Convert the native stream to a managed stream            
-            STATSTG statstg;
+            System.Runtime.InteropServices.ComTypes.STATSTG statstg;
             nativeStream.Stat(out statstg, 0);
             if (statstg.cbSize > int.MaxValue)
+            {
                 throw new NotSupportedException();
-            byte[] buf = new byte[statstg.cbSize];
+            }
+            var buf = new byte[statstg.cbSize];
             nativeStream.Read(buf, (int)statstg.cbSize, IntPtr.Zero);
             MemoryStream dataStream = new MemoryStream(buf);
 
@@ -310,141 +274,35 @@ namespace System.Runtime.InteropServices.ComTypes
             {
                 if (sizeOfGuid == dataStream.Read(guidBytes, 0, sizeOfGuid))
                 {
-                    Guid guid = new Guid(guidBytes);
-                    if (ManagedDataStamp.Equals(guid))
+                    if (ManagedDataStamp.Equals(new Guid(guidBytes)))
                     {
                         // Stamp matched, so deserialize
                         BinaryFormatter formatter = new BinaryFormatter();
                         Type dataType = (Type)formatter.Deserialize(dataStream);
                         object data2 = formatter.Deserialize(dataStream);
                         if (data2.GetType() == dataType)
+                        {
                             return data2;
-                        else if (data2 is string)
-                            return ConvertDataFromString((string)data2, dataType);
-                        else
-                            return null;
+                        }
+
+                        if (data2 is string)
+                        {
+                            return _ConvertDataFromString((string)data2, dataType);
+                        }
+                        
+                        return null;
                     }
                 }
             }
 
             // Stamp didn't match... attempt to reset the seek pointer
             if (dataStream.CanSeek)
+            {
                 dataStream.Position = 0;
+            }
             return null;
         }
-
-        #region Helper methods
-
-        /// <summary>
-        /// Serializes managed data to an HGLOBAL.
-        /// </summary>
-        /// <param name="data">The managed data object.</param>
-        /// <returns>An STGMEDIUM pointing to the allocated HGLOBAL.</returns>
-        private static void GetMediumFromObject(object data, out STGMEDIUM medium)
-        {
-            // We'll serialize to a managed stream temporarily
-            MemoryStream stream = new MemoryStream();
-
-            // Write an indentifying stamp, so we can recognize this as custom
-            // marshaled data.
-            stream.Write(ManagedDataStamp.ToByteArray(), 0, Marshal.SizeOf(typeof(Guid)));
-
-            // Now serialize the data. Note, if the data is not directly serializable,
-            // we'll try type conversion. Also, we serialize the type. That way,
-            // during deserialization, we know which type to convert back to, if
-            // appropriate.
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(stream, data.GetType());
-            formatter.Serialize(stream, GetAsSerializable(data));
-
-            // Now copy to an HGLOBAL
-            byte[] bytes = stream.GetBuffer();
-            IntPtr p = Marshal.AllocHGlobal(bytes.Length);
-            try
-            {
-                Marshal.Copy(bytes, 0, p, bytes.Length);
-            }
-            catch
-            {
-                // Make sure to free the memory on exceptions
-                Marshal.FreeHGlobal(p);
-                throw;
-            }
-
-            // Now allocate an STGMEDIUM to wrap the HGLOBAL
-            medium.unionmember = p;
-            medium.tymed = ComTypes.TYMED.TYMED_HGLOBAL;
-            medium.pUnkForRelease = null;
-        }
-
-        /// <summary>
-        /// Gets a serializable object representing the data.
-        /// </summary>
-        /// <param name="obj">The data.</param>
-        /// <returns>If the data is serializable, then it is returned. Otherwise,
-        /// type conversion is attempted. If successful, a string value will be
-        /// returned.</returns>
-        private static object GetAsSerializable(object obj)
-        {
-            // If the data is directly serializable, run with it
-            if (obj.GetType().IsSerializable)
-                return obj;
-
-            // Attempt type conversion to a string, but only if we know it can be converted back
-            TypeConverter conv = GetTypeConverterForType(obj.GetType());
-            if (conv != null && conv.CanConvertTo(typeof(string)) && conv.CanConvertFrom(typeof(string)))
-                return conv.ConvertToInvariantString(obj);
-
-            throw new NotSupportedException("Cannot serialize the object");
-        }
-
-        /// <summary>
-        /// Converts data from a string to the specified format.
-        /// </summary>
-        /// <param name="data">The data to convert.</param>
-        /// <param name="dataType">The target data type.</param>
-        /// <returns>Returns the converted data instance.</returns>
-        private static object ConvertDataFromString(string data, Type dataType)
-        {
-            TypeConverter conv = GetTypeConverterForType(dataType);
-            if (conv != null && conv.CanConvertFrom(typeof(string)))
-                return conv.ConvertFromInvariantString(data);
-
-            throw new NotSupportedException("Cannot convert data");
-        }
-
-        /// <summary>
-        /// Gets a TypeConverter instance for the specified type.
-        /// </summary>
-        /// <param name="dataType">The type.</param>
-        /// <returns>An instance of a TypeConverter for the type, if one exists.</returns>
-        private static TypeConverter GetTypeConverterForType(Type dataType)
-        {
-            TypeConverterAttribute[] typeConverterAttrs = (TypeConverterAttribute[])dataType.GetCustomAttributes(typeof(TypeConverterAttribute), true);
-            if (typeConverterAttrs.Length > 0)
-            {
-                Type convType = Type.GetType(typeConverterAttrs[0].ConverterTypeName);
-                return (TypeConverter)Activator.CreateInstance(convType);
-            }
-
-            return null;
-        }
-
-        #endregion // Helper methods
     }
-}
-
-#endregion // DragDropLibCore\DataObjectExtensions.cs
-
-#region DragDropLibCore\DataObject.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
-    using System.Runtime.InteropServices.ComTypes;
-    using Standard;
 
     /// <summary>
     /// Implements the COM version of IDataObject including SetData.
@@ -464,7 +322,7 @@ namespace DragDropLib
     /// </code>
     /// </remarks>
     [ComVisible(true)]
-    public class DataObject : IDataObject, IDisposable
+    internal class DataObject : System.Runtime.InteropServices.ComTypes.IDataObject, IDisposable
     {
         // Our internal storage is a simple list
         private IList<KeyValuePair<FORMATETC, STGMEDIUM>> storage;
@@ -499,12 +357,10 @@ namespace DragDropLib
             connections = new Dictionary<int, AdviseEntry>();
         }
 
-        /// <summary>
-        /// Releases unmanaged resources.
-        /// </summary>
         ~DataObject()
         {
             Dispose(false);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -530,6 +386,7 @@ namespace DragDropLib
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -540,12 +397,6 @@ namespace DragDropLib
         /// is finalizing the release of the object instance.</param>
         private void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                // No managed objects to release
-            }
-
-            // Always release unmanaged objects
             ClearStorage();
         }
 
@@ -553,14 +404,13 @@ namespace DragDropLib
 
         #region Unsupported functions
 
-        public int EnumDAdvise(out IEnumSTATDATA enumAdvise)
+        int IDataObject.EnumDAdvise(out IEnumSTATDATA enumAdvise)
         {
             enumAdvise = null;
-            HRESULT.OLE_E_ADVISENOTSUPPORTED.ThrowIfFailed();
-            return 0;
+            return (int)HRESULT.OLE_E_ADVISENOTSUPPORTED;
         }
 
-        public int GetCanonicalFormatEtc(ref FORMATETC formatIn, out FORMATETC formatOut)
+        int IDataObject.GetCanonicalFormatEtc(ref FORMATETC formatIn, out FORMATETC formatOut)
         {
             formatOut = formatIn;
             return (int)HRESULT.DV_E_FORMATETC;
@@ -622,7 +472,9 @@ namespace DragDropLib
         {
             // We only support GET
             if (DATADIR.DATADIR_GET == direction)
-                return new EnumFORMATETC(storage);
+            {
+                return new EnumFORMATETC(from pair in storage select pair.Key);
+            }
 
             throw new NotImplementedException("OLE_S_USEREG");
         }
@@ -730,7 +582,9 @@ namespace DragDropLib
             // If not, we'll make a copy of it.
             STGMEDIUM sm = medium;
             if (!release)
+            {
                 sm = CopyMedium(ref medium);
+            }
 
             // Add it to the internal storage
             KeyValuePair<FORMATETC, STGMEDIUM> addPair = new KeyValuePair<FORMATETC, STGMEDIUM>(formatIn, sm);
@@ -852,20 +706,17 @@ namespace DragDropLib
         private class EnumFORMATETC : IEnumFORMATETC
         {
             // Keep an array of the formats for enumeration
-            private FORMATETC[] formats;
+            private FORMATETC[] _formats;
             // The index of the next item
-            private int currentIndex = 0;
+            private int _currentIndex = 0;
 
             /// <summary>
             /// Creates an instance from a list of key value pairs.
             /// </summary>
             /// <param name="storage">List of FORMATETC/STGMEDIUM key value pairs</param>
-            internal EnumFORMATETC(IList<KeyValuePair<FORMATETC, STGMEDIUM>> storage)
+            public EnumFORMATETC(IEnumerable<FORMATETC> storage)
             {
-                // Get the formats from the list
-                formats = new FORMATETC[storage.Count];
-                for (int i = 0; i < formats.Length; i++)
-                    formats[i] = storage[i].Key;
+                _formats = storage.ToArray();
             }
 
             /// <summary>
@@ -874,9 +725,7 @@ namespace DragDropLib
             /// <param name="formats">Array of formats to enumerate.</param>
             private EnumFORMATETC(FORMATETC[] formats)
             {
-                // Get the formats as a copy of the array
-                this.formats = new FORMATETC[formats.Length];
-                formats.CopyTo(this.formats, 0);
+                _formats = formats.ToArray();
             }
 
             #region IEnumFORMATETC Members
@@ -887,9 +736,10 @@ namespace DragDropLib
             /// <param name="newEnum">When this function returns, contains a new instance of IEnumFORMATETC.</param>
             public void Clone(out IEnumFORMATETC newEnum)
             {
-                EnumFORMATETC ret = new EnumFORMATETC(formats);
-                ret.currentIndex = currentIndex;
-                newEnum = ret;
+                newEnum = new EnumFORMATETC(_formats)
+                {
+                    _currentIndex = this._currentIndex,
+                };
             }
 
             /// <summary>
@@ -916,7 +766,7 @@ namespace DragDropLib
                 // Short circuit if they didn't request any elements, or didn't
                 // provide room in the return array, or there are not more elements
                 // to enumerate.
-                if (celt <= 0 || rgelt == null || currentIndex >= formats.Length)
+                if (celt <= 0 || rgelt == null || _currentIndex >= _formats.Length)
                     return 1; // S_FALSE
 
                 // If the number of requested elements is not one, then we must
@@ -930,8 +780,8 @@ namespace DragDropLib
                     throw new ArgumentException("The number of elements in the return array is less than the number of elements requested");
 
                 // Fetch the elements.
-                for (int i = 0; currentIndex < formats.Length && cReturn > 0; i++, cReturn--, currentIndex++)
-                    rgelt[i] = formats[currentIndex];
+                for (int i = 0; _currentIndex < _formats.Length && cReturn > 0; i++, cReturn--, _currentIndex++)
+                    rgelt[i] = _formats[_currentIndex];
 
                 // Return the number of elements fetched
                 if (pceltFetched != null && pceltFetched.Length > 0)
@@ -949,7 +799,7 @@ namespace DragDropLib
             /// <returns>S_OK</returns>
             public int Reset()
             {
-                currentIndex = 0;
+                _currentIndex = 0;
                 return 0; // S_OK
             }
 
@@ -960,10 +810,10 @@ namespace DragDropLib
             /// <returns>If there are not enough remaining elements to skip, returns S_FALSE. Otherwise, S_OK is returned.</returns>
             public int Skip(int celt)
             {
-                if (currentIndex + celt > formats.Length)
+                if (_currentIndex + celt > _formats.Length)
                     return 1; // S_FALSE
 
-                currentIndex += celt;
+                _currentIndex += celt;
                 return 0; // S_OK
             }
 
@@ -976,45 +826,18 @@ namespace DragDropLib
 
 #endregion // DragDropLibCore\DataObject.cs
 
-#region WpfDragDropLib\WpfDragDropLibExtensions.cs
-
-namespace DragDropLib
-{
-    using System;
-    using System.Windows;
-
-    public static class WpfDragDropLibExtensions
-    {
-        /// <summary>
-        /// Converts a System.Windows.Point value to a DragDropLib.Win32Point value.
-        /// </summary>
-        /// <param name="pt">Input value.</param>
-        /// <returns>Converted value.</returns>
-        public static Win32Point ToWin32Point(this Point pt)
-        {
-            Win32Point wpt = new Win32Point();
-            wpt.x = (int)pt.X;
-            wpt.y = (int)pt.Y;
-            return wpt;
-        }
-    }
-}
-
-#endregion // WpfDragDropLib\WpfDragDropLibExtensions.cs
-
 #region WpfDragDropLib\WpfDragSourceHelper.cs
 
-namespace System.Windows
+namespace FacebookClient
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.InteropServices;
+    using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using DragDropLib;
-    using ComTypes = System.Runtime.InteropServices.ComTypes;
     using Standard;
+    using ComTypes = System.Runtime.InteropServices.ComTypes;
 
     /// <summary>
     /// Provides helper methods for working with the Shell drag image manager.
@@ -1078,7 +901,7 @@ namespace System.Windows
         /// <returns>A new instance of System.Windows.Forms.IDataObject.</returns>
         public static IDataObject CreateDataObject()
         {
-            return new System.Windows.DataObject(new DragDropLib.DataObject());
+            return new System.Windows.DataObject(new FacebookClient.DataObject());
         }
 
         /// <summary>
@@ -1133,7 +956,7 @@ namespace System.Windows
 
             // We need to listen for drop description changes. If a drop target
             // changes the drop description, we shouldn't provide a default one.
-            entry.adviseConnection = ComTypes.ComDataObjectExtensions.Advise(((ComTypes.IDataObject)data), new AdviseSink(data), DropDescriptionFormat, 0);
+            entry.adviseConnection = FacebookClient.ComDataObjectExtensions.Advise(((ComTypes.IDataObject)data), new AdviseSink(data), DropDescriptionFormat, 0);
 
             // Hook up the default drag source event handlers
             dragSource.GiveFeedback += new GiveFeedbackEventHandler(DefaultGiveFeedbackHandler);
@@ -1242,7 +1065,9 @@ namespace System.Windows
             if (data != null)
             {
                 foreach (KeyValuePair<string, object> dataPair in data)
+                {
                     dataObject.SetDataEx(dataPair.Key, dataPair.Value);
+                }
             }
 
             try
@@ -1284,10 +1109,10 @@ namespace System.Windows
             // should set an invalid drop description during DragLeave.
             bool setDefaultDropDesc = false;
             bool isDefaultDropDesc = IsDropDescriptionDefault(data);
-            DropImageType currentType = DropImageType.Invalid;
+            Standard.DROPIMAGETYPE currentType = DROPIMAGETYPE.INVALID;
             if (!IsDropDescriptionValid(data) || isDefaultDropDesc)
             {
-                currentType = GetDropImageType(data);
+                currentType = GetDROPIMAGETYPE(data);
                 setDefaultDropDesc = true;
             }
 
@@ -1308,7 +1133,7 @@ namespace System.Windows
             // always invalidate if the drop description was set by the drop target,
             // *or* if the current drop image is not None. So if we set a default
             // drop description to anything but None, we'll always invalidate.
-            if (InvalidateRequired(data) || !isDefaultDropDesc || currentType != DropImageType.None)
+            if (InvalidateRequired(data) || !isDefaultDropDesc || currentType != DROPIMAGETYPE.NONE)
             {
                 InvalidateDragImage(data);
 
@@ -1321,16 +1146,16 @@ namespace System.Windows
             if (setDefaultDropDesc)
             {
                 // Only change if the effect changed
-                if ((DropImageType)e.Effects != currentType)
+                if ((DROPIMAGETYPE)e.Effects != currentType)
                 {
                     if (e.Effects == DragDropEffects.Copy)
-                        data.SetDropDescription(DropImageType.Copy, "Copy", "");
+                        data.SetDropDescription(DROPIMAGETYPE.COPY, "Copy", "");
                     else if (e.Effects == DragDropEffects.Link)
-                        data.SetDropDescription(DropImageType.Link, "Link", "");
+                        data.SetDropDescription(DROPIMAGETYPE.LINK, "Link", "");
                     else if (e.Effects == DragDropEffects.Move)
-                        data.SetDropDescription(DropImageType.Move, "Move", "");
+                        data.SetDropDescription(DROPIMAGETYPE.MOVE, "Move", "");
                     else if (e.Effects == DragDropEffects.None)
-                        data.SetDropDescription(DropImageType.None, null, null);
+                        data.SetDropDescription(DROPIMAGETYPE.NONE, null, null);
                     SetDropDescriptionIsDefault(data, true);
 
                     // We can't invalidate now, because the drag image manager won't
@@ -1375,7 +1200,7 @@ namespace System.Windows
         /// IDragSourceHelper.InitializeFromControl is called.</remarks>
         public static void AllowDropDescription(bool allow)
         {
-            IDragSourceHelper2 sourceHelper = (IDragSourceHelper2)new DragDropHelper();
+            var sourceHelper = (IDragSourceHelper2)CLSID.CoCreateInstance<IDragSourceHelper2>(CLSID.DragDropHelper);
             sourceHelper.SetFlags(allow ? DSH.ALLOWDROPDESCRIPTIONTEXT : 0);
         }
 
@@ -1466,12 +1291,12 @@ namespace System.Windows
         /// </summary>
         /// <param name="dataObject">The DataObject from which to get the drop description.</param>
         /// <returns>True if the drop description is set, and the 
-        /// DropImageType is not DropImageType.Invalid.</returns>
+        /// DROPIMAGETYPE is not DROPIMAGETYPE.INVALID.</returns>
         private static bool IsDropDescriptionValid(IDataObject dataObject)
         {
-            object data = ComTypes.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)dataObject);
-            if (data is DropDescription)
-                return (DropImageType)((DropDescription)data).type != DropImageType.Invalid;
+            object data = FacebookClient.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)dataObject);
+            if (data is DROPDESCRIPTION)
+                return (DROPIMAGETYPE)((DROPDESCRIPTION)data).type != DROPIMAGETYPE.INVALID;
             return false;
         }
 
@@ -1557,12 +1382,12 @@ namespace System.Windows
         /// </summary>
         /// <param name="dataObject">The DataObject.</param>
         /// <returns>The current drop image type.</returns>
-        private static DropImageType GetDropImageType(IDataObject dataObject)
+        private static DROPIMAGETYPE GetDROPIMAGETYPE(IDataObject dataObject)
         {
-            object data = ComTypes.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)dataObject);
-            if (data is DropDescription)
-                return (DropImageType)((DropDescription)data).type;
-            return DropImageType.Invalid;
+            object data = FacebookClient.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)dataObject);
+            if (data is DROPDESCRIPTION)
+                return (DROPIMAGETYPE)((DROPDESCRIPTION)data).type;
+            return DROPIMAGETYPE.INVALID;
         }
 
         #endregion // Helper methods
@@ -1595,9 +1420,11 @@ namespace System.Windows
             {
                 // We listen to DropDescription changes, so that we can unset the IsDefault
                 // drop description flag.
-                object odd = ComTypes.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)data);
+                object odd = FacebookClient.ComDataObjectExtensions.GetDropDescription((ComTypes.IDataObject)data);
                 if (odd != null)
+                {
                     DragSourceHelper.SetDropDescriptionIsDefault(data, false);
+                }
             }
 
             #region Unsupported callbacks
@@ -1633,24 +1460,20 @@ namespace System.Windows
 
 #region WpfDragDropLib\WpfDropTargetHelper.cs
 
-namespace System.Windows
+namespace FacebookClient
 {
     using System;
     using System.Windows;
-    using DragDropLib;
+    using Standard;
 
-    public static class DropTargetHelper
+    internal static class DropTargetHelper
     {
         /// <summary>
         /// Internal instance of the DragDropHelper.
         /// </summary>
         [ThreadStatic]
-        private static IDropTargetHelper s_instance = (IDropTargetHelper)new DragDropHelper();
-
-        static DropTargetHelper()
-        {
-        }
-
+        private static IDropTargetHelper s_instance = CLSID.CoCreateInstance<IDropTargetHelper>(CLSID.DragDropHelper);
+        
         /// <summary>
         /// Notifies the DragDropHelper that the specified Window received
         /// a DragEnter event.
@@ -1679,7 +1502,7 @@ namespace System.Windows
         /// the drop description.</remarks>
         public static void DragEnter(Window window, IDataObject data, Point cursorOffset, DragDropEffects effect, string descriptionMessage, string descriptionInsert)
         {
-            data.SetDropDescription((DropImageType)effect, descriptionMessage, descriptionInsert);
+            data.SetDropDescription((DROPIMAGETYPE)effect, descriptionMessage, descriptionInsert);
             DragEnter(window, data, cursorOffset, effect);
         }
 
@@ -1710,7 +1533,7 @@ namespace System.Windows
         /// <param name="data">The data object associated to the event.</param>
         public static void DragLeave(IDataObject data)
         {
-            data.SetDropDescription(DropImageType.Invalid, null, null);
+            data.SetDropDescription(DROPIMAGETYPE.INVALID, null, null);
             DragLeave();
         }
 
@@ -1741,14 +1564,15 @@ namespace System.Windows
 
 #region WpfDragDropLib\WpfDropTargetHelperExtensions.cs
 
-namespace DragDropLib
+namespace FacebookClient
 {
     using System;
     using System.Windows;
     using System.Windows.Interop;
+    using Standard;
     using ComIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 
-    public static class WpfDropTargetHelperExtensions
+    internal static class WpfDropTargetHelperExtensions
     {
         /// <summary>
         /// Notifies the DragDropHelper that the specified Window received
@@ -1763,8 +1587,10 @@ namespace DragDropLib
         {
             IntPtr windowHandle = IntPtr.Zero;
             if (window != null)
-                windowHandle = (new WindowInteropHelper(window)).Handle;
-            Win32Point pt = WpfDragDropLibExtensions.ToWin32Point(cursorOffset);
+            {
+                windowHandle = new WindowInteropHelper(window).Handle;
+            }
+            var pt = new POINT { x = (int)cursorOffset.X, y = (int)cursorOffset.Y };
             dropHelper.DragEnter(windowHandle, (ComIDataObject)data, ref pt, (int)effect);
         }
 
@@ -1777,7 +1603,7 @@ namespace DragDropLib
         /// <param name="effect">The accepted drag drop effect.</param>
         public static void DragOver(this IDropTargetHelper dropHelper, Point cursorOffset, DragDropEffects effect)
         {
-            Win32Point pt = WpfDragDropLibExtensions.ToWin32Point(cursorOffset);
+            var pt = new POINT { x = (int)cursorOffset.X, y = (int)cursorOffset.Y };
             dropHelper.DragOver(ref pt, (int)effect);
         }
 
@@ -1791,7 +1617,7 @@ namespace DragDropLib
         /// <param name="effect">The accepted drag drop effect.</param>
         public static void Drop(this IDropTargetHelper dropHelper, IDataObject data, Point cursorOffset, DragDropEffects effect)
         {
-            Win32Point pt = WpfDragDropLibExtensions.ToWin32Point(cursorOffset);
+            var pt = new POINT { x = (int)cursorOffset.X, y = (int)cursorOffset.Y };
             dropHelper.Drop((ComIDataObject)data, ref pt, (int)effect);
         }
     }
@@ -1805,15 +1631,11 @@ namespace System.Windows
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Runtime.InteropServices;
-    using System.Runtime.Serialization;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using DragDropLib;
+    using Standard;
     using Bitmap = System.Drawing.Bitmap;
     using Color = System.Windows.Media.Color;
     using ComIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
@@ -1823,23 +1645,11 @@ namespace System.Windows
     using DrawingPixelFormat = System.Drawing.Imaging.PixelFormat;
     using DrawingRectangle = System.Drawing.Rectangle;
     using PixelFormat = System.Windows.Media.PixelFormat;
-    using Standard;
-
-    public enum DropImageType
-    {
-        Invalid = -1,
-        None = 0,
-        Copy = (int)DragDropEffects.Copy,
-        Move = (int)DragDropEffects.Move,
-        Link = (int)DragDropEffects.Link,
-        Label = 6,
-        Warning = 7
-    }
 
     /// <summary>
     /// Provides extended functionality to the System.Windows.IDataObject interface.
     /// </summary>
-    public static class WpfDataObjectExtensions
+    internal static class WpfDataObjectExtensions
     {
         /// <summary>
         /// Sets the drag image by rendering the specified UIElement.
@@ -1852,8 +1662,7 @@ namespace System.Windows
             Size size = element.RenderSize;
 
             // Create our renderer at full size
-            RenderTargetBitmap renderSource = new RenderTargetBitmap(
-                (int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32);
+            RenderTargetBitmap renderSource = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32);
 
             // Render the element
             renderSource.Render(element);
@@ -1886,29 +1695,22 @@ namespace System.Windows
         /// <param name="cursorOffset">The location of the cursor relative to the image.</param>
         private static void SetDragImage(this IDataObject dataObject, Bitmap bitmap, Point cursorOffset)
         {
-            var shdi = new SHDRAGIMAGE();
-
-            SIZE size;
-            size.cx = bitmap.Width;
-            size.cy = bitmap.Height;
-            shdi.sizeDragImage = size;
-
-            POINT wpt;
-            wpt.x = (int)cursorOffset.X;
-            wpt.y = (int)cursorOffset.Y;
-            shdi.ptOffset = wpt;
-
-            shdi.crColorKey = DrawingColor.Magenta.ToArgb();
-
             // This HBITMAP will be managed by the DragDropHelper
             // as soon as we pass it to InitializeFromBitmap. If we fail
             // to make the hand off, we'll delete it to prevent a mem leak.
             IntPtr hbmp = bitmap.GetHbitmap();
-            shdi.hbmpDragImage = hbmp;
+
+            var shdi = new SHDRAGIMAGE
+            {
+                sizeDragImage = new SIZE { cx = (int)bitmap.Width, cy = (int)bitmap.Height },
+                ptOffset = new POINT { x = (int)cursorOffset.X, y = (int)cursorOffset.Y },
+                crColorKey = DrawingColor.Magenta.ToArgb(),
+                hbmpDragImage = hbmp,
+            };
 
             try
             {
-                IDragSourceHelper sourceHelper = (IDragSourceHelper)new DragDropHelper();
+                IDragSourceHelper sourceHelper = CLSID.CoCreateInstance<IDragSourceHelper>(CLSID.DragDropHelper);
 
                 try
                 {
@@ -1941,7 +1743,7 @@ namespace System.Windows
         /// the insert as "Temp". When rendered, the "%1" in format will be replaced
         /// with "Temp", but "Temp" will be rendered slightly different from "Move to ".
         /// </remarks>
-        public static void SetDropDescription(this IDataObject dataObject, DropImageType type, string format, string insert)
+        public static void SetDropDescription(this IDataObject dataObject, DROPIMAGETYPE type, string format, string insert)
         {
             if (format != null && format.Length > 259)
                 throw new ArgumentException("Format string exceeds the maximum allowed length of 259.", "format");
@@ -1949,12 +1751,12 @@ namespace System.Windows
                 throw new ArgumentException("Insert string exceeds the maximum allowed length of 259.", "insert");
 
             // Fill the structure
-            DropDescription dd;
-            dd.type = (int)type;
+            DROPDESCRIPTION dd;
+            dd.type = type;
             dd.szMessage = format;
             dd.szInsert = insert;
 
-            ComTypes.ComDataObjectExtensions.SetDropDescription((ComTypes.IDataObject)dataObject, dd);
+            FacebookClient.ComDataObjectExtensions.SetDropDescription((ComTypes.IDataObject)dataObject, dd);
         }
 
         /// <summary>
@@ -1971,49 +1773,49 @@ namespace System.Windows
         {
             DataFormat dataFormat = DataFormats.GetDataFormat(format);
 
-            // Initialize the format structure
-            ComTypes.FORMATETC formatETC = new ComTypes.FORMATETC();
-            formatETC.cfFormat = (short)dataFormat.Id;
-            formatETC.dwAspect = ComTypes.DVASPECT.DVASPECT_CONTENT;
-            formatETC.lindex = -1;
-            formatETC.ptd = IntPtr.Zero;
-
             // Try to discover the TYMED from the format and data
-            ComTypes.TYMED tymed = GetCompatibleTymed(format, data);
-            // If a TYMED was found, we can use the system DataObject
-            // to convert our value for us.
-            if (tymed != ComTypes.TYMED.TYMED_NULL)
-            {
-                formatETC.tymed = tymed;
-
-                // Set data on an empty DataObject instance
-                DataObject conv = new DataObject();
-                conv.SetData(format, data, true);
-
-                // Now retrieve the data, using the COM interface.
-                // This will perform a managed to unmanaged conversion for us.
-                ComTypes.STGMEDIUM medium;
-                ((ComTypes.IDataObject)conv).GetData(ref formatETC, out medium);
-                try
-                {
-                    // Now set the data on our data object
-                    ((ComTypes.IDataObject)dataObject).SetData(ref formatETC, ref medium, true);
-                }
-                catch
-                {
-                    // On exceptions, release the medium
-                    NativeMethods.ReleaseStgMedium(ref medium);
-                    throw;
-                }
-            }
-            else
+            ComTypes.TYMED compatTymed = GetCompatibleTymed(format, data);
+            if (compatTymed == ComTypes.TYMED.TYMED_NULL)
             {
                 // Since we couldn't determine a TYMED, this data
                 // is likely custom managed data, and won't be used
                 // by unmanaged code, so we'll use our custom marshaling
                 // implemented by our COM IDataObject extensions.
+                FacebookClient.ComDataObjectExtensions.SetManagedData((ComTypes.IDataObject)dataObject, format, data);
+                return;
+            }
+            
+            // Initialize the format structure
+            var formatETC = new ComTypes.FORMATETC
+            {
+                cfFormat = (short)dataFormat.Id,
+                dwAspect = ComTypes.DVASPECT.DVASPECT_CONTENT,
+                lindex = -1,
+                ptd = IntPtr.Zero,
+                tymed = compatTymed,
+            };
 
-                ComTypes.ComDataObjectExtensions.SetManagedData((ComTypes.IDataObject)dataObject, format, data);
+            // If a TYMED was found, we can use the system DataObject
+            // to convert our value for us.
+
+            // Set data on an empty DataObject instance
+            var conv = new DataObject();
+            conv.SetData(format, data, true);
+
+            // Now retrieve the data, using the COM interface.
+            // This will perform a managed to unmanaged conversion for us.
+            ComTypes.STGMEDIUM medium;
+            ((ComTypes.IDataObject)conv).GetData(ref formatETC, out medium);
+            try
+            {
+                // Now set the data on our data object
+                ((ComTypes.IDataObject)dataObject).SetData(ref formatETC, ref medium, true);
+            }
+            catch
+            {
+                // On exceptions, release the medium
+                NativeMethods.ReleaseStgMedium(ref medium);
+                throw;
             }
         }
 
@@ -2081,7 +1883,7 @@ namespace System.Windows
             // is stamped by us for custom marshaling
             if (data is Stream)
             {
-                object data2 = ComTypes.ComDataObjectExtensions.GetManagedData((ComTypes.IDataObject)dataObject, format);
+                object data2 = FacebookClient.ComDataObjectExtensions.GetManagedData((ComTypes.IDataObject)dataObject, format);
                 if (data2 != null)
                     return data2;
             }

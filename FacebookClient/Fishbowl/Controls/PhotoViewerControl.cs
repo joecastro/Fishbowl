@@ -1,13 +1,4 @@
-﻿//-----------------------------------------------------------------------
-// <copyright file="PhotoViewerControl.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-//     Control used to display a full photo.
-// </summary>
-//-----------------------------------------------------------------------
-
-namespace FacebookClient
+﻿namespace FacebookClient
 {
     using System;
     using System.IO;
@@ -47,16 +38,12 @@ namespace FacebookClient
 
         public static RoutedCommand SetAsDesktopBackgroundCommand { get; private set; }
         public static RoutedCommand IsMouseOverTagCommand { get; private set; }
-        public static RoutedCommand SavePhotoAsCommand { get; private set; }
-        public static RoutedCommand SaveAlbumCommand { get; private set; }
         public static RoutedCommand StartSlideShowCommand { get; private set; }
 
         static PhotoViewerControl()
         {
             SetAsDesktopBackgroundCommand = new RoutedCommand("SetAsDesktopBackground", typeof(PhotoViewerControl));
             IsMouseOverTagCommand = new RoutedCommand("IsMouseOverTag", typeof(PhotoViewerControl));
-            SaveAlbumCommand = new RoutedCommand("SaveAlbum", typeof(PhotoViewerControl));
-            SavePhotoAsCommand = new RoutedCommand("SavePhotoAs", typeof(PhotoViewerControl));
             StartSlideShowCommand = new RoutedCommand("StartSlideShow", typeof(PhotoViewerControl));
         }
       
@@ -65,8 +52,6 @@ namespace FacebookClient
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, (sender, e) => _PrintPhoto()));
             CommandBindings.Add(new CommandBinding(SetAsDesktopBackgroundCommand, (sender, e) => _SetAsDesktopBackground()));
             CommandBindings.Add(new CommandBinding(IsMouseOverTagCommand, (sender, e) => _OnIsMouseOverTag(e)));
-            CommandBindings.Add(new CommandBinding(SaveAlbumCommand, (sender, e) => _SaveAlbum()));
-            CommandBindings.Add(new CommandBinding(SavePhotoAsCommand, (sender, e) => _SavePhoto()));
             CommandBindings.Add(new CommandBinding(StartSlideShowCommand, (sender, e) => ((PhotoViewerControl)sender)._StartSlideShow()));
 
             KeyDown += _OnKeyDown;
@@ -158,99 +143,66 @@ namespace FacebookClient
 
         private void _PrintPhoto()
         {
-            try
-            {
-                string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
+            FacebookPhoto.Image.SaveToFile(FacebookImageDimensions.Big, Path.GetTempFileName(), true, FacebookImageSaveOptions.PreserveOriginal, _PrintFileCallback, null);
+        }
 
-                if (!string.IsNullOrEmpty(photoLocalPath))
-                {
-                    photoLocalPath = System.IO.Path.GetFullPath(photoLocalPath);
-                    object photoFile = photoLocalPath;
-                    WIA.CommonDialog dialog = new WIA.CommonDialogClass();
-                    dialog.ShowPhotoPrintingWizard(ref photoFile);
-                }
-            }
-            catch (Exception)
+        private void _PrintFileCallback(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (!Dispatcher.CheckAccess())
             {
+                Dispatcher.BeginInvoke((SaveImageAsyncCallback)_PrintFileCallback, new [] { sender, e });
+                return;
             }
+
+            if (e.Cancelled || e.Error != null)
+            {
+                MessageBox.Show("Unable to print the image");
+                return;
+            }
+
+            object path = e.ImagePath;
+            WIA.CommonDialog dialog = new WIA.CommonDialogClass();
+            dialog.ShowPhotoPrintingWizard(ref path);
         }
 
         private void _SetAsDesktopBackground()
         {
-            string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
-            if (!string.IsNullOrEmpty(photoLocalPath))
-            {
-                string wallpaperPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FacebookClient\\Wallpaper") + Path.GetExtension(photoLocalPath);
-
-                try
-                {
-                    // Clear the current wallpaper (releases lock on current bitmap)
-                    NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, String.Empty, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
-
-                    // Delete the old wallpaper if it exists
-                    Utility.SafeDeleteFile(wallpaperPath);
-                    Utility.EnsureDirectory(Path.GetDirectoryName(wallpaperPath));
-
-                    File.Copy(photoLocalPath, wallpaperPath);
-                    NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, wallpaperPath, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
-                }
-                catch (Exception)
-                { }
-            }
+            FacebookPhoto.Image.SaveToFile(FacebookImageDimensions.Big, Path.GetTempFileName(), true, FacebookImageSaveOptions.PreserveOriginal, _SetAsDesktopBackgroundCallback, null);
         }
 
-        private void _SavePhoto()
+        private void _SetAsDesktopBackgroundCallback(object sender, SaveImageCompletedEventArgs e)
         {
-            string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
-            if (!string.IsNullOrEmpty(photoLocalPath))
+            if (!Dispatcher.CheckAccess())
             {
-                string defaultFileName = Path.GetFileName(photoLocalPath);
-                if (FacebookPhoto.Album != null)
-                {
-                    defaultFileName = FacebookPhoto.Album.Title + " (" + (FacebookPhoto.Album.Photos.IndexOf(FacebookPhoto) + 1) + ")";
-                }
-
-                var fileDialog = new System.Windows.Forms.SaveFileDialog
-                {
-                    Filter = "Image Files|*.jpg;*.png;*.bmp;*.gif",
-                    DefaultExt = Path.GetExtension(photoLocalPath),
-                    FileName = defaultFileName,
-                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
-                };
-
-                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    string imagePath = fileDialog.FileName;
-
-                    try
-                    {
-                        // Copy the file to the save location, overwriting if necessary
-                        File.Copy(photoLocalPath, imagePath, true);
-                    }
-                    catch (Exception)
-                    { }
-                }
+                Dispatcher.BeginInvoke((SaveImageAsyncCallback)_SetAsDesktopBackgroundCallback, sender, e);
+                return;
             }
+
+            if (e.Cancelled || e.Error != null)
+            {
+                MessageBox.Show("Unable to use this photo for the desktop background");
+                return;
+            }
+
+            string photoLocalPath = e.ImagePath;
+            string wallpaperPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fishbowl\\Wallpaper") + Path.GetExtension(photoLocalPath);
+
+            try
+            {
+                // Clear the current wallpaper (releases lock on current bitmap)
+                NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, String.Empty, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
+
+                // Delete the old wallpaper if it exists
+                Utility.SafeDeleteFile(wallpaperPath);
+                Utility.EnsureDirectory(Path.GetDirectoryName(wallpaperPath));
+
+                File.Copy(photoLocalPath, wallpaperPath);
+                NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, wallpaperPath, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
+            }
+            catch (Exception)
+            { }
         }
         
-        /// <summary>
-        /// Saves every photo in the currently displayed album to a user-provided location.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private void _SaveAlbum()
-        {
-            var folderDialog = new System.Windows.Forms.FolderBrowserDialog
-            {
-                Description = "Choose where to save the album.",
-                ShowNewFolderButton = true,
-            };
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                FacebookPhoto.Album.SaveToFolder(folderDialog.SelectedPath);
-            }
-        }
-
         private void _OnKeyDown(object sender, KeyEventArgs e)
         {
             if (!e.Handled)

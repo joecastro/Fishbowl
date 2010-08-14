@@ -154,6 +154,7 @@
     <Compile Include="IFacebookObject.cs" />
     <Compile Include="ActivityPost.cs" />
     <Compile Include="Notification.cs" />
+    <Compile Include="SaveImageCompletedEventArgs.cs" />
     <Compile Include="SearchIndex.cs" />
     <Compile Include="ServiceSettings.cs" />
     <Compile Include="Stemmer.cs" />

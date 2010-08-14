@@ -17,7 +17,7 @@
 
   <!-- Data template for photos in the film strip -->
   <DataTemplate x:Key="FilmStripItemTemplate">
-    <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
+    <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Image}">
       <Button
           Height="80" Width="80"
           Click="OnNavigateToContentButtonClicked"
@@ -62,7 +62,7 @@
           </ControlTemplate>
         </Button.Template>
       </Button>
-    </ClientManagerControls:FacebookPhotoDragContainer>
+    </ClientManagerControls:FacebookImageDragContainer>
   </DataTemplate>
 
   <!-- Color overrides for the film strip -->
@@ -172,8 +172,8 @@
                 <ClientManagerControls:FacebookImageControl.ContextMenu>
                   <ContextMenu StaysOpen="true">
                     <MenuItem Command="FacebookClient:PhotoViewerControl.SetAsDesktopBackgroundCommand" CommandParameter="{Binding}" Header="Set as Desktop _Background"/>
-                    <MenuItem Command="FacebookClient:PhotoViewerControl.SavePhotoAsCommand" CommandParameter="{Binding}" Header="_Save..."/>
-                    <MenuItem Command="FacebookClient:PhotoViewerControl.SaveAlbumCommand" CommandParameter="{Binding}" Header="Save _Album..."/>
+                    <MenuItem Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SaveAlbumCommand}" CommandParameter="{Binding Path=FacebookPhoto.Album}" Header="Save _Album..."/>
+                    <MenuItem Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SavePhotoCommand}" CommandParameter="{Binding Path=FacebookPhoto}" Header="_Save..."/>
                     <Separator/>
                     <MenuItem Command="ApplicationCommands.Print" Header="_Print..."/>
                     <Separator/>
@@ -328,8 +328,8 @@
               <Rectangle Height="16" Width="16" Fill="{DynamicResource PrinterToolbarDrawingBrush}"/>
             </Button>
             <Button
-                Command="FacebookClient:PhotoViewerControl.SavePhotoAsCommand"
-                CommandParameter="{Binding}"
+                Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.SavePhotoCommand}" 
+                CommandParameter="{Binding Path=FacebookPhoto}"
                 Style="{DynamicResource TopToolbarButtonStyle}"
                 ToolTip="Save the photo">
               <Rectangle Height="16" Width="16" Fill="{DynamicResource SaveDiskToolbarDrawingBrush}" />

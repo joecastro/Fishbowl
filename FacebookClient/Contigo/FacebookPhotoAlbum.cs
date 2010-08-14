@@ -370,23 +370,13 @@ namespace Contigo
             _NotifyPropertyChanged("Owner"); 
         }
 
-        /// <remarks>
-        /// This is a synchronous operation.
-        /// </remarks>
-        public void SaveToFolder(string path)
+        public void SaveToFolder(string path, SaveImageAsyncCallback callback, object userState)
         {
             Utility.EnsureDirectory(path);
 
-            for (int i = 0; i < this.Photos.Count; i++)
+            for (int i = 0; i < Photos.Count; ++i)
             {
-                string cachePath = this.Photos[i].Image.GetCachePath(FacebookImageDimensions.Big);
-                if (cachePath == null)
-                {
-                    // log error
-                    break;
-                }
-
-                File.Copy(cachePath, Path.Combine(path, string.Format("{0:D3}.jpg", i + 1)));
+                Photos[i].Image.SaveToFile(FacebookImageDimensions.Big, Path.Combine(path, string.Format("{0} {1:D3}", this.Title, i+1)), true, FacebookImageSaveOptions.FindBetterName, callback, userState, i, Photos.Count);
             }
         }
 

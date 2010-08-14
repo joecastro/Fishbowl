@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Windows;
+    using System.Windows.Interop;
     using Contigo;
-    using Standard;
     using Microsoft.Windows.Shell;
+    using Standard;
+
 
     public sealed class ActionCommands
     {
@@ -37,6 +40,9 @@
         public SetSortOrderCommand SetSortOrderCommand { get; private set; }
         public StartSyncCommand StartSyncCommand { get; private set; }
         public WriteOnWallCommand WriteOnWallCommand { get; private set; }
+
+        public SaveAlbumCommand SaveAlbumCommand { get; private set; }
+        public SavePhotoCommand SavePhotoCommand { get; private set; }
 
         // TODO: These really belong on MainWindowCommands, but that's not currently properly exposed to XAML
         public CloseWindowCommand CloseWindowCommand { get; private set; }
@@ -213,6 +219,211 @@
             string comment = parameterList[1] as string;
 
             ServiceProvider.FacebookService.WriteOnWall(contact, comment);
+        }
+    }
+
+    public sealed class SaveAlbumCommand : ActionCommand
+    {
+        public SaveAlbumCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return parameter is FacebookPhotoAlbum;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            var album = parameter as FacebookPhotoAlbum;
+            if (album == null)
+            {
+                return;
+            }
+
+            string folderPath = null;
+            if (Utility.IsOSVistaOrNewer)
+            {
+                IFileOpenDialog pFolderDialog = null;
+                try
+                {
+                    pFolderDialog = CLSID.CoCreateInstance<IFileOpenDialog>(CLSID.FileOpenDialog);
+                    pFolderDialog.SetOptions(pFolderDialog.GetOptions() | FOS.NOREADONLYRETURN | FOS.PICKFOLDERS);
+                    pFolderDialog.SetTitle(string.Format("Select where to save \"{0}\"", album.Title));
+                    pFolderDialog.SetOkButtonLabel("Save Album");
+
+                    HRESULT hr = pFolderDialog.Show(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+                    if (hr.Failed)
+                    {
+                        return;
+                    }
+
+                    IShellItem pItem = null;
+                    try
+                    {
+                        pItem = pFolderDialog.GetResult();
+                        folderPath = ShellUtil.GetPathFromShellItem(pItem);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref pItem);
+                    }
+                }
+                finally
+                {
+                    Utility.SafeRelease(ref pFolderDialog);
+                }
+            }
+            else
+            {
+                var folderDialog = new System.Windows.Forms.FolderBrowserDialog
+                {
+                    Description = "Choose where to save the album.",
+                    ShowNewFolderButton = true,
+                };
+                if (folderDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                folderPath = folderDialog.SelectedPath;
+            }
+
+            album.SaveToFolder(folderPath, _OnAlbumSaveProgressCallback, null);
+            Process.Start(new ProcessStartInfo { FileName = folderPath });
+        }
+
+        private void _OnAlbumSaveProgressCallback(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (e.Error != null || e.Cancelled)
+            {
+                //FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress(1F);
+                return;
+            }
+
+            //FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress((float)e.CurrentImageIndex / (float)e.TotalImageCount);
+        }
+    }
+
+    public sealed class SavePhotoCommand : ActionCommand
+    {
+        private static readonly Guid _SavePhotoId = new Guid(0x8c18c882, 0x482b, 0x459d, 0x9a, 0xc6, 0x6c, 0xc5, 0x39, 0x71, 0xa7, 0xf7);
+
+        public SavePhotoCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return parameter is FacebookPhoto;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            var photo = parameter as FacebookPhoto;
+            if (photo == null)
+            {
+                return;
+            }
+
+            string defaultFileName = "Facebook Photo";
+            if (photo.Album != null)
+            {
+                defaultFileName = photo.Album.Title + " (" + (photo.Album.Photos.IndexOf(photo) + 1) + ")";
+            }
+
+            string filePath = null;
+            if (Utility.IsOSVistaOrNewer)
+            {
+                IFileSaveDialog pFileSaveDialog = null;
+                try
+                {
+                    pFileSaveDialog = CLSID.CoCreateInstance<IFileSaveDialog>(CLSID.FileSaveDialog);
+                    pFileSaveDialog.SetOptions(pFileSaveDialog.GetOptions() | FOS.FORCEFILESYSTEM | FOS.OVERWRITEPROMPT);
+                    pFileSaveDialog.SetTitle("Select where to save the photo");
+                    pFileSaveDialog.SetOkButtonLabel("Save Photo");
+                    var filterspec = new COMDLG_FILTERSPEC { pszName = "Images", pszSpec = "*.jpg;*.png;*.bmp;*.gif" };
+                    pFileSaveDialog.SetFileTypes(1, ref filterspec);
+                    pFileSaveDialog.SetFileName(defaultFileName);
+                    Guid clientId = _SavePhotoId;
+                    pFileSaveDialog.SetClientGuid(ref clientId);
+
+                    IShellItem pItem = null;
+                    try
+                    {
+                        pItem = ShellUtil.GetShellItemForPath(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
+                        pFileSaveDialog.SetDefaultFolder(pItem);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref pItem);
+                    }
+
+                    HRESULT hr = pFileSaveDialog.Show(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+                    if (hr.Failed)
+                    {
+                        Assert.AreEqual((HRESULT)Win32Error.ERROR_CANCELLED, hr);
+                        return;
+                    }
+
+                    pItem = null;
+                    try
+                    {
+                        pItem = pFileSaveDialog.GetResult();
+                        filePath = ShellUtil.GetPathFromShellItem(pItem);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref pItem);
+                    }
+                }
+                finally
+                {
+                    Utility.SafeRelease(ref pFileSaveDialog);
+                }
+            }
+            else
+            {
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.png;*.bmp;*.gif",
+                    FileName = defaultFileName,
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                };
+
+                if (saveFileDialog.ShowDialog(Application.Current.MainWindow) != true)
+                {
+                    return;
+                }
+
+                filePath = saveFileDialog.FileName;
+            }
+
+            FacebookImageSaveOptions fiso = FacebookImageSaveOptions.FindBetterName;
+
+            // We told the file dialog to prompt about overwriting, so if the user specified a location
+            // with a file extension and the file already exists, prepare to overwrite.
+            // This isn't quite right because the file extension may be different, so we may overwrite a jpg 
+            // when it was asked to be a gif, but it's not a likely scenario.
+            if (System.IO.File.Exists(filePath))
+            {
+                fiso = FacebookImageSaveOptions.Overwrite;
+            }
+
+            photo.Image.SaveToFile(FacebookImageDimensions.Big, filePath, true, fiso, _OnPhotoSaveProgressCallback, null);
+        }
+
+        private void _OnPhotoSaveProgressCallback(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (e.Error != null || e.Cancelled)
+            {
+                //FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress(1F);
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo { FileName = e.ImagePath });
+
+            //FacebookClientApplication.Current2.MainWindow.SetTaskbarProgress((float)e.CurrentImageIndex / (float)e.TotalImageCount);
         }
     }
 

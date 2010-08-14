@@ -35,7 +35,7 @@
             InitializeComponent();
 
             _currentNotifications = new NotifyingList<Notification>();
-            _currentNotifications.ItemPropertyChanged += (sender, e) => _OnNotificationsChanged(this, null);
+            _currentNotifications.ItemPropertyChanged += (sender, e) => this.Dispatcher.BeginInvoke((NotifyCollectionChangedEventHandler)_OnNotificationsChanged, this, null);
 
             CommandBindings.Add(new CommandBinding(CloseCommand, new ExecutedRoutedEventHandler((sender, e) => IsDisplayed = false)));
 

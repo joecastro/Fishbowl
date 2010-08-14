@@ -1,12 +1,3 @@
-//-----------------------------------------------------------------------
-// <copyright file="PhotoAlbumControl.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
-// <summary>
-//     Control that displays album UI.
-// </summary>
-//-----------------------------------------------------------------------
-
 namespace FacebookClient
 {
     using System;
@@ -31,18 +22,15 @@ namespace FacebookClient
             set { SetValue(PhotoAlbumProperty, value); }
         }
 
-        public static RoutedCommand SaveAlbumCommand { get; private set; }
         public static RoutedCommand StartSlideShowCommand { get; private set; }
 
         static PhotoAlbumControl()
         {
-            SaveAlbumCommand = new RoutedCommand("SaveAlbum", typeof(PhotoAlbumControl));
             StartSlideShowCommand = new RoutedCommand("StartSlideShow", typeof(PhotoAlbumControl));
         }
 
         public PhotoAlbumControl()
         {
-            CommandBindings.Add(new CommandBinding(SaveAlbumCommand, (sender, e) => ((PhotoAlbumControl)sender)._SaveAlbum()));
             CommandBindings.Add(new CommandBinding(StartSlideShowCommand, (sender, e) => ((PhotoAlbumControl)sender)._StartSlideShow(), (sender, e) => ((PhotoAlbumControl)sender)._CanExecuteStartSlideShow(e)));
         }
 
@@ -53,22 +41,6 @@ namespace FacebookClient
             Focus();
             Loaded += (sender, e2) => ServiceProvider.ViewManager.PropertyChanged += _OnViewManagerPropertyChanged;
             Unloaded += (sender, e2) => ServiceProvider.ViewManager.PropertyChanged -= _OnViewManagerPropertyChanged;
-        }
-
-        /// <summary>
-        /// Saves every photo in the currently displayed album to a user-provided location.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">Event arguments describing the event.</param>
-        private void _SaveAlbum()
-        {
-            var folderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            folderDialog.Description = "Choose where to save the album.";
-            folderDialog.ShowNewFolderButton = true;
-            if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                PhotoAlbum.SaveToFolder(folderDialog.SelectedPath);
-            }
         }
 
         private bool _CanStartSlideShow { get { return PhotoAlbum != null && PhotoAlbum.Photos.Count > 0; } }
