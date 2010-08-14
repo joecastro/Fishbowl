@@ -142,7 +142,6 @@ namespace Contigo
 
         #endregion
 
-
         private FacebookPhoto _coverPic;
         private FacebookPhotoCollection _photos;
 
@@ -151,30 +150,18 @@ namespace Contigo
         private SmallString _lowerTitleSmallString;
         private SmallString _description;
         private FacebookObjectId _coverPicPid;
-        private FacebookObjectId _ownerId;
         private SmallUri _link;
         private DateTime _created;
         private DateTime _lastModified;
+        private FacebookContact _owner;
 
         internal FacebookPhotoAlbum(FacebookService service)
         {
             Assert.IsNotNull(service);
             SourceService = service;
         }
-        
-        public FacebookObjectId OwnerId
-        {
-            get { return _ownerId; }
-            internal set
-            {
-                if (value != _ownerId)
-                {
-                    _ownerId = value;
-                    _NotifyPropertyChanged("OwnerId");
-                    _UpdateOwner();
-                }
-            }
-        }
+
+        internal FacebookObjectId OwnerId { get; set; }
 
         public FacebookObjectId AlbumId { get; internal set; }
 
@@ -347,27 +334,16 @@ namespace Contigo
             }
         }
         
-        public FacebookContact Owner { get; private set; }
-
-        private void _UpdateOwner()
+        public FacebookContact Owner
         {
-            if (!FacebookObjectId.IsValid(OwnerId))
+            get
             {
-                return;
+                if (_owner == null && FacebookObjectId.IsValid(OwnerId))
+                {
+                    _owner = SourceService.GetUser(OwnerId);
+                }
+                return _owner;
             }
-
-            SourceService.GetUserAsync(OwnerId, _OnGetOwnerCompleted);
-        }
-
-        private void _OnGetOwnerCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            if (e.Error != null || e.Cancelled)
-            {
-                return;
-            }
-
-            Owner = e.UserState as FacebookContact;
-            _NotifyPropertyChanged("Owner"); 
         }
 
         public void SaveToFolder(string path, SaveImageAsyncCallback callback, object userState)
@@ -454,7 +430,8 @@ namespace Contigo
             LastModified = other.LastModified;
             Link = other.Link;
             Location = other.Location;
-            OwnerId = other.OwnerId;
+            Assert.AreEqual(OwnerId, other.OwnerId);
+            //OwnerId = other.OwnerId;
             RawPhotos.Merge(other.RawPhotos, false);
             _NotifyPropertyChanged("FirstPhoto");
             _NotifyPropertyChanged("SecondPhoto");

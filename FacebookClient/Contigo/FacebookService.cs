@@ -22,6 +22,7 @@
     {
         #region Fields
 
+        // Lock for accessing _interestingPeople
         private readonly object _localLock = new object();
 
         private FacebookWebApi _facebookApi;
@@ -56,6 +57,8 @@
         private readonly ServiceSettings _settings;
         private readonly string _settingsPath;
 
+        private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
+
         #endregion
 
         /// <summary>The Application's ID key provided by Facebook.</summary>
@@ -63,15 +66,16 @@
         public string ApplicationKey { get; private set; }
 
         public Dispatcher Dispatcher { get; private set; }
+
         /// <summary>Once logged in, the key provided by the Facebook servers that identifies this session.</summary>
         public string SessionKey { get; private set; }
+        
         /// <summary>The ID of the currently logged in user.  Requests to the server are made with this context.</summary>
         public FacebookObjectId UserId { get; private set; }
+        
         public bool IsOnline { get { return !string.IsNullOrEmpty(SessionKey); } }
 
         internal AsyncWebGetter WebGetter { get; private set; }
-
-        private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
 
         internal FBMergeableCollection<Notification> RawNotifications { get; private set; }
 
@@ -193,31 +197,22 @@
 
             _collectionUpdateDispatcher = new DispatcherPool("FacebookServer: Update Thread", 1);
 
-            GetUserAsync(UserId, _PerformInitialSync);
+            lock (_userLookup)
+            {
+                MeContact.UserId = UserId;
+                MeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
+                _userLookup.Add(UserId, MeContact);
+            }
+            
+            GetUser(UserId);
+
+            _friendInfoDispatcher.QueueRequest(_PerformInitialSync, null);
         }
 
-        private void _PerformInitialSync(object sender, AsyncCompletedEventArgs e)
+        private void _PerformInitialSync(object unused)
         {
             Assert.IsFalse(Dispatcher.CheckAccess());
-
-            if (e.Cancelled || e.Error != null)
-            {
-                string message = e.Cancelled ? "Request was canceled." : e.Error.Message;
-
-                // TODO: Something is really messed up.  We need a better way to surface this error to the user.
-                MessageBox.Show(message, "An error ocurred in Fishbowl", MessageBoxButton.OK, MessageBoxImage.Error);
-                this.DisconnectSession(null);
-                return; // ...
-            }
-
-            var newMeContact = (FacebookContact)e.UserState;
-            newMeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
-
-            MeContact.Merge(newMeContact);
-
-            _userLookup[UserId] = MeContact;
-            _NotifyPropertyChanged("MeContact");
-
+            
             _RefreshFirstTime();
 
             _refreshTimerDynamic.Start();
@@ -319,30 +314,30 @@
             }
         }
 
-        public void GetUserAsync(FacebookObjectId userId, AsyncCompletedEventHandler callback)
+        public FacebookContact GetUser(FacebookObjectId userId)
         {
             Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
-            Verify.IsNotNull(callback, "callback");
 
-            FacebookContact fastContact;
-            if (_userLookup.TryGetValue(userId, out fastContact))
+            FacebookContact retContact = null;
+            lock (_userLookup)
             {
-                callback(this, new AsyncCompletedEventArgs(null, false, fastContact));
-                return;
+                if (_userLookup.TryGetValue(userId, out retContact))
+                {
+                    return retContact;
+                }
+            
+                retContact = new FacebookContact(this)
+                {
+                    UserId = userId,
+                    Name = "Someone",
+                };
+                _userLookup.Add(userId, retContact);
             }
 
-            if (!IsOnline)
+            _friendInfoDispatcher.QueueRequest((o) =>
             {
-                callback(this, new AsyncCompletedEventArgs(null, true, null));
-                return;
-            }
-
-            _friendInfoDispatcher.QueueRequest((o) => 
-            {
-                // Treat this case as though it was canceled.
                 if (!IsOnline)
                 {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(null, true, null));
                     return;
                 }
 
@@ -352,48 +347,29 @@
                     _hasFetchedFriendsList = true;
                 }
 
-                // Maybe this contact was found while the request was in the queue.
-                FacebookContact contact = null;
-
-                if (_userLookup.TryGetValue(userId, out contact))
-                {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(null, false, contact));
-                    return;
-                }
-
+                FacebookContact contact;
                 try
                 {
                     contact = _facebookApi.GetUser(userId);
                     Assert.IsNotNull(contact);
+                    double? interestLevel = _settings.GetInterestLevel(userId);
+                    if (interestLevel.HasValue)
+                    {
+                        contact.InterestLevel = interestLevel.Value;
+                    }
                 }
                 catch (FacebookException e)
                 {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(e, false, null));
                     return;
                 }
 
                 lock (_userLookup)
                 {
-                    if (_userLookup.ContainsKey(userId))
-                    {
-                        contact = _userLookup[userId];
-                    }
-                    else
-                    {
-                        // If we have a persisted interest level for this contact then apply it before returning.
-                        double? interestLevel = _settings.GetInterestLevel(userId);
-                        if (interestLevel.HasValue)
-                        {
-                            contact.InterestLevel = interestLevel.Value;
-                        }
-
-                        _userLookup.Add(userId, contact);
-                    }
+                    _userLookup[userId].Merge(contact);
                 }
-
-                callback(this, new AsyncCompletedEventArgs(null, false, contact));
-                return;
             }, null);
+
+            return retContact;
         }
 
         /* Unused

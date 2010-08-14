@@ -25,7 +25,6 @@ namespace Contigo
         private bool _hidden;
         private bool _unread;
         private FacebookContact _sender;
-        private bool _isSenderUpdateInProgress;
 
         internal FacebookObjectId NotificationId { get; set; }
 
@@ -35,22 +34,13 @@ namespace Contigo
         {
             get
             {
-                if (_sender == null && !_isSenderUpdateInProgress)
+                if (_sender == null)
                 {
-                    _isSenderUpdateInProgress = true;
-                    SourceService.GetUserAsync(SenderId, _OnGetSenderCompleted);
+                    _sender = SourceService.GetUser(SenderId);
                 }
 
                 return _sender;
             }
-            internal set { _sender = value; }
-        }
-
-        private void _OnGetSenderCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _sender = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("Sender");
-            _isSenderUpdateInProgress = false;
         }
 
         internal FacebookObjectId RecipientId { get; set; }
@@ -341,25 +331,25 @@ namespace Contigo
             NotificationId = new FacebookObjectId("FriendRequest_" + userId.ToString());
             RecipientId = service.UserId;
             SenderId = userId;
-            Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
-            TitleText = string.Format(_friendRequestTextFormat, "Someone");
+            Sender.PropertyChanged += _OnSenderPropertyChanged;
+            Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, Sender.Name);
+            TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
             Link = new Uri("http://facebook.com/profile.php?id=" + userId);
-            service.GetUserAsync(userId, _UpdateTitle);
             //this.Description = "";
         }
 
-        private void _UpdateTitle(object sender, AsyncCompletedEventArgs e)
+        private void _OnSenderPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.Error != null || e.Cancelled)
+            if (e.PropertyName == "Name")
             {
-                return;
+                if (!string.IsNullOrEmpty(Sender.Name))
+                {
+                    Title = string.Format(_friendRequestFormat, Sender.ProfileUri, Sender.Name);
+                    TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
+                }
             }
-
-            Sender = e.UserState as FacebookContact;
-            if (!string.IsNullOrEmpty(Sender.Name))
+            if (e.PropertyName == "ProfileUri")
             {
-                Title = string.Format(_friendRequestFormat, Sender.ProfileUri, Sender.Name);
-                TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
                 Link = Sender.ProfileUri;
             }
         }
@@ -386,25 +376,24 @@ namespace Contigo
             NotificationId = new FacebookObjectId("Unfriended_" + userId.ToString());
             RecipientId = service.UserId;
             SenderId = userId;
-            Title = string.Format(_friendRemovalFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
-            TitleText = string.Format(_friendRemovalTextFormat, "Someone");
+            Sender.PropertyChanged += _OnSenderPropertyChanged;
+            Title = string.Format(_friendRemovalFormat, "http://facebook.com/profile.php?id=" + userId, Sender.Name);
+            TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
             Link = new Uri("http://facebook.com/profile.php?id=" + userId);
-            service.GetUserAsync(userId, _UpdateTitle);
-            //this.Description = "";
         }
 
-        private void _UpdateTitle(object sender, AsyncCompletedEventArgs e)
+        private void _OnSenderPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.Error != null || e.Cancelled)
+            if (e.PropertyName == "Name")
             {
-                return;
+                if (!string.IsNullOrEmpty(Sender.Name))
+                {
+                    Title = string.Format(_friendRemovalFormat, Sender.ProfileUri, Sender.Name);
+                    TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
+                }
             }
-
-            Sender = e.UserState as FacebookContact;
-            if (!string.IsNullOrEmpty(Sender.Name))
+            if (e.PropertyName == "ProfileUri")
             {
-                Title = string.Format(_friendRemovalFormat, Sender.ProfileUri, Sender.Name);
-                TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
                 Link = Sender.ProfileUri;
             }
         }

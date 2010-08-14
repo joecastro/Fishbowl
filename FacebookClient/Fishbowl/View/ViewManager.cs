@@ -516,8 +516,8 @@ namespace ClientManager.View
             get
             {
                 return ServiceProvider.FacebookService.NewsFeed;
-			}
-		}
+            }
+        }
 
         public FacebookCollection<ActivityFilter> NewsFeedFilters
         {

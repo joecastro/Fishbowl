@@ -15,10 +15,8 @@ namespace Contigo
         }
 
         private FacebookContact _fromUser;
-        private FacebookObjectId _fromUserId;
         private SmallString _text;
         private DateTime _timestamp;
-        private bool _isFromUserUpdateInProgress;
 
         internal ActivityComment(FacebookService service)
         {
@@ -28,18 +26,7 @@ namespace Contigo
 
         internal global::Contigo.ActivityComment.Type CommentType { get; set; }
 
-        internal FacebookObjectId FromUserId
-        {
-            get { return _fromUserId; }
-            set
-            {
-                if (value != _fromUserId)
-                {
-                    _fromUserId = value;
-                    _UpdateFromUser();
-                }
-            }
-        }
+        internal FacebookObjectId FromUserId { get; set; }
 
         public DateTime Time
         {
@@ -76,26 +63,13 @@ namespace Contigo
         {
             get
             {
-                if (_fromUser == null && !_isFromUserUpdateInProgress)
+                if (_fromUser == null && FacebookObjectId.IsValid(FromUserId))
                 {
-                    _UpdateFromUser();
+                    _fromUser = SourceService.GetUser(FromUserId);
                 }
 
                 return _fromUser;
             }
-        }
-
-        private void _UpdateFromUser()
-        {
-            _isFromUserUpdateInProgress = true;
-            SourceService.GetUserAsync(FromUserId, _OnGetFromUserCompleted);
-        }
-
-        private void _OnGetFromUserCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _fromUser = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("FromUser");
-            _isFromUserUpdateInProgress = false;
         }
 
         public bool CanRemove

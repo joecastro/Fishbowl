@@ -583,10 +583,10 @@ namespace Contigo
                 post.CanLike = _SafeGetElementValue(likesElement, ns + "can_like") == "1";
                 post.HasLiked = _SafeGetElementValue(likesElement, ns + "user_likes") == "1";
                 post.LikedCount = _SafeGetElementInt32(likesElement, ns + "count") ?? 0;
-                post.LikeUrl = _SafeGetElementUri(likesElement, ns + "likes", ns + "href");
+                post.LikeUri = _SafeGetElementUri(likesElement, ns + "likes", ns + "href");
                 XElement friendsElement = likesElement.Element(ns + "friends");
                 XElement sampleElement = likesElement.Element(ns + "sample");
-                post.RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(
+                post.SetPeopleWhoLikeThisIds(
                     Enumerable.Union(
                         sampleElement == null
                             ? new FacebookObjectId[0]

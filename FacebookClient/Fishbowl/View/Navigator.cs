@@ -512,7 +512,7 @@
 
             for (int index = 0; index < _albums.Count; ++index)
             {
-                if (_albums[index].OwnerId.Equals(ownerId))
+                if (_albums[index].Owner.UserId.Equals(ownerId))
                 {
                     for (int index2 = 0; index2 < _albums[index].Photos.Count; ++index2)
                     {

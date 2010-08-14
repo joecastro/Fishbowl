@@ -863,11 +863,10 @@ namespace Contigo
                 Created = DateTime.Now,
                 HasLiked = false,
                 LikedCount = 0,
-                LikeUrl = null,
+                LikeUri = null,
                 Message = message,
                 PostId = new FacebookObjectId("-1"),
                 RawComments = new FBMergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(),
                 Updated = DateTime.Now,
             };
         }
@@ -899,11 +898,10 @@ namespace Contigo
                 Created = DateTime.Now,
                 HasLiked = false,
                 LikedCount = 0,
-                LikeUrl = null,
+                LikeUri = null,
                 Message = newStatus,
                 PostId = new FacebookObjectId("FakeStatusId"),
                 RawComments = new FBMergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new List<FacebookObjectId>(),
                 TargetUserId = default(FacebookObjectId),
                 Updated = DateTime.Now,
             };

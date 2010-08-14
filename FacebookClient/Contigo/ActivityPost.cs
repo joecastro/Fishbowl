@@ -10,8 +10,6 @@
     {
         private FacebookContact _actor;
         private FacebookContact _target;
-        private bool _isActorUpdateInProgress;
-        private bool _isTargetUpdateInProgress;
         private bool _gettingMoreComments;
         private ActivityCommentCollection _comments;
         private FacebookContactCollection _likers;
@@ -30,7 +28,6 @@
 
         // When merging, make sure that we don't drop comments if all were requested.
         private bool _hasGottenMoreComments;
-
 
         // We don't actually populate the data in the constructor.  Instead letting the service do it.
         internal ActivityPost(FacebookService service)
@@ -140,41 +137,29 @@
             }
         }
 
-        internal List<FacebookObjectId> RawPeopleWhoLikeThisIds { get; set; }
+        internal void SetPeopleWhoLikeThisIds(IEnumerable<FacebookObjectId> likerIds)
+        {
+            // Should only be set during initialization
+            Assert.IsNull(_mergeableLikers);
+
+            _mergeableLikers = new FBMergeableCollection<FacebookContact>(from uid in likerIds select SourceService.GetUser(uid), false);
+        }
 
         public FacebookContactCollection PeopleWhoLikeThis
         {
             get
             {
-                if (RawPeopleWhoLikeThisIds == null)
+                if (_mergeableLikers == null)
                 {
-                    return null;
+                    _mergeableLikers = new FBMergeableCollection<FacebookContact>(false);
                 }
 
                 if (_likers == null)
                 {
-                    _mergeableLikers = new FBMergeableCollection<FacebookContact>();
                     _likers = new FacebookContactCollection(_mergeableLikers, SourceService, false);
-                    _likers.CollectionChanged += (sender, e) => _NotifyPropertyChanged("PeopleWhoLikeThis");
-                    foreach (FacebookObjectId uid in RawPeopleWhoLikeThisIds)
-                    {
-                        SourceService.GetUserAsync(uid, _OnGetUserCompleted);
-                    }
                 }
                 return _likers;
             }
-        }
-
-        private void _OnGetUserCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            if (args.Error != null || args.Cancelled)
-            {
-                return;
-            }
-
-            var contact = (FacebookContact)args.UserState;
-            Assert.IsNotNull(contact);
-            _mergeableLikers.Add(contact);
         }
 
         public bool CanComment
@@ -216,7 +201,7 @@
             }
         }
 
-        public bool HasMoreComments { get { return CommentCount != Comments.Count; } }
+        public bool HasMoreComments { get { return CommentCount > Comments.Count; } }
 
         internal FBMergeableCollection<ActivityComment> RawComments { get; set; }
 
@@ -226,11 +211,7 @@
             {
                 if (_comments == null)
                 {
-                    if (this.RawComments == null)
-                    {
-                        return null;
-                    }
-
+                    Assert.IsNotNull(RawComments);
                     _comments = new ActivityCommentCollection(RawComments, SourceService);
                 }
 
@@ -240,7 +221,7 @@
 
         internal FacebookObjectId PostId { get; set; }
 
-        public Uri LikeUrl
+        public Uri LikeUri
         {
             get { return _likeUri.GetUri(); }
             internal set
@@ -258,10 +239,9 @@
         {
             get
             {
-                if (_actor == null && !_isActorUpdateInProgress)
+                if (_actor == null && FacebookObjectId.IsValid(ActorUserId))
                 {
-                    _isActorUpdateInProgress = true;
-                    SourceService.GetUserAsync(this.ActorUserId, _OnGetActorCompleted);
+                    _actor = SourceService.GetUser(ActorUserId);
                 }
 
                 return _actor;
@@ -272,15 +252,9 @@
         {
             get
             {
-                if (!FacebookObjectId.IsValid(TargetUserId))
+                if (_target == null && FacebookObjectId.IsValid(TargetUserId))
                 {
-                    return null;
-                }
-
-                if (_target == null && !_isTargetUpdateInProgress)
-                {
-                    _isTargetUpdateInProgress = true;
-                    SourceService.GetUserAsync(this.TargetUserId, _OnGetTargetCompleted);
+                    _target = SourceService.GetUser(TargetUserId);
                 }
 
                 return _target;
@@ -305,20 +279,6 @@
             _NotifyPropertyChanged("CommentCount");
             _NotifyPropertyChanged("HasMoreComments");
             _gettingMoreComments = false;
-        }
-
-        private void _OnGetActorCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _actor = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("Actor");
-            _isActorUpdateInProgress = false;
-        }
-
-        private void _OnGetTargetCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _target = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("Target");
-            _isTargetUpdateInProgress = false;
         }
 
         private void _NotifyPropertyChanged(string propertyName)
@@ -370,7 +330,11 @@
                 return;
             }
 
-            ActorUserId = other.ActorUserId;
+            Assert.AreEqual(ActorUserId, other.ActorUserId);
+            //ActorUserId = other.ActorUserId;
+            Assert.AreEqual(TargetUserId, other.TargetUserId);
+            //TargetUserId = other.TargetUserId;
+
             Attachment = other.Attachment;
             CanComment = other.CanComment;
             CanLike = other.CanLike;
@@ -379,7 +343,7 @@
             Created = other.Created;
             HasLiked = other.HasLiked;
             LikedCount = other.LikedCount;
-            LikeUrl = other.LikeUrl;
+            LikeUri = other.LikeUri;
             Message = other.Message;
             RawComments.Merge(other.RawComments, false);
             if (_hasGottenMoreComments)
@@ -390,10 +354,20 @@
             {
                 _NotifyPropertyChanged("HasMoreComments");
             }
-            // TODO: This isn't going to quite work...
-            RawPeopleWhoLikeThisIds.Clear();
-            RawPeopleWhoLikeThisIds.AddRange(other.RawPeopleWhoLikeThisIds);
-            TargetUserId = other.TargetUserId;
+
+            if (other._mergeableLikers != null && other._mergeableLikers.Count != 0)
+            {
+                if (this._mergeableLikers == null)
+                {
+                    _mergeableLikers = new FBMergeableCollection<FacebookContact>(false);
+                }
+                _mergeableLikers.Merge(other._mergeableLikers, false);
+            }
+            else if (_mergeableLikers != null)
+            {
+                _mergeableLikers.Clear();
+            }
+
             Updated = other.Updated;
         }
 

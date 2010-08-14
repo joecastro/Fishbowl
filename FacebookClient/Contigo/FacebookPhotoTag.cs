@@ -9,7 +9,6 @@ namespace Contigo
     {
         private SmallString _text;
         private FacebookContact _contact;
-        private bool _fetchingContact;
 
         internal FacebookPhotoTag(FacebookService service)
         {
@@ -21,24 +20,12 @@ namespace Contigo
         { 
             get
             {
-                if (!_fetchingContact && _contact == null && FacebookObjectId.IsValid(ContactId))
+                if (_contact == null && FacebookObjectId.IsValid(ContactId))
                 {
-                    _fetchingContact = true;
-                    SourceService.GetUserAsync(ContactId, _OnGetUserCompleted);
+                    _contact = SourceService.GetUser(ContactId);
                 }
                 return _contact;
             }
-            private set
-            {
-                _contact = value;
-                _NotifyPropertyChanged("Contact");
-            }
-        }
-
-        private void _OnGetUserCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            Contact = (FacebookContact)args.UserState;
-            _fetchingContact = false;
         }
 
         public Point Offset { get; internal set; }
