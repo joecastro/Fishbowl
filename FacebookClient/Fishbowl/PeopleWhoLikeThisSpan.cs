@@ -2,6 +2,7 @@
 namespace FacebookClient
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Documents;
@@ -12,6 +13,8 @@ namespace FacebookClient
 
     public class PeopleWhoLikeThisSpan : Span
     {
+        private readonly List<FacebookContact> _likers = new List<FacebookContact>();
+
         public PeopleWhoLikeThisSpan()
         {
             Loaded += PeopleWhoLikeThisSpan_Loaded;
@@ -23,6 +26,8 @@ namespace FacebookClient
             if (ActivityPost != null)
             {
                 ActivityPost.PropertyChanged -= _ActivityPostPropertyChanged;
+                _likers.ForEach(contact => contact.PropertyChanged -= _OnLikerPropertyChanged);
+                _likers.Clear();
             }
         }
 
@@ -31,6 +36,10 @@ namespace FacebookClient
             if (ActivityPost != null)
             {
                 ActivityPost.PropertyChanged += _ActivityPostPropertyChanged;
+                _likers.Clear();
+                _likers.AddRange(ActivityPost.PeopleWhoLikeThis);
+                _likers.ForEach(contact => contact.PropertyChanged += _OnLikerPropertyChanged);
+                
                 _GenerateInlines();
             }
         }
@@ -57,9 +66,15 @@ namespace FacebookClient
                 oldPost.PropertyChanged -= _ActivityPostPropertyChanged;                
             }
 
+            _likers.ForEach(contact => contact.PropertyChanged -= _OnLikerPropertyChanged);
+            _likers.Clear();
+
             if (newPost != null)
             {
                 newPost.PropertyChanged += _ActivityPostPropertyChanged;
+
+                _likers.AddRange(newPost.PeopleWhoLikeThis);
+                _likers.ForEach(contact => contact.PropertyChanged += _OnLikerPropertyChanged);
             }
             _GenerateInlines();
         }
@@ -71,6 +86,18 @@ namespace FacebookClient
                 case "PeopleWhoLikeThis":
                 case "LikedCount":
                 case "HasLiked":
+                    Dispatcher.BeginInvoke((Action)_GenerateInlines, null);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void _OnLikerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Name":
                     Dispatcher.BeginInvoke((Action)_GenerateInlines, null);
                     break;
                 default:

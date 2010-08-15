@@ -200,6 +200,7 @@
             lock (_userLookup)
             {
                 MeContact.UserId = UserId;
+                MeContact.ProfileUri = new Uri("http://facebook.com/profile.php?id=" + UserId);
                 MeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
                 _userLookup.Add(UserId, MeContact);
             }
@@ -329,6 +330,7 @@
                 retContact = new FacebookContact(this)
                 {
                     UserId = userId,
+                    ProfileUri = new Uri("http://facebook.com/profile.php?id=" + userId),
                     Name = "Someone",
                 };
                 _userLookup.Add(userId, retContact);

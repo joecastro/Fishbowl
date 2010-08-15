@@ -332,9 +332,9 @@ namespace Contigo
             RecipientId = service.UserId;
             SenderId = userId;
             Sender.PropertyChanged += _OnSenderPropertyChanged;
-            Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, Sender.Name);
+            Title = string.Format(_friendRequestFormat, Sender.ProfileUri.ToString(), Sender.Name);
             TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
-            Link = new Uri("http://facebook.com/profile.php?id=" + userId);
+            Link = Sender.ProfileUri;
             //this.Description = "";
         }
 
@@ -377,9 +377,9 @@ namespace Contigo
             RecipientId = service.UserId;
             SenderId = userId;
             Sender.PropertyChanged += _OnSenderPropertyChanged;
-            Title = string.Format(_friendRemovalFormat, "http://facebook.com/profile.php?id=" + userId, Sender.Name);
+            Title = string.Format(_friendRemovalFormat, Sender.ProfileUri.ToString(), Sender.Name);
             TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
-            Link = new Uri("http://facebook.com/profile.php?id=" + userId);
+            Link = Sender.ProfileUri;
         }
 
         private void _OnSenderPropertyChanged(object sender, PropertyChangedEventArgs e)
