@@ -24,6 +24,22 @@ namespace Microsoft.Windows.Shell
         Left,
     }
 
+    [Flags]
+    public enum SacrificialEdge
+    {
+        None = 0,
+        Left = 1,
+        Top = 2,
+        Right = 4,
+        Bottom = 8,
+
+        Office = Left | Right | Bottom,
+
+        // Don't use "All" - Handling WM_NCCALCSIZE with a client rect shrunk in all directions implicitly creates a 
+        // normal sized caption area that doesn't actually properly participate with the rest of the implementation...
+        // All = Left | Top | Right | Bottom,
+    }
+
     public class WindowChrome : Freezable
     {
         private struct _SystemParameterBoundProperty
@@ -238,6 +254,55 @@ namespace Microsoft.Windows.Shell
         {
             get { return (CornerRadius)GetValue(CornerRadiusProperty); }
             set { SetValue(CornerRadiusProperty, value); }
+        }
+
+        public static readonly DependencyProperty SacrificialEdgeProperty = DependencyProperty.Register(
+            "SacrificialEdge",
+            typeof(SacrificialEdge),
+            typeof(WindowChrome),
+            new PropertyMetadata(
+                SacrificialEdge.None,
+                (d, e) => ((WindowChrome)d)._OnPropertyChangedThatRequiresRepaint()),
+                _IsValidSacrificialEdge);
+
+        private static readonly SacrificialEdge SacrificialEdge_All = SacrificialEdge.Bottom | SacrificialEdge.Top | SacrificialEdge.Left | SacrificialEdge.Right;
+
+        private static bool _IsValidSacrificialEdge(object value)
+        {
+            SacrificialEdge se = SacrificialEdge.None;
+            try
+            {
+                se = (SacrificialEdge)value;
+            }
+            catch (InvalidCastException)
+            {
+                return false;
+            }
+
+            if (se == SacrificialEdge.None)
+            {
+                return true;
+            }
+
+            // Does this only contain valid bits?
+            if ((se | SacrificialEdge_All) != SacrificialEdge_All)
+            {
+                return false;
+            }
+
+            // It can't sacrifice all 4 edges.  Weird things happen.
+            if (se == SacrificialEdge_All)
+            {
+                return false;
+            }
+
+            return true; 
+        }
+
+        public SacrificialEdge SacrificialEdge
+        {
+            get { return (SacrificialEdge)GetValue(SacrificialEdgeProperty); }
+            set { SetValue(SacrificialEdgeProperty, value); }
         }
 
         #endregion
