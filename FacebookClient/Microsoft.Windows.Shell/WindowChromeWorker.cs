@@ -1184,7 +1184,7 @@ namespace Microsoft.Windows.Shell
 
             if (!isClosing)
             {
-                _RestoreFrameworkIssueFixups();
+                _RestoreTemplateFixups();
                 _RestoreGlassFrame();
                 _RestoreHrgn();
 
@@ -1204,21 +1204,23 @@ namespace Microsoft.Windows.Shell
             }
         }
 
-        private void _RestoreFrameworkIssueFixups()
+        private void _RestoreTemplateFixups()
         {
             // This margin is only necessary if the client rect is going to be calculated incorrectly by WPF.
             // This bug was fixed in V4 of the framework.
-            if (Utility.IsPresentationFrameworkVersionLessThan4)
-            {
-                Assert.IsTrue(_isFixedUp);
+            // But it still needs to happen if there was a SacrificialEdge.
+            //if (Utility.IsPresentationFrameworkVersionLessThan4)
 
-                var rootElement = (FrameworkElement)VisualTreeHelper.GetChild(_window, 0);
-                // Undo anything that was done before.
-                rootElement.Margin = new Thickness();
+            //Assert.IsTrue(_isFixedUp);
+            
+            Assert.Implies(Utility.IsPresentationFrameworkVersionLessThan4, () => _isFixedUp);
 
-                _window.StateChanged -= _FixupRestoreBounds;
-                _isFixedUp = false;
-            }
+            var rootElement = (FrameworkElement)VisualTreeHelper.GetChild(_window, 0);
+            // Undo anything that was done before.
+            rootElement.Margin = new Thickness();
+
+            _window.StateChanged -= _FixupRestoreBounds;
+            _isFixedUp = false;
         }
 
         private void _RestoreGlassFrame()
