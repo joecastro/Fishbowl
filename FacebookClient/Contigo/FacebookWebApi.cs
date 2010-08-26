@@ -47,8 +47,8 @@ namespace Contigo
 
         private const string _GetPermissionsQueryString = "SELECT {0} FROM permissions WHERE uid={1}";
 
-        // Use the orderby clause to ensure consistent ordering with _GetPr9ofilesMultiQueryString.
-        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause + " ORDER BY uid DESC";
+        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause;
+        private const string _GetFriendsLimitOffsetFormatQueryString = _GetFriendsQueryString + " LIMIT {1} OFFSET {2}";
         private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
@@ -70,7 +70,6 @@ namespace Contigo
         private const string _GetUnreadInboxThreadsQueryString = _GetInboxThreadsQueryString + " and unread != 0";
 
         private const string _GetPhotoTagsMultiQueryString = "SELECT " + _PhotoTagColumns + " FROM photo_tag WHERE pid IN (SELECT pid FROM #{0})";
-        private const string _GetProfilesMultiQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id in (SELECT uid FROM #{0}) ORDER BY id DESC";
 
         private readonly DataSerialization _serializer;
 
@@ -1041,28 +1040,22 @@ namespace Contigo
 
         public List<FacebookContact> GetFriends()
         {
-            string multiqueryResult = Utility.FailableFunction(() =>
-                _SendMultiQuery(
-                    new[] { "friends", "profiles" },
-                    new[] { string.Format(_GetFriendsQueryString, _UserId),
-                            string.Format(_GetProfilesMultiQueryString, "friends") }));
+            // This tends to fail for large friends lists, so instead we batch it into multiple, smaller calls.
+            int batchLimit = 50;
+            var friendsSoFar = new List<FacebookContact>();
+            for (int offset = 0; true; offset += batchLimit)
+            {
+                string friendQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsLimitOffsetFormatQueryString, _UserId, batchLimit, offset)));
+                var batchResult = _serializer.DeserializeUsersList(friendQueryResult);
+                if (batchResult.Count == 0)
+                {
+                    break;
+                }
 
-            XDocument xdoc = DataSerialization.SafeParseDocument(multiqueryResult);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+                friendsSoFar.AddRange(batchResult);
+            }
 
-            XElement friendsNode = (from descendant in xdoc.Descendants(ns + "name")
-                                    where descendant.Value == "friends"
-                                    select descendant)
-                                   .First();
-            friendsNode = (XElement)friendsNode.NextNode;
-
-            XElement profilesNode = (from descendant in xdoc.Descendants(ns + "name")
-                                     where descendant.Value == "profiles"
-                                     select descendant)
-                                   .First();
-            profilesNode = (XElement)profilesNode.NextNode;
-            
-            return _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
+            return friendsSoFar;
         }
 
         public Dictionary<FacebookObjectId, OnlinePresence> GetFriendsOnlineStatus()
