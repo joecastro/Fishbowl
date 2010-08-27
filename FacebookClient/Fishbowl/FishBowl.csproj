@@ -739,6 +739,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BlackBoxReporting\BlackBox.csproj">
+      <Project>{420F77E7-0AFD-44D5-A918-17E8291740DD}</Project>
+      <Name>BlackBox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Contigo\Contigo.csproj">
       <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
       <Name>Contigo</Name>

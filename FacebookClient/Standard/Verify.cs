@@ -182,6 +182,17 @@ namespace Standard
             }
         }
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [DebuggerStepThrough]
+        public static void IsFalse(bool statement, string name)
+        {
+            if (statement)
+            {
+                Assert.Fail();
+                throw new ArgumentException("", name);
+            }
+        }
+
         /// <summary>
         /// Verifies the specified statement is true.  Throws an ArgumentException if it's not.
         /// </summary>

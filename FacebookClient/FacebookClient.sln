@@ -19,11 +19,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardTests", "StandardTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Windows.Shell", "Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj", "{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackBox", "BlackBoxReporting\BlackBox.csproj", "{420F77E7-0AFD-44D5-A918-17E8291740DD}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 11
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs03.codeplex.com/
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Fishbowl\\Fishbowl.csproj
 		SccProjectName1 = Fishbowl
@@ -52,6 +54,9 @@ Global
 		SccProjectUniqueName9 = Microsoft.Windows.Shell\\Microsoft.Windows.Shell.csproj
 		SccProjectName9 = Microsoft.Windows.Shell
 		SccLocalPath9 = Microsoft.Windows.Shell
+		SccProjectUniqueName10 = BlackBoxReporting\\BlackBox.csproj
+		SccProjectName10 = BlackBoxReporting
+		SccLocalPath10 = BlackBoxReporting
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = FacebookClient.vsmdi
@@ -169,6 +174,18 @@ Global
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|Mixed Platforms.Build.0 = Release|x86
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.ActiveCfg = Release|x86
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.Build.0 = Release|x86
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Debug|x86.Build.0 = Debug|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|x86.ActiveCfg = Release|Any CPU
+		{420F77E7-0AFD-44D5-A918-17E8291740DD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
