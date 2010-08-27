@@ -935,28 +935,16 @@
 
         internal void Merge(FacebookContact other)
         {
-            if (other == null)
-            {
-                UserId = default(FacebookObjectId);
-                return;
-            }
+            Verify.IsNotNull(other, "other");
 
             if (object.ReferenceEquals(this, other))
             {
                 return;
             }
 
-            // Special case the empty MeContact.
-            if (FacebookObjectId.IsValid(UserId))
+            if (UserId != other.UserId)
             {
-                if (UserId != other.UserId)
-                {
-                    throw new InvalidOperationException("Can't merge two different contacts.");
-                }
-            }
-            else
-            {
-                UserId = other.UserId;
+                throw new InvalidOperationException("Can't merge two different contacts.");
             }
 
             AboutMe = other.AboutMe;

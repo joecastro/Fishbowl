@@ -360,7 +360,7 @@
                         contact.InterestLevel = interestLevel.Value;
                     }
                 }
-                catch (FacebookException e)
+                catch (FacebookException)
                 {
                     return;
                 }

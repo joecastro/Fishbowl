@@ -78,7 +78,7 @@ namespace Microsoft.Windows.Shell
             // Update the ChromeWorker with this new object.
 
             // If there isn't currently a worker associated with the Window then assign a new one.
-            // There can be a many:1 relationship of to Window to WindowChrome objects, but a 1:1 for a Window and a WindowChromeWorker.
+            // There can be a many:1 relationship of Window to WindowChrome objects, but a 1:1 for a Window and a WindowChromeWorker.
             WindowChromeWorker chromeWorker = WindowChromeWorker.GetWindowChromeWorker(window);
             if (chromeWorker == null)
             {
