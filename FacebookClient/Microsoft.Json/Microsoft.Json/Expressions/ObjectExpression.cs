@@ -39,7 +39,7 @@ namespace Microsoft.Json.Expressions
         /// <summary>
         /// Gets the members defined on the object.
         /// </summary>
-        public ReadOnlyDictionary<string, Expression> Members
+        public IEnumerable<KeyValuePair<string, Expression>> Members
         {
             get { return _members; }
         }

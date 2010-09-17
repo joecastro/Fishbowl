@@ -25,10 +25,18 @@ namespace BlackBox
 
         public static string Preamble { get; set; }
 
-        public static void InitializeReporting()
+        public static bool InitializeReporting()
         {
             // This should only be done once for the AppDomain.
             Verify.IsFalse(IsInstalled, "IsInstalled");
+
+            // Don't bother with this if someone's debugging,
+            // if for no other reason then that the deployment stuff throws first change exceptions
+            // just to query basic properties.
+            if (Debugger.IsAttached)
+            {
+                return false;
+            }
 
             AppDomain.CurrentDomain.UnhandledException += _OnUnhandledException;
 
@@ -48,6 +56,7 @@ namespace BlackBox
             };
 
             IsInstalled = true;
+            return true;
         }
 
         private static void _OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

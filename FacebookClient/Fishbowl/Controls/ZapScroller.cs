@@ -23,13 +23,13 @@ namespace FacebookClient
     {
         public static ActionICommand Create(Action action)
         {
-            //Util.RequireNotNull(action, "action");
+            Verify.IsNotNull(action, "action");
             return Create(action, null);
         }
 
         public static ActionICommand Create(Action action, Func<bool> canExecuteFunction)
         {
-            //Util.RequireNotNull(action, "action");
+            Verify.IsNotNull(action, "action");
 
             Action foo;
             return Create(action, canExecuteFunction, out foo);
@@ -37,7 +37,7 @@ namespace FacebookClient
 
         public static ActionICommand Create(Action action, Func<bool> canExecuteFunction, out Action canExecuteChanged)
         {
-            //Util.RequireNotNull(action, "action");
+            Verify.IsNotNull(action, "action");
 
             ActionICommand command = new ActionICommand(action, canExecuteFunction);
 
@@ -80,7 +80,7 @@ namespace FacebookClient
 
         protected virtual void OnCanExecuteChanged(EventArgs args)
         {
-            //Util.RequireNotNull(args, "args");
+            Verify.IsNotNull(args, "args");
 
             EventHandler handler = this.CanExecuteChanged;
             if (handler != null)
@@ -156,9 +156,7 @@ namespace FacebookClient
     {
         static ZapScroller()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                typeof(ZapScroller),
-                new FrameworkPropertyMetadata(typeof(ZapScroller)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ZapScroller), new FrameworkPropertyMetadata(typeof(ZapScroller)));
 
             FocusableProperty.OverrideMetadata(
                 typeof(ZapScroller),

@@ -4,8 +4,9 @@ namespace Contigo
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Linq;
     using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
     using System.Windows;
     using Microsoft.Json.Serialization;
     using Standard;
@@ -83,9 +84,8 @@ namespace Contigo
         PhotoUpload,
     }
 
-    public class FacebookLoginService : IDisposable
+    public class FacebookLoginService
     {
-        private DispatcherPool _requestDispatcher = new DispatcherPool("LoginService WebRequests", 1);
         private readonly ServiceSettings _settings;
 
         private FacebookWebApi _facebookApi;
@@ -227,15 +227,6 @@ namespace Contigo
             return FacebookWebApi.GetLoginUri(ApplicationKey, successUri, deniedUri, requiredPermissions);
         }
 
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            Utility.SafeDispose(ref _requestDispatcher);
-        }
-
-        #endregion
-
         public void GetMissingPermissionsAsync(IEnumerable<Permissions> permissions, AsyncCompletedEventHandler callback)
         {
             Verify.IsNotNull(permissions, "permisions");
@@ -244,7 +235,7 @@ namespace Contigo
             Assert.IsNotNull(_facebookApi);
             Assert.IsNotNull(callback);
 
-            _requestDispatcher.QueueRequest((arg) =>
+            Task.Factory.StartNew(() =>
             {
                 Exception ex = null;
                 Permissions[] missingPermissions = null;
@@ -257,7 +248,7 @@ namespace Contigo
                     ex = e;
                 }
                 callback(this, new AsyncCompletedEventArgs(ex, false, missingPermissions));
-            }, null);
+            });
         }
 
         // For signout, we need to delete all cookies for these Urls.

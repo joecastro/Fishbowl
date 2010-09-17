@@ -109,7 +109,6 @@ namespace FacebookClient
             Verify.IsNeitherNullNorWhitespace(appId, "appId");
 
             Loaded += (sender, e) => _OnLoaded();
-            Unloaded += (sender, e) => _OnUnloaded();
 
             _nextPage = next;
             _appId = appId;
@@ -175,7 +174,6 @@ namespace FacebookClient
 
         private void _OnLoaded()
         {
-            Utility.SafeDispose(ref _service);
             FacebookLoginService service = null;
             try
             {
@@ -207,15 +205,6 @@ namespace FacebookClient
             {
                 _SwitchToErrorPage(ex, _service != null);
             }
-            finally
-            {
-                Utility.SafeDispose(ref service);
-            }
-        }
-
-        private void _OnUnloaded()
-        {
-            Utility.SafeDispose(ref _service);
         }
 
         private void _OnUserLoggedIn()
@@ -263,7 +252,6 @@ namespace FacebookClient
             ServiceProvider.ViewManager.NavigateByCommand(_nextPage);
 
             // After we've navigated away, dispose the fields.
-            Utility.SafeDispose(ref _service);
             Utility.SafeDispose(ref LoginBrowser);
             _nextPage = null;
         }
