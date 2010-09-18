@@ -65,7 +65,6 @@ namespace FacebookClient
             Permissions.UserAboutMe,
             Permissions.UserActivities,
             Permissions.UserBirthday,
-            Permissions.UserBirthday,
             Permissions.UserEducationHistory,
             Permissions.UserEvents,
             Permissions.UserGroups,

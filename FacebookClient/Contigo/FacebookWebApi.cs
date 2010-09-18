@@ -72,6 +72,7 @@ namespace Contigo
         private const string _GetPhotoTagsMultiQueryString = "SELECT " + _PhotoTagColumns + " FROM photo_tag WHERE pid IN (SELECT pid FROM #{0})";
 
         private readonly DataSerialization _serializer;
+        private readonly JsonDataSerialization _jsonSerializer;
 
         private static readonly Dictionary<string, Permissions> _ReversePermissionLookup;
 
@@ -274,6 +275,7 @@ namespace Contigo
             _UserId = userId;
             _Secret = secret;
             _Service = null;
+            _jsonSerializer = new JsonDataSerialization(null);
         }
 
         public FacebookWebApi(FacebookService service, string secret)
@@ -284,6 +286,7 @@ namespace Contigo
             _Secret = secret;
             _Service = service;
             _serializer = new DataSerialization(service);
+            _jsonSerializer = new JsonDataSerialization(service);
         }
 
         private static string _SanitizeJsonString(string value)
@@ -343,7 +346,7 @@ namespace Contigo
         /// </summary>
         /// <param name="query">The FQL query to send.</param>
         /// <returns>The results of the FQL query.</returns>
-        private string _SendQuery(string query)
+        private string _SendQuery(string query, bool useJson)
         {
             Assert.IsNotOnMainThread();
 
@@ -357,7 +360,7 @@ namespace Contigo
                 { "query", query },
             };
 
-            return _SendRequest(queryMap);
+            return _SendRequest(queryMap, useJson);
         }
 
 
@@ -396,7 +399,7 @@ namespace Contigo
         /// <remarks>
         /// This will modify the dictionary parameter to include additional information about the request.
         /// </remarks>
-        private string _SendRequest(IDictionary<string, string> requestPairs)
+        private string _SendRequest(IDictionary<string, string> requestPairs, bool useJson = false)
         {
             Assert.IsNotOnMainThread();
 
@@ -411,7 +414,7 @@ namespace Contigo
                 requestPairs.Add("ss", "1");
             }
 
-            return SendRequest(requestPairs, _Secret);
+            return _SendRequest(requestPairs, _Secret);
         }
 
 
@@ -499,7 +502,7 @@ namespace Contigo
             return result;
         }
 
-        private static string SendRequest(IDictionary<string, string> requestPairs, string secret)
+        private static string _SendRequest(IDictionary<string, string> requestPairs, string secret)
         {
             Assert.IsNotOnMainThread();
 
@@ -528,7 +531,16 @@ namespace Contigo
                 }
             }
 
-            Exception e = _VerifyResult(result, requestData);
+            Exception e = null;
+            string formatValue;
+            if (requestPairs.TryGetValue("format", out formatValue) && formatValue == "json")
+            {
+                e = _VerifyJsonResult(result, requestData);
+            }
+            else
+            {
+                e = _VerifyResult(result, requestData);
+            }
             if (e != null)
             {
                 throw e;
@@ -548,6 +560,18 @@ namespace Contigo
             try
             {
                 return DataSerialization.DeserializeFacebookException(xml, sourceXml);
+            }
+            catch (InvalidOperationException) { }
+
+            // Yay, couldn't convert to an exception :) return null.
+            return null;
+        }
+
+        private static Exception _VerifyJsonResult(string jsonInput, string sourceRequest)
+        {
+            try
+            {
+                return JsonDataSerialization.DeserializeFacebookException(jsonInput, sourceRequest);
             }
             catch (InvalidOperationException) { }
 
@@ -594,21 +618,14 @@ namespace Contigo
                 { "v", "1.0" },
                 { "ss", "1" },
                 { "session_key", _SessionKey },
+                { "format", "json" },
             };
 
-            Permissions[] extendedPermissionsList = extendedPermissions.ToArray();
-
-            string result = Utility.FailableFunction(() => SendRequest(queryMap, _Secret));
-
-            XDocument document = XDocument.Parse(result);
-
-            foreach (var permissionName in from XElement xelt in document.Root.Elements().Nodes<XElement>()
-                                           where xelt.Value == "0"
-                                           where extendedPermissionsList.Contains(_ReversePermissionLookup[xelt.Name.LocalName])
-                                           select xelt.Name.LocalName)
-            {
-                yield return _ReversePermissionLookup[permissionName];
-            }
+            string result = Utility.FailableFunction(() => _SendRequest(queryMap, _Secret));
+            List<Permissions> grantedPermissions = (from permName in _jsonSerializer.DeserializeGrantedPermissionsList(result)
+                                                    select _ReversePermissionLookup[permName])
+                                                   .ToList();
+            return extendedPermissions.Except(grantedPermissions);
         }
 
         #endregion
@@ -625,8 +642,8 @@ namespace Contigo
 
         public List<ActivityFilter> GetActivityFilters()
         {
-            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamFiltersQueryString, _UserId)));
-            return _serializer.DeserializeFilterList(result);
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamFiltersQueryString, _UserId), true));
+            return _jsonSerializer.DeserializeFilterList(result);
         }
 
         public FacebookContact GetUser(FacebookObjectId userId)
@@ -665,7 +682,7 @@ namespace Contigo
                 ? _GetInboxThreadsQueryString 
                 : _GetUnreadInboxThreadsQueryString;
 
-            string result = Utility.FailableFunction(() => _SendQuery(query));
+            string result = Utility.FailableFunction(() => _SendQuery(query, false));
             List<MessageNotification> notifications = _serializer.DeserializeMessageQueryResponse(result);
 
             return notifications;
@@ -924,7 +941,7 @@ namespace Contigo
 
         public List<ActivityPost> GetStreamPosts(FacebookObjectId userId)
         {
-            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamPostsQueryString, userId)));
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamPostsQueryString, userId), false));
             return _serializer.DeserializePostDataList(result, true);
         }
 
@@ -1045,7 +1062,7 @@ namespace Contigo
             var friendsSoFar = new List<FacebookContact>();
             for (int offset = 0; true; offset += batchLimit)
             {
-                string friendQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsLimitOffsetFormatQueryString, _UserId, batchLimit, offset)));
+                string friendQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsLimitOffsetFormatQueryString, _UserId, batchLimit, offset), false));
                 var batchResult = _serializer.DeserializeUsersList(friendQueryResult);
                 if (batchResult.Count == 0)
                 {
@@ -1060,13 +1077,13 @@ namespace Contigo
 
         public Dictionary<FacebookObjectId, OnlinePresence> GetFriendsOnlineStatus()
         {
-            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId)));
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId), false));
             return _serializer.DeserializeUserPresenceList(result);
         }
 
         public List<FacebookPhotoAlbum> GetFriendsPhotoAlbums()
         {
-            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsAlbumsQueryString, _UserId)));
+            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsAlbumsQueryString, _UserId), false));
             return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
@@ -1163,7 +1180,7 @@ namespace Contigo
         {
             Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
 
-            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleUserAlbumsQueryString, userId)));
+            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleUserAlbumsQueryString, userId), false));
             return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
@@ -1204,7 +1221,7 @@ namespace Contigo
             var images = new List<FacebookImage>();
             foreach (var contact in contacts)
             {
-                string response = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleProfileInfoQueryString, contact.UserId)));
+                string response = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleProfileInfoQueryString, contact.UserId), false));
                 List<FacebookContact> lite = _serializer.DeserializeProfileList(response);
                 images.Add(lite[0].Image);
             }

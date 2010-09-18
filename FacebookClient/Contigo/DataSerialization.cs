@@ -202,7 +202,7 @@ namespace Contigo
             return ret;
         }
 
-        private static FacebookObjectId _SafeGetUniqueId()
+        internal static FacebookObjectId SafeGetUniqueId()
         {
             return new FacebookObjectId("FacebookGotItWrongCount_" + _badFacebookCounter++);
         }
@@ -569,7 +569,7 @@ namespace Contigo
                 // Massive Facebook failure.
                 // This happens too frequently for the assert to be useful.
                 // Assert.Fail();
-                post.PostId = _SafeGetUniqueId();
+                post.PostId = SafeGetUniqueId();
             }
             post.ActorUserId = _SafeGetElementId(elt, ns + "actor_id");
             post.Created = _SafeGetElementDateTime(elt, ns + "created_time") ?? _UnixEpochTime;
@@ -825,40 +825,6 @@ namespace Contigo
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
 
             return DeserializePhotoTagsList((XElement)xdoc.FirstNode, ns);
-        }
-
-        public List<ActivityFilter> DeserializeFilterList(string xml)
-        {
-            var filterList = new List<ActivityFilter>();
-
-            XDocument xdoc = SafeParseDocument(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var filterNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements(ns + "stream_filter")
-                              select _DeserializeFilter(ns, elt);
-            filterList.AddRange(filterNodes);
-            return filterList;
-        }
-
-        private ActivityFilter _DeserializeFilter(XNamespace ns, XElement elt)
-        {
-            Uri iconUri = _SafeGetElementUri(elt, ns + "icon_url");
-
-            var filter = new ActivityFilter(_service)
-            {
-                // "uid" maps to the current user's UID.
-                // "value" is a sometimes nil integer value.  Not sure what it's for.
-                Key = _SafeGetElementId(elt, ns + "filter_key"),
-                Name = _SafeGetElementValue(elt, ns + "name"),
-                Rank = _SafeGetElementInt32(elt, ns + "rank") ?? Int32.MaxValue,
-                // Facebook gives us an image map of both selected and not versions of the icon.
-                // The right half is the selected state, so just return that as the image.
-                Icon = new FacebookImage(_service, iconUri, new Thickness(.5, 0, 0, 0)),
-                IsVisible = (_SafeGetElementInt32(elt, ns + "is_visible") ?? 0) != 0,
-                FilterType = _SafeGetElementValue(elt, ns + "type"),
-            };
-
-            return filter;
         }
 
         public void DeserializeStreamData(string xml, out List<ActivityPost> posts, out List<FacebookContact> userData)
@@ -1195,7 +1161,7 @@ namespace Contigo
             else
             {
                 Assert.Fail();
-                message.NotificationId = _SafeGetUniqueId();
+                message.NotificationId = DataSerialization.SafeGetUniqueId();
                 message.Link = new Uri("http://www.facebook.com/inbox");
             }
 
