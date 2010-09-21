@@ -350,19 +350,8 @@ namespace ClientManager.View
 
         #region Fields
 
-        /// <summary>
-        /// The current dialog.
-        /// </summary>
         private FrameworkElement _dialog;
-
-        /// <summary>
-        /// The active photo album.
-        /// </summary>
         private FacebookPhotoAlbum _activePhotoAlbum;
-
-        /// <summary>
-        /// The active photo.
-        /// </summary>
         private FacebookPhoto _activePhoto;
 
         #endregion
@@ -388,14 +377,16 @@ namespace ClientManager.View
             FacebookAppId = facebookService.ApplicationId;
             
             facebookService.PropertyChanged += facebookService_PropertyChanged;
+            Assert.IsNotNull(facebookService.MeContact);
+            facebookService.MeContact.PropertyChanged += _OnMeContactPropertyChanged;
         }
 
-        void facebookService_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void facebookService_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             string proxiedPropertyName = null;
+            Assert.AreNotEqual("MeContact", e.PropertyName);
             switch (e.PropertyName)
             {
-                case "MeContact": proxiedPropertyName = "MeContact"; break;
                 case "ContactSortOrder": proxiedPropertyName = "ActiveContactSortOrder"; break;
                 case "PhotoAlbumSortOrder": proxiedPropertyName = "ActivePhotoAlbumSortOrder"; break;
             }
@@ -403,6 +394,14 @@ namespace ClientManager.View
             if (proxiedPropertyName != null)
             {
                 _NotifyPropertyChanged(proxiedPropertyName);
+            }
+        }
+
+        private void _OnMeContactPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Image")
+            {
+                ActionCommands.UpdateWindowsLogonPictureCommand.Execute(MeContact);
             }
         }
 

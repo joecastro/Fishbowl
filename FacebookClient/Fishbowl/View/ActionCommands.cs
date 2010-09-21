@@ -3,14 +3,15 @@
     using System;
     using System.Collections;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Interop;
     using Contigo;
+    using Microsoft.Communications.Contacts;
     using Microsoft.Windows.Shell;
     using Standard;
-
 
     public sealed class ActionCommands
     {
@@ -43,6 +44,8 @@
 
         public SaveAlbumCommand SaveAlbumCommand { get; private set; }
         public SavePhotoCommand SavePhotoCommand { get; private set; }
+
+        public UpdateWindowsLogonPictureCommand UpdateWindowsLogonPictureCommand { get; private set; }
 
         // TODO: These really belong on MainWindowCommands, but that's not currently properly exposed to XAML
         public CloseWindowCommand CloseWindowCommand { get; private set; }
@@ -451,6 +454,56 @@
             String fullitemstring = activityPost.Actor + ": " + activityPost.Message + " " + activityPost.Updated.ToString();
 
             Clipboard.SetData(DataFormats.Text, fullitemstring);
+        }
+    }
+
+    public sealed class UpdateWindowsLogonPictureCommand : ActionCommand
+    {
+        private ContactManager _contactManager = new ContactManager();
+
+        public UpdateWindowsLogonPictureCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+        
+        protected override bool CanExecuteInternal(object parameter)
+        {
+            return parameter is FacebookContact;
+        }
+
+        protected override void PerformAction(object parameter)
+        {
+            var contact = parameter as FacebookContact;
+            if (contact != null)
+            {
+                contact.Image.SaveToFile(FacebookImageDimensions.Big, Path.GetTempFileName(), true, FacebookImageSaveOptions.Overwrite, _OnImageSaved, contact);
+            }
+        }
+
+        private void _OnImageSaved(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (e.Cancelled || e.Error != null)
+            {
+                return;
+            }
+
+            _contactManager.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                var fbMeContact = (FacebookContact)e.UserState;
+                Contact meContact = _contactManager.MeContact;
+                if (meContact == null)
+                {
+                    meContact = _contactManager.CreateContact();
+                    meContact.Names.Default = new Name(fbMeContact.Name);
+                    meContact.CommitChanges();
+                    _contactManager.MeContact = meContact;
+                }
+
+                using (var fs = new FileStream(e.ImagePath, FileMode.Open))
+                {
+                    meContact.Photos[PhotoLabels.UserTile] = new Photo(fs, "image/jpeg");
+                    meContact.CommitChanges();
+                }
+            }), null);
         }
     }
 
