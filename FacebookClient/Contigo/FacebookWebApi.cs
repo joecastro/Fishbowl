@@ -414,6 +414,11 @@ namespace Contigo
                 requestPairs.Add("ss", "1");
             }
 
+            if (useJson)
+            {
+                requestPairs["format"] = "json";
+            }
+
             return _SendRequest(requestPairs, _Secret);
         }
 
@@ -967,12 +972,12 @@ namespace Contigo
                 { "start_time", startTime.ToString("G") },
                 { "limit", limit.ToString("G") },
                 { "filter_key", filterKey.ToString() },
-                { "metadata", "[albums, profiles, photo_tags]" },
+                { "metadata", "[albums, profiles]" }, // could also include "photo_tags"
             };
 
-            string result = Utility.FailableFunction(() => _SendRequest(streamMap));
+            string result = Utility.FailableFunction(() => _SendRequest(streamMap, true));
 
-            _serializer.DeserializeStreamData(result, out posts, out users);
+            _jsonSerializer.DeserializeStreamData(result, out posts, out users);
         }
 
         public FacebookObjectId AddComment(ActivityPost post, string comment)

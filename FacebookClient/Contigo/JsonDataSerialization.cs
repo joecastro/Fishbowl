@@ -11,6 +11,70 @@ namespace Contigo
     using JSON_ARRAY = System.Collections.Generic.IList<object>;
     using JSON_OBJECT = System.Collections.Generic.IDictionary<string, object>;
 
+    internal enum JsonObjectType
+    {
+        NotJsonObject,
+        Primitive,
+        Array,
+        Object,
+    }
+
+    internal static class JSON_OBJECT_EXTENSIONS
+    {
+        public static bool TryGetTypedValue<T>(this JSON_OBJECT dictionary, string key, out T value)
+        {
+            value = default(T);
+
+            object o;
+            if (dictionary.TryGetValue(key, out o))
+            {
+                value = (T)o;
+                return true;
+            }
+
+            return false;
+        }
+
+        public static T Get<T>(this JSON_OBJECT dictionary, string key)
+        {
+            Verify.IsNeitherNullNorEmpty("key", key);
+            return (T)dictionary[key];
+        }
+
+        public static JsonObjectType GetJsonObjectType(this object o)
+        {
+            if (o == null)
+            {
+                // Not kosher to pass a null this pointer...
+                Assert.Fail();
+                return JsonObjectType.Primitive;
+            }
+
+            Type t = o.GetType();
+            bool isPrimitive = t == typeof(string)
+                || t == typeof(bool)
+                || t == typeof(int);
+
+            if (isPrimitive)
+            {
+                return JsonObjectType.Primitive;
+            }
+
+            if (Utility.IsInterfaceImplemented(t, typeof(IDictionary<string, object>)))
+            {
+                return JsonObjectType.Object;
+            }
+                            
+            if (Utility.IsInterfaceImplemented(t, typeof(IList<object>)))
+            {
+                return JsonObjectType.Array;
+            }
+
+            Assert.Fail();
+            return JsonObjectType.NotJsonObject;
+        }
+    }
+
     internal class JsonDataSerialization
     {
         /// <summary>The start time for Unix based clocks.  Facebook usually returns their timestamps based on ticks from this value.</summary>
@@ -24,43 +88,22 @@ namespace Contigo
             _service = service;
         }
 
-        private static bool _IsJsonPrimitive(object o)
+        private static object _SafeGetValue(JSON_OBJECT jsonObj, params string[] names)
         {
-            if (o == null)
-            {
-                return true;
-            }
-
-            Type t = o.GetType();
-            bool isPrimitive = t == typeof(string)
-                || t == typeof(bool);
-            Assert.Implies(!isPrimitive, _IsJsonAggregate(o));
-            return isPrimitive;
-        }
-
-        private static bool _IsJsonAggregate(object o)
-        {
-            if (o == null)
-            {
-                return false;
-            }
-
-            Type t = o.GetType();
-            return Utility.IsInterfaceImplemented(t, typeof(IDictionary<string, object>))
-                || Utility.IsInterfaceImplemented(t, typeof(IList<object>));
-        }
-
-        private static object _SafeGetValue(JSON_OBJECT obj, params string[] names)
-        {
-            if (obj == null)
+            if (jsonObj == null)
             {
                 return null;
             }
 
-            object lastChild = obj;
+            object lastChild = jsonObj;
             foreach (var name in names)
             {
-                var jsonObj = (JSON_OBJECT)lastChild;
+                if (lastChild.GetJsonObjectType() != JsonObjectType.Object)
+                {
+                    return null;
+                }
+
+                jsonObj = (JSON_OBJECT)lastChild;
                 if (!jsonObj.TryGetValue(name, out lastChild))
                 {
                     return null;
@@ -70,15 +113,15 @@ namespace Contigo
             return lastChild;
         }
 
-        private static string _SafeGetString(JSON_OBJECT obj, params string[] names)
+        private static string _SafeGetString(JSON_OBJECT jsonObj, params string[] names)
         {
-            object o = _SafeGetValue(obj, names);
+            object o = _SafeGetValue(jsonObj, names);
             if (o == null)
             {
                 return null;
             }
 
-            if (_IsJsonAggregate(o))
+            if (o.GetJsonObjectType() != JsonObjectType.Primitive)
             {
                 Assert.Fail();
                 return null;
@@ -88,47 +131,80 @@ namespace Contigo
             return (string)o;
         }
 
-        private static FacebookObjectId _SafeGetId(JSON_OBJECT obj, params string[] names)
+        private static FacebookObjectId _SafeGetId(JSON_OBJECT jsonObj, params string[] names)
         {
-            var idValue = _SafeGetString(obj, names);
+            var idValue = _SafeGetString(jsonObj, names);
             return new FacebookObjectId(idValue);
         }
 
-        private static DateTime? _SafeGetDateTime(JSON_OBJECT obj, params string[] names)
+        private static DateTime? _SafeGetDateTime(JSON_OBJECT jsonObj, params string[] names)
         {
-            long? ticks = _SafeGetInt64(obj, names);
-            if (ticks != null)
+            long? ticks = _SafeGetInt64(jsonObj, names);
+            if (ticks == null)
             {
-                return DataSerialization.GetDateTimeFromUnixTimestamp(ticks.Value);
+                return null;
+            }
+
+            return DataSerialization.GetDateTimeFromUnixTimestamp(ticks.Value);
+        }
+
+        private static string _SafeGetJson(JSON_OBJECT jsonObj, params string[] names)
+        {
+            return _serializer.Serialize(_SafeGetValue(jsonObj, names));
+        }
+
+        private static float? _SafeGetSingle(JSON_OBJECT jsonObj, params string[] names)
+        {
+            object o = _SafeGetValue(jsonObj, names);
+            if (o is float)
+            {
+                return (float)o;
+            }
+            if (o is string)
+            {
+                float ret;
+                if (float.TryParse((string)o, out ret))
+                {
+                    return ret;
+                }
             }
             return null;
         }
 
-        private static string _SafeGetJson(JSON_OBJECT obj, params string[] names)
+        private static bool? _SafeGetBoolean(JSON_OBJECT jsonObj, params string[] names)
         {
-            var value = _SafeGetValue(obj, names);
-            return _serializer.Serialize(value);
-        }
-
-        //private static float? _SafeGetSingle(JSON_OBJECT obj, params string[] names)
-        //{
-        //    return _SafeGetValue<float?>(obj, names);
-        //}
-
-        private static bool? _SafeGetBoolean(JSON_OBJECT obj, params string[] names)
-        {
-            object o = _SafeGetValue(obj, names);
+            object o = _SafeGetValue(jsonObj, names);
             if (o is bool)
             {
                 return (bool)o;
             }
 
+            // Facebook tends to return 0 and 1 as boolean parameters as well.
+            int? i = null;
+            if (o is string)
+            {
+                int temp;
+                if (int.TryParse((string)o, out temp))
+                {
+                    i = temp;
+                }
+            }
+            else if (o is int)
+            {
+                i = (int)o;
+            }
+
+            if (i.HasValue)
+            {
+                return i == 1;
+            }
+
             return null;
         }
 
-        private static int? _SafeGetInt32(JSON_OBJECT obj, params string[] names)
+        private static int? _SafeGetInt32(JSON_OBJECT jsonObj, params string[] names)
         {
-            object o = _SafeGetValue(obj, names);
+            object o = _SafeGetValue(jsonObj, names);
             if (o is int)
             {
                 return (int)o;
@@ -145,9 +221,9 @@ namespace Contigo
             return null;
         }
 
-        private static long? _SafeGetInt64(JSON_OBJECT obj, params string[] names)
+        private static long? _SafeGetInt64(JSON_OBJECT jsonObj, params string[] names)
         {
-            object o = _SafeGetValue(obj, names);
+            object o = _SafeGetValue(jsonObj, names);
             if (o is long)
             {
                 return (long)o;
@@ -164,9 +240,9 @@ namespace Contigo
             return null;
         }
 
-        private static Uri _SafeGetUri(JSON_OBJECT obj, params string[] names)
+        private static Uri _SafeGetUri(JSON_OBJECT jsonObj, params string[] names)
         {
-            object o = _SafeGetValue(obj, names);
+            object o = _SafeGetValue(jsonObj, names);
             if (o is string)
             {
                 Uri ret;
@@ -211,7 +287,6 @@ namespace Contigo
             return obj as JSON_ARRAY;
         }
 
-#if UNUSED_JSON_CALLS
         private ActivityComment _DeserializeCommentData(JSON_OBJECT obj)
         {
             return new ActivityComment(_service)
@@ -219,10 +294,12 @@ namespace Contigo
                 CommentType = ActivityComment.Type.ActivityPost,
                 FromUserId = _SafeGetId(obj, "fromid"),
                 Time = _SafeGetDateTime(obj, "time") ?? _UnixEpochTime,
-                Text = _SafeGetValue(obj, "text"),
+                Text = _SafeGetString(obj, "text"),
                 CommentId = _SafeGetId(obj, "id"),
             };
         }
+
+#if UNUSED_JSON_CALLS
 
         private FacebookContact _DeserializeUser(JSON_OBJECT obj)
         {
@@ -457,113 +534,6 @@ namespace Contigo
             return tag;
         }
 
-        private ActivityPost _DeserializePostData(XNamespace ns, XElement elt)
-        {
-            var post = new ActivityPost(_service);
-
-            var attachmentElement = elt.Element("attachment");
-            if (attachmentElement != null)
-            {
-                string postType = _SafeGetValue(elt, "attachment", "media", "stream_media", "type");
-
-                switch (postType)
-                {
-                    case "photo":
-                        post.Attachment = _DeserializePhotoPostAttachmentData(post, ns, attachmentElement);
-                        break;
-                    case "link":
-                        post.Attachment = _DeserializeLinkPostAttachmentData(post, ns, attachmentElement);
-                        break;
-                    case "video":
-                        post.Attachment = _DeserializeVideoPostAttachmentData(post, ns, attachmentElement);
-                        break;
-
-                    // We're not currently supporting music or flash.  Just treat it like a normal post...
-                    case "music":
-                    case "swf":
-
-                    case "":
-                    case null:
-                        if (attachmentElement.Elements().Count() != 0)
-                        {
-                            // We have attachment information but no rich stream-media associated with it.
-                            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, ns, attachmentElement);
-                            if (!attachment.IsEmpty)
-                            {
-                                attachment.Type = ActivityPostAttachmentType.Simple;
-                                post.Attachment = attachment;
-                            }
-                        }
-                        break;
-                    default:
-                        Assert.Fail("Unknown type:" + postType);
-                        break;
-                }
-            }
-
-            XElement commentsElement = elt.Element("comments");
-
-            post.PostId = _SafeGetId(elt, "post_id");
-            if (!FacebookObjectId.IsValid(post.PostId))
-            {
-                // Massive Facebook failure.
-                // This happens too frequently for the assert to be useful.
-                // Assert.Fail();
-                post.PostId = DataSerialization.SafeGetUniqueId();
-            }
-            post.ActorUserId = _SafeGetId(elt, "actor_id");
-            post.Created = _SafeGetDateTime(elt, "created_time") ?? _UnixEpochTime;
-            post.Message = _SafeGetValue(elt, "message");
-            post.TargetUserId = _SafeGetId(elt, "target_id");
-            post.Updated = _SafeGetDateTime(elt, "updated_time") ?? _UnixEpochTime;
-
-            XElement likesElement = elt.Element("likes");
-            if (likesElement != null)
-            {
-                post.CanLike = _SafeGetValue(likesElement, "can_like") == "1";
-                post.HasLiked = _SafeGetValue(likesElement, "user_likes") == "1";
-                post.LikedCount = _SafeGetInt32(likesElement, "count") ?? 0;
-                post.LikeUri = _SafeGetUri(likesElement, "likes", "href");
-                XElement friendsElement = likesElement.Element("friends");
-                XElement sampleElement = likesElement.Element("sample");
-                post.SetPeopleWhoLikeThisIds(
-                    Enumerable.Union(
-                        sampleElement == null
-                            ? new FacebookObjectId[0]
-                            : from uidElement in sampleElement.Elements("uid") select new FacebookObjectId(uidElement.Value),
-                        friendsElement == null
-                            ? new FacebookObjectId[0]
-                            : from uidElement in friendsElement.Elements("uid") select new FacebookObjectId(uidElement.Value)));
-            }
-
-            post.CanComment = _SafeGetValue(commentsElement, "can_post") == "1";
-            post.CanRemoveComments = _SafeGetValue(commentsElement, "can_remove") == "1";
-            post.CommentCount = _SafeGetInt32(commentsElement, "count") ?? 0;
-
-            if (commentsElement != null && post.CommentCount != 0)
-            {
-                XElement commentListElement = commentsElement.Element("comment_list");
-                if (commentListElement != null)
-                {
-                    var commentNodes = from XElement celt in commentListElement.Elements("comment")
-                                       let comment = _DeserializeCommentData(ns, celt)
-                                       where (comment.Post = post) != null
-                                       select comment;
-
-                    post.RawComments = new FBMergeableCollection<ActivityComment>(commentNodes);
-                }
-            }
-
-            if (post.RawComments == null)
-            {
-                post.RawComments = new FBMergeableCollection<ActivityComment>();
-            }
-
-            // post.Comments = null;
-
-            return post;
-        }
-
         private ActivityPostAttachment _DeserializePhotoPostAttachmentData(ActivityPost post, XNamespace ns, XElement elt)
         {
             if (elt == null)
@@ -713,40 +683,6 @@ namespace Contigo
             return items.ToDictionary(item => item.UserId, item => item.Presence);
         }
 
-        public List<FacebookContact> DeserializeProfileList(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            return DeserializeProfileList(ns, xdoc.Root);
-        }
-
-        public List<FacebookContact> DeserializeProfileList(XNamespace ns, XElement elt)
-        {
-            var profileNodes = from XElement elt2 in elt.Elements("profile")
-                               select _DeserializeProfile(ns, elt2);
-            return new List<FacebookContact>(profileNodes);
-        }
-
-        private FacebookContact _DeserializeProfile(XNamespace ns, XElement elt)
-        {
-            Uri sourceUri = _SafeGetUri(elt, "pic");
-            Uri sourceBigUri = _SafeGetUri(elt, "pic_big");
-            Uri sourceSmallUri = _SafeGetUri(elt, "pic_small");
-            Uri sourceSquareUri = _SafeGetUri(elt, "pic_square");
-
-            var profile = new FacebookContact(_service)
-            {
-                UserId = _SafeGetId(elt, "id"),
-                Name = _SafeGetValue(elt, "name"),
-                Image = new FacebookImage(_service, sourceUri, sourceBigUri, sourceSmallUri, sourceSquareUri),
-                ProfileUri = _SafeGetUri(elt, "url"),
-                // ContactType = "type" => "user" | "page"
-            };
-
-            return profile;
-        }
-
         public List<FacebookPhotoTag> DeserializePhotoTagsList(XElement root, XNamespace ns)
         {
             var tagList = new List<FacebookPhotoTag>();
@@ -776,43 +712,279 @@ namespace Contigo
 
         public List<ActivityFilter> DeserializeFilterList(string jsonString)
         {
-            JSON_ARRAY ary = _SafeParseArray(jsonString);
+            JSON_ARRAY jsonArray = _SafeParseArray(jsonString);
 
-            var filterList = new List<ActivityFilter>(from JSON_OBJECT filterObj in ary select _DeserializeFilter(filterObj));
+            var filterList = new List<ActivityFilter>(from JSON_OBJECT filterObj in jsonArray select _DeserializeFilter(filterObj));
             return filterList;
         }
 
-        private ActivityFilter _DeserializeFilter(JSON_OBJECT obj)
+        private ActivityFilter _DeserializeFilter(JSON_OBJECT jsonFilter)
         {
-            Uri iconUri = _SafeGetUri(obj, "icon_url");
-
             var filter = new ActivityFilter(_service)
             {
                 // "uid" maps to the current user's UID.
                 // "value" is a sometimes nil integer value.  Not sure what it's for.
-                Key = _SafeGetId(obj, "filter_key"),
-                Name = _SafeGetString(obj, "name"),
-                Rank = _SafeGetInt32(obj, "rank") ?? Int32.MaxValue,
+                Key = _SafeGetId(jsonFilter, "filter_key"),
+                Name = _SafeGetString(jsonFilter, "name"),
+                Rank = _SafeGetInt32(jsonFilter, "rank") ?? Int32.MaxValue,
                 // Facebook gives us an image map of both selected and not versions of the icon.
                 // The right half is the selected state, so just return that as the image.
-                Icon = new FacebookImage(_service, iconUri, new Thickness(.5, 0, 0, 0)),
-                IsVisible = _SafeGetBoolean(obj, "is_visible") ?? true,
-                FilterType = _SafeGetString(obj, "type"),
+                Icon = new FacebookImage(
+                    _service, 
+                    _SafeGetUri(jsonFilter, "icon_url"),
+                    new Thickness(.5, 0, 0, 0)),
+                IsVisible = _SafeGetBoolean(jsonFilter, "is_visible") ?? true,
+                FilterType = _SafeGetString(jsonFilter, "type"),
             };
 
             return filter;
         }
 
-#if UNUSED_JSON_CALLS
-
-        public void DeserializeStreamData(string xml, out List<ActivityPost> posts, out List<FacebookContact> userData)
+        public void DeserializeStreamData(string jsonString, out List<ActivityPost> posts, out List<FacebookContact> userData)
         {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+            JSON_OBJECT streamData = _SafeParseObject(jsonString);
 
-            posts = _DeserializePostDataList(ns, ((XElement)xdoc.FirstNode).Element("posts"));
-            userData = DeserializeProfileList(ns, ((XElement)xdoc.FirstNode).Element("profiles"));
+            posts = new List<ActivityPost>(from JSON_OBJECT jsonPost in (JSON_ARRAY)streamData["posts"] select _DeserializePost(jsonPost));
+            userData = new List<FacebookContact>(from JSON_OBJECT profile in (JSON_ARRAY)streamData["profiles"] select _DeserializeProfile(profile));
         }
+
+        private ActivityPostAttachment _DeserializePhotoPostAttachmentData(ActivityPost post, JSON_OBJECT jsonAttachment)
+        {
+            if (jsonAttachment == null || jsonAttachment.Count == 0)
+            {
+                return null;
+            }
+
+            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, jsonAttachment);
+            attachment.Type = ActivityPostAttachmentType.Photos;
+
+            var photosEnum = from JSON_OBJECT jsonMediaObject in jsonAttachment["media"] as JSON_ARRAY
+                             let photoElement = jsonMediaObject["photo"] as JSON_OBJECT
+                             where photoElement != null
+                             let link = _SafeGetUri(jsonMediaObject, "href")
+                             select new FacebookPhoto(
+                                 _service,
+                                 _SafeGetId(photoElement, "aid"),
+                                 _SafeGetId(photoElement, "pid"),
+                                 _SafeGetUri(jsonMediaObject, "src"))
+                                 {
+                                     Link = link,
+                                     OwnerId = _SafeGetId(photoElement, "owner"),
+                                 };
+
+            attachment.Photos = FacebookPhotoCollection.CreateStaticCollection(photosEnum);
+
+            return attachment;
+        }
+
+        private ActivityPostAttachment _DeserializeVideoPostAttachmentData(ActivityPost post, JSON_OBJECT jsonAttachment)
+        {
+            if (jsonAttachment == null || jsonAttachment.Count == 0)
+            {
+                return null;
+            }
+
+            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, jsonAttachment);
+            attachment.Type = ActivityPostAttachmentType.Video;
+
+            var jsonMediaArray = jsonAttachment["media"] as JSON_ARRAY;
+            if (jsonMediaArray != null && jsonMediaArray.Count > 0)
+            {
+                var jsonStreamMediaObject = jsonMediaArray[0] as JSON_OBJECT;
+                Uri previewImageUri = _SafeGetUri(jsonStreamMediaObject, "src");
+
+                attachment.VideoPreviewImage = new FacebookImage(_service, previewImageUri);
+                attachment.VideoSource = _SafeGetUri(jsonStreamMediaObject, "href");
+                // Not using this one because of a bug in Adobe's player when loading in an external browser...
+                //XElement videoElement = streamElement.Element("video");
+                //if (videoElement != null)
+                //{
+                //    attachment.VideoSource = _SafeGetUri(videoElement, "source_url");
+                //}
+            }
+
+            return attachment;
+        }
+
+        private ActivityPostAttachment _DeserializeLinkPostAttachmentData(ActivityPost post, JSON_OBJECT jsonAttachment)
+        {
+            if (jsonAttachment == null || jsonAttachment.Count == 0)
+            {
+                return null;
+            }
+
+            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, jsonAttachment);
+            attachment.Type = ActivityPostAttachmentType.Links;
+
+            var linksEnum = from JSON_OBJECT jsonMediaObject in jsonAttachment.Get<JSON_ARRAY>("media")
+                            let srcUri = _SafeGetUri(jsonMediaObject, "src")
+                            let hrefUri = _SafeGetUri(jsonMediaObject, "href")
+                            where srcUri != null && hrefUri != null
+                            select new FacebookImageLink
+                            {
+                                Image = new FacebookImage(_service, srcUri),
+                                Link = hrefUri,
+                            };
+            attachment.Links = new FacebookCollection<FacebookImageLink>(linksEnum);
+            return attachment;
+        }
+
+        private ActivityPostAttachment _DeserializeGenericPostAttachmentData(ActivityPost post, JSON_OBJECT jsonAttachment)
+        {
+            Assert.IsNotNull(post);
+            Uri iconUri = _SafeGetUri(jsonAttachment, "icon");
+
+            return new ActivityPostAttachment(post)
+            {
+                Caption = _SafeGetString(jsonAttachment, "caption"),
+                Link = _SafeGetUri(jsonAttachment, "href"),
+                Name = _SafeGetString(jsonAttachment, "name"),
+                Description = _SafeGetString(jsonAttachment, "description"),
+                Properties = _SafeGetJson(jsonAttachment, "properties"),
+                Icon = new FacebookImage(_service, iconUri),
+            };
+        }
+
+        private ActivityPost _DeserializePost(JSON_OBJECT jsonPost)
+        {
+            var post = new ActivityPost(_service);
+
+            JSON_OBJECT attachmentObject;
+            if (jsonPost.TryGetTypedValue("attachment", out attachmentObject))
+            {
+                string postType = null;
+
+                var jsonMediaArray = (JSON_ARRAY)_SafeGetValue(jsonPost, "attachment", "media");
+                if (jsonMediaArray != null && jsonMediaArray.Count > 0)
+                {
+                    postType = _SafeGetString((JSON_OBJECT)jsonMediaArray[0], "type"); 
+                }
+
+                switch (postType)
+                {
+                    case "photo":
+                        post.Attachment = _DeserializePhotoPostAttachmentData(post, attachmentObject);
+                        break;
+                    case "link":
+                        post.Attachment = _DeserializeLinkPostAttachmentData(post, attachmentObject);
+                        break;
+                    case "video":
+                        post.Attachment = _DeserializeVideoPostAttachmentData(post, attachmentObject);
+                        break;
+
+                    // We're not currently supporting music or flash.  Just treat it like a normal post...
+                    case "music":
+                    case "swf":
+
+                    case "":
+                    case null:
+                        if (attachmentObject.Count != 0)
+                        {
+                            // We have attachment information but no rich stream-media associated with it.
+                            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, attachmentObject);
+                            if (!attachment.IsEmpty)
+                            {
+                                attachment.Type = ActivityPostAttachmentType.Simple;
+                                post.Attachment = attachment;
+                            }
+                        }
+                        break;
+                    default:
+                        Assert.Fail("Unknown type:" + postType);
+                        break;
+                }
+            }
+
+            post.PostId = _SafeGetId(jsonPost, "post_id");
+            if (!FacebookObjectId.IsValid(post.PostId))
+            {
+                // Massive Facebook failure.
+                // This happens too frequently for the assert to be useful.
+                // Assert.Fail();
+                post.PostId = DataSerialization.SafeGetUniqueId();
+            }
+            post.ActorUserId = _SafeGetId(jsonPost, "actor_id");
+            post.Created = _SafeGetDateTime(jsonPost, "created_time") ?? _UnixEpochTime;
+            post.Message = _SafeGetString(jsonPost, "message");
+            post.TargetUserId = _SafeGetId(jsonPost, "target_id");
+            post.Updated = _SafeGetDateTime(jsonPost, "updated_time") ?? _UnixEpochTime;
+
+            JSON_OBJECT likesElement;
+            if (jsonPost.TryGetTypedValue("likes", out likesElement))
+            {
+                post.CanLike = _SafeGetBoolean(likesElement, "can_like") ?? false;
+                post.HasLiked = _SafeGetBoolean(likesElement, "user_likes") ?? false;
+                post.LikedCount = _SafeGetInt32(likesElement, "count") ?? 0;
+                post.LikeUri = _SafeGetUri(likesElement, "likes", "href");
+                //XElement friendsElement = likesElement.Element("friends");
+                //XElement sampleElement = likesElement.Element("sample");
+                //post.SetPeopleWhoLikeThisIds(
+                //    Enumerable.Union(
+                //        sampleElement == null
+                //            ? new FacebookObjectId[0]
+                //            : from uidElement in sampleElement.Elements("uid") select new FacebookObjectId(uidElement.Value),
+                //        friendsElement == null
+                //            ? new FacebookObjectId[0]
+                //            : from uidElement in friendsElement.Elements("uid") select new FacebookObjectId(uidElement.Value)));
+            }
+
+            JSON_OBJECT jsonComments;
+            jsonPost.TryGetTypedValue("comments", out jsonComments);
+
+            post.CanComment = _SafeGetBoolean(jsonComments, "can_post") ?? false;
+            post.CanRemoveComments = _SafeGetBoolean(jsonComments, "can_remove") ?? false;
+            post.CommentCount = _SafeGetInt32(jsonComments, "count") ?? 0;
+
+            if (jsonComments != null && post.CommentCount != 0)
+            {
+                JSON_ARRAY jsonCommentList;
+                if (jsonComments.TryGetTypedValue("comment_list", out jsonCommentList))
+                {
+                    var commentNodes = from JSON_OBJECT jsonComment in jsonCommentList
+                                       let comment = _DeserializeCommentData(jsonComment)
+                                       where (comment.Post = post) != null
+                                       select comment;
+
+                    post.RawComments = new FBMergeableCollection<ActivityComment>(commentNodes);
+                }
+            }
+
+            if (post.RawComments == null)
+            {
+                post.RawComments = new FBMergeableCollection<ActivityComment>();
+            }
+
+            // post.Comments = null;
+
+            return post;
+        }
+
+        public List<FacebookContact> DeserializeProfileList(string jsonInput)
+        {
+            JSON_ARRAY profileList = _SafeParseArray(jsonInput);
+            return new List<FacebookContact>(from JSON_OBJECT profile in profileList select _DeserializeProfile(profile));
+        }
+
+        private FacebookContact _DeserializeProfile(JSON_OBJECT jsonProfile)
+        {
+            Uri sourceUri = _SafeGetUri(jsonProfile, "pic");
+            Uri sourceBigUri = _SafeGetUri(jsonProfile, "pic_big");
+            Uri sourceSmallUri = _SafeGetUri(jsonProfile, "pic_small");
+            Uri sourceSquareUri = _SafeGetUri(jsonProfile, "pic_square");
+
+            var profile = new FacebookContact(_service)
+            {
+                UserId = _SafeGetId(jsonProfile, "id"),
+                Name = _SafeGetString(jsonProfile, "name"),
+                Image = new FacebookImage(_service, sourceUri, sourceBigUri, sourceSmallUri, sourceSquareUri),
+                ProfileUri = _SafeGetUri(jsonProfile, "url"),
+                // ContactType = "type" => "user" | "page"
+            };
+
+            return profile;
+        }
+
+#if UNUSED_JSON_CALLS
 
         public List<ActivityPost> DeserializePostDataList(string xml, bool isFQL)
         {
@@ -833,14 +1005,6 @@ namespace Contigo
             return _DeserializePostDataList(ns, rootList);
         }
 
-        private List<ActivityPost> _DeserializePostDataList(XNamespace ns, XContainer root)
-        {
-            var postsList = new List<ActivityPost>();
-            var postNodes = from XElement elt in root.Elements("stream_post")
-                            select _DeserializePostData(ns, elt);
-            postsList.AddRange(postNodes);
-            return postsList;
-        }
 
         public List<ActivityComment> DeserializeCommentsDataList(ActivityPost post, string xml)
         {
