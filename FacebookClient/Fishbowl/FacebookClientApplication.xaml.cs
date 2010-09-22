@@ -56,20 +56,17 @@ namespace FacebookClient
             { "Dark",          new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Dark\Dark.xaml", UriKind.Relative) } },
             { "Facebook",      new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\FBBlue\FBBlue.xaml", UriKind.Relative) } },
             { "Charcoal",      new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Charcoal\Charcoal.xaml", UriKind.Relative) } },
+            { "Glass",         new _ThemeInfo 
+                { 
+                    ResourceDictionaryUri = new Uri(@"Resources\Themes\Glass\Glass.xaml", UriKind.Relative),
+                    RequiresGlass = true, 
+                    FallbackTheme = "Modern" } },
             { "Modern",        new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Modern\Modern.xaml", UriKind.Relative) } },
             { "Modern Dark",   new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\ModernDark\ModernDark.xaml", UriKind.Relative) } },
 #if DEBUG
             // Not a production quality theme.
             // This can be used to find resources that aren't properly styled.
             { "Red", new _ThemeInfo { ResourceDictionaryUri = new Uri(@"Resources\Themes\Red\Red.xaml", UriKind.Relative) } },
-
-            // In development.
-            { "Glass",         new _ThemeInfo 
-                { 
-                    ResourceDictionaryUri = new Uri(@"Resources\Themes\Glass\Glass.xaml", UriKind.Relative),
-                    RequiresGlass = true, 
-                    FallbackTheme = "Modern" } },
-
 #endif
         };
 
@@ -82,6 +79,7 @@ namespace FacebookClient
         private SlideShowWindow _slideshowWindow;
         private _WindowMode _viewMode = _WindowMode.Normal;
         private _WindowMode _previousViewMode = _WindowMode.Normal;
+        private _ThemeInfo _currentTheme;
 
         public static IEnumerable<string> AvailableThemes
         { 
@@ -264,6 +262,8 @@ namespace FacebookClient
                 splash.Close();
                 _mainWindow.Show();
             }
+
+            _currentTheme = themeInfo;
         }
 
         internal static void PerformAggressiveCleanup()
@@ -286,6 +286,7 @@ namespace FacebookClient
 
             SwitchTheme(Settings.Default.ThemeName);
 
+            SystemParameters2.Current.PropertyChanged += _OnSystemParameterChanged;
             _mainWindow = new MainWindow();
             _minimodeWindow = new MiniModeWindow();
 
@@ -314,6 +315,17 @@ namespace FacebookClient
             SingleInstance.SingleInstanceActivated += _SignalExternalCommandLineArgs;
 
             base.OnStartup(e);
+        }
+
+        private void _OnSystemParameterChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsGlassEnabled")
+            {
+                if (_currentTheme != null && _currentTheme.RequiresGlass)
+                {
+                    SwitchTheme(_currentTheme.FallbackTheme);
+                }
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
