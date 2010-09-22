@@ -13,6 +13,9 @@ namespace Contigo
     using Microsoft.Json.Serialization;
     using Standard;
 
+    using JSON_ARRAY = System.Collections.Generic.IList<object>;
+    using JSON_OBJECT = System.Collections.Generic.IDictionary<string, object>;
+
     using METHOD_MAP = System.Collections.Generic.SortedDictionary<string, string>;
 
     // This class is thread-safe.  It does not contain any mutable state.
@@ -364,7 +367,7 @@ namespace Contigo
         }
 
 
-        private string _SendMultiQuery(IList<string> names, IList<string> queries)
+        private string _SendMultiQuery(IList<string> names, IList<string> queries, bool useJson)
         {
             Assert.IsNotOnMainThread();
 
@@ -388,7 +391,7 @@ namespace Contigo
                 { "queries", multiquery },
             };
 
-            return _SendRequest(queryMap);
+            return _SendRequest(queryMap, useJson);
         }
 
         /// <summary>
@@ -846,9 +849,8 @@ namespace Contigo
                 { "aids", albumId.ToString() },
             };
 
-            string response = Utility.FailableFunction(() => _SendRequest(albumMap));
-
-            List<FacebookPhotoAlbum> albumsResponse = _serializer.DeserializeGetAlbumsResponse(response);
+            string response = Utility.FailableFunction(() => _SendRequest(albumMap, true));
+            List<FacebookPhotoAlbum> albumsResponse = _jsonSerializer.DeserializeGetAlbumsResponse(response);
 
             Assert.IsFalse(albumsResponse.Count > 1);
 
@@ -1082,14 +1084,14 @@ namespace Contigo
 
         public Dictionary<FacebookObjectId, OnlinePresence> GetFriendsOnlineStatus()
         {
-            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId), false));
-            return _serializer.DeserializeUserPresenceList(result);
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId), true));
+            return _jsonSerializer.DeserializeUserPresenceList(result);
         }
 
         public List<FacebookPhotoAlbum> GetFriendsPhotoAlbums()
         {
-            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsAlbumsQueryString, _UserId), false));
-            return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
+            string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsAlbumsQueryString, _UserId), true));
+            return _jsonSerializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
         public List<FacebookPhoto>[] GetPhotosWithTags(IEnumerable<FacebookObjectId> albumIds)
@@ -1108,30 +1110,27 @@ namespace Contigo
                 ++albumCount;
             }
 
-            string photoMultiQueryResult = Utility.FailableFunction(() => _SendMultiQuery(names, queries));
+            string photoMultiQueryResult = Utility.FailableFunction(() => _SendMultiQuery(names, queries, true));
 
-            XDocument xdoc = DataSerialization.SafeParseDocument(photoMultiQueryResult);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+            JSON_ARRAY jsonMultiqueryArray = JsonDataSerialization.SafeParseArray(photoMultiQueryResult);
+            Assert.AreEqual(jsonMultiqueryArray.Count, 2);
 
             var photoCollections = new List<FacebookPhoto>[albumCount];
 
             albumCount = 0;
             foreach (FacebookObjectId albumId in albumIds)
             {
-                photoCollections[albumCount] = new List<FacebookPhoto>();
-                XElement photosResponseNode = (from descendant in xdoc.Descendants(ns + "name") 
-                                               where descendant.Value == ("get_photos" + albumCount)
-                                               select descendant)
-                                              .First();
-                photosResponseNode = (XElement)photosResponseNode.NextNode;
-                List<FacebookPhoto> photos = _serializer.DeserializePhotosGetResponse(photosResponseNode, ns);
+                JSON_ARRAY photosResponseArray = (from JSON_OBJECT result in jsonMultiqueryArray
+                                                  where result.Get<string>("name") == "get_photos" + albumCount
+                                                  select result.Get<JSON_ARRAY>("fql_result_set"))
+                                                 .First();
+                List<FacebookPhoto> photos = _jsonSerializer.DeserializePhotosGetResponse(photosResponseArray);
 
-                XElement tagsResponseNode = (from descendant in xdoc.Descendants(ns + "name")
-                                             where descendant.Value == ("get_tags" + albumCount)
-                                             select descendant)
-                                            .First();
-                tagsResponseNode = (XElement)tagsResponseNode.NextNode;
-                List<FacebookPhotoTag> tags = _serializer.DeserializePhotoTagsList(tagsResponseNode, ns);
+                JSON_ARRAY tagsResponseArray = (from JSON_OBJECT result in jsonMultiqueryArray
+                                                where result.Get<string>("name") == "get_tags" + albumCount
+                                                select result.Get<JSON_ARRAY>("fql_result_set"))
+                                                .First();
+                List<FacebookPhotoTag> tags = _jsonSerializer.DeserializePhotoTagsList(tagsResponseArray);
 
                 foreach (var photo in photos)
                 {

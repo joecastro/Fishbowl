@@ -255,7 +255,7 @@ namespace Contigo
             return null;
         }
 
-        private static JSON_OBJECT _SafeParseObject(string jsonString)
+        public static JSON_OBJECT SafeParseObject(string jsonString)
         {
             object obj = _serializer.Deserialize(jsonString);
             // Mitigate Facebook's tendency to return 0 and 1 length arrays for FQL calls.
@@ -280,7 +280,7 @@ namespace Contigo
             return obj as JSON_OBJECT;
         }
 
-        private static JSON_ARRAY _SafeParseArray(string jsonString)
+        public static JSON_ARRAY SafeParseArray(string jsonString)
         {
             var obj = _serializer.Deserialize(jsonString);
             Assert.IsTrue(obj is JSON_ARRAY);
@@ -437,19 +437,6 @@ namespace Contigo
             return page;
         }
 
-        private static OnlinePresence _DeserializePresenceNode(JSON_OBJECT obj)
-        {
-            string presence = _SafeGetValue(obj, "online_presence");
-            switch (presence)
-            {
-                case "active": return OnlinePresence.Active;
-                case "idle": return OnlinePresence.Idle;
-                case "offline": return OnlinePresence.Offline;
-                case "error": return OnlinePresence.Unknown;
-            }
-            return OnlinePresence.Unknown;
-        }
-
         private WorkInfo _DeserializeWorkInfo(XElement elt)
         {
             Assert.IsNotNull(elt);
@@ -515,125 +502,6 @@ namespace Contigo
             };
         }
 
-        private FacebookPhotoTag _DeserializePhotoTag(XNamespace ns, XElement elt)
-        {
-            float xcoord = (_SafeGetSingle(elt, "xcoord") ?? 0) / 100;
-            float ycoord = (_SafeGetSingle(elt, "ycoord") ?? 0) / 100;
-
-            xcoord = Math.Max(Math.Min(1, xcoord), 0);
-            ycoord = Math.Max(Math.Min(1, ycoord), 0);
-
-            var tag = new FacebookPhotoTag(_service)
-            {
-                PhotoId = _SafeGetId(elt, "pid"),
-                ContactId = _SafeGetId(elt, "subject"),
-                Text = _SafeGetValue(elt, "text"),
-                Offset = new System.Windows.Point(xcoord, ycoord),
-            };
-
-            return tag;
-        }
-
-        private ActivityPostAttachment _DeserializePhotoPostAttachmentData(ActivityPost post, XNamespace ns, XElement elt)
-        {
-            if (elt == null)
-            {
-                return null;
-            }
-
-            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, ns, elt);
-            attachment.Type = ActivityPostAttachmentType.Photos;
-
-            var photosEnum = from smElement in elt.Element("media").Elements("stream_media")
-                             let photoElement = smElement.Element("photo")
-                             where photoElement != null
-                             let link = _SafeGetUri(smElement, "href")
-                             select new FacebookPhoto(
-                                 _service,
-                                 _SafeGetId(photoElement, "aid"),
-                                 _SafeGetId(photoElement, "pid"),
-                                 _SafeGetUri(smElement, "src"))
-                             {
-                                 Link = link,
-                                 OwnerId = _SafeGetId(photoElement, "owner"),
-                             };
-            attachment.Photos = FacebookPhotoCollection.CreateStaticCollection(photosEnum);
-
-            return attachment;
-        }
-
-        private ActivityPostAttachment _DeserializeVideoPostAttachmentData(ActivityPost post, XNamespace ns, XElement elt)
-        {
-            if (elt == null)
-            {
-                return null;
-            }
-
-            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, ns, elt);
-            Uri previewImage = _SafeGetUri(elt, "media", "preview_img");
-
-            attachment.Type = ActivityPostAttachmentType.Video;
-            XElement mediaElement = elt.Element("media");
-            if (mediaElement != null)
-            {
-                XElement streamElement = mediaElement.Element("stream_media");
-                if (streamElement != null)
-                {
-                    Uri previewImageUri = _SafeGetUri(streamElement, "src");
-
-                    attachment.VideoPreviewImage = new FacebookImage(_service, previewImageUri);
-                    attachment.VideoSource = _SafeGetUri(streamElement, "href");
-                    // Not using this one because of a bug in Adobe's player when loading in an external browser...
-                    //XElement videoElement = streamElement.Element("video");
-                    //if (videoElement != null)
-                    //{
-                    //    attachment.VideoSource = _SafeGetUri(videoElement, "source_url");
-                    //}
-                }
-            }
-
-            return attachment;
-        }
-
-        private ActivityPostAttachment _DeserializeLinkPostAttachmentData(ActivityPost post, XNamespace ns, XElement elt)
-        {
-            if (elt == null)
-            {
-                return null;
-            }
-
-            ActivityPostAttachment attachment = _DeserializeGenericPostAttachmentData(post, ns, elt);
-            attachment.Type = ActivityPostAttachmentType.Links;
-
-            var linksEnum = from smElement in elt.Element("media").Elements("stream_media")
-                            let srcUri = _SafeGetUri(smElement, "src")
-                            let hrefUri = _SafeGetUri(smElement, "href")
-                            where srcUri != null && hrefUri != null
-                            select new FacebookImageLink()
-                            {
-                                Image = new FacebookImage(_service, srcUri),
-                                Link = hrefUri,
-                            };
-            attachment.Links = new FacebookCollection<FacebookImageLink>(linksEnum);
-            return attachment;
-        }
-
-        private ActivityPostAttachment _DeserializeGenericPostAttachmentData(ActivityPost post, XNamespace ns, XElement elt)
-        {
-            Assert.IsNotNull(post);
-            Uri iconUri = _SafeGetUri(elt, "icon");
-
-            return new ActivityPostAttachment(post)
-            {
-                Caption = _SafeGetValue(elt, "caption"),
-                Link = _SafeGetUri(elt, "href"),
-                Name = _SafeGetValue(elt, "name"),
-                Description = _SafeGetValue(elt, "description"),
-                Properties = _SafeGetJson(elt, "properties"),
-                Icon = new FacebookImage(_service, iconUri),
-            };
-        }
-
         public List<FacebookContact> DeserializePagesList(string xml)
         {
             XDocument xdoc = _SafeParseObject(xml);
@@ -670,49 +538,91 @@ namespace Contigo
                 });
             return new List<FacebookContact>(contacts);
         }
-
-        public Dictionary<FacebookObjectId, OnlinePresence> DeserializeUserPresenceList(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var items = from userNode in xdoc.Root.Elements("user")
-                        let uid = _SafeGetId(userNode, "uid")
-                        let presence = _DeserializePresenceNode(ns, userNode)
-                        select new { UserId = uid, Presence = presence };
-            return items.ToDictionary(item => item.UserId, item => item.Presence);
-        }
-
-        public List<FacebookPhotoTag> DeserializePhotoTagsList(XElement root, XNamespace ns)
-        {
-            var tagList = new List<FacebookPhotoTag>();
-
-            var tagNodes = from XElement elt in root.Elements("photo_tag")
-                           let tag = _DeserializePhotoTag(ns, elt)
-                           where tag != null
-                           select tag;
-            tagList.AddRange(tagNodes);
-            return tagList;
-        }
-
-        public List<FacebookPhotoTag> DeserializePhotoTagsList(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            return DeserializePhotoTagsList((XElement)xdoc.FirstNode, ns);
-        }
-
 #endif
+        public Dictionary<FacebookObjectId, OnlinePresence> DeserializeUserPresenceList(string jsonString)
+        {
+            JSON_ARRAY jsonFriendsList = SafeParseArray(jsonString);
+            return (from JSON_OBJECT jsonFriend in jsonFriendsList
+                    let uid = _SafeGetId(jsonFriend, "uid")
+                    let presence = _DeserializePresenceFromFriend(jsonFriend)
+                    select new { UserId = uid, Presence = presence })
+                    .ToDictionary(item => item.UserId, item => item.Presence);
+        }
+
+        private static OnlinePresence _DeserializePresenceFromFriend(JSON_OBJECT jsonFriend)
+        {
+            string presence = _SafeGetString(jsonFriend, "online_presence");
+            switch (presence)
+            {
+                case "active": return OnlinePresence.Active;
+                case "idle": return OnlinePresence.Idle;
+                case "offline": return OnlinePresence.Offline;
+                case "error": return OnlinePresence.Unknown;
+            }
+            return OnlinePresence.Unknown;
+        }
+
+        public List<FacebookPhoto> DeserializePhotosGetResponse(JSON_ARRAY jsonPhotosResponse)
+        {
+            return new List<FacebookPhoto>(from JSON_OBJECT jsonPhoto in jsonPhotosResponse select _DeserializePhoto(jsonPhoto));
+        }
+
+        private FacebookPhoto _DeserializePhoto(JSON_OBJECT jsonPhoto)
+        {
+            Uri linkUri = _SafeGetUri(jsonPhoto, "link");
+            Uri sourceUri = _SafeGetUri(jsonPhoto, "src");
+            Uri smallUri = _SafeGetUri(jsonPhoto, "src_small");
+            Uri bigUri = _SafeGetUri(jsonPhoto, "src_big");
+
+            var photo = new FacebookPhoto(_service)
+            {
+                PhotoId = _SafeGetId(jsonPhoto, "pid"),
+                AlbumId = _SafeGetId(jsonPhoto, "aid"),
+                OwnerId = _SafeGetId(jsonPhoto, "owner"),
+                Caption = _SafeGetString(jsonPhoto, "caption"),
+                Created = _SafeGetDateTime(jsonPhoto, "created") ?? _UnixEpochTime,
+                Image = new FacebookImage(_service, sourceUri, bigUri, smallUri, null),
+                Link = linkUri,
+            };
+
+            return photo;
+        }
+
+        public List<FacebookPhotoTag> DeserializePhotoTagsList(JSON_ARRAY jsonPhotoTags)
+        {
+            return new List<FacebookPhotoTag>(from JSON_OBJECT photoTag in jsonPhotoTags select _DeserializePhotoTag(photoTag));
+        }
+
+        private FacebookPhotoTag _DeserializePhotoTag(JSON_OBJECT jsonTag)
+        {
+            float xcoord = (_SafeGetSingle(jsonTag, "xcoord") ?? 0) / 100;
+            float ycoord = (_SafeGetSingle(jsonTag,"ycoord") ?? 0) / 100;
+
+            xcoord = Math.Max(Math.Min(1, xcoord), 0);
+            ycoord = Math.Max(Math.Min(1, ycoord), 0);
+
+            var tag = new FacebookPhotoTag(_service)
+            {
+                PhotoId = _SafeGetId(jsonTag, "pid"),
+                ContactId = _SafeGetId(jsonTag, "subject"),
+                Text = _SafeGetString(jsonTag, "text"),
+                Offset = new System.Windows.Point(xcoord, ycoord),
+            };
+
+            return tag;
+        }
+
+
+
         public List<string> DeserializeGrantedPermissionsList(string jsonString)
         {
-            JSON_OBJECT permissions = _SafeParseObject(jsonString);
+            JSON_OBJECT permissions = SafeParseObject(jsonString);
             return (from pair in permissions where pair.Value.ToString() == "1" select pair.Key).ToList();
         }
 
         public List<ActivityFilter> DeserializeFilterList(string jsonString)
         {
-            JSON_ARRAY jsonArray = _SafeParseArray(jsonString);
+            JSON_ARRAY jsonArray = SafeParseArray(jsonString);
 
             var filterList = new List<ActivityFilter>(from JSON_OBJECT filterObj in jsonArray select _DeserializeFilter(filterObj));
             return filterList;
@@ -742,7 +652,7 @@ namespace Contigo
 
         public void DeserializeStreamData(string jsonString, out List<ActivityPost> posts, out List<FacebookContact> userData)
         {
-            JSON_OBJECT streamData = _SafeParseObject(jsonString);
+            JSON_OBJECT streamData = SafeParseObject(jsonString);
 
             posts = new List<ActivityPost>(from JSON_OBJECT jsonPost in (JSON_ARRAY)streamData["posts"] select _DeserializePost(jsonPost));
             userData = new List<FacebookContact>(from JSON_OBJECT profile in (JSON_ARRAY)streamData["profiles"] select _DeserializeProfile(profile));
@@ -961,7 +871,7 @@ namespace Contigo
 
         public List<FacebookContact> DeserializeProfileList(string jsonInput)
         {
-            JSON_ARRAY profileList = _SafeParseArray(jsonInput);
+            JSON_ARRAY profileList = SafeParseArray(jsonInput);
             return new List<FacebookContact>(from JSON_OBJECT profile in profileList select _DeserializeProfile(profile));
         }
 
@@ -982,6 +892,34 @@ namespace Contigo
             };
 
             return profile;
+        }
+
+        public List<FacebookPhotoAlbum> DeserializeGetAlbumsResponse(string jsonString)
+        {
+            JSON_ARRAY jsonAlbumsArray = SafeParseArray(jsonString);
+            return new List<FacebookPhotoAlbum>(from JSON_OBJECT jsonAlbum in jsonAlbumsArray select _DeserializeAlbum(jsonAlbum));
+        }
+
+        private FacebookPhotoAlbum _DeserializeAlbum(JSON_OBJECT jsonAlbum)
+        {
+            Uri linkUri = _SafeGetUri(jsonAlbum, "link");
+
+            var album = new FacebookPhotoAlbum(_service)
+            {
+                AlbumId = _SafeGetId(jsonAlbum, "aid"),
+                CoverPicPid = _SafeGetId(jsonAlbum, "cover_pid"),
+                OwnerId = _SafeGetId(jsonAlbum, "owner"),
+                Title = _SafeGetString(jsonAlbum, "name"),
+                Created = _SafeGetDateTime(jsonAlbum, "created") ?? _UnixEpochTime,
+                LastModified = _SafeGetDateTime(jsonAlbum, "modified") ?? _UnixEpochTime,
+                Description = _SafeGetString(jsonAlbum, "description"),
+                Location = _SafeGetString(jsonAlbum, "location"),
+                Link = linkUri,
+                // Size = _SafeGetInt32(elt, "size"),
+                // Visible = _SafeGetValue(elt, "visible"),
+            };
+
+            return album;
         }
 
 #if UNUSED_JSON_CALLS
@@ -1040,37 +978,6 @@ namespace Contigo
             return DeserializePhotosGetResponse((XElement)xdoc.FirstNode, ns);
         }
 
-        public List<FacebookPhoto> DeserializePhotosGetResponse(XElement root, XNamespace ns)
-        {
-            var photoList = new List<FacebookPhoto>();
-
-            var photoNodes = from XElement elt in root.Elements("photo")
-                             select _DeserializePhotoData(ns, elt);
-            photoList.AddRange(photoNodes);
-            return photoList;
-        }
-
-        private FacebookPhoto _DeserializePhotoData(XNamespace ns, XElement elt)
-        {
-            Uri linkUri = _SafeGetUri(elt, "link");
-            Uri sourceUri = _SafeGetUri(elt, "src");
-            Uri smallUri = _SafeGetUri(elt, "src_small");
-            Uri bigUri = _SafeGetUri(elt, "src_big");
-
-            var photo = new FacebookPhoto(_service)
-            {
-                PhotoId = _SafeGetId(elt, "pid"),
-                AlbumId = _SafeGetId(elt, "aid"),
-                OwnerId = _SafeGetId(elt, "owner"),
-                Caption = _SafeGetValue(elt, "caption"),
-                Created = _SafeGetDateTime(elt, "created") ?? _UnixEpochTime,
-                Image = new FacebookImage(_service, sourceUri, bigUri, smallUri, null),
-                Link = linkUri,
-            };
-
-            return photo;
-        }
-
         public FacebookPhoto DeserializePhotoUploadResponse(string xml)
         {
             XDocument xdoc = _SafeParseObject(xml);
@@ -1090,48 +997,13 @@ namespace Contigo
             return album;
         }
 
-        public List<FacebookPhotoAlbum> DeserializeGetAlbumsResponse(string xml)
-        {
-            var albumList = new List<FacebookPhotoAlbum>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var albumNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("album")
-                             select _DeserializeAlbumData(ns, elt);
-            albumList.AddRange(albumNodes);
-            return albumList;
-        }
-
-        private FacebookPhotoAlbum _DeserializeAlbumData(XNamespace ns, XElement elt)
-        {
-            Uri linkUri = _SafeGetUri(elt, "link");
-
-            var album = new FacebookPhotoAlbum(_service)
-            {
-                AlbumId = _SafeGetId(elt, "aid"),
-                CoverPicPid = _SafeGetId(elt, "cover_pid"),
-                OwnerId = _SafeGetId(elt, "owner"),
-                Title = _SafeGetValue(elt, "name"),
-                Created = _SafeGetDateTime(elt, "created") ?? _UnixEpochTime,
-                LastModified = _SafeGetDateTime(elt, "modified") ?? _UnixEpochTime,
-                Description = _SafeGetValue(elt, "description"),
-                Location = _SafeGetValue(elt, "location"),
-                Link = linkUri,
-                // Size = _SafeGetInt32(elt, "size"),
-                // Visible = _SafeGetValue(elt, "visible"),
-            };
-
-            return album;
-        }
-
 #endif
         public static Exception DeserializeFacebookException(string jsonInput, string request)
         {
             // Do a sanity check on the opening XML tags to see if it looks like an exception.
             if (jsonInput.Substring(0, Math.Min(jsonInput.Length, 200)).Contains("error_code"))
             {
-                JSON_OBJECT errorObject = _SafeParseObject(jsonInput);
+                JSON_OBJECT errorObject = SafeParseObject(jsonInput);
                 if (errorObject.ContainsKey("error_code"))
                 {
                     return new FacebookException(
