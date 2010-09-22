@@ -12,7 +12,7 @@
     Width="900" Height="600"
     MinWidth="640" MinHeight="280"
     AllowDrop="True"
-    Background="Transparent"
+    Background="{DynamicResource MainWindowBackgroundBrush}"
     ShowsNavigationUI="False"
     Title="Fishbowl for Facebook - Preview"
     shell:WindowChrome.WindowChrome="{DynamicResource ApplicationWindowChrome}">
@@ -74,7 +74,7 @@
           <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid x:Name="MainContentGrid" Grid.Row="1" Background="{DynamicResource MainContentBackgroundBrush}">
+        <Grid x:Name="MainContentGrid" Grid.Row="1" Background="{DynamicResource MainContentBackgroundBrush}" Margin="{DynamicResource MainContentMargin}" ClipToBounds="True">
           <ClientManagerView:AnimatedSwooshes x:Name="animatedSwooshes" Opacity="0" Margin="0,0,0,300" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
 
           <ClientManagerControls:MainContentContainer x:Name="ContentPane"
@@ -103,18 +103,21 @@
         <FacebookClient:BuddyListControl Grid.Row="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
+            Margin="{DynamicResource MainContentMargin}"
             IsDisplayed="{Binding ElementName=Footer, Path=IsBuddyListToggled, Mode=TwoWay}"
             RequestNavigate="_OnNotificationNavigationRequested"/>
 
         <FacebookClient:NotificationsControl Grid.Row="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
+            Margin="{DynamicResource MainContentMargin}"
             IsDisplayed="{Binding ElementName=Footer, Path=AreNotificationsToggled, Mode=TwoWay}"
             RequestNavigate="_OnNotificationNavigationRequested"/>
 
         <FacebookClient:MessageNotificationsControl Grid.Row="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Right"
+            Margin="{DynamicResource MainContentMargin}"
             IsDisplayed="{Binding ElementName=Footer, Path=IsInboxToggled, Mode=TwoWay}"
             RequestNavigate="_OnMessageNavigationRequested"/>
 
@@ -147,7 +150,8 @@
         </Border>
 
         <ContentControl x:Name="DialogHostControl"
-          Grid.Row="1" Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Dialog}" >
+            Grid.Row="1" Content="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=Dialog}"
+            Margin="{DynamicResource MainContentMargin}">
           <ContentControl.Style>
             <Style TargetType="{x:Type ContentControl}">
               <Setter Property="Template">

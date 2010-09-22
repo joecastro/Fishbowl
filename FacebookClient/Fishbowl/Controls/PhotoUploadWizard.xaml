@@ -7,7 +7,7 @@
     x:Name="ThisControl">
   <UserControl.Template>
     <ControlTemplate TargetType="{x:Type FacebookClient:PhotoUploadWizard}">
-      <Border MinWidth="400" Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">
+      <Border MinWidth="400" Background="{DynamicResource ContentChromeBackground}" BorderBrush="{DynamicResource ContentChromeBorderBrush}" BorderThickness="4">
         <Grid>
           
           <Grid x:Name="PART_PickAlbumPage" Visibility="Collapsed">

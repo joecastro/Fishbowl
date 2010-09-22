@@ -19,7 +19,7 @@ namespace Contigo
     using METHOD_MAP = System.Collections.Generic.SortedDictionary<string, string>;
 
     // This class is thread-safe.  It does not contain any mutable state.
-    internal class FacebookWebApi : IDisposable
+    internal class FacebookWebApi
     {
         #region Fields
 
@@ -146,18 +146,12 @@ namespace Contigo
         private readonly string _Secret;
         private readonly FacebookObjectId _UserId;
         private readonly FacebookService _Service;
-        private bool _disposed;
 
         #endregion
 
-        private void _Verify(bool requiresService)
+        private void _Verify()
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException("this");
-            }
-
-            if (requiresService && _Service == null)
+            if (_Service == null)
             {
                 throw new InvalidOperationException("Operation requires a valid FacebookService");
             }
@@ -355,7 +349,7 @@ namespace Contigo
 
             Assert.IsNeitherNullNorEmpty(query);
 
-            _Verify(true);
+            _Verify();
 
             var queryMap = new METHOD_MAP
             {
@@ -371,7 +365,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             Assert.IsNotNull(names);
             Assert.IsNotNull(queries);
@@ -406,7 +400,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             if (!requestPairs.ContainsKey("api_key"))
             {
@@ -430,7 +424,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             byte[] data = null;
             using (FileStream fs = File.Open(filePath, FileMode.Open))
@@ -638,16 +632,6 @@ namespace Contigo
 
         #endregion
 
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            // Stop any new outbound web requests from this object.
-            _disposed = true;
-        }
-
-        #endregion
-
         public List<ActivityFilter> GetActivityFilters()
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamFiltersQueryString, _UserId), true));
@@ -656,7 +640,7 @@ namespace Contigo
 
         public FacebookContact GetUser(FacebookObjectId userId)
         {
-            _Verify(true);
+            _Verify();
 
             var userMap = new METHOD_MAP
             {
@@ -684,7 +668,7 @@ namespace Contigo
 
         public List<MessageNotification> GetMailNotifications(bool includeRead)
         {
-            _Verify(true);
+            _Verify();
 
             string query = includeRead
                 ? _GetInboxThreadsQueryString 
@@ -699,7 +683,7 @@ namespace Contigo
         // This differs from Notifications.GetList in that it returns messages, pokes, shares, group and event invites, and friend requests.
         public void GetRequests(out List<Notification> friendRequests, out int unreadMessagesCount)
         {
-            _Verify(true);
+            _Verify();
 
             var notificationMap = new METHOD_MAP
             {
@@ -712,7 +696,7 @@ namespace Contigo
 
         public List<Notification> GetNotifications(bool includeRead)
         {
-            _Verify(true);
+            _Verify();
 
             var notificationMap = new METHOD_MAP
             {
@@ -738,7 +722,7 @@ namespace Contigo
 
         public FacebookPhoto GetPhoto(string photoId)
         {
-            _Verify(true);
+            _Verify();
 
             var photoMap = new METHOD_MAP
             {
@@ -791,7 +775,7 @@ namespace Contigo
 
         public FacebookPhotoAlbum CreateAlbum(string name, string description, string location)
         {
-            _Verify(true);
+            _Verify();
 
             var createMap = new METHOD_MAP
             {
@@ -818,7 +802,7 @@ namespace Contigo
 
         public FacebookPhoto AddPhotoToAlbum(FacebookObjectId albumId, string caption, string imageFile)
         {
-            _Verify(true);
+            _Verify();
 
             var updateMap = new METHOD_MAP
             {
@@ -1113,7 +1097,6 @@ namespace Contigo
             string photoMultiQueryResult = Utility.FailableFunction(() => _SendMultiQuery(names, queries, true));
 
             JSON_ARRAY jsonMultiqueryArray = JsonDataSerialization.SafeParseArray(photoMultiQueryResult);
-            Assert.AreEqual(jsonMultiqueryArray.Count, 2);
 
             var photoCollections = new List<FacebookPhoto>[albumCount];
 

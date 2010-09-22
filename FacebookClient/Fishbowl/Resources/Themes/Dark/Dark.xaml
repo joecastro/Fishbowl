@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
   
   <ResourceDictionary.MergedDictionaries>
@@ -8,6 +9,14 @@
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFacebookDataResources.xaml" />
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
+
+  <LinearGradientBrush x:Key="ContentChromeBackground" EndPoint="1,0" StartPoint="0,0">
+    <GradientStop Color="#FF1B2027" Offset="0.9" />
+    <GradientStop Color="#FF111411" Offset="0.356" />
+    <GradientStop Color="#FF141D30" Offset="0.002" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ContentChromeBorderBrush" Color="DarkGray" />
 
   <LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
     <GradientStop Color="#FF1B2027" Offset="0.9" />
@@ -18,6 +27,7 @@
   <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="DarkGray" />
 
   <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ApplicationBarFooterShadowBrush" Color="Transparent" />
 
   <SolidColorBrush x:Key="SearchTextBoxBrush" Color="#FF051935" />
 
@@ -151,8 +161,7 @@
   </LinearGradientBrush>
 
   <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}"/>
-
-  <system:Boolean x:Key="UseGlass">False</system:Boolean>
+  <Thickness x:Key="MainContentMargin" />
 
 
 </ResourceDictionary>

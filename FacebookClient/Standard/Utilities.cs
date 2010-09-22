@@ -161,7 +161,7 @@ namespace Standard
         {
             if (performLayout)
             {
-                element.Measure(Size.Empty);
+                element.Measure(new Size(renderWidth, renderHeight));
                 element.Arrange(new Rect(new Size(renderWidth, renderHeight)));
             }
 

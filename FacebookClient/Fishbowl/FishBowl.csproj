@@ -46,7 +46,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://fishbowl.codeplex.com/releases/clickonce/</InstallUrl>
     <UpdateUrl>http://fishbowl.codeplex.com/releases/clickonce/</UpdateUrl>
-    <ProductName>Fishbowl</ProductName>
+    <ProductName>Fishbowl 2</ProductName>
     <PublisherName>Fishbowl</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
@@ -273,6 +273,7 @@
     <Compile Include="Converters\SexPronounConverter.cs" />
     <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
     <Compile Include="Converters\TranslateConverter.cs" />
+    <Compile Include="Converters\UIElementToImageSourceConverter.cs" />
     <Compile Include="DeploymentManager.cs" />
     <Compile Include="DragDropLib.cs" />
     <Compile Include="HyperlinkTextContent.cs" />
@@ -398,10 +399,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Themes\Glass\GlassApplicationBarResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Resources\Themes\Glass\GlassMainPageResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

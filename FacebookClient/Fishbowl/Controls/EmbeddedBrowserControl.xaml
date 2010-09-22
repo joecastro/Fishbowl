@@ -70,8 +70,8 @@
   
   <DockPanel>
     <Border DockPanel.Dock="Top" 
-        Background="{DynamicResource ApplicationBarBackground}"
-        BorderBrush="{DynamicResource ApplicationBarBorderBrush}" 
+        Background="{DynamicResource ContentChromeBackground}"
+        BorderBrush="{DynamicResource ContentChromeBorderBrush}" 
         BorderThickness="1,1,1,0"
         CornerRadius="6,6,0,0">
       <Grid >
@@ -118,7 +118,7 @@
       </Grid>
     </Border>
     <Border x:Name="BrowserHost"
-            BorderBrush="{DynamicResource ApplicationBarBorderBrush}" 
+            BorderBrush="{DynamicResource ContentChromeBorderBrush}" 
             BorderThickness="1,0,1,1" />
   </DockPanel>
 </UserControl>

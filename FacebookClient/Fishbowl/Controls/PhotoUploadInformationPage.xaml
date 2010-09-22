@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="FacebookClient.PhotoUploadInformationPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
-  <Border Background="{DynamicResource ApplicationBarBackground}" BorderBrush="{DynamicResource ApplicationBarBorderBrush}" BorderThickness="4">
+  <Border Background="{DynamicResource ContentChromeBackground}" BorderBrush="{DynamicResource ContentChromeBorderBrush}" BorderThickness="4">
     <StackPanel>
       <TextBlock Margin="8"
           FontSize="{DynamicResource LargeFontSize3}" 

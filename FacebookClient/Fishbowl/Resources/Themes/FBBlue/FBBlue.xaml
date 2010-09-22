@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <ResourceDictionary.MergedDictionaries>
@@ -9,11 +10,14 @@
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonApplicationBarResources.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
+  <SolidColorBrush x:Key="ContentChromeBackground" Color="#FF3B5998"/>
+  <SolidColorBrush x:Key="ContentChromeBorderBrush" Color="#FFAAD4FF"/>
+  
   <SolidColorBrush x:Key="ApplicationBarBackground" Color="#FF3B5998"/>
-
   <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#FFAAD4FF"/>
 
   <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ApplicationBarFooterShadowBrush" Color="Transparent" />
 
   <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
     <LinearGradientBrush.GradientStops>
@@ -123,7 +127,6 @@
   </LinearGradientBrush>
 
   <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}"/>
-
-  <system:Boolean x:Key="UseGlass">False</system:Boolean>
+  <Thickness x:Key="MainContentMargin" />
 
 </ResourceDictionary>

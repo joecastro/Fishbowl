@@ -9,7 +9,8 @@
         public static readonly DependencyProperty FriendProperty = DependencyProperty.Register(
             "Friend",
             typeof(FacebookContact),
-            typeof(FriendButton));
+            typeof(FriendButton),
+            new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender));
 
         public FacebookContact Friend
         {

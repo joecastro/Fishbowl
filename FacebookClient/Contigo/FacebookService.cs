@@ -236,7 +236,6 @@
             _refreshTimerModerate.Stop();
             _refreshTimerInfrequent.Stop();
 
-            Utility.SafeDispose(ref _facebookApi);
             Utility.SafeDispose(ref _userInteractionDispatcher);
             Utility.SafeDispose(ref _friendInfoDispatcher);
             Utility.SafeDispose(ref _photoInfoDispatcher);

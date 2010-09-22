@@ -10,7 +10,7 @@
   <UserControl.Resources>
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
   </UserControl.Resources>
-  <Border Background="{DynamicResource ApplicationBarBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray"
+  <Border Background="{DynamicResource ContentChromeBackground}" Padding="1" BorderThickness="1" BorderBrush="LightGray"
           Visibility="{Binding ElementName=ThisControl, Path=IsDisplayed, Converter={StaticResource BooleanToVisibilityConverter}}">
     <DockPanel>
       <DockPanel DockPanel.Dock="Top">
