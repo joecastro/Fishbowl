@@ -371,6 +371,7 @@ namespace Contigo
                 Website = _SafeGetElementValue(elt, "website"),
                 ProfileUri = _SafeGetElementUri(elt, ns + "profile_url"),
                 UserId = _SafeGetElementId(elt, ns + "uid"),
+                UserName = _SafeGetElementValue(elt, ns + "username"),
                 ProfileUpdateTime = _SafeGetElementDateTime(elt, ns + "profile_update_time") ?? _UnixEpochTime,
                 OnlinePresence = _DeserializePresenceNode(ns, elt),
             };

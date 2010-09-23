@@ -475,6 +475,7 @@
 
         // Does not raise change notifications because it should never be changing.
         public FacebookObjectId UserId { get; internal set; }
+        public string UserName { get; internal set; }
 
         public string AboutMe
         {
@@ -973,6 +974,10 @@
             Sex = other.Sex;
             TV = other.TV;
             Website = other.Website;
+
+            // Doesn't raise change notifications, but also shouldn't be changing.
+            Assert.Implies(other.UserName != UserName, () => UserName == null);
+            UserName = other.UserName;
 
             // Only merge InterestLevel if it's been explicitly set.
             if (other.NullableInterestLevel.HasValue)

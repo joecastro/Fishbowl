@@ -311,6 +311,25 @@
             return null;
         }
 
+        public Navigator GetContactWithUserName(string username)
+        {
+            _contacts.VerifyAccess();
+
+            for (int index = 0; index < _contacts.Count; ++index)
+            {
+                if (!string.IsNullOrEmpty(_contacts[index].UserName) && _contacts[index].UserName.Equals(username, StringComparison.OrdinalIgnoreCase))
+                {
+                    var navigator = new ContactNavigator(_contacts[index], this)
+                    {
+                        ParentIndex = index,
+                    };
+                    return navigator;
+                }
+            }
+
+            return null;
+        }
+
         private int _FindChildIndex(Navigator navigator)
         {
             int index = -1;

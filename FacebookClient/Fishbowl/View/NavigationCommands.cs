@@ -85,36 +85,33 @@ namespace ClientManager.View
             : base(viewManager)
         {}
 
-        private object _FindNavigatorFromString(string stringContent)
+        private Navigator _TryGetNavigatorFromProfileUri(Uri uri)
         {
-            Uri maybeProfileUri;
-            if (Uri.TryCreate(stringContent, UriKind.Absolute, out maybeProfileUri) && maybeProfileUri.Host.ToLowerInvariant().Contains("facebook.com"))
+            FacebookObjectId fbId = default(FacebookObjectId);
+            // Maybe this is a straight-up profile.php?id=####
+            if (uri.LocalPath.ToLowerInvariant().Equals("/profile.php"))
             {
                 string id = null;
-                // Maybe this is a straight-up profile.php?id=####
-                // Not supporting username links right now, but Facebook is also not giving them in notifications right now.
-                if (maybeProfileUri.LocalPath.ToLowerInvariant().Equals("/profile.php"))
+                string idPart = null;
+                foreach (string part in new[] { "?id=", "&id=" })
                 {
-                    string idPart = null;
-                    foreach (string part in new[] { "?id=", "&id=" })
+                    if (uri.Query.ToLowerInvariant().Contains(part))
                     {
-                        if (maybeProfileUri.Query.ToLowerInvariant().Contains(part))
-                        {
-                            idPart = part;
-                            break;
-                        }
-                    }
-
-                    if (idPart != null)
-                    {
-                        id = maybeProfileUri.Query.ToLower();
-                        id = maybeProfileUri.Query.Substring(id.IndexOf(idPart) + idPart.Length);
-                        // Strip out the rest of the query
-                        id = id.Split('&')[0];
+                        idPart = part;
+                        break;
                     }
                 }
 
-                FacebookObjectId fbId = FacebookObjectId.Create(id);
+                if (idPart != null)
+                {
+                    id = uri.Query.ToLower();
+                    id = uri.Query.Substring(id.IndexOf(idPart) + idPart.Length);
+                    // Strip out the rest of the query
+                    id = id.Split('&')[0];
+
+                    fbId = FacebookObjectId.Create(id);
+                }
+
                 if (FacebookObjectId.IsValid(fbId))
                 {
                     var me = (FacebookContact)ViewManager.MasterNavigator.ProfileNavigator.Content;
@@ -129,57 +126,112 @@ namespace ClientManager.View
                         return nav;
                     }
                 }
+            }
 
-                if (maybeProfileUri.LocalPath.ToLowerInvariant().Equals("/photo.php"))
+            return null;
+        }
+
+        private Navigator _TryGetNavigatorFromPhotoUri(Uri uri)
+        {
+            if (uri.LocalPath.ToLowerInvariant().Equals("/photo.php"))
+            {
+                string userId = null;
+                string photoId = null;
+                string id = null;
+
+                foreach (string part in uri.Query.Split('?', '&'))
                 {
-                    string userId = null;
-                    string photoId = null;
-
-                    foreach (string part in maybeProfileUri.Query.Split('?', '&'))
+                    if (part.ToLowerInvariant().StartsWith("id="))
                     {
-                        if (part.ToLowerInvariant().StartsWith("id="))
-                        {
-                            userId = part.Substring("id=".Length);
-                        }
-                        else if (part.ToLowerInvariant().StartsWith("pid="))
-                        {
-                            photoId = part.Substring("pid=".Length);
-                        }
+                        userId = part.Substring("id=".Length);
                     }
-
-                    if (userId != null && photoId != null)
+                    else if (part.ToLowerInvariant().StartsWith("pid="))
                     {
-                        // Need to do additional parsing here.
-                        // If id is 32 bits then PID = ((id << 32) | pid)
-                        // If id is 64 bits then PID = id + " _ " + pid
-                        ulong userIdLong;
-                        if (ulong.TryParse(userId, out userIdLong))
+                        photoId = part.Substring("pid=".Length);
+                    }
+                }
+
+                if (userId != null && photoId != null)
+                {
+                    // Need to do additional parsing here.
+                    // If id is 32 bits then PID = ((id << 32) | pid)
+                    // If id is 64 bits then PID = id + " _ " + pid
+                    ulong userIdLong;
+                    if (ulong.TryParse(userId, out userIdLong))
+                    {
+                        if (userIdLong == (ulong)(uint)userIdLong)
                         {
-                            if (userIdLong == (ulong)(uint)userIdLong)
+                            uint photoIdInt;
+                            if (uint.TryParse(photoId, out photoIdInt))
                             {
-                                uint photoIdInt;
-                                if (uint.TryParse(photoId, out photoIdInt))
-                                {
-                                    id = ((userIdLong << 32) | (ulong)photoIdInt).ToString();
-                                }
-                            }
-                            else
-                            {
-                                id = userId + "_" + photoId;
+                                id = ((userIdLong << 32) | (ulong)photoIdInt).ToString();
                             }
                         }
-                    }
-
-                    if (!string.IsNullOrEmpty(id))
-                    {
-                        FacebookObjectId fbUserId = FacebookObjectId.Create(userId);
-                        FacebookObjectId fbPhotoId = FacebookObjectId.Create(id);
-                        Navigator nav = ((PhotoAlbumCollectionNavigator)ViewManager.MasterNavigator.PhotoAlbumsNavigator).GetPhotoWithId(fbUserId, fbPhotoId);
-                        if (nav != null)
+                        else
                         {
-                            return nav;
+                            id = userId + "_" + photoId;
                         }
                     }
+                }
+
+                if (!string.IsNullOrEmpty(id))
+                {
+                    FacebookObjectId fbUserId = FacebookObjectId.Create(userId);
+                    FacebookObjectId fbPhotoId = FacebookObjectId.Create(id);
+                    Navigator nav = ((PhotoAlbumCollectionNavigator)ViewManager.MasterNavigator.PhotoAlbumsNavigator).GetPhotoWithId(fbUserId, fbPhotoId);
+                    if (nav != null)
+                    {
+                        return nav;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private Navigator _TryGetNavigatorFromUserNameUri(Uri uri)
+        {
+            Assert.IsTrue(uri.LocalPath.StartsWith("/"));
+            string maybeUserName = uri.LocalPath.Substring(1);
+
+            var me = (FacebookContact)ViewManager.MasterNavigator.ProfileNavigator.Content;
+            if (me.UserName.Equals(maybeUserName, StringComparison.OrdinalIgnoreCase))
+            {
+                return ViewManager.MasterNavigator.ProfileNavigator;
+            }
+
+            Navigator nav = ((ContactCollectionNavigator)ViewManager.MasterNavigator.FriendsNavigator).GetContactWithUserName(maybeUserName);
+            if (nav != null)
+            {
+                return nav;
+            }
+
+            return null;
+        }
+
+        private Navigator _FindNavigatorFromString(string stringContent)
+        {
+            Uri maybeProfileUri;
+            if (Uri.TryCreate(stringContent, UriKind.Absolute, out maybeProfileUri) && maybeProfileUri.Host.ToLowerInvariant().Contains("facebook.com"))
+            {
+                Navigator nav = null;
+                nav = _TryGetNavigatorFromProfileUri(maybeProfileUri);
+                if (nav != null)
+                {
+                    return nav;
+                }
+
+                nav = _TryGetNavigatorFromPhotoUri(maybeProfileUri);
+                if (nav != null)
+                {
+                    return nav;
+                }
+                
+                // If it's not a /profile and not a /photo, it may just be a straight up user name.
+                nav = _TryGetNavigatorFromUserNameUri(maybeProfileUri);
+                if (nav != null)
+                {
+                    return nav;
                 }
             }
             return null;
@@ -207,10 +259,10 @@ namespace ClientManager.View
                 // I want to make notifications work with people links, but not walk every navigatable object
                 // looking for compatible URLs.  This is a simple heuristic that's mostly working most of the time,
                 // and it allows me to generally stop quickly.
-                object o = _FindNavigatorFromString(stringContent);
-                if (o != null)
+                Navigator nav = _FindNavigatorFromString(stringContent);
+                if (nav != null)
                 {
-                    return o;
+                    return nav;
                 }
             }
 
