@@ -191,11 +191,19 @@ namespace ClientManager.View
 
         private Navigator _TryGetNavigatorFromUserNameUri(Uri uri)
         {
+            if (string.IsNullOrEmpty(uri.LocalPath))
+            {
+                // Shouldn't happen, just guarding against it.
+                Assert.Fail();
+                return null;
+            }
+
             Assert.IsTrue(uri.LocalPath.StartsWith("/"));
             string maybeUserName = uri.LocalPath.Substring(1);
 
             var me = (FacebookContact)ViewManager.MasterNavigator.ProfileNavigator.Content;
-            if (me.UserName.Equals(maybeUserName, StringComparison.OrdinalIgnoreCase))
+            Assert.IsNeitherNullNorEmpty(me.UserName);
+            if (!string.IsNullOrEmpty(me.UserName) && me.UserName.Equals(maybeUserName, StringComparison.OrdinalIgnoreCase))
             {
                 return ViewManager.MasterNavigator.ProfileNavigator;
             }

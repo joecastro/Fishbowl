@@ -654,8 +654,8 @@ namespace Contigo
             int reaskCount = 0;
             do
             {
-                string result = Utility.FailableFunction(5, () => _SendRequest(userMap));
-                contactList = _serializer.DeserializeUsersList(result);
+                string result = Utility.FailableFunction(5, () => _SendRequest(userMap, true));
+                contactList = _jsonSerializer.DeserializeUsersList(result);
             } while (contactList.Count == 0 && ++reaskCount < 3);
 
             if (contactList.Count == 0)
@@ -674,8 +674,8 @@ namespace Contigo
                 ? _GetInboxThreadsQueryString 
                 : _GetUnreadInboxThreadsQueryString;
 
-            string result = Utility.FailableFunction(() => _SendQuery(query, false));
-            List<MessageNotification> notifications = _serializer.DeserializeMessageQueryResponse(result);
+            string result = Utility.FailableFunction(() => _SendQuery(query, true));
+            List<MessageNotification> notifications = _jsonSerializer.DeserializeMessageQueryResponse(result);
 
             return notifications;
         }
@@ -690,8 +690,8 @@ namespace Contigo
                 { "method", "Notifications.get" },
             };
 
-            string result = Utility.FailableFunction(() => _SendRequest(notificationMap));
-            _serializer.DeserializeNotificationsGetResponse(result, out friendRequests, out unreadMessagesCount);
+            string result = Utility.FailableFunction(() => _SendRequest(notificationMap, true));
+            _jsonSerializer.DeserializeNotificationsGetResponse(result, out friendRequests, out unreadMessagesCount);
         }
 
         public List<Notification> GetNotifications(bool includeRead)
@@ -708,9 +708,9 @@ namespace Contigo
                 notificationMap.Add("include_read", "true");
             }
 
-            string result = Utility.FailableFunction(() => _SendRequest(notificationMap));
+            string result = Utility.FailableFunction(() => _SendRequest(notificationMap, true));
 
-            List<Notification> notifications = _serializer.DeserializeNotificationsListResponse(result);
+            List<Notification> notifications = _jsonSerializer.DeserializeNotificationsListResponse(result);
 
             // Don't include hidden notifications in this result set.
             // Facebook also tends to leave stale notifications behind for activity posts that have been deleted.

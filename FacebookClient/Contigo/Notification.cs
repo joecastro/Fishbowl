@@ -17,6 +17,7 @@ namespace Contigo
         private SmallString _description;
         private SmallUri _href;
         // private int _appId;
+        private FacebookImage _iconImage;
 
         private SmallString _titleText;
         private SmallString _descriptionText;
@@ -216,6 +217,22 @@ namespace Contigo
             }
         }
 
+        public FacebookImage Icon
+        {
+            get
+            {
+                if (_iconImage == null)
+                {
+                    _iconImage = new FacebookImage(SourceService, null);
+                }
+                return _iconImage;
+            }
+            set
+            {
+                _iconImage = value;
+            }
+        }
+
         #region IFacebookObject Members
 
         FacebookService IFacebookObject.SourceService { get; set; }
@@ -283,6 +300,7 @@ namespace Contigo
             Title = other.Title;
             TitleText = other.TitleText;
             Updated = other.Updated;
+            Icon.SafeMerge(other.Icon);
         }
 
         #endregion

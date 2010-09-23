@@ -10,6 +10,7 @@ namespace Contigo
 
     using JSON_ARRAY = System.Collections.Generic.IList<object>;
     using JSON_OBJECT = System.Collections.Generic.IDictionary<string, object>;
+    using System.Text;
 
     internal enum JsonObjectType
     {
@@ -104,7 +105,7 @@ namespace Contigo
                 }
 
                 jsonObj = (JSON_OBJECT)lastChild;
-                if (!jsonObj.TryGetValue(name, out lastChild))
+                if (!jsonObj.TryGetValue(name, out lastChild) || lastChild == null)
                 {
                     return null;
                 }
@@ -299,14 +300,86 @@ namespace Contigo
             };
         }
 
-#if UNUSED_JSON_CALLS
-
-        private FacebookContact _DeserializeUser(JSON_OBJECT obj)
+        public List<FacebookContact> DeserializeUsersList(string jsonString)
         {
-            Uri sourceUri = _SafeGetUri(obj, "pic");
-            Uri sourceBigUri = _SafeGetUri(obj, "pic_big");
-            Uri sourceSmallUri = _SafeGetUri(obj, "pic_small");
-            Uri sourceSquareUri = _SafeGetUri(obj, "pic_square");
+            JSON_ARRAY userList = SafeParseArray(jsonString);
+            return new List<FacebookContact>(from JSON_OBJECT jsonUser in userList select _DeserializeUser(jsonUser));
+        }
+
+        private WorkInfo _DeserializeWorkInfo(JSON_OBJECT jsonWorkInfo)
+        {
+            Assert.IsNotNull(jsonWorkInfo);
+
+            return new WorkInfo
+            {
+                CompanyName = _SafeGetString(jsonWorkInfo, "company_name"),
+                Description = _SafeGetString(jsonWorkInfo, "description"),
+                EndDate = _SafeGetString(jsonWorkInfo, "end_date"),
+                StartDate = _SafeGetString(jsonWorkInfo, "start_date"),
+                Location = _DeserializeLocation(jsonWorkInfo.Get<JSON_OBJECT>("location")),
+            };
+        }
+
+        private static Location _DeserializeLocation(JSON_OBJECT jsonLocation)
+        {
+            if (jsonLocation == null)
+            {
+                return null;
+            }
+
+            return new Location
+            {
+                // current_location: city, state, country (well defined), zip (may be zero)
+                City = _SafeGetString(jsonLocation, "city"),
+                Country = _SafeGetString(jsonLocation, "country"),
+                State = _SafeGetString(jsonLocation, "state"),
+                ZipCode = _SafeGetInt32(jsonLocation, "zip")
+            };
+        }
+
+        private EducationInfo _DeserializeEducationInfo(JSON_OBJECT jsonEducationInfo)
+        {
+            int? maybeYear = _SafeGetInt32(jsonEducationInfo, "year");
+            if (maybeYear == 0)
+            {
+                maybeYear = null;
+            }
+
+            var concentrationBuilder = new StringBuilder();
+            JSON_ARRAY jsonConcentationList = jsonEducationInfo.Get<JSON_ARRAY>("concentrations");
+            if (jsonConcentationList != null)
+            {
+                bool first = true;
+                foreach (string conString in jsonConcentationList)
+                {
+                    if (!first)
+                    {
+                        concentrationBuilder.Append(", ");
+                    }
+                    else
+                    {
+                        first = false;
+                    }
+
+                    concentrationBuilder.Append(conString);
+                }
+            }
+
+            return new EducationInfo
+            {
+                Concentrations = concentrationBuilder.ToString(),
+                Degree = _SafeGetString(jsonEducationInfo, "degree"),
+                Name = _SafeGetString(jsonEducationInfo, "name"),
+                Year = maybeYear,
+            };
+        }
+
+        private FacebookContact _DeserializeUser(JSON_OBJECT jsonUser)
+        {
+            Uri sourceUri = _SafeGetUri(jsonUser, "pic");
+            Uri sourceBigUri = _SafeGetUri(jsonUser, "pic_big");
+            Uri sourceSmallUri = _SafeGetUri(jsonUser, "pic_small");
+            Uri sourceSquareUri = _SafeGetUri(jsonUser, "pic_square");
 
             Location currentLocation = null;
             Location hometownLocation = null;
@@ -314,93 +387,94 @@ namespace Contigo
             List<EducationInfo> educationHistory = null;
             List<WorkInfo> workHistory = null;
 
-            var clObject = obj["current_location"] as JSON_OBJECT;
-            if (clObject != null)
+            var jsonLocation = jsonUser.Get<JSON_OBJECT>("current_location");
+            if (jsonLocation != null)
             {
-                currentLocation = _DeserializeLocation(clObject);
+                currentLocation = _DeserializeLocation(jsonLocation);
             }
 
-            var htObject = obj["hometown_location"] as JSON_OBJECT;
+            var htObject = jsonUser.Get<JSON_OBJECT>("hometown_location");
             if (htObject != null)
             {
                 hometownLocation = _DeserializeLocation(htObject);
             }
 
-            var hsObject = obj["hs_info"] as JSON_OBJECT;
-            if (hsObject != null)
+            var jsonHighSchool = jsonUser.Get<JSON_OBJECT>("hs_info");
+            if (jsonHighSchool != null)
             {
                 hsInfo = new HighSchoolInfo
                 {
-                    GraduationYear = _SafeGetInt32(hsObject, "grad_year"),
+                    GraduationYear = _SafeGetInt32(jsonHighSchool, "grad_year"),
                     //Id = _SafeGetValue(hsElement, "hs1_id") ?? "0",
                     //Id2 = _SafeGetValue(hsElement, "hs2_id") ?? "0",
-                    Name = _SafeGetValue(hsObject, "hs1_name"),
-                    Name2 = _SafeGetValue(hsObject, "hs2_name"),
+                    Name = _SafeGetString(jsonHighSchool, "hs1_name"),
+                    Name2 = _SafeGetString(jsonHighSchool, "hs2_name"),
                 };
             }
 
-            var ehObject = obj["education_history"] as JSON_OBJECT;
-            if (ehObject != null)
+            var jsonEducationHistoryList = jsonUser.Get<JSON_ARRAY>("education_history");
+            if (jsonEducationHistoryList != null)
             {
-                educationHistory = new List<EducationInfo>(
-                    from infoNode in ehObject["education_info"] as JSON_OBJECT
-                    select _DeserializeEducationInfo(infoNode));
+                educationHistory = new List<EducationInfo>(from JSON_OBJECT jsonEducationInfo in jsonEducationHistoryList select _DeserializeEducationInfo(jsonEducationInfo));
             }
             else
             {
                 educationHistory = new List<EducationInfo>();
             }
 
-            XElement whElement = obj.Element("work_history");
-            if (whElement != null)
+            JSON_ARRAY jsonWorkHistoryList = jsonUser.Get<JSON_ARRAY>("work_history");
+            if (jsonWorkHistoryList != null)
             {
-                workHistory = new List<WorkInfo>(
-                    from wiNode in whElement.Elements("work_info")
-                    select _DeserializeWorkInfo(ns, wiNode));
+                workHistory = new List<WorkInfo>(from JSON_OBJECT jsonWorkInfo in jsonWorkHistoryList select _DeserializeWorkInfo(jsonWorkInfo));
+            }
+            else
+            {
+                workHistory = new List<WorkInfo>();
             }
 
             var contact = new FacebookContact(_service)
             {
-                Name = _SafeGetValue(obj, "name"),
-                FirstName = _SafeGetValue(obj, "first_name"),
-                LastName = _SafeGetValue(obj, "last_name"),
+                Name = _SafeGetString(jsonUser, "name"),
+                FirstName = _SafeGetString(jsonUser, "first_name"),
+                LastName = _SafeGetString(jsonUser, "last_name"),
 
-                AboutMe = _SafeGetValue(obj, "about_me"),
-                Activities = _SafeGetValue(obj, "activities"),
+                AboutMe = _SafeGetString(jsonUser, "about_me"),
+                Activities = _SafeGetString(jsonUser, "activities"),
                 // Affilitions =
                 // AllowedRestrictions = 
-                Birthday = _SafeGetValue(obj, "birthday"),
-                MachineSafeBirthday = _SafeGetValue(obj, "birthday_date"),
-                Books = _SafeGetValue(obj, "books"),
+                Birthday = _SafeGetString(jsonUser, "birthday"),
+                MachineSafeBirthday = _SafeGetString(jsonUser, "birthday_date"),
+                Books = _SafeGetString(jsonUser, "books"),
                 CurrentLocation = currentLocation,
                 EducationHistory = educationHistory.AsReadOnly(),
                 Hometown = hometownLocation,
                 HighSchoolInfo = hsInfo,
-                Interests = _SafeGetValue(obj, "interests"),
+                Interests = _SafeGetString(jsonUser, "interests"),
                 Image = new FacebookImage(_service, sourceUri, sourceBigUri, sourceSmallUri, sourceSquareUri),
-                Movies = _SafeGetValue(obj, "movies"),
-                Music = _SafeGetValue(obj, "music"),
-                Quotes = _SafeGetValue(obj, "quotes"),
-                RelationshipStatus = _SafeGetValue(obj, "relationship_status"),
-                Religion = _SafeGetValue(obj, "religion"),
-                Sex = _SafeGetValue(obj, "sex"),
-                TV = _SafeGetValue(obj, "tv"),
-                Website = _SafeGetValue(obj, "website"),
-                ProfileUri = _SafeGetUri(obj, "profile_url"),
-                UserId = _SafeGetId(obj, "uid"),
-                ProfileUpdateTime = _SafeGetDateTime(obj, "profile_update_time") ?? _UnixEpochTime,
-                OnlinePresence = _DeserializePresenceNode(ns, obj),
+                Movies = _SafeGetString(jsonUser, "movies"),
+                Music = _SafeGetString(jsonUser, "music"),
+                Quotes = _SafeGetString(jsonUser, "quotes"),
+                RelationshipStatus = _SafeGetString(jsonUser, "relationship_status"),
+                Religion = _SafeGetString(jsonUser, "religion"),
+                Sex = _SafeGetString(jsonUser, "sex"),
+                TV = _SafeGetString(jsonUser, "tv"),
+                Website = _SafeGetString(jsonUser, "website"),
+                ProfileUri = _SafeGetUri(jsonUser, "profile_url"),
+                UserId = _SafeGetId(jsonUser, "uid"),
+                UserName = _SafeGetString(jsonUser, "username"),
+                ProfileUpdateTime = _SafeGetDateTime(jsonUser, "profile_update_time") ?? _UnixEpochTime,
+                OnlinePresence = _DeserializePresenceFromUser(jsonUser),
             };
 
-            if (!string.IsNullOrEmpty(_SafeGetValue(obj, "status", "message")))
+            if (!string.IsNullOrEmpty(_SafeGetString(jsonUser, "status", "message")))
             {
                 contact.StatusMessage = new ActivityPost(_service)
                 {
                     PostId = new FacebookObjectId("status_" + contact.UserId.ToString()),
-                    ActorUserId = _SafeGetId(obj, "uid"),
-                    Created = _SafeGetDateTime(obj, "status", "time") ?? _UnixEpochTime,
-                    Updated = _SafeGetDateTime(obj, "status", "time") ?? _UnixEpochTime,
-                    Message = _SafeGetValue(obj, "status", "message"),
+                    ActorUserId = _SafeGetId(jsonUser, "uid"),
+                    Created = _SafeGetDateTime(jsonUser, "status", "time") ?? _UnixEpochTime,
+                    Updated = _SafeGetDateTime(jsonUser, "status", "time") ?? _UnixEpochTime,
+                    Message = _SafeGetString(jsonUser, "status", "message"),
                     TargetUserId = default(FacebookObjectId),
                     CanLike = false,
                     HasLiked = false,
@@ -413,6 +487,49 @@ namespace Contigo
 
             return contact;
         }
+
+        public List<MessageNotification> DeserializeMessageQueryResponse(string jsonString)
+        {
+            JSON_ARRAY messageList = SafeParseArray(jsonString);
+            return new List<MessageNotification>(from JSON_OBJECT jsonThread in messageList select _DeserializeMessageNotification(jsonThread));
+        }
+
+        private MessageNotification _DeserializeMessageNotification(JSON_OBJECT jsonThread)
+        {
+            var message = new MessageNotification(_service)
+            {
+                Created = _SafeGetDateTime(jsonThread, "updated_time") ?? _UnixEpochTime,
+                IsUnread = _SafeGetBoolean(jsonThread, "unread") ?? true,
+                DescriptionText = _SafeGetString(jsonThread, "snippet"),
+                IsHidden = false,
+                NotificationId = _SafeGetId(jsonThread, "thread_id"),
+                SenderId = _SafeGetId(jsonThread, "snippet_author"),
+                Title = _SafeGetString(jsonThread, "subject"),
+                Updated = _SafeGetDateTime(jsonThread, "updated_time") ?? DateTime.Now,
+            };
+
+            // TODO: This is actually a list of recipients.
+            var jsonRecipientList = jsonThread.Get<JSON_ARRAY>("recipients");
+            if (jsonRecipientList != null && jsonRecipientList.Count > 0)
+            {
+                message.RecipientId = new FacebookObjectId(jsonRecipientList[0].ToString());
+            }
+
+            if (FacebookObjectId.IsValid(message.NotificationId))
+            {
+                message.Link = new Uri(string.Format("http://www.facebook.com/inbox/#/inbox/?folder=[fb]messages&page=1&tid={0}", message.NotificationId));
+            }
+            else
+            {
+                Assert.Fail();
+                message.NotificationId = DataSerialization.SafeGetUniqueId();
+                message.Link = new Uri("http://www.facebook.com/inbox");
+            }
+
+            return message;
+        }
+
+#if UNUSED_JSON_CALLS
 
         private FacebookContact _DeserializePage(XElement elt)
         {
@@ -437,70 +554,6 @@ namespace Contigo
             return page;
         }
 
-        private WorkInfo _DeserializeWorkInfo(XElement elt)
-        {
-            Assert.IsNotNull(elt);
-            Assert.IsNotNull(ns);
-
-            return new WorkInfo
-            {
-                CompanyName = _SafeGetValue(elt, "company_name"),
-                Description = _SafeGetValue(elt, "description"),
-                EndDate = _SafeGetValue(elt, "end_date"),
-                StartDate = _SafeGetValue(elt, "start_date"),
-                Location = _DeserializeLocation(ns, elt.Element("location")),
-            };
-        }
-
-        private static Location _DeserializeLocation(XElement elt)
-        {
-            if (elt == null)
-            {
-                return null;
-            }
-
-            return new Location
-            {
-                // current_location: city, state, country (well defined), zip (may be zero)
-                City = _SafeGetValue(elt, "city"),
-                Country = _SafeGetValue(elt, "country"),
-                State = _SafeGetValue(elt, "state"),
-                ZipCode = _SafeGetInt32(elt, "zip")
-            };
-        }
-
-        private EducationInfo _DeserializeEducationInfo(XElement infoNode)
-        {
-            int? maybeYear = _SafeGetInt32(infoNode, "year");
-            if (maybeYear == 0)
-            {
-                maybeYear = null;
-            }
-
-            var concentrationBuilder = new StringBuilder();
-            bool first = true;
-            foreach (string conString in from c in infoNode.Elements("concentrations") select c.Value)
-            {
-                if (!first)
-                {
-                    concentrationBuilder.Append(", ");
-                }
-                else
-                {
-                    first = false;
-                }
-
-                concentrationBuilder.Append(conString);
-            }
-
-            return new EducationInfo
-            {
-                Concentrations = concentrationBuilder.ToString(),
-                Degree = _SafeGetValue(infoNode, "degree"),
-                Name = _SafeGetValue(infoNode, "name"),
-                Year = maybeYear,
-            };
-        }
 
         public List<FacebookContact> DeserializePagesList(string xml)
         {
@@ -509,16 +562,6 @@ namespace Contigo
 
             var userNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("page")
                             select _DeserializePage(ns, elt);
-            return new List<FacebookContact>(userNodes);
-        }
-
-        public List<FacebookContact> DeserializeUsersList(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var userNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("user")
-                            select _DeserializeUser(ns, elt);
             return new List<FacebookContact>(userNodes);
         }
 
@@ -544,12 +587,12 @@ namespace Contigo
             JSON_ARRAY jsonFriendsList = SafeParseArray(jsonString);
             return (from JSON_OBJECT jsonFriend in jsonFriendsList
                     let uid = _SafeGetId(jsonFriend, "uid")
-                    let presence = _DeserializePresenceFromFriend(jsonFriend)
+                    let presence = _DeserializePresenceFromUser(jsonFriend)
                     select new { UserId = uid, Presence = presence })
                     .ToDictionary(item => item.UserId, item => item.Presence);
         }
 
-        private static OnlinePresence _DeserializePresenceFromFriend(JSON_OBJECT jsonFriend)
+        private static OnlinePresence _DeserializePresenceFromUser(JSON_OBJECT jsonFriend)
         {
             string presence = _SafeGetString(jsonFriend, "online_presence");
             switch (presence)
@@ -1017,50 +1060,42 @@ namespace Contigo
             return null;
         }
 
-#if UNUSED_JSON_CALLS
-
-        public void DeserializeNotificationsGetResponse(string xml, out List<Notification> friendRequests, out int unreadMessageCount)
+        public void DeserializeNotificationsGetResponse(string jsonString, out List<Notification> friendRequests, out int unreadMessageCount)
         {
-            var notificationList = new List<Notification>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            // Get friend requests
-            notificationList.AddRange(
-                from XElement elt in ((XElement)xdoc.FirstNode).Element("friend_requests").Elements("uid")
-                let uid = _SafeGetId(elt)
-                where FacebookObjectId.IsValid(uid)
-                select (Notification)new FriendRequestNotification(_service, uid));
-
-            unreadMessageCount = _SafeGetInt32((XElement)xdoc.FirstNode, "messages", "unread") ?? 0;
+            JSON_OBJECT jsonNotification = SafeParseObject(jsonString);
+            var notificationList = new List<Notification>(from string id in jsonNotification.Get<JSON_ARRAY>("friend_requests") 
+                                                          let uid = new FacebookObjectId(id)
+                                                          where FacebookObjectId.IsValid(uid)
+                                                          select new FriendRequestNotification(_service, uid));
+            unreadMessageCount = _SafeGetInt32(jsonNotification, "messages", "unread") ?? 0;
             friendRequests = notificationList;
         }
 
-        public List<Notification> DeserializeNotificationsListResponse(string xml)
+        public List<Notification> DeserializeNotificationsListResponse(string jsonString)
         {
-            var notificationList = new List<Notification>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            // I should also be able to use the "apps" list to get the icons to display next to the notification.
-            var notificationNodes = from XElement elt in ((XElement)xdoc.FirstNode).Element("notifications").Elements("notification")
-                                    select _DeserializeNotificationData(ns, elt);
-            notificationList.AddRange(notificationNodes);
-            return notificationList;
+            JSON_OBJECT jsonNotificationsObject = SafeParseObject(jsonString);
+            JSON_ARRAY jsonNotificationsList = jsonNotificationsObject.Get<JSON_ARRAY>("notifications");
+            JSON_ARRAY jsonApplicationsList = jsonNotificationsObject.Get<JSON_ARRAY>("apps");
+            var ret = new List<Notification>(from JSON_OBJECT jsonNotification in jsonNotificationsList 
+                                             from JSON_OBJECT jsonApplication in jsonApplicationsList
+                                             where jsonApplication.Get<string>("app_id") == jsonNotification.Get<string>("app_id")
+                                             select _DeserializeNotification(jsonNotification, jsonApplication));
+            Assert.AreEqual(jsonNotificationsList.Count, ret.Count);
+            return ret;
         }
 
-        private Notification _DeserializeNotificationData(XNamespace ns, XElement elt)
+        private Notification _DeserializeNotification(JSON_OBJECT jsonNotification, JSON_OBJECT jsonApplication)
         {
+            Uri appIconUri = _SafeGetUri(jsonApplication, "icon_url");
+
             // To make these consistent with the rest of Facebook's HTML, enclose these in div tags if they're present.
-            string bodyHtml = _SafeGetValue(elt, "body_html");
+            string bodyHtml = _SafeGetString(jsonNotification, "body_html");
             if (!string.IsNullOrEmpty(bodyHtml))
             {
                 bodyHtml = "<div>" + bodyHtml + "</div>";
             }
 
-            string titleHtml = _SafeGetValue(elt, "title_html");
+            string titleHtml = _SafeGetString(jsonNotification, "title_html");
             if (!string.IsNullOrEmpty(titleHtml))
             {
                 titleHtml = "<div>" + titleHtml + "</div>";
@@ -1068,22 +1103,25 @@ namespace Contigo
 
             var notification = new Notification(_service)
             {
-                Created = _SafeGetDateTime(elt, "created_time") ?? _UnixEpochTime,
+                Created = _SafeGetDateTime(jsonNotification, "created_time") ?? _UnixEpochTime,
                 Description = bodyHtml,
-                DescriptionText = _SafeGetValue(elt, "body_text"),
-                IsHidden = _SafeGetValue(elt, "is_hidden") == "1",
-                IsUnread = _SafeGetValue(elt, "is_unread") == "1",
-                Link = _SafeGetUri(elt, "href"),
-                NotificationId = _SafeGetId(elt, "notification_id"),
-                RecipientId = _SafeGetId(elt, "recipient_id"),
-                SenderId = _SafeGetId(elt, "sender_id"),
+                DescriptionText = _SafeGetString(jsonNotification, "body_text"),
+                IsHidden = _SafeGetBoolean(jsonNotification, "is_hidden") ?? false,
+                IsUnread = _SafeGetBoolean(jsonNotification, "is_unread") ?? false,
+                Link = _SafeGetUri(jsonNotification, "href"),
+                NotificationId = _SafeGetId(jsonNotification, "notification_id"),
+                RecipientId = _SafeGetId(jsonNotification, "recipient_id"),
+                SenderId = _SafeGetId(jsonNotification, "sender_id"),
                 Title = titleHtml,
-                TitleText = _SafeGetValue(elt, "title_text"),
-                Updated = _SafeGetDateTime(elt, "updated_time") ?? _UnixEpochTime,
+                TitleText = _SafeGetString(jsonNotification, "title_text"),
+                Updated = _SafeGetDateTime(jsonNotification, "updated_time") ?? _UnixEpochTime,
+                Icon = new FacebookImage(_service, appIconUri),
             };
 
             return notification;
         }
+
+#if UNUSED_JSON_CALLS
 
         public FacebookObjectId DeserializeAddCommentResponse(string xml)
         {
@@ -1141,48 +1179,6 @@ namespace Contigo
             return xdoc.Root.Value == "1";
         }
 
-        public List<MessageNotification> DeserializeMessageQueryResponse(string xml)
-        {
-            var messageList = new List<MessageNotification>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var messageNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("thread")
-                               select _DeserializeMessageNotificationData(ns, elt);
-            messageList.AddRange(messageNodes);
-            return messageList;
-        }
-
-        private MessageNotification _DeserializeMessageNotificationData(XNamespace ns, XElement elt)
-        {
-            var message = new MessageNotification(_service)
-            {
-                Created = _SafeGetDateTime(elt, "updated_time") ?? _UnixEpochTime,
-                IsUnread = _SafeGetValue(elt, "unread") == "1",
-                DescriptionText = _SafeGetValue(elt, "snippet"),
-                IsHidden = false,
-                NotificationId = _SafeGetId(elt, "thread_id"),
-                // TODO: This is actually a list of recipients.
-                RecipientId = _SafeGetId(elt, "recipients", "uid"),
-                SenderId = _SafeGetId(elt, "snippet_author"),
-                Title = _SafeGetValue(elt, "subject"),
-                Updated = _SafeGetDateTime(elt, "updated_time") ?? DateTime.Now,
-            };
-
-            if (FacebookObjectId.IsValid(message.NotificationId))
-            {
-                message.Link = new Uri(string.Format("http://www.facebook.com/inbox/#/inbox/?folder=[fb]messages&page=1&tid={0}", message.NotificationId));
-            }
-            else
-            {
-                Assert.Fail();
-                message.NotificationId = DataSerialization.SafeGetUniqueId();
-                message.Link = new Uri("http://www.facebook.com/inbox");
-            }
-
-            return message;
-        }
 #endif
     }
 }

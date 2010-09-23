@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:FacebookClient="clr-namespace:FacebookClient"
     xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     MinWidth="250" MaxWidth="350"
@@ -49,6 +50,27 @@
                       Margin="10,0,2,0"
                       ToolTip="Mark as read"
                       FontWeight="Bold" />
+                  <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                    <ClientManagerControls:FacebookImageControl DockPanel.Dock="Left" FacebookImage="{Binding Path=Icon}" FacebookImageDimensions="Small">
+                      <ClientManagerControls:FacebookImageControl.Template>
+                        <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                          <Image Width="16" Height="16" Margin="2,5,7,0" HorizontalAlignment="Left" VerticalAlignment="Top" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                        </ControlTemplate>
+                      </ClientManagerControls:FacebookImageControl.Template>
+                    </ClientManagerControls:FacebookImageControl>
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}">
+                      <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CreatedTextBlockStyle}">
+                          <Setter Property="Visibility" Value="Visible"/>
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Updated}" Value="{x:Static sys:DateTime.MinValue}">
+                              <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </TextBlock.Style>
+                    </TextBlock>
+                  </StackPanel>
                   <TextBlock TextWrapping="Wrap">
                     <TextBlock.Style>
                       <Style TargetType="{x:Type TextBlock}">
@@ -62,18 +84,6 @@
                       </Style> 
                     </TextBlock.Style>
                     <FacebookClient:HyperlinkTextContent Text="{Binding Title}" FontFamily="{DynamicResource SansSerifFont}" FontSize="{DynamicResource MiddleFontSize}" RequestNavigate="_OnNotificationRequestNavigate" Foreground="{DynamicResource NotificationMessageTextForeground}"/>
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Updated, Converter={StaticResource DateTimeConverter}}">
-                      <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CreatedTextBlockStyle}">
-                          <Setter Property="Visibility" Value="Visible"/>
-                          <Style.Triggers>
-                            <DataTrigger Binding="{Binding Updated}" Value="{x:Static sys:DateTime.MinValue}">
-                              <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                          </Style.Triggers>
-                        </Style>
-                      </TextBlock.Style>
-                    </TextBlock>
                   </TextBlock>
                 </DockPanel>
               </DataTemplate>
