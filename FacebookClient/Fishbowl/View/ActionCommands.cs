@@ -488,20 +488,27 @@
 
             _contactManager.Dispatcher.BeginInvoke((Action)(() =>
             {
-                var fbMeContact = (FacebookContact)e.UserState;
-                Contact meContact = _contactManager.MeContact;
-                if (meContact == null)
+                try
                 {
-                    meContact = _contactManager.CreateContact();
-                    meContact.Names.Default = new Name(fbMeContact.Name);
-                    meContact.CommitChanges();
-                    _contactManager.MeContact = meContact;
-                }
+                    var fbMeContact = (FacebookContact)e.UserState;
+                    Contact meContact = _contactManager.MeContact;
+                    if (meContact == null)
+                    {
+                        meContact = _contactManager.CreateContact();
+                        meContact.Names.Default = new Name(fbMeContact.Name);
+                        meContact.CommitChanges();
+                        _contactManager.MeContact = meContact;
+                    }
 
-                using (var fs = new FileStream(e.ImagePath, FileMode.Open))
+                    using (var fs = new FileStream(e.ImagePath, FileMode.Open))
+                    {
+                        meContact.Photos[PhotoLabels.UserTile] = new Photo(fs, "image/jpeg");
+                        meContact.CommitChanges();
+                    }
+                }
+                catch (IOException)
                 {
-                    meContact.Photos[PhotoLabels.UserTile] = new Photo(fs, "image/jpeg");
-                    meContact.CommitChanges();
+                    // This is just an opportunistic operation.  Failure is acceptable.
                 }
             }), null);
         }
