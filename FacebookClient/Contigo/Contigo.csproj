@@ -141,7 +141,6 @@
     <Compile Include="Collections\FacebookPhotoAlbumCollection.cs" />
     <Compile Include="Collections\FacebookPhotoCollection.cs" />
     <Compile Include="Collections\FacebookPhotoTagCollection.cs" />
-    <Compile Include="DataSerialization.cs" />
     <Compile Include="FacebookImage.cs" />
     <Compile Include="FacebookImageLink.cs" />
     <Compile Include="FacebookLoginService.cs" />

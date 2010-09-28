@@ -78,8 +78,36 @@ namespace Contigo
 
     internal class JsonDataSerialization
     {
+        // Just in case Facebook messes up and gives us bad data for an id that's supposed to be unique.  Don't let it crash the app.
+        private static int _badFacebookCounter = 1;
+
+        internal static FacebookObjectId SafeGetUniqueId()
+        {
+            return new FacebookObjectId("FacebookGotItWrongCount_" + _badFacebookCounter++);
+        }
+
         /// <summary>The start time for Unix based clocks.  Facebook usually returns their timestamps based on ticks from this value.</summary>
         private static readonly DateTime _UnixEpochTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        /// <summary>
+        /// Converts a timestamp from the facebook server into a UTC DateTime.
+        /// </summary>
+        /// <param name="ticks">The Unix epoch based tick count</param>
+        /// <returns>The parameter as a DateTime.</returns>
+        internal static DateTime GetDateTimeFromUnixTimestamp(long ticks)
+        {
+            return _UnixEpochTime.AddSeconds(ticks).ToLocalTime();
+        }
+
+        internal static long GetUnixTimestampFromDateTime(DateTime date)
+        {
+            date = date.ToUniversalTime();
+            if (date > _UnixEpochTime)
+            {
+                return (long)(date - _UnixEpochTime).TotalSeconds;
+            }
+            return 0;
+        }
 
         private readonly FacebookService _service;
         private static readonly JsonSerializer _serializer = new JsonSerializer(typeof(object));
@@ -146,7 +174,7 @@ namespace Contigo
                 return null;
             }
 
-            return DataSerialization.GetDateTimeFromUnixTimestamp(ticks.Value);
+            return JsonDataSerialization.GetDateTimeFromUnixTimestamp(ticks.Value);
         }
 
         private static string _SafeGetJson(JSON_OBJECT jsonObj, params string[] names)
@@ -288,7 +316,7 @@ namespace Contigo
             return obj as JSON_ARRAY;
         }
 
-        private ActivityComment _DeserializeCommentData(JSON_OBJECT obj)
+        private ActivityComment _DeserializeComment(JSON_OBJECT obj)
         {
             return new ActivityComment(_service)
             {
@@ -522,66 +550,42 @@ namespace Contigo
             else
             {
                 Assert.Fail();
-                message.NotificationId = DataSerialization.SafeGetUniqueId();
+                message.NotificationId = SafeGetUniqueId();
                 message.Link = new Uri("http://www.facebook.com/inbox");
             }
 
             return message;
         }
 
-#if UNUSED_JSON_CALLS
-
-        private FacebookContact _DeserializePage(XElement elt)
+        private FacebookContact _DeserializePage(JSON_OBJECT jsonPage)
         {
-            Uri sourceUri = _SafeGetUri(elt, "pic");
-            Uri sourceBigUri = _SafeGetUri(elt, "pic_big");
-            Uri sourceSmallUri = _SafeGetUri(elt, "pic_small");
-            Uri sourceSquareUri = _SafeGetUri(elt, "pic_square");
+            Uri sourceUri = _SafeGetUri(jsonPage, "pic");
+            Uri sourceBigUri = _SafeGetUri(jsonPage, "pic_big");
+            Uri sourceSmallUri = _SafeGetUri(jsonPage, "pic_small");
+            Uri sourceSquareUri = _SafeGetUri(jsonPage, "pic_square");
             // No idea why there are both large and big...
-            Uri sourceLargeUri = _SafeGetUri(elt, "pic_large");
+            Uri sourceLargeUri = _SafeGetUri(jsonPage, "pic_large");
 
             // This is a light weight view of a page as a FacebookContact.
             // If the FacebookService were to expose pages as a first-class concept then there would be a dedicated class,
             // and probably a base class.
             var page = new FacebookContact(_service)
             {
-                UserId = _SafeGetId(elt, "page_id"),
-                Name = _SafeGetValue(elt, "name"),
-                ProfileUri = _SafeGetUri(elt, "page_url"),
+                UserId = _SafeGetId(jsonPage, "page_id"),
+                Name = _SafeGetString(jsonPage, "name"),
+                ProfileUri = _SafeGetUri(jsonPage, "page_url"),
                 Image = new FacebookImage(_service, sourceUri, sourceBigUri ?? sourceLargeUri, sourceSmallUri, sourceSquareUri),
             };
 
             return page;
         }
 
-
-        public List<FacebookContact> DeserializePagesList(string xml)
+        public List<FacebookContact> DeserializePagesList(string jsonInput)
         {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var userNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("page")
-                            select _DeserializePage(ns, elt);
-            return new List<FacebookContact>(userNodes);
+            JSON_ARRAY jsonPages = SafeParseArray(jsonInput);
+            return new List<FacebookContact>(from JSON_OBJECT jsonPage in jsonPages select _DeserializePage(jsonPage));
         }
 
-        public List<FacebookContact> DeserializeUsersListWithProfiles(XNamespace ns, XElement usersElement, XElement profilesElement)
-        {
-            var contacts = usersElement.Elements("user").Zip(
-                profilesElement.Elements("profile"),
-                (userElt, profileElt) =>
-                {
-                    Assert.AreEqual(
-                        _SafeGetValue(userElt, "uid"),
-                        _SafeGetValue(profileElt, "id"));
-
-                    var c = _DeserializeUser(ns, userElt);
-                    c.MergeImage(_DeserializeProfile(ns, profileElt).Image);
-                    return c;
-                });
-            return new List<FacebookContact>(contacts);
-        }
-#endif
         public Dictionary<FacebookObjectId, OnlinePresence> DeserializeUserPresenceList(string jsonString)
         {
             JSON_ARRAY jsonFriendsList = SafeParseArray(jsonString);
@@ -603,6 +607,12 @@ namespace Contigo
                 case "error": return OnlinePresence.Unknown;
             }
             return OnlinePresence.Unknown;
+        }
+
+        public List<FacebookPhoto> DeserializePhotosGetResponse(string jsonInput)
+        {
+            JSON_ARRAY photosList = SafeParseArray(jsonInput);
+            return DeserializePhotosGetResponse(photosList);
         }
 
         public List<FacebookPhoto> DeserializePhotosGetResponse(JSON_ARRAY jsonPhotosResponse)
@@ -629,6 +639,12 @@ namespace Contigo
             };
 
             return photo;
+        }
+
+        public List<FacebookPhotoTag> DeserializePhotoTagsList(string jsonInput)
+        {
+            JSON_ARRAY jsonPhotoTags = SafeParseArray(jsonInput);
+            return DeserializePhotoTagsList(jsonPhotoTags);
         }
 
         public List<FacebookPhotoTag> DeserializePhotoTagsList(JSON_ARRAY jsonPhotoTags)
@@ -854,7 +870,7 @@ namespace Contigo
                 // Massive Facebook failure.
                 // This happens too frequently for the assert to be useful.
                 // Assert.Fail();
-                post.PostId = DataSerialization.SafeGetUniqueId();
+                post.PostId = SafeGetUniqueId();
             }
             post.ActorUserId = _SafeGetId(jsonPost, "actor_id");
             post.Created = _SafeGetDateTime(jsonPost, "created_time") ?? _UnixEpochTime;
@@ -894,7 +910,7 @@ namespace Contigo
                 if (jsonComments.TryGetTypedValue("comment_list", out jsonCommentList))
                 {
                     var commentNodes = from JSON_OBJECT jsonComment in jsonCommentList
-                                       let comment = _DeserializeCommentData(jsonComment)
+                                       let comment = _DeserializeComment(jsonComment)
                                        where (comment.Post = post) != null
                                        select comment;
 
@@ -937,6 +953,14 @@ namespace Contigo
             return profile;
         }
 
+        public FacebookPhotoAlbum DeserializeUploadAlbumResponse(string jsonString)
+        {
+            // photos.Upload returns photo data embedded in the root node.
+            JSON_OBJECT jsonAlbum = SafeParseObject(jsonString);
+            FacebookPhotoAlbum album = _DeserializeAlbum(jsonAlbum);
+            return album;
+        }
+
         public List<FacebookPhotoAlbum> DeserializeGetAlbumsResponse(string jsonString)
         {
             JSON_ARRAY jsonAlbumsArray = SafeParseArray(jsonString);
@@ -965,42 +989,28 @@ namespace Contigo
             return album;
         }
 
+        public FacebookPhoto DeserializePhotoUploadResponse(string jsonInput)
+        {
+            JSON_OBJECT jsonPhoto = SafeParseObject(jsonInput);
+            return _DeserializePhoto(jsonPhoto);
+        }
+
+        public List<ActivityPost> DeserializeStreamPostList(string jsonInput)
+        {
+            JSON_ARRAY jsonPosts = SafeParseArray(jsonInput);
+            return new List<ActivityPost>(from JSON_OBJECT jsonPost in jsonPosts select _DeserializePost(jsonPost));
+        }
+
+        public List<ActivityComment> DeserializeCommentsDataList(ActivityPost post, string jsonInput)
+        {
+            JSON_ARRAY jsonComments = SafeParseArray(jsonInput);
+            return new List<ActivityComment>(from JSON_OBJECT jsonComment in jsonComments select _DeserializeComment(jsonComment));
+        }
+
 #if UNUSED_JSON_CALLS
 
-        public List<ActivityPost> DeserializePostDataList(string xml, bool isFQL)
-        {
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            XContainer rootList = null;
-            if (isFQL)
-            {
-                rootList = ((XElement)xdoc.FirstNode);
-            }
-            else
-            {
-                rootList = ((XElement)xdoc.FirstNode).Element("posts");
-            }
-
-            return _DeserializePostDataList(ns, rootList);
-        }
 
 
-        public List<ActivityComment> DeserializeCommentsDataList(ActivityPost post, string xml)
-        {
-            var commentList = new List<ActivityComment>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var commentNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("comment")
-                               let comment = _DeserializeCommentData(ns, elt)
-                               where (comment.Post = post) != null
-                               select comment;
-            commentList.AddRange(commentNodes);
-            return commentList;
-        }
 
         public static void DeserializeSessionInfo(string xml, out string sessionKey, out FacebookObjectId userId)
         {
@@ -1021,26 +1031,8 @@ namespace Contigo
             return DeserializePhotosGetResponse((XElement)xdoc.FirstNode, ns);
         }
 
-        public FacebookPhoto DeserializePhotoUploadResponse(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            // photos.Upload returns photo data embedded in the root node.
-            return _DeserializePhotoData(ns, xdoc.Root);
-        }
-
-        public FacebookPhotoAlbum DeserializeUploadAlbumResponse(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            // photos.Upload returns photo data embedded in the root node.
-            FacebookPhotoAlbum album = _DeserializeAlbumData(ns, xdoc.Root);
-            return album;
-        }
-
 #endif
+
         public static Exception DeserializeFacebookException(string jsonInput, string request)
         {
             // Do a sanity check on the opening XML tags to see if it looks like an exception.
@@ -1121,64 +1113,45 @@ namespace Contigo
             return notification;
         }
 
-#if UNUSED_JSON_CALLS
-
-        public FacebookObjectId DeserializeAddCommentResponse(string xml)
+        public bool DeserializePhotoCanCommentResponse(string jsonString)
         {
-            XDocument xdoc = _SafeParseObject(xml);
-            return new FacebookObjectId(xdoc.Root.Value);
+            // Not really a JSON string...
+            return "true".Equals(jsonString, StringComparison.OrdinalIgnoreCase);
         }
 
-        public List<ActivityComment> DeserializePhotoCommentsResponse(string xml)
+        public FacebookObjectId DeserializePhotoAddCommentResponse(string jsonString)
         {
-            var commentList = new List<ActivityComment>();
-
-            XDocument xdoc = _SafeParseObject(xml);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
-
-            var commentNodes = from XElement elt in ((XElement)xdoc.FirstNode).Elements("photo_comment")
-                               select _DeserializePhotoCommentData(ns, elt);
-            commentList.AddRange(commentNodes);
-            return commentList;
+            // Not really a JSON string.... Returns the comment id.
+            return new FacebookObjectId(jsonString);
         }
 
-        private ActivityComment _DeserializePhotoCommentData(XNamespace ns, XElement elt)
+        public List<ActivityComment> DeserializePhotoCommentsResponse(string jsonInput)
+        {
+            JSON_ARRAY jsonComments = SafeParseArray(jsonInput);
+            return new List<ActivityComment>(from JSON_OBJECT jsonComment in jsonComments select _DeserializePhotoComment(jsonComment));
+        }
+
+        private ActivityComment _DeserializePhotoComment(JSON_OBJECT jsonComment)
         {
             var comment = new ActivityComment(_service)
             {
                 CommentType = ActivityComment.Type.Photo,
-                CommentId = _SafeGetId(elt, "pcid"),
-                FromUserId = _SafeGetId(elt, "from"),
-                Time = _SafeGetDateTime(elt, "time") ?? _UnixEpochTime,
-                Text = _SafeGetValue(elt, "body"),
+                CommentId = _SafeGetId(jsonComment, "pcid"),
+                FromUserId = _SafeGetId(jsonComment, "from"),
+                Time = _SafeGetDateTime(jsonComment, "time") ?? _UnixEpochTime,
+                Text = _SafeGetString(jsonComment, "body"),
             };
             return comment;
         }
 
-        public bool DeserializePhotoCanCommentResponse(string xml)
+        public FacebookObjectId DeserializeAddCommentResponse(string jsonInput)
         {
-            XDocument xdoc = _SafeParseObject(xml);
-            return xdoc.Root.Value == "1";
+            return new FacebookObjectId(jsonInput);
         }
 
-        public FacebookObjectId DeserializePhotoAddCommentResponse(string xml)
+        public bool DeserializeStatusSetResponse(string jsonInput)
         {
-            XDocument xdoc = _SafeParseObject(xml);
-            return new FacebookObjectId(xdoc.Root.Value);
+            return jsonInput == "true";
         }
-
-        public string DeserializeStreamPublishResponse(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            return xdoc.Root.Value;
-        }
-
-        public bool DeserializeStatusSetResponse(string xml)
-        {
-            XDocument xdoc = _SafeParseObject(xml);
-            return xdoc.Root.Value == "1";
-        }
-
-#endif
     }
 }
