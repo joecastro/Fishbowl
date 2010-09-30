@@ -37,7 +37,7 @@ namespace FacebookClient
             {
                 Hide();
 
-                List<string> imageFiles = Wizard.FindImageFiles(ofd.FileNames);
+                List<string> imageFiles = PhotoUploadWizard.FindImageFiles(ofd.FileNames);
                 if (imageFiles.Count != 0)
                 {
                     Wizard.Show(imageFiles);
@@ -61,6 +61,11 @@ namespace FacebookClient
         private void CloseButtonClick(object sender, RoutedEventArgs e)
         {
             this.Hide();
+        }
+
+        public void SetDefaultAlbum(string albumName)
+        {
+            Wizard.SetDefaultAlbum(albumName);
         }
     }
 }

@@ -574,7 +574,7 @@ namespace ClientManager.View
         /// Closes dialogPage if it is the current dialogPage.
         /// </summary>
         /// <param name="sourceDialog">The dialog to close.</param>
-        public virtual void EndDialog(FrameworkElement sourceDialog)
+        public virtual bool EndDialog(FrameworkElement sourceDialog)
         {
             if (sourceDialog != null)
             {
@@ -584,8 +584,11 @@ namespace ClientManager.View
                     Dialog.KeyDown -= Dialog_OnKeyDown;
                     Dialog = null;
                     IsDialogActive = false;
+
+                    return true;
                 }
             }
+            return false;
         }
 
         private bool _isDialogActiveStorage;

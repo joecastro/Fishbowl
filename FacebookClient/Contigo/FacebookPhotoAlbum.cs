@@ -346,6 +346,17 @@ namespace Contigo
             }
         }
 
+        public bool CanAddPhotos
+        {
+            get
+            {
+                // Heuristically, we can add photos to albums that are owned by the current user, except for their Profile Pictures.
+                // I haven't yet been able to find a good way to determine whether an album represents the profile pictures, so
+                // using a completely unlocalized check, hoping that this generally works, at least for a while.
+                return OwnerId == SourceService.UserId && !Title.Equals("Profile Pictures", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
         public void SaveToFolder(string path, SaveImageAsyncCallback callback, object userState)
         {
             Utility.EnsureDirectory(path);

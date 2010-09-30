@@ -391,8 +391,9 @@ namespace FacebookClient
             base.OnClosed(args);
         }
 
-        public void ShowUploadWizard()
+        public void ShowUploadWizard(string albumName)
         {
+            _photoUploadWizardInfoPage.SetDefaultAlbum(albumName);
             ServiceProvider.ViewManager.ShowDialog(_photoUploadWizardInfoPage);
         }
 
@@ -708,10 +709,17 @@ namespace FacebookClient
 
         public void DoDrop(string[] fileNames)
         {
-            List<string> imageFiles = _photoUploadWizard.FindImageFiles(fileNames);
+            List<string> imageFiles = PhotoUploadWizard.FindImageFiles(fileNames);
             if (imageFiles.Count != 0)
             {
-                ServiceProvider.ViewManager.EndDialog(ServiceProvider.ViewManager.Dialog);
+                if (ServiceProvider.ViewManager.EndDialog(ServiceProvider.ViewManager.Dialog))
+                {
+                    // This is a bit hacky.  Don't clear the selected album on drop
+                    // if a dialog (e.g. an existing upload wizard) is up.
+                    // This will leave it if the embedded browser or settings dialog is up,
+                    // but whatever.
+                    _photoUploadWizard.SetDefaultAlbum(null);
+                }
                 _photoUploadWizard.Show(imageFiles);
             }
         }

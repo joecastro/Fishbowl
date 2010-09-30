@@ -161,7 +161,7 @@ namespace FacebookClient
 
         private void _OnUploadWizardButtonClicked(object sender, RoutedEventArgs e)
         {
-            ((MainWindow)Application.Current.MainWindow).ShowUploadWizard();
+            ServiceProvider.ViewManager.ActionCommands.ShowPhotoUploadWizardCommand.Execute(null);
         }
 
     }

@@ -12,6 +12,7 @@
     using Microsoft.Communications.Contacts;
     using Microsoft.Windows.Shell;
     using Standard;
+    using FacebookClient;
 
     public sealed class ActionCommands
     {
@@ -41,6 +42,7 @@
         public SetSortOrderCommand SetSortOrderCommand { get; private set; }
         public StartSyncCommand StartSyncCommand { get; private set; }
         public WriteOnWallCommand WriteOnWallCommand { get; private set; }
+        public ShowPhotoUploadWizardCommand ShowPhotoUploadWizardCommand { get; private set; }
 
         public SaveAlbumCommand SaveAlbumCommand { get; private set; }
         public SavePhotoCommand SavePhotoCommand { get; private set; }
@@ -66,6 +68,18 @@
         }
 
         protected abstract void PerformAction(object parameter);
+    }
+
+    public sealed class ShowPhotoUploadWizardCommand : ActionCommand
+    {
+        public ShowPhotoUploadWizardCommand(ViewManager viewManager)
+            : base(viewManager)
+        { }
+
+        protected override void PerformAction(object parameter)
+        {
+            FacebookClientApplication.Current2.MainWindow.ShowUploadWizard(parameter as string);
+        }
     }
 
     public sealed class AddLikeCommand : ActionCommand

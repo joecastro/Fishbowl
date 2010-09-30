@@ -332,6 +332,19 @@ namespace Contigo
 
         #endregion
 
+        internal bool PartiallyEquals(FacebookImage other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other._big == _big
+                || other._normal == _normal
+                || other._small == _small
+                || other._square == _square;
+        }
+
         internal bool SafeMerge(FacebookImage other)
         {
             bool modified = false;

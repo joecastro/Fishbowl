@@ -13,6 +13,7 @@
   <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter"/>
   <FacebookClient:RandomAngleToTransformConverter x:Key="randomAngleToTransformConverter" />
   <FacebookClient:ContentVisibilityConverter x:Key="ContentVisibilityConverter" />
+  <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
   <!-- Template for a thumbnail displayed in the album preview -->
   <DataTemplate x:Key="AlbumCoverItemTemplate">
@@ -126,7 +127,7 @@
 
         <TextBlock Grid.Row="0" Foreground="{DynamicResource FriendViewerNameForeground}" FontSize="{DynamicResource LargeFontSize5}" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Medium"  TextWrapping="Wrap" Text="{Binding Path=Title}" HorizontalAlignment="Left"/>
         
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Left">
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,4" HorizontalAlignment="Left">
           <Button 
               Style="{DynamicResource StandardButtonStyle}"
               Height="26"
@@ -153,7 +154,21 @@
                          VerticalAlignment="Center">Start slide show</TextBlock>
             </StackPanel>
           </Button>
-        </StackPanel>
+          <Button 
+              Style="{DynamicResource StandardButtonStyle}"
+              Height="26"
+              Margin="2"
+              Visibility="{Binding CanAddPhotos, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Command="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActionCommands.ShowPhotoUploadWizardCommand}"
+              CommandParameter="{Binding Title}">
+            <StackPanel Orientation="Horizontal">
+              <Rectangle Height="18" Width="18" Fill="{DynamicResource PhotosToolbarDrawingBrush}"/>
+              <TextBlock Margin="5,0,0,0"
+                         FontSize="{DynamicResource LargeFontSize1}"
+                         VerticalAlignment="Center">Add more photos</TextBlock>
+            </StackPanel>
+          </Button>
+        </WrapPanel>
 
         <TextBlock Grid.Row="2" Foreground="{DynamicResource Foreground_ContentElement}" FontFamily="{DynamicResource SerifFont}" FontSize="{DynamicResource LargeFontSize1}" HorizontalAlignment="Left" Margin="0,14" TextWrapping="Wrap" MaxHeight="150" MinWidth="100" TextTrimming="WordEllipsis" IsHyphenationEnabled="True">
           <FacebookClient:HyperlinkTextContent Text="{Binding Path=Description, Mode=OneWay}" />
@@ -169,7 +184,6 @@
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </FacebookClient:PaginatedItemsControl>
-
       </Grid>
 
       <Grid Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5" DataContext="{Binding ElementName=AlbumList, Path=ListPager}">

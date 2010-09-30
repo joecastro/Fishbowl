@@ -5,6 +5,7 @@
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Windows;
     using System.Windows.Controls;
@@ -18,7 +19,6 @@
     /// <summary>
     /// Interaction logic for PhotoUploadWizard.xaml
     /// </summary>
-    [TemplatePart(Name = "PART_AddPhotosPage", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_AlbumPickerPage", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_UploadProgressPage", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_ZapScroller", Type = typeof(ZapScroller))]
@@ -54,7 +54,6 @@
 
         public enum PhotoUploaderPage
         {
-            AddPhotos,
             PickAlbum,
             Upload
         }
@@ -99,7 +98,8 @@
             "Page",
             typeof(PhotoUploaderPage),
             typeof(PhotoUploadWizard),
-            new FrameworkPropertyMetadata(OnPagePropertyChanged));
+            new FrameworkPropertyMetadata(
+                (d, e) => ((PhotoUploadWizard)d)._OnPagePropertyChanged(e)));
 
         public PhotoUploaderPage Page
         {
@@ -107,7 +107,6 @@
             set { SetValue(PageProperty, value); }
         }
 
-        private Panel _addPhotosPage;
         private Panel _albumPickerPage;
         private Panel _uploadProgressPage;
         private ZapScroller _zapScroller;
@@ -119,6 +118,7 @@
         private TextBlock _uploadStatus;
         private TextBlock _uploadPhotoStatusTextBlock;
         private Button _closeCancelButton;
+        private string _defaultCurrentAlbum;
 
         private Thread _workerThread;
 
@@ -131,7 +131,7 @@
 
             ServiceProvider.ViewManager.MeContact.PhotoAlbums.CollectionChanged += new NotifyCollectionChangedEventHandler((sender, e) =>
             {
-                UpdatePhotoAlbums();
+                _UpdatePhotoAlbums();
             });
         }
 
@@ -145,7 +145,6 @@
             base.OnApplyTemplate();
 
             _uploadPhotoStatusTextBlock = Template.FindName("PART_UploadPhotoStatusTextBlock", this) as TextBlock;
-            _addPhotosPage = Template.FindName("PART_AddPhotosPage", this) as Panel;
             _albumPickerPage = Template.FindName("PART_AlbumPickerPage", this) as Panel;
             _uploadProgressPage = Template.FindName("PART_UploadProgressPage", this) as Panel;
             _zapScroller = Template.FindName("PART_ZapScroller", this) as ZapScroller;
@@ -161,20 +160,7 @@
             _albumLocation.TextChanged += new TextChangedEventHandler((sender, e) => CommandManager.InvalidateRequerySuggested());
             _albumDescription.TextChanged += new TextChangedEventHandler((sender, e) => CommandManager.InvalidateRequerySuggested());
             
-            UpdatePhotoAlbums();
-        }
-
-        public void Show()
-        {
-            if (CheckWorkerThread())
-            {
-                if (ServiceProvider.ViewManager.Dialog == null)
-                {
-                    ServiceProvider.ViewManager.ShowDialog(this);
-                }
-
-                Page = PhotoUploaderPage.AddPhotos;
-            }
+            _UpdatePhotoAlbums();
         }
 
         public void Show(IEnumerable<string> fileList)
@@ -182,18 +168,11 @@
             if (CheckWorkerThread())
             {
                 Files.Clear();
-
-                foreach (string fileName in fileList)
-                {
-                    Files.Add(new UploadFile(fileName));
-                }
-
-                if (ServiceProvider.ViewManager.Dialog == null)
-                {
-                    ServiceProvider.ViewManager.ShowDialog(this);
-                }
-
+                Files.AddRange(from fileName in fileList select new UploadFile(fileName));
+                ServiceProvider.ViewManager.ShowDialog(this);
                 Page = PhotoUploaderPage.PickAlbum;
+
+                _UpdatePhotoAlbums();
             }
         }
 
@@ -226,31 +205,38 @@
             return true;
         }
 
-        private void UpdatePhotoAlbums()
+        private void _UpdatePhotoAlbums()
         {
             if (_albumsComboBox != null)
             {
                 _albumsComboBox.Items.Clear();
                 _albumsComboBox.Items.Add(new NewPhotoAlbum());
 
-                foreach (var album in ServiceProvider.ViewManager.MeContact.PhotoAlbums)
+                int currentIndex = 1;
+                int defaultIndex = 0;
+                foreach (var album in from myAlbum in ServiceProvider.ViewManager.MeContact.PhotoAlbums
+                                      where myAlbum.CanAddPhotos
+                                      select myAlbum)
                 {
+                    if (album.Title.Equals(_defaultCurrentAlbum))
+                    {
+                        defaultIndex = currentIndex;
+                    }
+
                     _albumsComboBox.Items.Add(album);
+                    ++currentIndex;
                 }
 
-                _albumsComboBox.SelectedIndex = 0;
+                _albumsComboBox.SelectedIndex = defaultIndex;
             }
         }
 
-        private static void OnPagePropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void _OnPagePropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            PhotoUploadWizard wizard = sender as PhotoUploadWizard;
-    
             if ((PhotoUploaderPage)e.NewValue == PhotoUploaderPage.PickAlbum)
             {
-                wizard.UpdatePhotoAlbums();
+                _UpdatePhotoAlbums();
                 CommandManager.InvalidateRequerySuggested();
-
             }
         }
 
@@ -435,9 +421,14 @@
             }
         }
 
-        public List<string> FindImageFiles(string[] fileNames)
+        public static List<string> FindImageFiles(string[] fileNames)
         {
             return new List<string>(_GetImageFiles(fileNames, 50));
+        }
+
+        public void SetDefaultAlbum(string albumName)
+        {
+            _defaultCurrentAlbum = albumName;
         }
     }
 }
