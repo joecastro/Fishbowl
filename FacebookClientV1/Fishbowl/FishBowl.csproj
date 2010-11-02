@@ -50,8 +50,8 @@
     <PublisherName>Fishbowl</PublisherName>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>220</ApplicationRevision>
-    <ApplicationVersion>1.5.0.%2a</ApplicationVersion>
+    <ApplicationRevision>240</ApplicationRevision>
+    <ApplicationVersion>1.5.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>

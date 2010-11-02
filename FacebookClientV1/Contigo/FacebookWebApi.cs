@@ -52,6 +52,7 @@ namespace Contigo
         private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
+        private const string _GetFriendsProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id IN " + _SelectFriendsClause;
         private const string _GetSingleUserAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner={0} ORDER BY modified DESC";
         private const string _GetFriendsAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner IN " + _SelectFriendsClause + " ORDER BY modified DESC LIMIT 200";
         private const string _GetPhotosFromSingleUserAlbumsQueryString = "SELECT " + _PhotoColumns + " FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner={0}) ORDER BY modified DESC";
@@ -946,12 +947,15 @@ namespace Contigo
                 { "start_time", startTime.ToString("G") },
                 { "limit", limit.ToString("G") },
                 { "filter_key", filterKey },
-                { "metadata", "[albums, profiles, photo_tags]" },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(streamMap));
 
-            _serializer.DeserializeStreamData(result, out posts, out users);
+            posts = _serializer.DeserializeStreamData(result);
+
+            string userResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsProfileInfoQueryString, _UserId)));
+
+            users = _serializer.DeserializeProfileList(userResult);
         }
 
         public string AddComment(ActivityPost post, string comment)
@@ -1199,18 +1203,6 @@ namespace Contigo
             };
 
             Utility.FailableFunction(() => _SendRequest(readMap));
-        }
-
-        public List<FacebookImage> GetProfilePictures(IEnumerable<FacebookContact> contacts)
-        {
-            var images = new List<FacebookImage>();
-            foreach (var contact in contacts)
-            {
-                string response = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleProfileInfoQueryString, contact.UserId)));
-                List<FacebookContact> lite = _serializer.DeserializeProfileList(response);
-                images.Add(lite[0].Image);
-            }
-            return images;
         }
     }
 }

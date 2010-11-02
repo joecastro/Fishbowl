@@ -843,13 +843,12 @@ namespace Contigo
             return filter;
         }
 
-        public void DeserializeStreamData(string xml, out List<ActivityPost> posts, out List<FacebookContact> userData)
+        public List<ActivityPost> DeserializeStreamData(string xml)
         {
             XDocument xdoc = SafeParseDocument(xml);
             XNamespace ns = xdoc.Root.GetDefaultNamespace();
 
-            posts = _DeserializePostDataList(ns, ((XElement)xdoc.FirstNode).Element(ns + "posts"));
-            userData = DeserializeProfileList(ns, ((XElement)xdoc.FirstNode).Element(ns + "profiles"));
+            return _DeserializePostDataList(ns, ((XElement)xdoc.FirstNode).Element(ns + "posts"));
         }
 
         public List<ActivityPost> DeserializePostDataList(string xml, bool isFQL)
