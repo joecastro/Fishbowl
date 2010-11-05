@@ -15,12 +15,14 @@
             if (contact != null)
             {
                 Location cl = contact.CurrentLocation;
-
-                bool includeComma = !string.IsNullOrEmpty(cl.State) && !string.IsNullOrEmpty(cl.City);
-                return string.Format("{0}{1}{2}",
-                    cl.City,
-                    includeComma ? ", " : "",
-                    cl.State);
+                if (cl != null)
+                {
+                    bool includeComma = !string.IsNullOrEmpty(cl.State) && !string.IsNullOrEmpty(cl.City);
+                    return string.Format("{0}{1}{2}",
+                        cl.City,
+                        includeComma ? ", " : "",
+                        cl.State);
+                }
             }
             return "";
         }

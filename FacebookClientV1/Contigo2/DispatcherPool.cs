@@ -19,11 +19,11 @@ namespace Contigo
         private int _pendingActionsCount = 0;
         private readonly Dispatcher _masterDispatcher;
 
-        private readonly Dictionary<DispatcherPriority, Stack<_ActionData>> _pendingActions = new Dictionary<DispatcherPriority, Stack<_ActionData>>
+        private readonly Dictionary<DispatcherPriority, Queue<_ActionData>> _pendingActions = new Dictionary<DispatcherPriority, Queue<_ActionData>>
         {
-            { DispatcherPriority.Background, new Stack<_ActionData>() },
-            { DispatcherPriority.Normal, new Stack<_ActionData>() },
-            { DispatcherPriority.Send, new Stack<_ActionData>() },
+            { DispatcherPriority.Background, new Queue<_ActionData>() },
+            { DispatcherPriority.Normal, new Queue<_ActionData>() },
+            { DispatcherPriority.Send, new Queue<_ActionData>() },
         };
 
         private readonly Dispatcher[] _asyncDispatchers;
@@ -110,7 +110,7 @@ namespace Contigo
 
             lock (_lock)
             {
-                _pendingActions[priority].Push(new _ActionData { Action = action, Arg = arg });
+                _pendingActions[priority].Enqueue(new _ActionData { Action = action, Arg = arg });
                 ++_pendingActionsCount;
             }
 
@@ -152,7 +152,7 @@ namespace Contigo
                 // So the first one can try to take it.
                 if (_pendingActions[priority].Count > 0)
                 {
-                    request = _pendingActions[priority].Pop();
+                    request = _pendingActions[priority].Dequeue();
                     --_pendingActionsCount;
                 }
             }

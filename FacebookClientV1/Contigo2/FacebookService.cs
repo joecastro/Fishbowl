@@ -366,7 +366,6 @@
                 if (userId != this.UserId && !_hasFetchedFriendsList)
                 {
                     _UpdateFriendsWorker(null);
-                    _hasFetchedFriendsList = true;
                 }
 
                 FacebookContact contact;
@@ -1285,6 +1284,7 @@
             {
                 _userLookupLock.ExitWriteLock();
             }
+            _hasFetchedFriendsList = true;
         }
 
         private void _UpdateFriendsOnlineStatusWorker(object parameter)
