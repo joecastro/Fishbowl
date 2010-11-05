@@ -15,7 +15,7 @@
             : base(tags ?? new FacebookPhotoTag[0])
         {}
 
-        internal FacebookPhotoTagCollection(MergeableCollection<FacebookPhotoTag> tags, FacebookService service)
+        internal FacebookPhotoTagCollection(FBMergeableCollection<FacebookPhotoTag> tags, FacebookService service)
             : base(tags, service)
         {}
     }

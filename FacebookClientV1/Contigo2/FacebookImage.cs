@@ -20,6 +20,13 @@ namespace Contigo
         Square,
     }
 
+    public enum FacebookImageSaveOptions
+    {
+        PreserveOriginal,
+        Overwrite,
+        FindBetterName,
+    }
+
     public class FacebookImage : IFacebookObject
     {
         private class _ImageCallbackState
@@ -205,35 +212,69 @@ namespace Contigo
             }
         }
 
-        /// <remarks>
-        /// This is a synchronous operation that actively fetches this image.
-        /// </remarks>
-        public string GetCachePath(FacebookImageDimensions requestedSize)
+        public void SaveToFile(FacebookImageDimensions requestedSize, string path, bool addExtension, FacebookImageSaveOptions options, SaveImageAsyncCallback callback, object userState)
         {
-            SmallUri sizedString = _GetSmallUriFromRequestedSize(requestedSize);
-            //Assert.IsNotDefault(sizedString);
-            return SourceService.WebGetter.GetImageFile(sizedString);
+            SaveToFile(requestedSize, path, addExtension, options, callback, userState, null, null);
         }
 
-        /// <remarks>
-        /// This is a synchronous operation.
-        /// </remarks>
-        public void SaveToFile(FacebookImageDimensions requestedSize, string path)
+        internal void SaveToFile(FacebookImageDimensions requestedSize, string path, bool addExtension, FacebookImageSaveOptions options, SaveImageAsyncCallback callback, object userState, int? index, int? total)
         {
-            string cachePath = GetCachePath(requestedSize);
-            if (cachePath == null)
-            {
-                return;
-            }
+            Verify.IsNeitherNullNorEmpty(path, "path");
+            Verify.IsNotNull(callback, "callback");
+            Assert.Implies(total != null, index != null);
+            Assert.Implies(total == null, index == null);
 
-            File.Copy(cachePath, path);
+            SafeCopyFileOptions scfo = (options == FacebookImageSaveOptions.FindBetterName)
+                ? SafeCopyFileOptions.FindBetterName
+                : (options == FacebookImageSaveOptions.Overwrite)
+                    ? SafeCopyFileOptions.Overwrite
+                    : SafeCopyFileOptions.PreserveOriginal;
+            
+            SourceService.WebGetter.GetLocalImagePathAsync(this, null, _GetSmallUriFromRequestedSize(requestedSize),
+                (sender, e) =>
+                {
+                    string cachePath = e.ImagePath;
+                    if (addExtension)
+                    {
+                        string ext = Path.GetExtension(cachePath);
+                        path = Path.ChangeExtension(path, ext);
+                    }
+
+                    try
+                    {
+                        string actualPath = Utility.SafeCopyFile(cachePath, path, scfo);
+                        if (actualPath == null)
+                        {
+                            throw new IOException("Unable to save the image to the requested location.");
+                        }
+
+                        SaveImageCompletedEventArgs sicea = null;
+                        if (total == null)
+                        {
+                            sicea = new SaveImageCompletedEventArgs(actualPath, userState);
+                        }
+                        else
+                        {
+                            sicea = new SaveImageCompletedEventArgs(actualPath, index.Value, total.Value, userState);
+                        }
+
+                        callback(this, sicea);
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new SaveImageCompletedEventArgs(ex, false, userState));
+                        return;
+                    }
+                });
         }
 
         public bool IsCached(FacebookImageDimensions requestedSize)
         {
             SmallUri sizedString = _GetSmallUriFromRequestedSize(requestedSize);
             //Assert.IsNotDefault(sizedString);
-            return SourceService.WebGetter.IsImageCached(sizedString);
+            string path;
+            return SourceService.WebGetter.TryGetImageFile(sizedString, out path);
         }
 
         private SmallUri _GetSmallUriFromRequestedSize(FacebookImageDimensions requestedSize)
@@ -290,6 +331,19 @@ namespace Contigo
         }
 
         #endregion
+
+        internal bool PartiallyEquals(FacebookImage other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other._big == _big
+                || other._normal == _normal
+                || other._small == _small
+                || other._square == _square;
+        }
 
         internal bool SafeMerge(FacebookImage other)
         {

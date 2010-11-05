@@ -22,7 +22,7 @@ namespace FacebookClient
         private class _Navigator : Navigator
         {
             public _Navigator(LoginPage page, Dispatcher dispatcher)
-                : base(page, "[Login Page]", null)
+                : base(page, FacebookObjectId.Create("[Login Page]"), null)
             { }
 
             public override bool IncludeInJournal { get { return false; } }
@@ -175,7 +175,6 @@ namespace FacebookClient
 
         private void _OnLoaded()
         {
-            Utility.SafeDispose(ref _service);
             FacebookLoginService service = null;
             try
             {
@@ -207,15 +206,11 @@ namespace FacebookClient
             {
                 _SwitchToErrorPage(ex, _service != null);
             }
-            finally
-            {
-                Utility.SafeDispose(ref service);
-            }
         }
 
         private void _OnUnloaded()
         {
-            Utility.SafeDispose(ref _service);
+            _service = null;
         }
 
         private void _OnUserLoggedIn()
@@ -263,7 +258,7 @@ namespace FacebookClient
             ServiceProvider.ViewManager.NavigateByCommand(_nextPage);
 
             // After we've navigated away, dispose the fields.
-            Utility.SafeDispose(ref _service);
+            _service = null;
             Utility.SafeDispose(ref LoginBrowser);
             _nextPage = null;
         }

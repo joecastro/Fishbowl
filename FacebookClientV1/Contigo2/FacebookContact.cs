@@ -180,7 +180,7 @@
     }
     */
 
-    public sealed class FacebookContact : IFacebookObject, INotifyPropertyChanged, IMergeable<FacebookContact>, IComparable<FacebookContact>
+    public sealed class FacebookContact : IFacebookObject, INotifyPropertyChanged, IFBMergeable<FacebookContact>, IComparable<FacebookContact>
     {
         #region Sort Delegates
 
@@ -406,7 +406,6 @@
         private SmallString _tv;
         private SmallString _website;
 
-        private double? _nullableInterestLevel;
         private DateTime _lastActivitySync = DateTime.MinValue;
 
         private SmallString _lowerNameSmallString;
@@ -415,7 +414,7 @@
         internal FacebookContact(FacebookService service)
         {
             SourceService = service;
-            RawRecentActivity = new MergeableCollection<ActivityPost>(null);
+            RawRecentActivity = new FBMergeableCollection<ActivityPost>(null);
         }
 
         public DateTime ProfileUpdateTime
@@ -474,9 +473,9 @@
             }
         }
 
-        // Not a SmallString because this property is frequently accessed for identity operations.
         // Does not raise change notifications because it should never be changing.
-        public string UserId { get; internal set; }
+        public FacebookObjectId UserId { get; internal set; }
+        public string UserName { get; internal set; }
 
         public string AboutMe
         {
@@ -815,7 +814,7 @@
             }
         }
 
-        internal MergeableCollection<ActivityPost> RawRecentActivity { get; private set; }
+        internal FBMergeableCollection<ActivityPost> RawRecentActivity { get; private set; }
 
         public ActivityPostCollection RecentActivity
         {
@@ -870,18 +869,20 @@
             }
         }
 
+        internal double? NullableInterestLevel { get; private set; }
+
         /// <summary>
         /// A percentage value to indicate how much information we should pull for a person.
         /// </summary>
         public double InterestLevel
         {
-            get { return _nullableInterestLevel ?? DefaultInterestLevel; }
+            get { return NullableInterestLevel ?? DefaultInterestLevel; }
             set
             {
                 double boundedValue = Math.Min(1, Math.Max(value, 0));
-                if (_nullableInterestLevel != boundedValue)
+                if (NullableInterestLevel != boundedValue)
                 {
-                    _nullableInterestLevel = boundedValue;
+                    NullableInterestLevel = boundedValue;
                     SourceService.TagAsInteresting(this);
                     _NotifyPropertyChanged("InterestLevel");
                 }
@@ -910,10 +911,6 @@
 
         public override int GetHashCode()
         {
-            if (UserId == null)
-            {
-                return 0;
-            }
             return UserId.GetHashCode();
         }
 
@@ -931,36 +928,24 @@
 
         #endregion
 
-        #region IMergeable<FacebookContact> Members
+        #region IFBMergeable<FacebookContact> Members
 
-        string IMergeable<FacebookContact>.FKID { get { return UserId; } }
+        FacebookObjectId IMergeable<FacebookObjectId, FacebookContact>.FKID { get { return UserId; } }
 
-        void IMergeable<FacebookContact>.Merge(FacebookContact other) { Merge(other); }
+        void IMergeable<FacebookObjectId, FacebookContact>.Merge(FacebookContact other) { Merge(other); }
 
         internal void Merge(FacebookContact other)
         {
-            if (other == null)
-            {
-                UserId = null;
-                return;
-            }
+            Verify.IsNotNull(other, "other");
 
             if (object.ReferenceEquals(this, other))
             {
                 return;
             }
 
-            // Special case the empty MeContact.
-            if (!string.IsNullOrEmpty(UserId))
+            if (UserId != other.UserId)
             {
-                if (UserId != other.UserId)
-                {
-                    throw new InvalidOperationException("Can't merge two different contacts.");
-                }
-            }
-            else
-            {
-                UserId = other.UserId;
+                throw new InvalidOperationException("Can't merge two different contacts.");
             }
 
             AboutMe = other.AboutMe;
@@ -990,8 +975,12 @@
             TV = other.TV;
             Website = other.Website;
 
+            // Doesn't raise change notifications, but also shouldn't be changing.
+            Assert.Implies(other.UserName != UserName, () => UserName == null);
+            UserName = other.UserName;
+
             // Only merge InterestLevel if it's been explicitly set.
-            if (other._nullableInterestLevel.HasValue)
+            if (other.NullableInterestLevel.HasValue)
             {
                 this.InterestLevel = other.InterestLevel;
             }

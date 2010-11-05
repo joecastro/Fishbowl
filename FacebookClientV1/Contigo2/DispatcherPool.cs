@@ -86,6 +86,16 @@ namespace Contigo
             Dispatcher.Run();
         }
         
+        public void QueueRequest(Action action)
+        {
+            QueueRequest(DispatcherPriority.Normal, action);
+        }
+
+        public void QueueRequest(DispatcherPriority priority, Action action)
+        {
+            QueueRequest(priority, unused => action(), null);
+        }
+        
         public void QueueRequest(Action<object> action, object arg)
         {
             QueueRequest(DispatcherPriority.Normal, action, arg);

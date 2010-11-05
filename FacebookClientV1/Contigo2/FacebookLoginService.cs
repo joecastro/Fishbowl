@@ -4,11 +4,12 @@ namespace Contigo
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Linq;
     using System.IO;
+    using System.Linq;
     using System.Windows;
     using Microsoft.Json.Serialization;
     using Standard;
+    using System.Threading;
 
     /// <summary>
     /// Extended permissions that the app can request beyond what Facebook normally allows.
@@ -83,9 +84,8 @@ namespace Contigo
         PhotoUpload,
     }
 
-    public class FacebookLoginService : IDisposable
+    public class FacebookLoginService
     {
-        private DispatcherPool _requestDispatcher = new DispatcherPool("LoginService WebRequests", 1);
         private readonly ServiceSettings _settings;
 
         private FacebookWebApi _facebookApi;
@@ -95,7 +95,7 @@ namespace Contigo
 
         public string SessionKey { get { return _settings.SessionKey; } }
         public string SessionSecret { get { return _settings.SessionSecret; } }
-        public string UserId { get { return _settings.UserId; } }
+        public FacebookObjectId UserId { get { return _settings.UserId; } }
 
         public bool HasCachedSessionInfo { get; private set; }
 
@@ -204,12 +204,15 @@ namespace Contigo
 
             if (!sessionMap.TryGetValue("session_key", out sessionKey)
                 || !sessionMap.TryGetValue("uid", out userId)
-                || !sessionMap.TryGetValue("secret", out secret))
+                || !sessionMap.TryGetValue("secret", out secret)
+                || string.IsNullOrEmpty(sessionKey.ToString())
+                || string.IsNullOrEmpty(userId.ToString())
+                || string.IsNullOrEmpty(secret.ToString()))
             {
                 throw badSessionInfoException;
             }
 
-            _settings.SetSessionInfo(sessionKey.ToString(), secret.ToString(), userId.ToString());
+            _settings.SetSessionInfo(sessionKey.ToString(), secret.ToString(), new FacebookObjectId(userId.ToString()));
             _settings.Save();
 
             _facebookApi = new FacebookWebApi(ApplicationKey, SessionKey, UserId, SessionSecret);
@@ -224,15 +227,6 @@ namespace Contigo
             return FacebookWebApi.GetLoginUri(ApplicationKey, successUri, deniedUri, requiredPermissions);
         }
 
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            Utility.SafeDispose(ref _requestDispatcher);
-        }
-
-        #endregion
-
         public void GetMissingPermissionsAsync(IEnumerable<Permissions> permissions, AsyncCompletedEventHandler callback)
         {
             Verify.IsNotNull(permissions, "permisions");
@@ -241,7 +235,7 @@ namespace Contigo
             Assert.IsNotNull(_facebookApi);
             Assert.IsNotNull(callback);
 
-            _requestDispatcher.QueueRequest((arg) =>
+            ThreadStart ts = () =>
             {
                 Exception ex = null;
                 Permissions[] missingPermissions = null;
@@ -254,7 +248,9 @@ namespace Contigo
                     ex = e;
                 }
                 callback(this, new AsyncCompletedEventArgs(ex, false, missingPermissions));
-            }, null);
+            };
+
+            new Thread(ts).Start();
         }
 
         // For signout, we need to delete all cookies for these Urls.

@@ -44,12 +44,12 @@
         }
 
         private readonly FacebookContact _owner;
-        private readonly MergeableCollection<FacebookPhotoAlbum> _filteredCollection;
-        private readonly MergeableCollection<FacebookPhotoAlbum> _rawCollection;
+        private readonly FBMergeableCollection<FacebookPhotoAlbum> _filteredCollection;
+        private readonly FBMergeableCollection<FacebookPhotoAlbum> _rawCollection;
         private readonly Dictionary<FacebookContact, bool> _interestMap;
         private readonly object _localLock = new object();
 
-        internal FacebookPhotoAlbumCollection(MergeableCollection<FacebookPhotoAlbum> sourceCollection, FacebookService service, FacebookContact owner)
+        internal FacebookPhotoAlbumCollection(FBMergeableCollection<FacebookPhotoAlbum> sourceCollection, FacebookService service, FacebookContact owner)
             : base(sourceCollection, service)
         {
             VerifyAccess();
@@ -58,7 +58,7 @@
             {
                 _rawCollection = sourceCollection;
                 _owner = owner;
-                _filteredCollection = new MergeableCollection<FacebookPhotoAlbum>(from album in sourceCollection where album.OwnerId == owner.UserId select album, false);
+                _filteredCollection = new FBMergeableCollection<FacebookPhotoAlbum>(from album in sourceCollection where album.OwnerId == owner.UserId select album, false);
                 base.ReplaceSourceCollection(_filteredCollection);
                 sourceCollection.CollectionChanged += _OwnerFilterOnRawCollectionChanged;
             }
@@ -68,7 +68,7 @@
                 _interestMap = new Dictionary<FacebookContact, bool>();
 
                 _rawCollection = sourceCollection;
-                _filteredCollection = new MergeableCollection<FacebookPhotoAlbum>(false);
+                _filteredCollection = new FBMergeableCollection<FacebookPhotoAlbum>(false);
                 base.ReplaceSourceCollection(_filteredCollection);
 
                 foreach (var album in sourceCollection)

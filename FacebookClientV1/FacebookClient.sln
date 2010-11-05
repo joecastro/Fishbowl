@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectLibrary", "EffectLibr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitionEffects", "TransitionEffects\TransitionEffects.csproj", "{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contigo", "Contigo\Contigo.csproj", "{92EF4985-F377-4707-B156-10A8D197B666}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Standard", "Standard\Standard.csproj", "{A1326555-AD64-4A93-A95C-B68ABD5672D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fishbowl", "Fishbowl\Fishbowl.csproj", "{77308CBC-E2FF-4224-B115-FD28D80B3B38}"
@@ -15,15 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Json", "Microsoft
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Bing", "Microsoft.Bing\Microsoft.Bing.csproj", "{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandardTests", "StandardTests\StandardTests.csproj", "{FDF91D01-913B-45D6-AC2E-6418D198E185}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Windows.Shell", "Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj", "{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contigo2", "Contigo2\Contigo2.csproj", "{92EF4985-F377-4707-B156-10A8D197B666}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 10
+		SccNumberOfProjects = 9
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs03.codeplex.com/
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = Fishbowl\\Fishbowl.csproj
 		SccProjectName1 = Fishbowl
@@ -34,24 +32,21 @@ Global
 		SccProjectUniqueName3 = EffectLibrary\\EffectLibrary.csproj
 		SccProjectName3 = EffectLibrary
 		SccLocalPath3 = EffectLibrary
-		SccProjectUniqueName4 = Contigo\\Contigo.csproj
-		SccProjectName4 = Contigo
-		SccLocalPath4 = Contigo
-		SccProjectUniqueName5 = Standard\\Standard.csproj
-		SccProjectName5 = Standard
-		SccLocalPath5 = Standard
-		SccProjectUniqueName6 = Microsoft.Json\\Microsoft.Json\\Microsoft.Json.csproj
-		SccProjectName6 = Microsoft.Json/Microsoft.Json
-		SccLocalPath6 = Microsoft.Json\\Microsoft.Json
-		SccProjectUniqueName7 = Microsoft.Bing\\Microsoft.Bing.csproj
-		SccProjectName7 = Microsoft.Bing
-		SccLocalPath7 = Microsoft.Bing
-		SccProjectUniqueName8 = StandardTests\\StandardTests.csproj
-		SccProjectName8 = StandardTests
-		SccLocalPath8 = StandardTests
-		SccProjectUniqueName9 = Microsoft.Windows.Shell\\Microsoft.Windows.Shell.csproj
-		SccProjectName9 = Microsoft.Windows.Shell
-		SccLocalPath9 = Microsoft.Windows.Shell
+		SccProjectUniqueName4 = Standard\\Standard.csproj
+		SccProjectName4 = Standard
+		SccLocalPath4 = Standard
+		SccProjectUniqueName5 = Microsoft.Json\\Microsoft.Json\\Microsoft.Json.csproj
+		SccProjectName5 = Microsoft.Json/Microsoft.Json
+		SccLocalPath5 = Microsoft.Json\\Microsoft.Json
+		SccProjectUniqueName6 = Microsoft.Bing\\Microsoft.Bing.csproj
+		SccProjectName6 = Microsoft.Bing
+		SccLocalPath6 = Microsoft.Bing
+		SccProjectUniqueName7 = Microsoft.Windows.Shell\\Microsoft.Windows.Shell.csproj
+		SccProjectName7 = Microsoft.Windows.Shell
+		SccLocalPath7 = Microsoft.Windows.Shell
+		SccProjectUniqueName8 = Contigo2\\Contigo2.csproj
+		SccProjectName8 = Contigo2
+		SccLocalPath8 = Contigo2
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = FacebookClient.vsmdi
@@ -89,18 +84,6 @@ Global
 		{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}.Release|x86.Build.0 = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|x86.Build.0 = Debug|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|x86.ActiveCfg = Release|Any CPU
-		{92EF4985-F377-4707-B156-10A8D197B666}.Release|x86.Build.0 = Release|Any CPU
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1326555-AD64-4A93-A95C-B68ABD5672D4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -146,17 +129,6 @@ Global
 		{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}.Release|x86.ActiveCfg = Release|Any CPU
 		{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}.Release|x86.Build.0 = Release|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Debug|x86.Build.0 = Debug|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FDF91D01-913B-45D6-AC2E-6418D198E185}.Release|x86.ActiveCfg = Release|Any CPU
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
@@ -169,6 +141,16 @@ Global
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|Mixed Platforms.Build.0 = Release|x86
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.ActiveCfg = Release|x86
 		{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}.Release|x86.Build.0 = Release|x86
+		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{92EF4985-F377-4707-B156-10A8D197B666}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

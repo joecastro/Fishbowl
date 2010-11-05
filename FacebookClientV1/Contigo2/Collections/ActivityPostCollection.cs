@@ -13,11 +13,11 @@
             return contact.InterestLevel > .1;
         }
 
-        private readonly MergeableCollection<ActivityPost> _filteredCollection;
-        private readonly MergeableCollection<ActivityPost> _rawCollection;
+        private readonly FBMergeableCollection<ActivityPost> _filteredCollection;
+        private readonly FBMergeableCollection<ActivityPost> _rawCollection;
         private readonly Dictionary<FacebookContact, bool> _interestMap; 
 
-        internal ActivityPostCollection(MergeableCollection<ActivityPost> sourceCollection, FacebookService service, bool filterable)
+        internal ActivityPostCollection(FBMergeableCollection<ActivityPost> sourceCollection, FacebookService service, bool filterable)
             : base(sourceCollection, service)
         {
             if (filterable)
@@ -26,7 +26,7 @@
                 _rawCollection = sourceCollection;
                 // Sort this filtered view same as the underlying collection.
                 // If there's ever a custom sort on ActivityPosts, I need to add an INotifyPropertyChanged implementation to keep the sort orders in sync.
-                _filteredCollection = new MergeableCollection<ActivityPost>(from post in sourceCollection where _IsInteresting(post.Actor) select post, true);
+                _filteredCollection = new FBMergeableCollection<ActivityPost>(from post in sourceCollection where _IsInteresting(post.Actor) select post, true);
                 base.ReplaceSourceCollection(_filteredCollection);
 
                 foreach (var contact in from p in sourceCollection select p.Actor)

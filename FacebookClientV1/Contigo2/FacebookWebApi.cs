@@ -13,10 +13,13 @@ namespace Contigo
     using Microsoft.Json.Serialization;
     using Standard;
 
+    using JSON_ARRAY = System.Collections.Generic.IList<object>;
+    using JSON_OBJECT = System.Collections.Generic.IDictionary<string, object>;
+
     using METHOD_MAP = System.Collections.Generic.SortedDictionary<string, string>;
 
     // This class is thread-safe.  It does not contain any mutable state.
-    internal class FacebookWebApi : IDisposable
+    internal class FacebookWebApi
     {
         #region Fields
 
@@ -47,12 +50,12 @@ namespace Contigo
 
         private const string _GetPermissionsQueryString = "SELECT {0} FROM permissions WHERE uid={1}";
 
-        // Use the orderby clause to ensure consistent ordering with _GetPr9ofilesMultiQueryString.
-        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause + " ORDER BY uid DESC";
+        private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause;
+        private const string _GetFriendsLimitOffsetFormatQueryString = _GetFriendsQueryString + " LIMIT {1} OFFSET {2}";
         private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
+        private const string _GetFriendsProfilesQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
-        private const string _GetFriendsProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id IN " + _SelectFriendsClause;
         private const string _GetSingleUserAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner={0} ORDER BY modified DESC";
         private const string _GetFriendsAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner IN " + _SelectFriendsClause + " ORDER BY modified DESC LIMIT 200";
         private const string _GetPhotosFromSingleUserAlbumsQueryString = "SELECT " + _PhotoColumns + " FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner={0}) ORDER BY modified DESC";
@@ -71,9 +74,8 @@ namespace Contigo
         private const string _GetUnreadInboxThreadsQueryString = _GetInboxThreadsQueryString + " and unread != 0";
 
         private const string _GetPhotoTagsMultiQueryString = "SELECT " + _PhotoTagColumns + " FROM photo_tag WHERE pid IN (SELECT pid FROM #{0})";
-        private const string _GetProfilesMultiQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id in (SELECT uid FROM #{0}) ORDER BY id DESC";
 
-        private readonly DataSerialization _serializer;
+        private readonly JsonDataSerialization _jsonSerializer;
 
         private static readonly Dictionary<string, Permissions> _ReversePermissionLookup;
 
@@ -142,20 +144,14 @@ namespace Contigo
         private readonly string _ApplicationKey;
         private readonly string _SessionKey;
         private readonly string _Secret;
-        private readonly string _UserId;
+        private readonly FacebookObjectId _UserId;
         private readonly FacebookService _Service;
-        private bool _disposed;
 
         #endregion
 
-        private void _Verify(bool requiresService)
+        private void _Verify()
         {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException("this");
-            }
-
-            if (requiresService && _Service == null)
+            if (_Service == null)
             {
                 throw new InvalidOperationException("Operation requires a valid FacebookService");
             }
@@ -269,13 +265,14 @@ namespace Contigo
             Assert.AreEqual(knownPermissionCount, _PermissionLookup.Count);
         }
 
-        public FacebookWebApi(string applicationId, string sessionKey, string userId, string secret)
+        public FacebookWebApi(string applicationId, string sessionKey, FacebookObjectId userId, string secret)
         {
             _ApplicationKey = applicationId;
             _SessionKey = sessionKey;
             _UserId = userId;
             _Secret = secret;
             _Service = null;
+            _jsonSerializer = new JsonDataSerialization(null);
         }
 
         public FacebookWebApi(FacebookService service, string secret)
@@ -285,59 +282,7 @@ namespace Contigo
             _UserId = service.UserId;
             _Secret = secret;
             _Service = service;
-            _serializer = new DataSerialization(service);
-        }
-
-        private static string _SanitizeJsonString(string value)
-        {
-            Assert.IsNeitherNullNorEmpty(value);
-
-            var sb = new StringBuilder(value.Length);
-            char[] chars = value.ToCharArray();
-            foreach (var c in chars)
-            {
-                switch (c)
-                {
-                    case '"':
-                        sb.Append("\\\"");
-                        break;
-                    case '\\':
-                        sb.Append("\\");
-                        break;
-                    case '/':
-                        sb.Append("\\/");
-                        break;
-                    case '\b':
-                        sb.Append("\\b");
-                        break;
-                    case '\f':
-                        sb.Append("\\f");
-                        break;
-                    case '\n':
-                        sb.Append("\\n");
-                        break;
-                    case '\r':
-                        sb.Append("\\r");
-                        break;
-                    case '\t':
-                        sb.Append("\\t");
-                        break;
-                    default:
-                        // JSON spec says any unicode character not in the above list
-                        // is valid, but for the sake of debuggability and wire transfer
-                        // just sanitize things that aren't normally ASCII printable.
-                        if (c < 32 || c > 126)
-                        {
-                            sb.Append("\\u" + ((int)c).ToString("{0:x4}"));
-                        }
-                        else
-                        {
-                            sb.Append(c);
-                        }
-                        break;
-                }
-            }
-            return sb.ToString();
+            _jsonSerializer = new JsonDataSerialization(service);
         }
 
         /// <summary>
@@ -351,7 +296,7 @@ namespace Contigo
 
             Assert.IsNeitherNullNorEmpty(query);
 
-            _Verify(true);
+            _Verify();
 
             var queryMap = new METHOD_MAP
             {
@@ -367,7 +312,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             Assert.IsNotNull(names);
             Assert.IsNotNull(queries);
@@ -402,7 +347,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             if (!requestPairs.ContainsKey("api_key"))
             {
@@ -413,7 +358,9 @@ namespace Contigo
                 requestPairs.Add("ss", "1");
             }
 
-            return SendRequest(requestPairs, _Secret);
+            requestPairs["format"] = "json";
+
+            return _SendRequest(requestPairs, _Secret);
         }
 
 
@@ -421,7 +368,7 @@ namespace Contigo
         {
             Assert.IsNotOnMainThread();
 
-            _Verify(true);
+            _Verify();
 
             byte[] data = null;
             using (FileStream fs = File.Open(filePath, FileMode.Open))
@@ -442,6 +389,8 @@ namespace Contigo
                 requestPairs.Add("ss", "1");
                 requestPairs.Add("sig", _GenerateSignature(requestPairs, _Secret));
             }
+
+            requestPairs["format"] = "json";
 
             var builder = new StringBuilder();
 
@@ -492,7 +441,7 @@ namespace Contigo
                 }
             }
 
-            Exception e = _VerifyResult(result, builder.ToString());
+            Exception e = _VerifyJsonResult(result, builder.ToString());
             if (e != null)
             {
                 throw e;
@@ -501,7 +450,7 @@ namespace Contigo
             return result;
         }
 
-        private static string SendRequest(IDictionary<string, string> requestPairs, string secret)
+        private static string _SendRequest(IDictionary<string, string> requestPairs, string secret)
         {
             Assert.IsNotOnMainThread();
 
@@ -530,7 +479,7 @@ namespace Contigo
                 }
             }
 
-            Exception e = _VerifyResult(result, requestData);
+            Exception e = _VerifyJsonResult(result, requestData);
             if (e != null)
             {
                 throw e;
@@ -544,12 +493,11 @@ namespace Contigo
         /// <returns>
         /// If the request was an error, returns an exception that describes the failure.
         /// Otherwise this returns null.
-        /// </returns>
-        private static Exception _VerifyResult(string xml, string sourceXml)
+        private static Exception _VerifyJsonResult(string jsonInput, string sourceRequest)
         {
             try
             {
-                return DataSerialization.DeserializeFacebookException(xml, sourceXml);
+                return JsonDataSerialization.DeserializeFacebookException(jsonInput, sourceRequest);
             }
             catch (InvalidOperationException) { }
 
@@ -596,31 +544,14 @@ namespace Contigo
                 { "v", "1.0" },
                 { "ss", "1" },
                 { "session_key", _SessionKey },
+                { "format", "json" },
             };
 
-            Permissions[] extendedPermissionsList = extendedPermissions.ToArray();
-
-            string result = Utility.FailableFunction(() => SendRequest(queryMap, _Secret));
-
-            XDocument document = XDocument.Parse(result);
-
-            foreach (var permissionName in from XElement xelt in document.Root.Elements().Nodes<XElement>()
-                                           where xelt.Value == "0"
-                                           where extendedPermissionsList.Contains(_ReversePermissionLookup[xelt.Name.LocalName])
-                                           select xelt.Name.LocalName)
-            {
-                yield return _ReversePermissionLookup[permissionName];
-            }
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            // Stop any new outbound web requests from this object.
-            _disposed = true;
+            string result = Utility.FailableFunction(() => _SendRequest(queryMap, _Secret));
+            List<Permissions> grantedPermissions = (from permName in _jsonSerializer.DeserializeGrantedPermissionsList(result)
+                                                    select _ReversePermissionLookup[permName])
+                                                   .ToList();
+            return extendedPermissions.Except(grantedPermissions);
         }
 
         #endregion
@@ -628,22 +559,29 @@ namespace Contigo
         public List<ActivityFilter> GetActivityFilters()
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamFiltersQueryString, _UserId)));
-            return _serializer.DeserializeFilterList(result);
+            return _jsonSerializer.DeserializeFilterList(result);
         }
 
-        public FacebookContact GetUser(string userId)
+        public FacebookContact GetUser(FacebookObjectId userId)
         {
-            _Verify(true);
+            _Verify();
 
             var userMap = new METHOD_MAP
             {
                 { "method", "users.GetInfo" },
-                { "uids", userId },
+                { "uids", userId.ToString() },
                 { "fields", _UserColumns },
             };
 
-            string result = Utility.FailableFunction(10, () => _SendRequest(userMap));
-            List<FacebookContact> contactList = _serializer.DeserializeUsersList(result);
+            // Facebook bogusly errors this call fairly frequently.
+            List<FacebookContact> contactList = null;
+            int reaskCount = 0;
+            do
+            {
+                string result = Utility.FailableFunction(5, () => _SendRequest(userMap));
+                contactList = _jsonSerializer.DeserializeUsersList(result);
+            } while (contactList.Count == 0 && ++reaskCount < 3);
+
             if (contactList.Count == 0)
             {
                 throw new FacebookException("Unable to obtain information about the user.", null);
@@ -654,14 +592,14 @@ namespace Contigo
 
         public List<MessageNotification> GetMailNotifications(bool includeRead)
         {
-            _Verify(true);
+            _Verify();
 
             string query = includeRead
                 ? _GetInboxThreadsQueryString 
                 : _GetUnreadInboxThreadsQueryString;
 
             string result = Utility.FailableFunction(() => _SendQuery(query));
-            List<MessageNotification> notifications = _serializer.DeserializeMessageQueryResponse(result);
+            List<MessageNotification> notifications = _jsonSerializer.DeserializeMessageQueryResponse(result);
 
             return notifications;
         }
@@ -669,7 +607,7 @@ namespace Contigo
         // This differs from Notifications.GetList in that it returns messages, pokes, shares, group and event invites, and friend requests.
         public void GetRequests(out List<Notification> friendRequests, out int unreadMessagesCount)
         {
-            _Verify(true);
+            _Verify();
 
             var notificationMap = new METHOD_MAP
             {
@@ -677,12 +615,12 @@ namespace Contigo
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(notificationMap));
-            _serializer.DeserializeNotificationsGetResponse(result, out friendRequests, out unreadMessagesCount);
+            _jsonSerializer.DeserializeNotificationsGetResponse(result, out friendRequests, out unreadMessagesCount);
         }
 
         public List<Notification> GetNotifications(bool includeRead)
         {
-            _Verify(true);
+            _Verify();
 
             var notificationMap = new METHOD_MAP
             {
@@ -696,7 +634,7 @@ namespace Contigo
 
             string result = Utility.FailableFunction(() => _SendRequest(notificationMap));
 
-            List<Notification> notifications = _serializer.DeserializeNotificationsListResponse(result);
+            List<Notification> notifications = _jsonSerializer.DeserializeNotificationsListResponse(result);
 
             // Don't include hidden notifications in this result set.
             // Facebook also tends to leave stale notifications behind for activity posts that have been deleted.
@@ -708,7 +646,7 @@ namespace Contigo
 
         public FacebookPhoto GetPhoto(string photoId)
         {
-            _Verify(true);
+            _Verify();
 
             var photoMap = new METHOD_MAP
             {
@@ -718,7 +656,7 @@ namespace Contigo
 
             string result = Utility.FailableFunction(() => _SendRequest(photoMap));
 
-            List<FacebookPhoto> response = _serializer.DeserializePhotosGetResponse(result);
+            List<FacebookPhoto> response = _jsonSerializer.DeserializePhotosGetResponse(result);
 
             FacebookPhoto photo = response.FirstOrDefault();
             Assert.IsNotNull(photo);
@@ -726,30 +664,30 @@ namespace Contigo
             return photo;
         }
 
-        public List<FacebookPhotoTag> GetPhotoTags(string photoId)
+        public List<FacebookPhotoTag> GetPhotoTags(FacebookObjectId photoId)
         {
             var tagMap = new METHOD_MAP
             {
                 { "method", "photos.getTags" },
-                { "pids", photoId },
+                { "pids", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(tagMap));
-            return _serializer.DeserializePhotoTagsList(response);
+            return _jsonSerializer.DeserializePhotoTagsList(response);
         }
 
-        public List<FacebookPhotoTag> AddPhotoTag(string photoId, string userId, float x, float y)
+        public List<FacebookPhotoTag> AddPhotoTag(FacebookObjectId photoId, FacebookObjectId userId, float x, float y)
         {
-            Verify.IsNeitherNullNorWhitespace(userId, "userId");
-            Verify.IsNeitherNullNorWhitespace(photoId, "photoId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(photoId), "Invalid photoId");
 
             x *= 100;
             y *= 100;
             var tagMap = new METHOD_MAP
             {
                 { "method", "photos.addTag" },
-                { "pid", photoId },
-                { "tag_uid", userId },
+                { "pid", photoId.ToString() },
+                { "tag_uid", userId.ToString() },
                 { "x", string.Format("{0:0.##}", x) },
                 { "y", string.Format("{0:0.##}", y) },
             };
@@ -761,7 +699,7 @@ namespace Contigo
 
         public FacebookPhotoAlbum CreateAlbum(string name, string description, string location)
         {
-            _Verify(true);
+            _Verify();
 
             var createMap = new METHOD_MAP
             {
@@ -781,23 +719,23 @@ namespace Contigo
 
             string createAlbumResponse = Utility.FailableFunction(() => _SendRequest(createMap));
 
-            FacebookPhotoAlbum album = _serializer.DeserializeUploadAlbumResponse(createAlbumResponse);
-            album.RawPhotos = new MergeableCollection<FacebookPhoto>();
+            FacebookPhotoAlbum album = _jsonSerializer.DeserializeUploadAlbumResponse(createAlbumResponse);
+            album.RawPhotos = new FBMergeableCollection<FacebookPhoto>();
             return album;
         }
 
-        public FacebookPhoto AddPhotoToAlbum(string albumId, string caption, string imageFile)
+        public FacebookPhoto AddPhotoToAlbum(FacebookObjectId albumId, string caption, string imageFile)
         {
-            _Verify(true);
+            _Verify();
 
             var updateMap = new METHOD_MAP
             {
                 { "method", "photos.upload" },
             };
 
-            if (!string.IsNullOrEmpty(albumId))
+            if (FacebookObjectId.IsValid(albumId))
             {
-                updateMap.Add("aid", albumId);
+                updateMap.Add("aid", albumId.ToString());
             }
 
             if (!string.IsNullOrEmpty(caption))
@@ -806,22 +744,21 @@ namespace Contigo
             }
 
             string response = Utility.FailableFunction(() => _SendFileRequest(updateMap, imageFile));
-            return _serializer.DeserializePhotoUploadResponse(response);
+            return _jsonSerializer.DeserializePhotoUploadResponse(response);
         }
 
-        public FacebookPhotoAlbum GetAlbum(string albumId)
+        public FacebookPhotoAlbum GetAlbum(FacebookObjectId albumId)
         {
-            Verify.IsNeitherNullNorEmpty(albumId, "albumId");
+            Verify.IsTrue(FacebookObjectId.IsValid(albumId), "Invalid albumId");
 
             var albumMap = new METHOD_MAP
             {
                 { "method", "photos.getAlbums" },
-                { "aids", albumId },
+                { "aids", albumId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(albumMap));
-
-            List<FacebookPhotoAlbum> albumsResponse = _serializer.DeserializeGetAlbumsResponse(response);
+            List<FacebookPhotoAlbum> albumsResponse = _jsonSerializer.DeserializeGetAlbumsResponse(response);
 
             Assert.IsFalse(albumsResponse.Count > 1);
 
@@ -832,13 +769,13 @@ namespace Contigo
             return albumsResponse[0];
         }
 
-        public ActivityPost PublishStream(string targetId, string message)
+        public ActivityPost PublishStream(FacebookObjectId targetId, string message)
         {
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.publish" },
                 { "message", message },
-                { "target_id", targetId },
+                { "target_id", targetId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(streamMap));
@@ -857,11 +794,10 @@ namespace Contigo
                 Created = DateTime.Now,
                 HasLiked = false,
                 LikedCount = 0,
-                LikeUrl = null,
+                LikeUri = null,
                 Message = message,
-                PostId = "-1",
-                RawComments = new MergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
+                PostId = new FacebookObjectId("-1"),
+                RawComments = new FBMergeableCollection<ActivityComment>(),
                 Updated = DateTime.Now,
             };
         }
@@ -872,11 +808,11 @@ namespace Contigo
             {
                 { "method", "status.set" },
                 { "status", newStatus },
-                { "uid", _UserId },
+                { "uid", _UserId.ToString() },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(statusMap));
-            bool success = _serializer.DeserializeStatusSetResponse(result);
+            bool success = _jsonSerializer.DeserializeStatusSetResponse(result);
             Assert.IsTrue(success);
 
             // Return a proxy that looks close to what we expect the updated status to look like.
@@ -893,12 +829,11 @@ namespace Contigo
                 Created = DateTime.Now,
                 HasLiked = false,
                 LikedCount = 0,
-                LikeUrl = null,
+                LikeUri = null,
                 Message = newStatus,
-                PostId = "FakeStatusId",
-                RawComments = new MergeableCollection<ActivityComment>(),
-                RawPeopleWhoLikeThisIds = new MergeableCollection<string>(),
-                TargetUserId = null,
+                PostId = new FacebookObjectId("FakeStatusId"),
+                RawComments = new FBMergeableCollection<ActivityComment>(),
+                TargetUserId = default(FacebookObjectId),
                 Updated = DateTime.Now,
             };
         }
@@ -919,57 +854,68 @@ namespace Contigo
             Utility.FailableFunction(() => _SendRequest(statusMap));
         }
 
-        public List<ActivityPost> GetStreamPosts(string userId)
+        public List<ActivityPost> GetStreamPosts(FacebookObjectId userId)
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetStreamPostsQueryString, userId)));
-            return _serializer.DeserializePostDataList(result, true);
+            return _jsonSerializer.DeserializeStreamPostList(result);
         }
 
-        public void GetStream(string filterKey, int limit, DateTime getItemsSince, out List<ActivityPost> posts, out List<FacebookContact> users)
+        public List<ActivityPost> GetStream(FacebookObjectId filterKey, int limit, DateTime getItemsSince)
         {
             Assert.IsTrue(limit > 0);
 
             // Facebook changed the semantics of the default feed, so we need to explicitly 
             // request the newsfeed filter to keep things working as expected.
             // I think everyone should have a filter with this key, but this is unfortunately fragile.
-            if (string.IsNullOrEmpty(filterKey))
+            if (!FacebookObjectId.IsValid(filterKey))
             {
-                filterKey = "nf";
+                filterKey = new FacebookObjectId("nf");
             }
 
-            long startTime = DataSerialization.GetUnixTimestampFromDateTime(getItemsSince);
+            long startTime = JsonDataSerialization.GetUnixTimestampFromDateTime(getItemsSince);
             Assert.IsTrue(startTime >= 0);
 
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.get" },
-                { "viewer_id", _UserId },
+                { "viewer_id", _UserId.ToString() },
                 { "start_time", startTime.ToString("G") },
                 { "limit", limit.ToString("G") },
-                { "filter_key", filterKey },
+                { "filter_key", filterKey.ToString() },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(streamMap));
 
-            posts = _serializer.DeserializeStreamData(result);
+            return _jsonSerializer.DeserializeStreamData(result);
 
-            string userResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsProfileInfoQueryString, _UserId)));
-
-            users = _serializer.DeserializeProfileList(userResult);
+            //var userIds = new HashSet<FacebookObjectId>();
+            //foreach (var post in posts)
+            //{
+            //    userIds.Add(post.ActorUserId);
+            //    userIds.Add(post.TargetUserId);
+            //    userIds.AddRange(from comment in post.Comments select comment.FromUserId);
+            //    userIds.AddRange(from liker in post.PeopleWhoLikeThis select liker.UserId);
+            //}
         }
 
-        public string AddComment(ActivityPost post, string comment)
+        public List<FacebookContact> GetFriendProfiles()
+        {
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsProfilesQueryString, _UserId)));
+            return _jsonSerializer.DeserializeProfileList(result);
+        }
+
+        public FacebookObjectId AddComment(ActivityPost post, string comment)
         {
             var commentMap = new METHOD_MAP
                 {
                     { "method", "stream.addComment" },
-                    { "post_id", post.PostId },
+                    { "post_id", post.PostId.ToString() },
                     { "comment", comment },
                 };
 
             string result = Utility.FailableFunction(() => _SendRequest(commentMap));
             // retrieve the new comment Id.
-            return _serializer.DeserializeAddCommentResponse(result);
+            return _jsonSerializer.DeserializeAddCommentResponse(result);
         }
 
         public List<ActivityComment> GetComments(ActivityPost post)
@@ -979,16 +925,16 @@ namespace Contigo
             var commentMap = new METHOD_MAP
             {
                 { "method", "stream.getComments" },
-                { "post_id", post.PostId },
+                { "post_id", post.PostId.ToString() },
             };
 
             string response = Utility.FailableFunction(10, () => _SendRequest(commentMap));
-            return _serializer.DeserializeCommentsDataList(post, response);
+            return _jsonSerializer.DeserializeCommentsDataList(post, response);
         }
 
-        public void RemoveComment(string commentId)
+        public void RemoveComment(FacebookObjectId commentId)
         {
-            if (string.IsNullOrEmpty(commentId))
+            if (!FacebookObjectId.IsValid(commentId))
             {
                 // If we're removing a comment that we haven't yet posted we can't remove it.
                 return;
@@ -996,29 +942,29 @@ namespace Contigo
             var commentMap = new METHOD_MAP
             { 
                 { "method", "stream.removeComment" },
-                { "comment_id", commentId },
+                { "comment_id", commentId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(commentMap));
         }
 
-        public void AddLike(string postId)
+        public void AddLike(FacebookObjectId postId)
         {
             var likeMap = new METHOD_MAP
             {
                 { "method", "stream.addLike" },
-                { "post_id", postId },
+                { "post_id", postId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(likeMap));
         }
 
-        public void RemoveLike(string postId)
+        public void RemoveLike(FacebookObjectId postId)
         {
             var likeMap = new METHOD_MAP
             {
                 { "method", "stream.removeLike" },
-                { "post_id", postId },
+                { "post_id", postId.ToString() },
             };
 
             Utility.FailableFunction(() => _SendRequest(likeMap));
@@ -1030,92 +976,82 @@ namespace Contigo
             {
                 { "method", "pages.getInfo" },
                 { "fields", _PageColumns },
-                { "uid", _UserId },
+                { "uid", _UserId.ToString() },
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(pagesMap));
 
-            return _serializer.DeserializePagesList(result);
+            return _jsonSerializer.DeserializePagesList(result);
         }
 
         public List<FacebookContact> GetFriends()
         {
-            string multiqueryResult = Utility.FailableFunction(() =>
-                _SendMultiQuery(
-                    new[] { "friends", "profiles" },
-                    new[] { string.Format(_GetFriendsQueryString, _UserId),
-                            string.Format(_GetProfilesMultiQueryString, "friends") }));
+            // This tends to fail for large friends lists, so instead we batch it into multiple, smaller calls.
+            int batchLimit = 50;
+            var friendsSoFar = new List<FacebookContact>();
+            for (int offset = 0; true; offset += batchLimit)
+            {
+                string friendQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsLimitOffsetFormatQueryString, _UserId, batchLimit, offset)));
+                var batchResult = _jsonSerializer.DeserializeUsersList(friendQueryResult);
+                if (batchResult.Count == 0)
+                {
+                    break;
+                }
 
-            XDocument xdoc = DataSerialization.SafeParseDocument(multiqueryResult);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+                friendsSoFar.AddRange(batchResult);
+            }
 
-            XElement friendsNode = (from descendant in xdoc.Descendants(ns + "name")
-                                    where descendant.Value == "friends"
-                                    select descendant)
-                                   .First();
-            friendsNode = (XElement)friendsNode.NextNode;
-
-            XElement profilesNode = (from descendant in xdoc.Descendants(ns + "name")
-                                     where descendant.Value == "profiles"
-                                     select descendant)
-                                   .First();
-            profilesNode = (XElement)profilesNode.NextNode;
-            
-            return _serializer.DeserializeUsersListWithProfiles(ns, friendsNode, profilesNode);
+            return friendsSoFar;
         }
 
-        public Dictionary<string, OnlinePresence> GetFriendsOnlineStatus()
+        public Dictionary<FacebookObjectId, OnlinePresence> GetFriendsOnlineStatus()
         {
             string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsOnlineStatusQueryString, _UserId)));
-            return _serializer.DeserializeUserPresenceList(result);
+            return _jsonSerializer.DeserializeUserPresenceList(result);
         }
 
         public List<FacebookPhotoAlbum> GetFriendsPhotoAlbums()
         {
             string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsAlbumsQueryString, _UserId)));
-            return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
+            return _jsonSerializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
-        public List<FacebookPhoto>[] GetPhotosWithTags(IEnumerable<string> albumIds)
+        public List<FacebookPhoto>[] GetPhotosWithTags(IEnumerable<FacebookObjectId> albumIds)
         {
             var names = new List<string>();
             var queries = new List<string>();
 
             int albumCount = 0;
-            foreach (string albumId in albumIds)
+            foreach (FacebookObjectId albumId in albumIds)
             {
                 names.Add("get_photos" + albumCount);
                 names.Add("get_tags" + albumCount);
 
-                queries.Add(string.Format(_GetPhotosFromAlbumQueryString, albumId));
+                queries.Add(string.Format(_GetPhotosFromAlbumQueryString, albumId.ToString()));
                 queries.Add(string.Format(_GetPhotoTagsMultiQueryString, "get_photos" + albumCount));
                 ++albumCount;
             }
 
             string photoMultiQueryResult = Utility.FailableFunction(() => _SendMultiQuery(names, queries));
 
-            XDocument xdoc = DataSerialization.SafeParseDocument(photoMultiQueryResult);
-            XNamespace ns = xdoc.Root.GetDefaultNamespace();
+            JSON_ARRAY jsonMultiqueryArray = JsonDataSerialization.SafeParseArray(photoMultiQueryResult);
 
             var photoCollections = new List<FacebookPhoto>[albumCount];
 
             albumCount = 0;
-            foreach (string albumId in albumIds)
+            foreach (FacebookObjectId albumId in albumIds)
             {
-                photoCollections[albumCount] = new List<FacebookPhoto>();
-                XElement photosResponseNode = (from descendant in xdoc.Descendants(ns + "name") 
-                                               where descendant.Value == ("get_photos" + albumCount)
-                                               select descendant)
-                                              .First();
-                photosResponseNode = (XElement)photosResponseNode.NextNode;
-                List<FacebookPhoto> photos = _serializer.DeserializePhotosGetResponse(photosResponseNode, ns);
+                JSON_ARRAY photosResponseArray = (from JSON_OBJECT result in jsonMultiqueryArray
+                                                  where result.Get<string>("name") == "get_photos" + albumCount
+                                                  select result.Get<JSON_ARRAY>("fql_result_set"))
+                                                 .First();
+                List<FacebookPhoto> photos = _jsonSerializer.DeserializePhotosGetResponse(photosResponseArray);
 
-                XElement tagsResponseNode = (from descendant in xdoc.Descendants(ns + "name")
-                                             where descendant.Value == ("get_tags" + albumCount)
-                                             select descendant)
-                                            .First();
-                tagsResponseNode = (XElement)tagsResponseNode.NextNode;
-                List<FacebookPhotoTag> tags = _serializer.DeserializePhotoTagsList(tagsResponseNode, ns);
+                JSON_ARRAY tagsResponseArray = (from JSON_OBJECT result in jsonMultiqueryArray
+                                                where result.Get<string>("name") == "get_tags" + albumCount
+                                                select result.Get<JSON_ARRAY>("fql_result_set"))
+                                                .First();
+                List<FacebookPhotoTag> tags = _jsonSerializer.DeserializePhotoTagsList(tagsResponseArray);
 
                 foreach (var photo in photos)
                 {
@@ -1128,66 +1064,66 @@ namespace Contigo
             return photoCollections;
         }
 
-        public List<ActivityComment> GetPhotoComments(string photoId)
+        public List<ActivityComment> GetPhotoComments(FacebookObjectId photoId)
         {
             var commentMap = new METHOD_MAP
             {
                 { "method", "photos.getComments" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(commentMap));
-            return _serializer.DeserializePhotoCommentsResponse(response);
+            return _jsonSerializer.DeserializePhotoCommentsResponse(response);
         }
 
-        public bool GetPhotoCanComment(string photoId)
+        public bool GetPhotoCanComment(FacebookObjectId photoId)
         {
             var commentMap = new METHOD_MAP
             {
                 { "method", "photos.canComment" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(commentMap));
-            return _serializer.DeserializePhotoCanCommentResponse(response);
+            return _jsonSerializer.DeserializePhotoCanCommentResponse(response);
         }
 
-        public string AddPhotoComment(string photoId, string comment)
+        public FacebookObjectId AddPhotoComment(FacebookObjectId photoId, string comment)
         {
             var addMap = new METHOD_MAP
             {
                 { "method", "photos.addComment" },
-                { "pid", photoId },
+                { "pid", photoId.ToString() },
                 { "body", comment },
             };
 
             string response = Utility.FailableFunction(() => _SendRequest(addMap));
-            return _serializer.DeserializePhotoAddCommentResponse(response);
+            return _jsonSerializer.DeserializePhotoAddCommentResponse(response);
         }
 
-        public List<FacebookPhotoAlbum> GetUserAlbums(string userId)
+        public List<FacebookPhotoAlbum> GetUserAlbums(FacebookObjectId userId)
         {
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
 
             string albumQueryResult = Utility.FailableFunction(() => _SendQuery(string.Format(_GetSingleUserAlbumsQueryString, userId)));
-            return _serializer.DeserializeGetAlbumsResponse(albumQueryResult);
+            return _jsonSerializer.DeserializeGetAlbumsResponse(albumQueryResult);
         }
 
-        public void MarkNotificationsAsRead(params string[] notificationIds)
+        public void MarkNotificationsAsRead(params FacebookObjectId[] notificationIds)
         {
             Verify.IsNotNull(notificationIds, "notificationIds");
             
             var sb = new StringBuilder();
             bool isFirst = true;
-            foreach (string id in notificationIds)
+            foreach (FacebookObjectId id in notificationIds)
             {
-                if (!string.IsNullOrEmpty(id))
+                if (FacebookObjectId.IsValid(id))
                 {
                     if (!isFirst)
                     {
                         sb.Append(",");
                     }
-                    sb.Append(id);
+                    sb.Append(id.ToString());
                 }
             }
 

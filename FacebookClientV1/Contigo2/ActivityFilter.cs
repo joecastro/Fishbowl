@@ -4,7 +4,7 @@
     using Standard;
     using System;
 
-    public class ActivityFilter : IFacebookObject, INotifyPropertyChanged, IMergeable<ActivityFilter>, IComparable<ActivityFilter>
+    public class ActivityFilter : IFacebookObject, INotifyPropertyChanged, IFBMergeable<ActivityFilter>, IComparable<ActivityFilter>
     {
         internal ActivityFilter(FacebookService service)
         {
@@ -12,18 +12,13 @@
             SourceService = service;
         }
 
-        private SmallString _key { get; set; }
         private SmallString _name { get; set; }
         private SmallString _filterType { get; set; }
         private int _rank;
         private bool _isVisible;
 
         // Not raising property change notifications because this should never change.
-        public string Key
-        {
-            get { return _key.GetString(); }
-            internal set { _key = new SmallString(value); }
-        }
+        public FacebookObjectId Key { get; internal set; }
 
         public string Name
         {
@@ -109,18 +104,18 @@
 
         #endregion
 
-        #region IMergeable<ActivityFilter> Members
+        #region IFBMergeable<ActivityFilter> Members
 
-        string IMergeable<ActivityFilter>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, ActivityFilter>.FKID
         {
             get 
             {
-                Assert.IsNeitherNullNorEmpty(Key);
+                Assert.IsTrue(FacebookObjectId.IsValid(Key));
                 return Key; 
             }
         }
 
-        void IMergeable<ActivityFilter>.Merge(ActivityFilter other)
+        void IMergeable<FacebookObjectId, ActivityFilter>.Merge(ActivityFilter other)
         {
             Verify.IsNotNull(other, "other");
             if (other.Key != this.Key)
@@ -157,7 +152,7 @@
                 return false;
             }
 
-            return _key.Equals(other._key);
+            return Key == other.Key;
         }
 
         #endregion

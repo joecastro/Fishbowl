@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Contigo</RootNamespace>
     <AssemblyName>Contigo</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -38,6 +38,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -68,6 +69,7 @@
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -139,17 +141,20 @@
     <Compile Include="Collections\FacebookPhotoAlbumCollection.cs" />
     <Compile Include="Collections\FacebookPhotoCollection.cs" />
     <Compile Include="Collections\FacebookPhotoTagCollection.cs" />
-    <Compile Include="DataSerialization.cs" />
     <Compile Include="FacebookImage.cs" />
     <Compile Include="FacebookImageLink.cs" />
     <Compile Include="FacebookLoginService.cs" />
+    <Compile Include="FacebookMergeableClasses.cs" />
+    <Compile Include="FacebookObjectId.cs" />
     <Compile Include="FacebookPhotoTag.cs" />
     <Compile Include="FacebookCollection.cs" />
     <Compile Include="FacebookWebApi.cs" />
     <Compile Include="GetImageSourceCompletedEventArgs.cs" />
     <Compile Include="IFacebookObject.cs" />
     <Compile Include="ActivityPost.cs" />
+    <Compile Include="JsonDataSerialization.cs" />
     <Compile Include="Notification.cs" />
+    <Compile Include="SaveImageCompletedEventArgs.cs" />
     <Compile Include="SearchIndex.cs" />
     <Compile Include="ServiceSettings.cs" />
     <Compile Include="Stemmer.cs" />
@@ -163,12 +168,6 @@
     </Compile>
     <Compile Include="DispatcherPool.cs" />
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Json\Microsoft.Json\Microsoft.Json.csproj">
-      <Project>{2E12ED56-6501-43A5-85C7-64255241D60E}</Project>
-      <Name>Microsoft.Json.Dev10</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -186,6 +185,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.Json\Microsoft.Json\Microsoft.Json.csproj">
+      <Project>{2E12ED56-6501-43A5-85C7-64255241D60E}</Project>
+      <Name>Microsoft.Json</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,6 +8,7 @@
     using System.Windows;
     using System.Windows.Threading;
     using Standard;
+    using System.Threading;
 
     internal class GetCommentsForPhotoResponse
     {
@@ -22,13 +23,15 @@
     {
         #region Fields
 
+        // Lock for accessing _interestingPeople
         private readonly object _localLock = new object();
 
         private FacebookWebApi _facebookApi;
 
         private bool _hasFetchedFriendsList = false;
-        private readonly Dictionary<string, FacebookContact> _userLookup = new Dictionary<string, FacebookContact>();
-        private readonly Dictionary<string, FacebookPhoto> _photoLookup = new Dictionary<string, FacebookPhoto>();
+        private readonly ReaderWriterLockSlim _userLookupLock = new ReaderWriterLockSlim();
+        private readonly Dictionary<FacebookObjectId, FacebookContact> _userLookup = new Dictionary<FacebookObjectId, FacebookContact>();
+        private readonly Dictionary<FacebookObjectId, FacebookPhoto> _photoLookup = new Dictionary<FacebookObjectId, FacebookPhoto>();
         private readonly List<FacebookContact> _interestingPeople = new List<FacebookContact>();
 
         private DispatcherPool _userInteractionDispatcher;
@@ -56,6 +59,8 @@
         private readonly ServiceSettings _settings;
         private readonly string _settingsPath;
 
+        private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
+
         #endregion
 
         /// <summary>The Application's ID key provided by Facebook.</summary>
@@ -63,22 +68,23 @@
         public string ApplicationKey { get; private set; }
 
         public Dispatcher Dispatcher { get; private set; }
+
         /// <summary>Once logged in, the key provided by the Facebook servers that identifies this session.</summary>
         public string SessionKey { get; private set; }
+        
         /// <summary>The ID of the currently logged in user.  Requests to the server are made with this context.</summary>
-        public string UserId { get; private set; }
+        public FacebookObjectId UserId { get; private set; }
+        
         public bool IsOnline { get { return !string.IsNullOrEmpty(SessionKey); } }
 
         internal AsyncWebGetter WebGetter { get; private set; }
 
-        private DateTime _mostRecentNewsfeedItem = DateTime.MinValue;
+        internal FBMergeableCollection<Notification> RawNotifications { get; private set; }
 
-        internal MergeableCollection<Notification> RawNotifications { get; private set; }
-
-        internal MergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
-        internal MergeableCollection<FacebookContact> RawFriends { get; private set; }
-        internal MergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
-        internal MergeableCollection<ActivityFilter> RawFilters { get; private set; }
+        internal FBMergeableCollection<ActivityPost> RawNewsFeed { get; private set; }
+        internal FBMergeableCollection<FacebookContact> RawFriends { get; private set; }
+        internal FBMergeableCollection<FacebookPhotoAlbum> RawPhotoAlbums { get; private set; }
+        internal FBMergeableCollection<ActivityFilter> RawFilters { get; private set; }
 
         public FacebookCollection<ActivityFilter> ActivityFilters { get; private set; }
         public FacebookCollection<Notification> Notifications { get; private set; }
@@ -91,7 +97,7 @@
         public SearchIndex SearchIndex { get; private set; }
 
         public FacebookCollection<MessageNotification> InboxNotifications { get; private set; }
-        internal MergeableCollection<MessageNotification> RawInbox { get; private set; }
+        internal FBMergeableCollection<MessageNotification> RawInbox { get; private set; }
 
         /// <summary>Utility for methods that require a valid session key.</summary>
         private void _VerifyOnline()
@@ -139,18 +145,18 @@
 
             SearchIndex = new SearchIndex(this);
 
-            RawNewsFeed = new MergeableCollection<ActivityPost>();
-            RawFriends = new MergeableCollection<FacebookContact>();
-            RawPhotoAlbums = new MergeableCollection<FacebookPhotoAlbum>();
-            RawNotifications = new MergeableCollection<Notification>();
-            RawFilters = new MergeableCollection<ActivityFilter>();
+            RawNewsFeed = new FBMergeableCollection<ActivityPost>();
+            RawFriends = new FBMergeableCollection<FacebookContact>();
+            RawPhotoAlbums = new FBMergeableCollection<FacebookPhotoAlbum>();
+            RawNotifications = new FBMergeableCollection<Notification>();
+            RawFilters = new FBMergeableCollection<ActivityFilter>();
 
             NewsFeed = new ActivityPostCollection(RawNewsFeed, this, true);
             Friends = new FacebookContactCollection(RawFriends, this, false);
             OnlineFriends = new FacebookContactCollection(RawFriends, this, true);
             PhotoAlbums = new FacebookPhotoAlbumCollection(RawPhotoAlbums, this, null);
             Notifications = new FacebookCollection<Notification>(RawNotifications, this);
-            RawInbox = new MergeableCollection<MessageNotification>();
+            RawInbox = new FBMergeableCollection<MessageNotification>();
             InboxNotifications = new FacebookCollection<MessageNotification>(RawInbox, this);
             ActivityFilters = new FacebookCollection<ActivityFilter>(RawFilters, this);
 
@@ -168,12 +174,15 @@
         /// </summary>
         /// <param name="sessionKey"></param>
         /// <param name="userId"></param>
-        public void RecoverSession(string sessionKey, string sessionSecret, string userId)
+        public void RecoverSession(string sessionKey, string sessionSecret, FacebookObjectId userId)
         {
             Dispatcher.VerifyAccess();
+
+            _settings.SetSessionInfo(sessionKey, sessionSecret, userId);
+
             _VerifyNotOnline();
             Verify.IsNeitherNullNorEmpty(sessionKey, "sessionKey");
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
             Verify.IsNeitherNullNorEmpty(sessionSecret, "sessionSecret");
 
             SessionKey = sessionKey;
@@ -190,31 +199,28 @@
 
             _collectionUpdateDispatcher = new DispatcherPool("FacebookServer: Update Thread", 1);
 
-            GetUserAsync(UserId, _PerformInitialSync);
+            _userLookupLock.EnterWriteLock();
+            try
+            {
+                MeContact.UserId = UserId;
+                MeContact.ProfileUri = new Uri("http://facebook.com/profile.php?id=" + UserId);
+                MeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
+                _userLookup.Add(UserId, MeContact);
+            }
+            finally 
+            {
+                _userLookupLock.ExitWriteLock();
+            }
+            
+            GetUser(UserId);
+
+            _friendInfoDispatcher.QueueRequest(_PerformInitialSync, null);
         }
 
-        private void _PerformInitialSync(object sender, AsyncCompletedEventArgs e)
+        private void _PerformInitialSync(object unused)
         {
             Assert.IsFalse(Dispatcher.CheckAccess());
-
-            if (e.Cancelled || e.Error != null)
-            {
-                string message = e.Cancelled ? "Request was canceled." : e.Error.Message;
-
-                // TODO: Something is really messed up.  We need a better way to surface this error to the user.
-                MessageBox.Show(message, "An error ocurred in Fishbowl", MessageBoxButton.OK, MessageBoxImage.Error);
-                this.DisconnectSession(null);
-                return; // ...
-            }
-
-            var newMeContact = (FacebookContact)e.UserState;
-            newMeContact.InterestLevel = _settings.GetInterestLevel(UserId) ?? 1f;
-
-            MeContact.Merge(newMeContact);
-
-            _userLookup[UserId] = MeContact;
-            _NotifyPropertyChanged("MeContact");
-
+            
             _RefreshFirstTime();
 
             _refreshTimerDynamic.Start();
@@ -237,7 +243,6 @@
             _refreshTimerModerate.Stop();
             _refreshTimerInfrequent.Stop();
 
-            Utility.SafeDispose(ref _facebookApi);
             Utility.SafeDispose(ref _userInteractionDispatcher);
             Utility.SafeDispose(ref _friendInfoDispatcher);
             Utility.SafeDispose(ref _photoInfoDispatcher);
@@ -259,7 +264,7 @@
             */
 
             SessionKey = null;
-            UserId = null;
+            UserId = default(FacebookObjectId);
 
             RawNewsFeed.Clear();
             RawFriends.Clear();
@@ -316,30 +321,45 @@
             }
         }
 
-        public void GetUserAsync(string userId, AsyncCompletedEventHandler callback)
+        public FacebookContact GetUser(FacebookObjectId userId)
         {
-            Verify.IsNeitherNullNorEmpty(userId, "userId");
-            Verify.IsNotNull(callback, "callback");
+            Verify.IsTrue(FacebookObjectId.IsValid(userId), "Invalid userId");
 
-            FacebookContact fastContact;
-            if (_userLookup.TryGetValue(userId, out fastContact))
+            FacebookContact retContact = null;
+            _userLookupLock.EnterUpgradeableReadLock();
+            try
             {
-                callback(this, new AsyncCompletedEventArgs(null, false, fastContact));
-                return;
+                if (_userLookup.TryGetValue(userId, out retContact))
+                {
+                    return retContact;
+                }
+                
+                retContact = new FacebookContact(this)
+                {
+                    UserId = userId,
+                    ProfileUri = new Uri("http://facebook.com/profile.php?id=" + userId),
+                    Name = "Someone",
+                };
+
+                _userLookupLock.EnterWriteLock();
+                try
+                {
+                    _userLookup.Add(userId, retContact);
+                }
+                finally
+                {
+                    _userLookupLock.ExitWriteLock();
+                }
+            }
+            finally
+            {
+                _userLookupLock.ExitUpgradeableReadLock();
             }
 
-            if (!IsOnline)
+            _friendInfoDispatcher.QueueRequest((o) =>
             {
-                callback(this, new AsyncCompletedEventArgs(null, true, null));
-                return;
-            }
-
-            _friendInfoDispatcher.QueueRequest((o) => 
-            {
-                // Treat this case as though it was canceled.
                 if (!IsOnline)
                 {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(null, true, null));
                     return;
                 }
 
@@ -349,55 +369,42 @@
                     _hasFetchedFriendsList = true;
                 }
 
-                // Maybe this contact was found while the request was in the queue.
-                FacebookContact contact = null;
-
-                if (_userLookup.TryGetValue(userId, out contact))
-                {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(null, false, contact));
-                    return;
-                }
-
+                FacebookContact contact;
                 try
                 {
                     contact = _facebookApi.GetUser(userId);
                     Assert.IsNotNull(contact);
-
-                    lock (_userLookup)
+                    double? interestLevel = _settings.GetInterestLevel(userId);
+                    if (interestLevel.HasValue)
                     {
-                        if (_userLookup.ContainsKey(userId))
-                        {
-                            contact = _userLookup[userId];
-                        }
-                        else
-                        {
-                            // If we have a persisted interest level for this contact then apply it before returning.
-                            double? interestLevel = _settings.GetInterestLevel(userId);
-                            if (interestLevel.HasValue)
-                            {
-                                contact.InterestLevel = interestLevel.Value;
-                            }
-
-                            _userLookup.Add(userId, contact);
-                        }
+                        contact.InterestLevel = interestLevel.Value;
                     }
                 }
-                catch (Exception e)
+                catch (FacebookException)
                 {
-                    Dispatcher.BeginInvoke(callback, this, new AsyncCompletedEventArgs(e, false, null));
                     return;
                 }
-                callback(this, new AsyncCompletedEventArgs(null, false, contact));
-                return;
+
+                _userLookupLock.EnterReadLock();
+                try
+                {
+                    _userLookup[userId].Merge(contact);
+                }
+                finally
+                {
+                    _userLookupLock.ExitReadLock();
+                }
             }, null);
+
+            return retContact;
         }
 
         /* Unused
-        internal MergeableCollection<FacebookPhotoTag> GetPhotoTags(FacebookPhoto photo)
+        internal FBMergeableCollection<FacebookPhotoTag> GetPhotoTags(FacebookPhoto photo)
         {
             Verify.IsNotNull(photo, "photo");
 
-            var tagCollection = new MergeableCollection<FacebookPhotoTag>();
+            var tagCollection = new FBMergeableCollection<FacebookPhotoTag>();
             _photoInfoDispatcher.QueueRequest(
                 delegate
                 {
@@ -469,7 +476,7 @@
         public FacebookPhoto AddPhotoToApplicationAlbum(string caption, string imageFile)
         {
             _VerifyOnline();
-            FacebookPhoto photo = _facebookApi.AddPhotoToAlbum(null, caption, imageFile);
+            FacebookPhoto photo = _facebookApi.AddPhotoToAlbum(default(FacebookObjectId), caption, imageFile);
 
             _photoInfoDispatcher.QueueRequest(delegate
             {
@@ -481,7 +488,7 @@
                     {
                         throw new FacebookException("The application album could not be created.", null);
                     }
-                    appAlbum.RawPhotos = new MergeableCollection<FacebookPhoto>(new[] { photo });
+                    appAlbum.RawPhotos = new FBMergeableCollection<FacebookPhoto>(new[] { photo });
                     RawPhotoAlbums.Add(appAlbum);
                 }
             }, null);
@@ -538,7 +545,7 @@
                     // attachments, aren't showing up as true statuses...
                     // Since we don't have a PostId with the status.set call, I need to know how to remove it.
                     // This seems like a bug in Facebook's APIs though, so maybe I can change this back soon.
-                    Assert.AreEqual("FakeStatusId", updatedStatus.PostId);
+                    Assert.AreEqual(new FacebookObjectId("FakeStatusId"), updatedStatus.PostId);
 
                     // If there are multiple fake status updates then this will replace the last one.
                     RawNewsFeed.Add(updatedStatus);
@@ -585,8 +592,8 @@
                 _userInteractionDispatcher.QueueRequest(
                 delegate
                 {
-                    string commentId = _facebookApi.AddComment(post, comment);
-                    if (!string.IsNullOrEmpty(commentId))
+                    FacebookObjectId commentId = _facebookApi.AddComment(post, comment);
+                    if (FacebookObjectId.IsValid(commentId))
                     {
                         var activityComment = new ActivityComment(this)
                         {
@@ -618,8 +625,8 @@
                 _userInteractionDispatcher.QueueRequest(
                 delegate
                 {
-                    string commentId = _facebookApi.AddPhotoComment(photo.PhotoId, comment);
-                    if (!string.IsNullOrEmpty(commentId))
+                    FacebookObjectId commentId = _facebookApi.AddPhotoComment(photo.PhotoId, comment);
+                    if (FacebookObjectId.IsValid(commentId))
                     {
                         var activityComment = new ActivityComment(this)
                         {
@@ -761,6 +768,13 @@
                 return;
             }
 
+            var unfriendNotification = notification as UnfriendNotification;
+            if (unfriendNotification != null)
+            {
+                _ReadUnfriendNotification(unfriendNotification);
+                return;
+            }
+
             // Near as I can tell there's currently no way to mark messages as read.  Silently do nothing... :(
             var message = notification as MessageNotification;
             if (message != null)
@@ -773,7 +787,7 @@
                 notification.IsUnread = false;
                 RawNotifications.Remove(notification);
 
-                if (!string.IsNullOrEmpty(notification.NotificationId))
+                if (FacebookObjectId.IsValid(notification.NotificationId))
                 {
                     _userInteractionDispatcher.QueueRequest((obj) => _facebookApi.MarkNotificationsAsRead(notification.NotificationId), null);
                 }
@@ -785,6 +799,13 @@
             friendRequest.IsUnread = false;
             RawNotifications.Remove(friendRequest);
             _userInteractionDispatcher.QueueRequest((obj) => _settings.MarkFriendRequestAsRead(friendRequest.SenderId), null);
+        }
+
+        private void _ReadUnfriendNotification(UnfriendNotification unfriendNotification)
+        {
+            unfriendNotification.IsUnread = false;
+            RawNotifications.Remove(unfriendNotification);
+            _userInteractionDispatcher.QueueRequest((obj) => _settings.MarkUnfriendNotificationAsRead(unfriendNotification.SenderId), null);
         }
 
         // Refresh data that needs to be frequently requeried.
@@ -884,13 +905,13 @@
 
         private void _UpdatePhotoAlbumsAsync()
         {
-            _photoInfoDispatcher.QueueRequest(_UpdateInterestingPhotoAlbumsWorker, null);
+            _photoInfoDispatcher.QueueRequest(_UpdateInterestingPhotoAlbumsWorker, default(FacebookObjectId));
             _photoInfoDispatcher.QueueRequest(_UpdateFriendsPhotoAlbumsWorker, null);
         }
 
-        internal void GetActivityPostsByUserAsync(string userId, AsyncCompletedEventHandler callback)
+        internal void GetActivityPostsByUserAsync(FacebookObjectId userId, AsyncCompletedEventHandler callback)
         {
-            Assert.IsNeitherNullNorEmpty(userId);
+            Assert.IsTrue(FacebookObjectId.IsValid(userId));
             Assert.IsNotNull(callback);
 
             _friendInfoDispatcher.QueueRequest(unused =>
@@ -1004,10 +1025,8 @@
                     _mostRecentNewsfeedItem = DateTime.MinValue;
                 }
             }
-            List<ActivityPost> posts;
-            List<FacebookContact> users;
 
-            string filterKey = null;
+            FacebookObjectId filterKey = default(FacebookObjectId);
             if (_newsFeedFilter != null)
             {
                 filterKey = _newsFeedFilter.Key;
@@ -1018,10 +1037,11 @@
                 return;
             }
 
+            List<ActivityPost> posts;
             try
             {
                 // This has been timing out from Facebook.
-                _facebookApi.GetStream(filterKey, maxStreamCount, _mostRecentNewsfeedItem, out posts, out users);
+                posts = _facebookApi.GetStream(filterKey, maxStreamCount, _mostRecentNewsfeedItem);
             }
             catch
             {
@@ -1029,37 +1049,57 @@
                 return;
             }
 
-            bool foundNewFriend = false;
-
-            lock (_userLookup)
+            if (!IsOnline)
             {
-                foreach (FacebookContact streamUser in users)
-                {
-                    FacebookContact foundContact;
-                    if (!_userLookup.TryGetValue(streamUser.UserId, out foundContact))
-                    {
-                        // If we have a persisted interest level for this contact then apply it before returning.
-                        double? interestLevel = _settings.GetInterestLevel(streamUser.UserId);
-                        if (interestLevel.HasValue)
-                        {
-                            streamUser.InterestLevel = interestLevel.Value;
-                        }
-                        _userLookup.Add(streamUser.UserId, streamUser);
-                        foundNewFriend = true;
-                    }
-                    else
-                    {
-                        // For the most part the profile data won't be better info than we can get through the User info,
-                        // Except sometimes the User's images are blank but the stream's isn't.
-                        foundContact.MergeImage(streamUser.Image);
-                    }
-                }
+                return;
             }
 
-            // Don't bother with this if we're going to immediately turn around and do the full sync.
-            if (!doSmallSync && foundNewFriend && !isFirstSync)
+            List<FacebookContact> users = null;
+            try
             {
-                _UpdateFriendsAsync();
+                if (!_hasFetchedFriendsList)
+                {
+                    users = _facebookApi.GetFriendProfiles();
+                }
+            }
+            catch
+            {
+                users = null;
+            }
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            if (users != null)
+            {
+                _userLookupLock.EnterWriteLock();
+                try
+                {
+                    foreach (FacebookContact friendProfile in users)
+                    {
+                        FacebookContact foundContact;
+                        if (!_userLookup.TryGetValue(friendProfile.UserId, out foundContact))
+                        {
+                            double? interestLevel = _settings.GetInterestLevel(friendProfile.UserId);
+                            if (interestLevel.HasValue)
+                            {
+                                friendProfile.InterestLevel = interestLevel.Value;
+                            }
+
+                            _userLookup.Add(friendProfile.UserId, friendProfile);
+                        }
+                        else
+                        {
+                            foundContact.MergeImage(friendProfile.Image);
+                        }
+                    }
+                }
+                finally
+                {
+                    _userLookupLock.ExitWriteLock();
+                }
             }
 
             if (posts.Count > 0)
@@ -1078,7 +1118,7 @@
                     }
                 }
 
-                // Same as with friends, don't bother is we're in the small sync case.
+                // Don't bother is we're in the small sync case.
                 if (!doSmallSync && foundNewPhotos && !isFirstSync)
                 {
                     _UpdatePhotoAlbumsAsync();
@@ -1094,7 +1134,7 @@
                 }
                 else
                 {
-                    if (filterKey != null)
+                    if (filterKey != default(FacebookObjectId))
                     {
                         return;
                     }
@@ -1102,7 +1142,7 @@
 
                 if (IsOnline)
                 {
-                    ActivityPost fakeStatusPost = RawNewsFeed.FindFKID("FakeStatusId");
+                    ActivityPost fakeStatusPost = RawNewsFeed.FindFKID(new FacebookObjectId("FakeStatusId"));
                     if (fakeStatusPost != null)
                     {
                         ActivityPost realStatusPost = posts.FirstOrDefault(post => string.Equals(post.Message, fakeStatusPost.Message, StringComparison.Ordinal));
@@ -1152,6 +1192,10 @@
 
             _settings.RemoveKnownFriendRequestsExcept((from notification in requests where notification is FriendRequestNotification select notification.SenderId).ToList());
             notifications.AddRange(from req in requests where !_settings.IsFriendRequestKnown(req.SenderId) select req);
+
+            List<FacebookObjectId> unfriendIds = _settings.GetUnfriendNotifications();
+            notifications.AddRange(from id in unfriendIds select new UnfriendNotification(this, id) as Notification);
+
             RawNotifications.Merge(notifications, false);
 
             if (!IsOnline)
@@ -1172,9 +1216,10 @@
 
             List<FacebookContact> pagesList = _facebookApi.GetPages();
 
-            lock (_userLookup)
+            if (IsOnline)
             {
-                if (IsOnline)
+                _userLookupLock.EnterWriteLock();
+                try
                 {
                     foreach (FacebookContact page in pagesList)
                     {
@@ -1189,6 +1234,10 @@
                         }
                     }
                 }
+                finally
+                {
+                    _userLookupLock.ExitWriteLock();
+                }
             }
         }
 
@@ -1200,35 +1249,41 @@
             }
 
             List<FacebookContact> friendsList = _facebookApi.GetFriends();
-              
-            lock (_userLookup)
-            {
-                if (IsOnline)
-                {
-                    RawFriends.Merge(friendsList, false);
-                }
 
-                if (IsOnline)
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            _settings.UpdateInterestLevels(friendsList);
+            _settings.UpdateCurrentFriends(friendsList);
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            RawFriends.Merge(friendsList, false);
+
+            if (!IsOnline)
+            {
+                return;
+            }
+
+            _userLookupLock.EnterWriteLock();
+            try
+            {
+                foreach (FacebookContact friend in friendsList)
                 {
-                    foreach (FacebookContact friend in friendsList)
+                    if (!_userLookup.ContainsKey(friend.UserId))
                     {
-                        FacebookContact lookedUpFriend;
-                        if (!_userLookup.TryGetValue(friend.UserId, out lookedUpFriend))
-                        {
-                            // If we have a persisted interest level for this contact then apply it before returning.
-                            double? interestLevel = _settings.GetInterestLevel(friend.UserId);
-                            if (interestLevel.HasValue)
-                            {
-                                friend.InterestLevel = interestLevel.Value;
-                            }
-                            _userLookup.Add(friend.UserId, friend);
-                        }
-                        else
-                        {
-                            lookedUpFriend.Merge(friend);
-                        }
+                        _userLookup.Add(friend.UserId, friend);
                     }
                 }
+            }
+            finally
+            {
+                _userLookupLock.ExitWriteLock();
             }
         }
 
@@ -1239,34 +1294,34 @@
                 return;
             }
 
-            Dictionary<string, OnlinePresence> statusMap = _facebookApi.GetFriendsOnlineStatus();
+            Dictionary<FacebookObjectId, OnlinePresence> statusMap = _facebookApi.GetFriendsOnlineStatus();
 
-            // If the friend list has obviously changed then just do a full refresh.
-            bool updatedSuccessfully = false;
-            lock (_userLookup)
+            if (IsOnline)
             {
-                if (RawFriends.Count == statusMap.Count)
+                _userLookupLock.EnterReadLock();
+                try
                 {
-                    if (IsOnline)
+                    foreach (var friend in RawFriends)
                     {
-                        updatedSuccessfully = true;
-                        foreach (var friend in RawFriends)
+                        OnlinePresence presence;
+                        if (!statusMap.TryGetValue(friend.UserId, out presence))
                         {
-                            OnlinePresence presence;
-                            if (!statusMap.TryGetValue(friend.UserId, out presence))
-                            {
-                                // Why don't we have data for this friend?
-                                // Refresh the list.
-                                updatedSuccessfully = false;
-                                break;
-                            }
-                            friend.OnlinePresence = presence;
+                            // Why don't we have data for this friend?
+                            // Refresh the list.
+                            statusMap.Clear();
+                            break;
                         }
+                        friend.OnlinePresence = presence;
                     }
+                }
+                finally
+                {
+                    _userLookupLock.ExitReadLock();
                 }
             }
 
-            if (!updatedSuccessfully)
+            // If the friend list has obviously changed then just do a full refresh.
+            if (RawFriends.Count != statusMap.Count)
             {
                 _UpdateFriendsAsync();
             }
@@ -1291,9 +1346,9 @@
                 return;
             }
 
-            var userId = (string)userIdParameter;
+            var userId = (FacebookObjectId)userIdParameter;
 
-            if (string.IsNullOrEmpty(userId))
+            if (!FacebookObjectId.IsValid(userId))
             {
                 FacebookContact[] interestingCopy;
                 lock (_localLock)
@@ -1333,7 +1388,7 @@
                 for (; batchAlbumList.Count < batchCount && i < albums.Count; ++i)
                 {
                     // Do we already know about this album?
-                    FacebookPhotoAlbum sourceAlbum = RawPhotoAlbums.FindFKID(((IMergeable<FacebookPhotoAlbum>)albums[i]).FKID);
+                    FacebookPhotoAlbum sourceAlbum = RawPhotoAlbums.FindFKID(((IFBMergeable<FacebookPhotoAlbum>)albums[i]).FKID);
                     if (sourceAlbum == null || sourceAlbum.LastModified != albums[i].LastModified)
                     {
                         batchAlbumList.Add(albums[i]);
@@ -1360,7 +1415,7 @@
 
                 for (int currentAlbum = 0; currentAlbum < batchAlbumList.Count; ++currentAlbum)
                 {
-                    batchAlbumList[currentAlbum].RawPhotos = new MergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
+                    batchAlbumList[currentAlbum].RawPhotos = new FBMergeableCollection<FacebookPhoto>(photoCollections[currentAlbum]);
                 }
 
                 if (!IsOnline)
@@ -1419,15 +1474,20 @@
             }
         }
 
-        internal double GetInterestLevelForUserId(string userId)
+        internal double GetInterestLevelForUserId(FacebookObjectId userId)
         {
-            lock (_userLookup)
+            _userLookupLock.EnterReadLock();
+            try
             {
                 FacebookContact contact;
                 if (_userLookup.TryGetValue(userId, out contact))
                 {
                     return contact.InterestLevel;
                 }
+            }
+            finally
+            {
+                _userLookupLock.ExitReadLock();
             }
 
             return _settings.GetInterestLevel(userId) ?? FacebookContact.DefaultInterestLevel;

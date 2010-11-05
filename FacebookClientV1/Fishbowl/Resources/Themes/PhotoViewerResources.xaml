@@ -17,7 +17,7 @@
 
   <!-- Data template for photos in the film strip -->
   <DataTemplate x:Key="FilmStripItemTemplate">
-    <ClientManagerControls:FacebookPhotoDragContainer FacebookPhoto="{Binding}">
+    <ClientManagerControls:FacebookImageDragContainer FacebookImage="{Binding Image}">
       <Button
           Height="80" Width="80"
           Click="OnNavigateToContentButtonClicked"
@@ -62,7 +62,7 @@
           </ControlTemplate>
         </Button.Template>
       </Button>
-    </ClientManagerControls:FacebookPhotoDragContainer>
+    </ClientManagerControls:FacebookImageDragContainer>
   </DataTemplate>
 
   <!-- Color overrides for the film strip -->

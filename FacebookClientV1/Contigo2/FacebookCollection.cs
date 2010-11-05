@@ -25,7 +25,7 @@
     /// <remarks>This class must only be accessed on the thread on which it was created.</remarks>
     public class FacebookCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IFacebookObject, IFacebookCollection where T : class
     {
-        private MergeableCollection<T> _sourceCollection;
+        private FBMergeableCollection<T> _sourceCollection;
         private readonly Dispatcher _dispatcher;
         private event PropertyChangedEventHandler _propertyChanged;
         private event NotifyCollectionChangedEventHandler _sourceCollectionChanged;
@@ -34,13 +34,13 @@
         // To ensure that this is really what the caller wants a static factory method is preferred.
         internal FacebookCollection(IEnumerable<T> items)
         {
-            Assert.IsFalse(items is MergeableCollection<T>);
+            Assert.IsFalse(items is FBMergeableCollection<T>);
             Verify.IsNotNull(items, "items");
             _dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
-            _sourceCollection = new MergeableCollection<T>(items);
+            _sourceCollection = new FBMergeableCollection<T>(items);
         }
 
-        internal FacebookCollection(MergeableCollection<T> rawCollection, FacebookService service)
+        internal FacebookCollection(FBMergeableCollection<T> rawCollection, FacebookService service)
         {
             Verify.IsNotNull(rawCollection, "rawCollection");
             Verify.IsNotNull(service, "service");
@@ -56,7 +56,7 @@
         /// Be careful of adding new uses of this.
         /// This is only intended to be called within the constructor of derived classes.
         /// </summary>
-        internal void ReplaceSourceCollection(MergeableCollection<T> newSource)
+        internal void ReplaceSourceCollection(FBMergeableCollection<T> newSource)
         {
             Assert.IsTrue(_sourceCollectionChanged == null);
             Assert.IsNotNull(newSource);

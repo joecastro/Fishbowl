@@ -5,7 +5,7 @@ namespace Contigo
     using System.ComponentModel;
     using Standard;
 
-    public class Notification : IFacebookObject, INotifyPropertyChanged, IMergeable<Notification>
+    public class Notification : IFacebookObject, INotifyPropertyChanged, IFBMergeable<Notification>
     {
         internal Notification(FacebookService service)
         {
@@ -16,10 +16,8 @@ namespace Contigo
         private SmallString _title;
         private SmallString _description;
         private SmallUri _href;
-        private SmallString _notificationId;
-        private SmallString _senderId;
-        private SmallString _recipientId;
         // private int _appId;
+        private FacebookImage _iconImage;
 
         private SmallString _titleText;
         private SmallString _descriptionText;
@@ -28,67 +26,25 @@ namespace Contigo
         private bool _hidden;
         private bool _unread;
         private FacebookContact _sender;
-        private bool _isSenderUpdateInProgress;
 
-        internal string NotificationId
-        {
-            get { return _notificationId.GetString(); }
-            set
-            {
-                Assert.IsDefault(_notificationId);
-                _notificationId = new SmallString(value);
-            }
-        }
+        internal FacebookObjectId NotificationId { get; set; }
 
-        internal string SenderId
-        {
-            get { return _senderId.GetString(); }
-            set
-            {
-                SmallString newValue = new SmallString(value);
-                if (_senderId != newValue)
-                {
-                    _senderId = newValue;
-                    _NotifyPropertyChanged("SenderId");
-                }
-            }
-        }
+        internal FacebookObjectId SenderId { get; set; }
 
         public FacebookContact Sender
         {
             get
             {
-                if (_sender == null && !_isSenderUpdateInProgress)
+                if (_sender == null)
                 {
-                    _isSenderUpdateInProgress = true;
-                    SourceService.GetUserAsync(SenderId, _OnGetSenderCompleted);
+                    _sender = SourceService.GetUser(SenderId);
                 }
 
                 return _sender;
             }
-            internal set { _sender = value; }
         }
 
-        private void _OnGetSenderCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _sender = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("Sender");
-            _isSenderUpdateInProgress = false;
-        }
-
-        internal string RecipientId
-        {
-            get { return _recipientId.GetString(); }
-            set
-            {
-                SmallString newValue = new SmallString(value);
-                if (_recipientId != newValue)
-                {
-                    _recipientId = newValue;
-                    _NotifyPropertyChanged("RecipientId");
-                }
-            }
-        }
+        internal FacebookObjectId RecipientId { get; set; }
 
         public string TitleText
         {
@@ -261,6 +217,22 @@ namespace Contigo
             }
         }
 
+        public FacebookImage Icon
+        {
+            get
+            {
+                if (_iconImage == null)
+                {
+                    _iconImage = new FacebookImage(SourceService, null);
+                }
+                return _iconImage;
+            }
+            set
+            {
+                _iconImage = value;
+            }
+        }
+
         #region IFacebookObject Members
 
         FacebookService IFacebookObject.SourceService { get; set; }
@@ -301,18 +273,18 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<Notification> Members
+        #region IFBMergeable<Notification> Members
 
-        string IMergeable<Notification>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, Notification>.FKID
         {
             get
             {
-                Assert.IsNeitherNullNorEmpty(NotificationId);
-                return NotificationId.ToString(); 
+                Assert.IsTrue(FacebookObjectId.IsValid(NotificationId));
+                return NotificationId; 
             }
         }
 
-        void IMergeable<Notification>.Merge(Notification other)
+        void IMergeable<FacebookObjectId, Notification>.Merge(Notification other)
         {
             Verify.IsNotNull(other, "other");
             Verify.AreEqual(NotificationId, other.NotificationId, "other", "This can only be merged with a Notification with the same Id.");
@@ -328,6 +300,7 @@ namespace Contigo
             Title = other.Title;
             TitleText = other.TitleText;
             Updated = other.Updated;
+            Icon.SafeMerge(other.Icon);
         }
 
         #endregion
@@ -366,66 +339,106 @@ namespace Contigo
         private const string _friendRequestFormat = "<div><a href=\"{0}\">{1}</a> wants to be your friend!</div>";
         private const string _friendRequestTextFormat = "{0} wants to be your friend!";
 
-        internal FriendRequestNotification(FacebookService service, string userId)
+        internal FriendRequestNotification(FacebookService service, FacebookObjectId userId)
             : base(service)
         {
             Created = default(DateTime);
             Updated = default(DateTime);
             IsHidden = false;
             IsUnread = true;
-            NotificationId = "FriendRequest_" + userId;
+            NotificationId = new FacebookObjectId("FriendRequest_" + userId.ToString());
             RecipientId = service.UserId;
             SenderId = userId;
-            Title = string.Format(_friendRequestFormat, "http://facebook.com/profile.php?id=" + userId, "Someone");
-            TitleText = string.Format(_friendRequestTextFormat, "Someone");
-            service.GetUserAsync(userId, _UpdateTitle);
-            Link = new Uri("http://facebook.com/profile.php?id=" + userId);
+            Sender.PropertyChanged += _OnSenderPropertyChanged;
+            Title = string.Format(_friendRequestFormat, Sender.ProfileUri.ToString(), Sender.Name);
+            TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
+            Link = Sender.ProfileUri;
             //this.Description = "";
         }
 
-        private void _UpdateTitle(object sender, AsyncCompletedEventArgs e)
+        private void _OnSenderPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.Error != null || e.Cancelled)
+            if (e.PropertyName == "Name")
             {
-                return;
+                if (!string.IsNullOrEmpty(Sender.Name))
+                {
+                    Title = string.Format(_friendRequestFormat, Sender.ProfileUri, Sender.Name);
+                    TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
+                }
             }
-
-            Sender = e.UserState as FacebookContact;
-            if (!string.IsNullOrEmpty(Sender.Name))
+            if (e.PropertyName == "ProfileUri")
             {
-                Title = string.Format(_friendRequestFormat, Sender.ProfileUri, Sender.Name);
-                TitleText = string.Format(_friendRequestTextFormat, Sender.Name);
                 Link = Sender.ProfileUri;
             }
         }
 
         public override string ToString()
         {
-            if (Sender != null)
+            return TitleText;
+        }
+    }
+
+    // Defriend or unfriend?  Oxford American Dictionary thinks "Unfriend"...
+    public class UnfriendNotification : Notification
+    {
+        private const string _friendRemovalFormat = "<div><a href=\"{0}\">{1}</a> is no longer your friend...</div>";
+        private const string _friendRemovalTextFormat = "{0} is no longer your friend...";
+
+        internal UnfriendNotification(FacebookService service, FacebookObjectId userId)
+            : base(service)
+        {
+            Created = default(DateTime);
+            Updated = default(DateTime);
+            IsHidden = false;
+            IsUnread = true;
+            NotificationId = new FacebookObjectId("Unfriended_" + userId.ToString());
+            RecipientId = service.UserId;
+            SenderId = userId;
+            Sender.PropertyChanged += _OnSenderPropertyChanged;
+            Title = string.Format(_friendRemovalFormat, Sender.ProfileUri.ToString(), Sender.Name);
+            TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
+            Link = Sender.ProfileUri;
+        }
+
+        private void _OnSenderPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Name")
             {
-                return Sender.Name + " wants to be your friend.";
+                if (!string.IsNullOrEmpty(Sender.Name))
+                {
+                    Title = string.Format(_friendRemovalFormat, Sender.ProfileUri, Sender.Name);
+                    TitleText = string.Format(_friendRemovalTextFormat, Sender.Name);
+                }
             }
-            return "Someone wants to be your friend.";
+            if (e.PropertyName == "ProfileUri")
+            {
+                Link = Sender.ProfileUri;
+            }
+        }
+
+        public override string ToString()
+        {
+            return TitleText;
         }
     }
 
     // public class GroupInviteRequestNotification : Notification {}
     // public class EventInviteRequestNotification : Notification {}
 
-    public class MessageNotification : Notification, IMergeable<MessageNotification>
+    public class MessageNotification : Notification, IFBMergeable<MessageNotification>
     {
         internal MessageNotification(FacebookService service)
             : base(service)
         {}
 
-        #region IMergeable<MessageNotification> Members
+        #region IFBMergeable<MessageNotification> Members
 
-        string IMergeable<MessageNotification>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, MessageNotification>.FKID
         {
-            get { return ((IMergeable<Notification>)this).FKID; }
+            get { return ((IFBMergeable<Notification>)this).FKID; }
         }
 
-        void IMergeable<MessageNotification>.Merge(MessageNotification other)
+        void IMergeable<FacebookObjectId, MessageNotification>.Merge(MessageNotification other)
         {
         }
 

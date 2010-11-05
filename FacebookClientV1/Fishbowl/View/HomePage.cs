@@ -1,5 +1,6 @@
 ﻿
 using System.Windows.Threading;
+using Contigo;
 namespace ClientManager.View
 {
     public class HomePage
@@ -7,7 +8,7 @@ namespace ClientManager.View
         private class _Navigator : Navigator 
         {
             public _Navigator(Navigator parent, HomePage page, Dispatcher dispatcher)
-                : base(page, "[homepage]", parent)
+                : base(page, FacebookObjectId.Create("[homepage]"), parent)
             { }
         }
 

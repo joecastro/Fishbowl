@@ -12,7 +12,7 @@
         private class _Navigator : Navigator
         {
             public _Navigator(LoadingPage page, Dispatcher dispatcher)
-                : base(page, "[Loading Page]", null)
+                : base(page, Contigo.FacebookObjectId.Create("[Loading Page]"), null)
             { }
 
             public override bool IncludeInJournal { get { return false; } }

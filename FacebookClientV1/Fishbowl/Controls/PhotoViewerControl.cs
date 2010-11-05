@@ -18,6 +18,7 @@ namespace FacebookClient
     using ClientManager.Controls;
     using Contigo;
     using Standard;
+    using System.Windows.Interop;
 
     [
         TemplatePart(Name = "PART_PhotoDisplay", Type = typeof(PhotoDisplayControl)),
@@ -158,79 +159,158 @@ namespace FacebookClient
 
         private void _PrintPhoto()
         {
-            try
-            {
-                string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
+            FacebookPhoto.Image.SaveToFile(FacebookImageDimensions.Big, Path.GetTempFileName(), true, FacebookImageSaveOptions.PreserveOriginal, _PrintFileCallback, null);
+        }
 
-                if (!string.IsNullOrEmpty(photoLocalPath))
-                {
-                    photoLocalPath = System.IO.Path.GetFullPath(photoLocalPath);
-                    object photoFile = photoLocalPath;
-                    WIA.CommonDialog dialog = new WIA.CommonDialogClass();
-                    dialog.ShowPhotoPrintingWizard(ref photoFile);
-                }
-            }
-            catch (Exception)
+        private void _PrintFileCallback(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (!Dispatcher.CheckAccess())
             {
+                Dispatcher.BeginInvoke((SaveImageAsyncCallback)_PrintFileCallback, new[] { sender, e });
+                return;
             }
+
+            if (e.Cancelled || e.Error != null)
+            {
+                MessageBox.Show("Unable to print the image");
+                return;
+            }
+
+            object path = e.ImagePath;
+            WIA.CommonDialog dialog = new WIA.CommonDialogClass();
+            dialog.ShowPhotoPrintingWizard(ref path);
         }
 
         private void _SetAsDesktopBackground()
         {
-            string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
-            if (!string.IsNullOrEmpty(photoLocalPath))
+            FacebookPhoto.Image.SaveToFile(FacebookImageDimensions.Big, Path.GetTempFileName(), true, FacebookImageSaveOptions.PreserveOriginal, _SetAsDesktopBackgroundCallback, null);
+        }
+
+        private void _SetAsDesktopBackgroundCallback(object sender, SaveImageCompletedEventArgs e)
+        {
+            if (!Dispatcher.CheckAccess())
             {
-                string wallpaperPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FacebookClient\\Wallpaper") + Path.GetExtension(photoLocalPath);
-
-                try
-                {
-                    // Clear the current wallpaper (releases lock on current bitmap)
-                    NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, String.Empty, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
-
-                    // Delete the old wallpaper if it exists
-                    Utility.SafeDeleteFile(wallpaperPath);
-                    Utility.EnsureDirectory(Path.GetDirectoryName(wallpaperPath));
-
-                    File.Copy(photoLocalPath, wallpaperPath);
-                    NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, wallpaperPath, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
-                }
-                catch (Exception)
-                { }
+                Dispatcher.BeginInvoke((SaveImageAsyncCallback)_SetAsDesktopBackgroundCallback, sender, e);
+                return;
             }
+
+            if (e.Cancelled || e.Error != null)
+            {
+                MessageBox.Show("Unable to use this photo for the desktop background");
+                return;
+            }
+
+            string photoLocalPath = e.ImagePath;
+            string wallpaperPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fishbowl\\Wallpaper") + Path.GetExtension(photoLocalPath);
+
+            try
+            {
+                // Clear the current wallpaper (releases lock on current bitmap)
+                NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, String.Empty, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
+
+                // Delete the old wallpaper if it exists
+                Utility.SafeDeleteFile(wallpaperPath);
+                Utility.EnsureDirectory(Path.GetDirectoryName(wallpaperPath));
+
+                File.Copy(photoLocalPath, wallpaperPath);
+                NativeMethods.SystemParametersInfo(SPI.SETDESKWALLPAPER, 0, wallpaperPath, SPIF.UPDATEINIFILE | SPIF.SENDWININICHANGE);
+            }
+            catch (Exception)
+            { }
         }
 
         private void _SavePhoto()
         {
-            string photoLocalPath = FacebookPhoto.Image.GetCachePath(FacebookImageDimensions.Big);
-            if (!string.IsNullOrEmpty(photoLocalPath))
+            var photo = FacebookPhoto;
+            if (photo == null)
             {
-                string defaultFileName = Path.GetFileName(photoLocalPath);
-                if (FacebookPhoto.Album != null)
-                {
-                    defaultFileName = FacebookPhoto.Album.Title + " (" + (FacebookPhoto.Album.Photos.IndexOf(FacebookPhoto) + 1) + ")";
-                }
+                return;
+            }
+            string defaultFileName = "Facebook Photo";
+            if (photo.Album != null)
+            {
+                defaultFileName = photo.Album.Title + " (" + (photo.Album.Photos.IndexOf(photo) + 1) + ")";
+            }
 
-                var fileDialog = new System.Windows.Forms.SaveFileDialog
+            string filePath = null;
+            if (Utility.IsOSVistaOrNewer)
+            {
+                IFileSaveDialog pFileSaveDialog = null;
+                try
+                {
+                    pFileSaveDialog = CLSID.CoCreateInstance<IFileSaveDialog>(CLSID.FileSaveDialog);
+                    pFileSaveDialog.SetOptions(pFileSaveDialog.GetOptions() | FOS.FORCEFILESYSTEM | FOS.OVERWRITEPROMPT);
+                    pFileSaveDialog.SetTitle("Select where to save the photo");
+                    pFileSaveDialog.SetOkButtonLabel("Save Photo");
+                    var filterspec = new COMDLG_FILTERSPEC { pszName = "Images", pszSpec = "*.jpg;*.png;*.bmp;*.gif" };
+                    pFileSaveDialog.SetFileTypes(1, ref filterspec);
+                    pFileSaveDialog.SetFileName(defaultFileName);
+                    Guid clientId = new Guid(0x8c18c882, 0x482b, 0x459d, 0x9a, 0xc6, 0x6c, 0xc5, 0x39, 0x71, 0xa7, 0xf7);
+                    pFileSaveDialog.SetClientGuid(ref clientId);
+
+                    IShellItem pItem = null;
+                    try
+                    {
+                        pItem = ShellUtil.GetShellItemForPath(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures));
+                        pFileSaveDialog.SetDefaultFolder(pItem);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref pItem);
+                    }
+
+                    HRESULT hr = pFileSaveDialog.Show(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+                    if (hr.Failed)
+                    {
+                        Assert.AreEqual((HRESULT)Win32Error.ERROR_CANCELLED, hr);
+                        return;
+                    }
+
+                    pItem = null;
+                    try
+                    {
+                        pItem = pFileSaveDialog.GetResult();
+                        filePath = ShellUtil.GetPathFromShellItem(pItem);
+                    }
+                    finally
+                    {
+                        Utility.SafeRelease(ref pItem);
+                    }
+                }
+                finally
+                {
+                    Utility.SafeRelease(ref pFileSaveDialog);
+                }
+            }
+            else
+            {
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "Image Files|*.jpg;*.png;*.bmp;*.gif",
-                    DefaultExt = Path.GetExtension(photoLocalPath),
                     FileName = defaultFileName,
                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
                 };
 
-                if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (saveFileDialog.ShowDialog(Application.Current.MainWindow) != true)
                 {
-                    string imagePath = fileDialog.FileName;
-
-                    try
-                    {
-                        // Copy the file to the save location, overwriting if necessary
-                        File.Copy(photoLocalPath, imagePath, true);
-                    }
-                    catch (Exception)
-                    { }
+                    return;
                 }
+
+                filePath = saveFileDialog.FileName;
             }
+
+            FacebookImageSaveOptions fiso = FacebookImageSaveOptions.FindBetterName;
+
+            // We told the file dialog to prompt about overwriting, so if the user specified a location
+            // with a file extension and the file already exists, prepare to overwrite.
+            // This isn't quite right because the file extension may be different, so we may overwrite a jpg 
+            // when it was asked to be a gif, but it's not a likely scenario.
+            if (System.IO.File.Exists(filePath))
+            {
+                fiso = FacebookImageSaveOptions.Overwrite;
+            }
+
+            photo.Image.SaveToFile(FacebookImageDimensions.Big, filePath, true, fiso, (sender, e) => { }, null);
         }
         
         /// <summary>
@@ -247,7 +327,7 @@ namespace FacebookClient
             };
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                FacebookPhoto.Album.SaveToFolder(folderDialog.SelectedPath);
+                FacebookPhoto.Album.SaveToFolder(folderDialog.SelectedPath, (sender, e) => { }, null);
             }
         }
 

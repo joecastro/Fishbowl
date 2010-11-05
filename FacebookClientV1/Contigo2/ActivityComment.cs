@@ -5,7 +5,7 @@ namespace Contigo
     using System.ComponentModel;
     using Standard;
 
-    public class ActivityComment : INotifyPropertyChanged, IFacebookObject, IMergeable<ActivityComment>, IComparable<ActivityComment>
+    public class ActivityComment : INotifyPropertyChanged, IFacebookObject, IFBMergeable<ActivityComment>, IComparable<ActivityComment>
     {
         internal enum Type : byte
         {
@@ -15,11 +15,8 @@ namespace Contigo
         }
 
         private FacebookContact _fromUser;
-        private SmallString _fromUserId;
-        private SmallString _commentId;
         private SmallString _text;
         private DateTime _timestamp;
-        private bool _isFromUserUpdateInProgress;
 
         internal ActivityComment(FacebookService service)
         {
@@ -29,19 +26,7 @@ namespace Contigo
 
         internal global::Contigo.ActivityComment.Type CommentType { get; set; }
 
-        internal string FromUserId
-        {
-            get { return _fromUserId.GetString(); }
-            set
-            {
-                var newValue = new SmallString(value);
-                if (newValue != _fromUserId)
-                {
-                    _fromUserId = new SmallString(value);
-                    _UpdateFromUser();
-                }
-            }
-        }
+        internal FacebookObjectId FromUserId { get; set; }
 
         public DateTime Time
         {
@@ -70,11 +55,7 @@ namespace Contigo
             }
         }
 
-        internal string CommentId
-        {
-            get { return _commentId.GetString(); }
-            set { _commentId = new SmallString(value); }
-        }
+        internal FacebookObjectId CommentId { get; set; }
 
         internal ActivityPost Post { get; set; }
 
@@ -82,33 +63,20 @@ namespace Contigo
         {
             get
             {
-                if (_fromUser == null && !_isFromUserUpdateInProgress)
+                if (_fromUser == null && FacebookObjectId.IsValid(FromUserId))
                 {
-                    _UpdateFromUser();
+                    _fromUser = SourceService.GetUser(FromUserId);
                 }
 
                 return _fromUser;
             }
         }
 
-        private void _UpdateFromUser()
-        {
-            _isFromUserUpdateInProgress = true;
-            SourceService.GetUserAsync(FromUserId, _OnGetFromUserCompleted);
-        }
-
-        private void _OnGetFromUserCompleted(object sender, AsyncCompletedEventArgs args)
-        {
-            _fromUser = (FacebookContact)args.UserState;
-            _NotifyPropertyChanged("FromUser");
-            _isFromUserUpdateInProgress = false;
-        }
-
         public bool CanRemove
         {
             get
             {
-                return IsMine && _commentId != default(SmallString) && CommentType == Type.ActivityPost;
+                return IsMine && FacebookObjectId.IsValid(CommentId) && CommentType == Type.ActivityPost;
             }
         }
 
@@ -149,11 +117,11 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<ActivityComment> Members
+        #region IFBMergeable<ActivityComment> Members
 
-        string IMergeable<ActivityComment>.FKID { get { return CommentId; } }
+        FacebookObjectId IMergeable<FacebookObjectId, ActivityComment>.FKID { get { return CommentId; } }
 
-        void IMergeable<ActivityComment>.Merge(ActivityComment other)
+        void IMergeable<FacebookObjectId, ActivityComment>.Merge(ActivityComment other)
         {}
 
         #endregion

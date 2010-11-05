@@ -10,18 +10,18 @@ namespace Contigo
             : base(message, e)
         { }
 
-        internal FacebookException(string errorXml, int errorCode, string message, string requestXml)
+        internal FacebookException(string response, int errorCode, string message, string request)
             : base(message)
         {
-            ErrorXml = errorXml;
+            ErrorResponse = response;
             ErrorCode = errorCode;
-            RequestXml = requestXml;
+            Request = request;
         }
 
         public int ErrorCode { get; private set; }
 
-        public string ErrorXml { get; private set; }
+        public string ErrorResponse { get; private set; }
 
-        public string RequestXml { get; private set; }
+        public string Request { get; private set; }
     } 
 }

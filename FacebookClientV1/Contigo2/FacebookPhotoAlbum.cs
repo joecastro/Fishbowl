@@ -8,7 +8,7 @@ namespace Contigo
     using Standard;
     using System.Globalization;
 
-    public sealed class FacebookPhotoAlbum : INotifyPropertyChanged, IFacebookObject, IMergeable<FacebookPhotoAlbum>, IComparable<FacebookPhotoAlbum>
+    public sealed class FacebookPhotoAlbum : INotifyPropertyChanged, IFacebookObject, IFBMergeable<FacebookPhotoAlbum>, IComparable<FacebookPhotoAlbum>
     {
         #region Sort Delegates
 
@@ -142,7 +142,6 @@ namespace Contigo
 
         #endregion
 
-
         private FacebookPhoto _coverPic;
         private FacebookPhotoCollection _photos;
 
@@ -150,47 +149,21 @@ namespace Contigo
         private SmallString _title;
         private SmallString _lowerTitleSmallString;
         private SmallString _description;
-        private SmallString _coverPicPid;
-        private SmallString _ownerId;
+        private FacebookObjectId _coverPicPid;
         private SmallUri _link;
         private DateTime _created;
         private DateTime _lastModified;
-        // Used too frequently to be a small string.
-        private string _albumId;
+        private FacebookContact _owner;
 
         internal FacebookPhotoAlbum(FacebookService service)
         {
             Assert.IsNotNull(service);
             SourceService = service;
         }
-        
-        public string OwnerId
-        {
-            get { return _ownerId.GetString(); }
-            internal set
-            {
-                var newValue = new SmallString(value);
-                if (newValue != _ownerId)
-                {
-                    _ownerId = newValue;
-                    _NotifyPropertyChanged("OwnerId");
-                    _UpdateOwner();
-                }
-            }
-        }
 
-        public string AlbumId
-        {
-            get { return _albumId ?? ""; }
-            internal set
-            {
-                if (value != (_albumId ?? ""))
-                {
-                    _albumId = value;
-                    _NotifyPropertyChanged("AlbumId");
-                }
-            }
-        }
+        internal FacebookObjectId OwnerId { get; set; }
+
+        public FacebookObjectId AlbumId { get; internal set; }
 
         public string Location
         {
@@ -249,15 +222,14 @@ namespace Contigo
             }
         }
 
-        internal string CoverPicPid
+        internal FacebookObjectId CoverPicPid
         {
-            get { return _coverPicPid.GetString(); }
+            get { return _coverPicPid; }
             set
             {
-                var newValue = new SmallString(value);
-                if (_coverPicPid != newValue)
+                if (_coverPicPid != value)
                 {
-                    _coverPicPid = newValue;
+                    _coverPicPid = value;
                     _UpdateCoverPic();
                 }
             }
@@ -289,7 +261,7 @@ namespace Contigo
             }
         }
 
-        internal MergeableCollection<FacebookPhoto> RawPhotos { get; set; }
+        internal FBMergeableCollection<FacebookPhoto> RawPhotos { get; set; }
 
         public FacebookPhotoCollection Photos
         {
@@ -362,46 +334,36 @@ namespace Contigo
             }
         }
         
-        public FacebookContact Owner { get; private set; }
-
-        private void _UpdateOwner()
+        public FacebookContact Owner
         {
-            if (_ownerId == default(SmallString))
+            get
             {
-                return;
+                if (_owner == null && FacebookObjectId.IsValid(OwnerId))
+                {
+                    _owner = SourceService.GetUser(OwnerId);
+                }
+                return _owner;
             }
-
-            SourceService.GetUserAsync(_ownerId.GetString(), _OnGetOwnerCompleted);
         }
 
-        private void _OnGetOwnerCompleted(object sender, AsyncCompletedEventArgs e)
+        public bool CanAddPhotos
         {
-            if (e.Error != null || e.Cancelled)
+            get
             {
-                return;
+                // Heuristically, we can add photos to albums that are owned by the current user, except for their Profile Pictures.
+                // I haven't yet been able to find a good way to determine whether an album represents the profile pictures, so
+                // using a completely unlocalized check, hoping that this generally works, at least for a while.
+                return OwnerId == SourceService.UserId && !Title.Equals("Profile Pictures", StringComparison.OrdinalIgnoreCase);
             }
-
-            Owner = e.UserState as FacebookContact;
-            _NotifyPropertyChanged("Owner"); 
         }
 
-        /// <remarks>
-        /// This is a synchronous operation.
-        /// </remarks>
-        public void SaveToFolder(string path)
+        public void SaveToFolder(string path, SaveImageAsyncCallback callback, object userState)
         {
             Utility.EnsureDirectory(path);
 
-            for (int i = 0; i < this.Photos.Count; i++)
+            for (int i = 0; i < Photos.Count; ++i)
             {
-                string cachePath = this.Photos[i].Image.GetCachePath(FacebookImageDimensions.Big);
-                if (cachePath == null)
-                {
-                    // log error
-                    break;
-                }
-
-                File.Copy(cachePath, Path.Combine(path, string.Format("{0:D3}.jpg", i + 1)));
+                Photos[i].Image.SaveToFile(FacebookImageDimensions.Big, Path.Combine(path, string.Format("{0} {1:D3}", this.Title, i+1)), true, FacebookImageSaveOptions.FindBetterName, callback, userState, i, Photos.Count);
             }
         }
 
@@ -431,7 +393,7 @@ namespace Contigo
 
         public override int GetHashCode()
         {
-            return _albumId.GetHashCode();
+            return AlbumId.GetHashCode();
         }
 
         public override string ToString()
@@ -453,14 +415,14 @@ namespace Contigo
 
         #endregion
 
-        #region IMergeable<FacebookPhotoAlbum> Members
+        #region IFBMergeable<FacebookPhotoAlbum> Members
 
-        string IMergeable<FacebookPhotoAlbum>.FKID
+        FacebookObjectId IMergeable<FacebookObjectId, FacebookPhotoAlbum>.FKID
         {
             get { return AlbumId; }
         }
 
-        void IMergeable<FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
+        void IMergeable<FacebookObjectId, FacebookPhotoAlbum>.Merge(FacebookPhotoAlbum other)
         {
             Verify.IsNotNull(other, "other");
             if (other.AlbumId != this.AlbumId)
@@ -479,7 +441,8 @@ namespace Contigo
             LastModified = other.LastModified;
             Link = other.Link;
             Location = other.Location;
-            OwnerId = other.OwnerId;
+            Assert.AreEqual(OwnerId, other.OwnerId);
+            //OwnerId = other.OwnerId;
             RawPhotos.Merge(other.RawPhotos, false);
             _NotifyPropertyChanged("FirstPhoto");
             _NotifyPropertyChanged("SecondPhoto");

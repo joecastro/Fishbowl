@@ -67,7 +67,7 @@ namespace FacebookClient
             folderDialog.ShowNewFolderButton = true;
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                PhotoAlbum.SaveToFolder(folderDialog.SelectedPath);
+                PhotoAlbum.SaveToFolder(folderDialog.SelectedPath, (sender, e) => { }, null);
             }
         }
 

@@ -1129,7 +1129,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        void SetFileTypes(uint cFileTypes, [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] COMDLG_FILTERSPEC[] rgFilterSpec);
+        void SetFileTypes(uint cFileTypes, ref COMDLG_FILTERSPEC rgFilterSpec);
 
         void SetFileTypeIndex(uint iFileType);
 
@@ -1191,7 +1191,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        new void SetFileTypes(uint cFileTypes, [In] COMDLG_FILTERSPEC[] rgFilterSpec);
+        new void SetFileTypes(uint cFileTypes, ref COMDLG_FILTERSPEC rgFilterSpec);
         new void SetFileTypeIndex(uint iFileType);
         new uint GetFileTypeIndex();
         new uint Advise(IFileDialogEvents pfde);
@@ -1237,7 +1237,7 @@ namespace Standard
         new HRESULT Show(IntPtr parent);
         #endregion
 
-        new void SetFileTypes(uint cFileTypes, [In] COMDLG_FILTERSPEC[] rgFilterSpec);
+        new void SetFileTypes(uint cFileTypes, ref COMDLG_FILTERSPEC rgFilterSpec);
         new void SetFileTypeIndex(uint iFileType);
         new uint GetFileTypeIndex();
         new uint Advise(IFileDialogEvents pfde);
@@ -1277,4 +1277,38 @@ namespace Standard
     }
 
     #endregion
+
+    internal static class ShellUtil
+    {
+        public static string GetPathFromShellItem(IShellItem item)
+        {
+            return item.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
+        }
+
+        public static IShellItem2 GetShellItemForPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                // Internal function.  Should have verified this before calling if we cared.
+                return null;
+            }
+
+            Guid iidShellItem2 = new Guid(IID.ShellItem2);
+            object unk;
+            HRESULT hr = NativeMethods.SHCreateItemFromParsingName(path, null, ref iidShellItem2, out unk);
+
+            // Silently absorb errors such as ERROR_FILE_NOT_FOUND, ERROR_PATH_NOT_FOUND.
+            // Let others pass through
+            if (hr == (HRESULT)Win32Error.ERROR_FILE_NOT_FOUND || hr == (HRESULT)Win32Error.ERROR_PATH_NOT_FOUND)
+            {
+                hr = HRESULT.S_OK;
+                unk = null;
+            }
+
+            hr.ThrowIfFailed();
+
+            return (IShellItem2)unk;
+        }
+    }
+
 }
