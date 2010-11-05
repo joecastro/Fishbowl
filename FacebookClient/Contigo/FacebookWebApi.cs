@@ -53,6 +53,7 @@ namespace Contigo
         private const string _GetFriendsQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid IN " + _SelectFriendsClause;
         private const string _GetFriendsLimitOffsetFormatQueryString = _GetFriendsQueryString + " LIMIT {1} OFFSET {2}";
         private const string _GetFriendsOnlineStatusQueryString = "SELECT uid, online_presence FROM user WHERE uid IN " + _SelectFriendsClause;
+        private const string _GetFriendsProfilesQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id IN " + _SelectFriendsClause;
         private const string _GetSingleUserQueryString = "SELECT " + _UserColumns + " FROM user WHERE uid={0}";
         private const string _GetSingleProfileInfoQueryString = "SELECT " + _ProfileColumns + " FROM profile WHERE id={0}";
         private const string _GetSingleUserAlbumsQueryString = "SELECT " + _AlbumColumns + " FROM album WHERE owner={0} ORDER BY modified DESC";
@@ -859,7 +860,7 @@ namespace Contigo
             return _jsonSerializer.DeserializeStreamPostList(result);
         }
 
-        public void GetStream(FacebookObjectId filterKey, int limit, DateTime getItemsSince, out List<ActivityPost> posts, out List<FacebookContact> users)
+        public List<ActivityPost> GetStream(FacebookObjectId filterKey, int limit, DateTime getItemsSince)
         {
             Assert.IsTrue(limit > 0);
 
@@ -874,6 +875,8 @@ namespace Contigo
             long startTime = JsonDataSerialization.GetUnixTimestampFromDateTime(getItemsSince);
             Assert.IsTrue(startTime >= 0);
 
+            // Don't use metadata field.  Facebook regressed support for it.
+            // Getting profile data needs to be simulated at a higher level.
             var streamMap = new METHOD_MAP
             {
                 { "method", "stream.get" },
@@ -881,12 +884,26 @@ namespace Contigo
                 { "start_time", startTime.ToString("G") },
                 { "limit", limit.ToString("G") },
                 { "filter_key", filterKey.ToString() },
-                { "metadata", "[albums, profiles]" }, // could also include "photo_tags"
             };
 
             string result = Utility.FailableFunction(() => _SendRequest(streamMap));
 
-            _jsonSerializer.DeserializeStreamData(result, out posts, out users);
+            return _jsonSerializer.DeserializeStreamData(result);
+
+            //var userIds = new HashSet<FacebookObjectId>();
+            //foreach (var post in posts)
+            //{
+            //    userIds.Add(post.ActorUserId);
+            //    userIds.Add(post.TargetUserId);
+            //    userIds.AddRange(from comment in post.Comments select comment.FromUserId);
+            //    userIds.AddRange(from liker in post.PeopleWhoLikeThis select liker.UserId);
+            //}
+        }
+
+        public List<FacebookContact> GetFriendProfiles()
+        {
+            string result = Utility.FailableFunction(() => _SendQuery(string.Format(_GetFriendsProfilesQueryString, _UserId)));
+            return _jsonSerializer.DeserializeProfileList(result);
         }
 
         public FacebookObjectId AddComment(ActivityPost post, string comment)

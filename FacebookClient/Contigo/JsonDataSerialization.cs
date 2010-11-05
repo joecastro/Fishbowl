@@ -709,12 +709,11 @@ namespace Contigo
             return filter;
         }
 
-        public void DeserializeStreamData(string jsonString, out List<ActivityPost> posts, out List<FacebookContact> userData)
+        public List<ActivityPost> DeserializeStreamData(string jsonString)
         {
             JSON_OBJECT streamData = SafeParseObject(jsonString);
 
-            posts = new List<ActivityPost>(from JSON_OBJECT jsonPost in (JSON_ARRAY)streamData["posts"] select _DeserializePost(jsonPost));
-            userData = new List<FacebookContact>(from JSON_OBJECT profile in (JSON_ARRAY)streamData["profiles"] select _DeserializeProfile(profile));
+            return new List<ActivityPost>(from JSON_OBJECT jsonPost in (JSON_ARRAY)streamData["posts"] select _DeserializePost(jsonPost));
         }
 
         private ActivityPostAttachment _DeserializePhotoPostAttachmentData(ActivityPost post, JSON_OBJECT jsonAttachment)

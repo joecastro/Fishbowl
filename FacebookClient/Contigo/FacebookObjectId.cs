@@ -12,12 +12,15 @@
         {
             if (string.IsNullOrEmpty(id))
             {
+                // Empty FacebookObjectId should look like default(FacebookObjectId)
                 _id = default(SmallString);
                 _cachedHashCode = 0;
             }
-
-            _id = new SmallString(id);
-            _cachedHashCode = _id.GetHashCode();
+            else
+            {
+                _id = new SmallString(id);
+                _cachedHashCode = _id.GetHashCode();
+            }
         }
 
         public override bool Equals(object obj)
