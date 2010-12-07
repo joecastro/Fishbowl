@@ -340,6 +340,11 @@
                     ProfileUri = new Uri("http://facebook.com/profile.php?id=" + userId),
                     Name = "Someone",
                 };
+                double? interestLevel = _settings.GetInterestLevel(userId);
+                if (interestLevel.HasValue)
+                {
+                    retContact.InterestLevel = interestLevel.Value;
+                }
 
                 _userLookupLock.EnterWriteLock();
                 try
@@ -371,8 +376,12 @@
                 FacebookContact contact;
                 try
                 {
-                    contact = _facebookApi.GetUser(userId);
-                    Assert.IsNotNull(contact);
+                    contact = _facebookApi.TryGetUser(userId, false);
+                    if (contact == null)
+                    {
+                        return;
+                    }
+
                     double? interestLevel = _settings.GetInterestLevel(userId);
                     if (interestLevel.HasValue)
                     {
@@ -1157,8 +1166,12 @@
 
             if (_facebookApi != null)
             {
-                FacebookContact meContact = _facebookApi.GetUser(UserId);
-                MeContact.Merge(meContact);
+                FacebookContact meContact = _facebookApi.TryGetUser(UserId, true);
+                Assert.IsNotNull(meContact);
+                if (meContact != null)
+                {
+                    MeContact.Merge(meContact);
+                }
             }
         }
 

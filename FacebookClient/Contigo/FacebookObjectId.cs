@@ -6,7 +6,6 @@
     public struct FacebookObjectId : IEquatable<FacebookObjectId>
     {
         private readonly SmallString _id;
-        private readonly int _cachedHashCode;
 
         internal FacebookObjectId(string id)
         {
@@ -14,12 +13,10 @@
             {
                 // Empty FacebookObjectId should look like default(FacebookObjectId)
                 _id = default(SmallString);
-                _cachedHashCode = 0;
             }
             else
             {
-                _id = new SmallString(id);
-                _cachedHashCode = _id.GetHashCode();
+                _id = new SmallString(id, true);
             }
         }
 
@@ -40,7 +37,7 @@
 
         public override int GetHashCode()
         {
-            return _cachedHashCode;
+            return _id.GetHashCode();
         }
 
         public override string ToString()
@@ -50,11 +47,6 @@
 
         public bool Equals(FacebookObjectId other)
         {
-            if (_cachedHashCode != other._cachedHashCode)
-            {
-                return false;
-            }
-
             return _id.Equals(other._id);
         }
 

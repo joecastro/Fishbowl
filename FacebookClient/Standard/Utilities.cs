@@ -1292,5 +1292,22 @@ namespace Standard
 
             return true;
         }
+
+        public static bool TryFileMove(string sourceFileName, string destFileName)
+        {
+            if (!File.Exists(destFileName))
+            {
+                try
+                {
+                    File.Move(sourceFileName, destFileName);
+                }
+                catch (IOException)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
     }
 }

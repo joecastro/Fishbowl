@@ -402,9 +402,9 @@ namespace Contigo
                         }
 
                         // Should really block multiple web requests for the same file, which causes this...
-                        if (!File.Exists(localCachePath))
+                        if (!Utility.TryFileMove(tempFile, localCachePath))
                         {
-                            File.Move(tempFile, localCachePath);
+                            return;
                         }
                     }
 

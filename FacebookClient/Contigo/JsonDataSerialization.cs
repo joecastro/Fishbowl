@@ -30,7 +30,7 @@ namespace Contigo
             if (dictionary.TryGetValue(key, out o))
             {
                 value = (T)o;
-                return true;
+                return value != null;
             }
 
             return false;
@@ -415,20 +415,20 @@ namespace Contigo
             List<EducationInfo> educationHistory = null;
             List<WorkInfo> workHistory = null;
 
-            var jsonLocation = jsonUser.Get<JSON_OBJECT>("current_location");
-            if (jsonLocation != null)
+            JSON_OBJECT jsonLocation;
+            if (jsonUser.TryGetTypedValue<JSON_OBJECT>("current_location", out jsonLocation))
             {
                 currentLocation = _DeserializeLocation(jsonLocation);
             }
 
-            var htObject = jsonUser.Get<JSON_OBJECT>("hometown_location");
-            if (htObject != null)
+            JSON_OBJECT htObject;
+            if (jsonUser.TryGetTypedValue<JSON_OBJECT>("hometown_location", out htObject))
             {
                 hometownLocation = _DeserializeLocation(htObject);
             }
 
-            var jsonHighSchool = jsonUser.Get<JSON_OBJECT>("hs_info");
-            if (jsonHighSchool != null)
+            JSON_OBJECT jsonHighSchool;
+            if (jsonUser.TryGetTypedValue<JSON_OBJECT>("hs_info", out jsonHighSchool))
             {
                 hsInfo = new HighSchoolInfo
                 {
@@ -440,8 +440,8 @@ namespace Contigo
                 };
             }
 
-            var jsonEducationHistoryList = jsonUser.Get<JSON_ARRAY>("education_history");
-            if (jsonEducationHistoryList != null)
+            JSON_ARRAY jsonEducationHistoryList;
+            if (jsonUser.TryGetTypedValue<JSON_ARRAY>("education_history", out jsonEducationHistoryList))
             {
                 educationHistory = new List<EducationInfo>(from JSON_OBJECT jsonEducationInfo in jsonEducationHistoryList select _DeserializeEducationInfo(jsonEducationInfo));
             }
@@ -450,8 +450,8 @@ namespace Contigo
                 educationHistory = new List<EducationInfo>();
             }
 
-            JSON_ARRAY jsonWorkHistoryList = jsonUser.Get<JSON_ARRAY>("work_history");
-            if (jsonWorkHistoryList != null)
+            JSON_ARRAY jsonWorkHistoryList;
+            if (jsonUser.TryGetTypedValue<JSON_ARRAY>("work_history", out jsonWorkHistoryList))
             {
                 workHistory = new List<WorkInfo>(from JSON_OBJECT jsonWorkInfo in jsonWorkHistoryList select _DeserializeWorkInfo(jsonWorkInfo));
             }

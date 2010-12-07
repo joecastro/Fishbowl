@@ -35,6 +35,7 @@ namespace Contigo
         // work_history: location, company_name, description, position, start_date, end_date
         // family: relationship (one of parent, mother, father, sibling, sister, brother, child, son, daughter), uid (optional), name (optional), birthday (if the relative is a child, this is the birthday the user entered)
         private const string _UserColumns = "about_me, activities, affiliations, allowed_restrictions, birthday, birthday_date, books, current_location, education_history, email_hashes, family, first_name, has_added_app, hometown_location, hs_info, interests, is_app_user, is_blocked, last_name, locale, meeting_for, meeting_sex, movies, music, name, notes_count, online_presence, pic, pic_big, pic_small, pic_square, political, profile_blurb, profile_update_time, profile_url, proxied_email, quotes, relationship_status, religion, sex, significant_other_id, status, timezone, tv, uid, username, verified, wall_count, website, work_history";
+        private const string _UserColumnsLite = "first_name, is_blocked, last_name, name, online_presence, pic, pic_big, pic_small, pic_square, profile_url, sex, status, uid, username";
         private const string _AlbumColumns = "aid, cover_pid, owner, name, created, modified, description, location, link, size, visible";
         private const string _PageColumns = "page_id, name, pic_small, pic_big, pic_square, pic, pic_large, page_url, type, website, has_added_app, founded, company_overview, mission, products, location, parking, public_transit, hours";
         private const string _PhotoColumns = "pid, aid, owner, src, src_big, src_small, link, caption, created";
@@ -562,7 +563,7 @@ namespace Contigo
             return _jsonSerializer.DeserializeFilterList(result);
         }
 
-        public FacebookContact GetUser(FacebookObjectId userId)
+        public FacebookContact TryGetUser(FacebookObjectId userId, bool getFullData)
         {
             _Verify();
 
@@ -570,8 +571,17 @@ namespace Contigo
             {
                 { "method", "users.GetInfo" },
                 { "uids", userId.ToString() },
-                { "fields", _UserColumns },
+                //{ "fields", _UserColumns },
             };
+
+            if (getFullData)
+            {
+                userMap["fields"] = _UserColumns;
+            }
+            else
+            {
+                userMap["fields"] = _UserColumnsLite;
+            }
 
             // Facebook bogusly errors this call fairly frequently.
             List<FacebookContact> contactList = null;
@@ -584,7 +594,10 @@ namespace Contigo
 
             if (contactList.Count == 0)
             {
-                throw new FacebookException("Unable to obtain information about the user.", null);
+                // I'd like to do something better here.  This fails too frequently.
+                // Maybe once we move to the graph API there will be a more privacy friendly way to get this data.
+                return null;
+                //throw new FacebookException("Unable to obtain information about the user.", null);
             }
 
             return contactList[0];

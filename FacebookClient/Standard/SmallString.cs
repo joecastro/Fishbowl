@@ -6,31 +6,65 @@ namespace Standard
     [System.Diagnostics.DebuggerDisplay("SmallString: { GetString() }")]
     internal struct SmallString : IEquatable<SmallString>, IComparable<SmallString>
     {
-        private static readonly System.Text.UTF8Encoding s_Encoder = new System.Text.UTF8Encoding(false /* do not emit BOM */, true /* throw on error */);
-        private readonly bool _isInt64;
-        private readonly byte[] _utf8String;
-
-        public SmallString(string value)
+        [Flags]
+        private enum _SmallFlags : byte
         {
+            None = 0,
+            IsInt64 = 1,
+            HasHashCode = 2,
+            Reserved = 4,
+        }
+
+        private static readonly System.Text.UTF8Encoding s_Encoder = new System.Text.UTF8Encoding(false /* do not emit BOM */, true /* throw on error */);
+        private readonly byte[] _encodedBytes;
+        private _SmallFlags _flags;
+        private int _cachedHashCode;
+
+        public SmallString(string value, bool precacheHashCode = false)
+        {
+            _flags = _SmallFlags.None;
+            _cachedHashCode = 0;
+
             if (!string.IsNullOrEmpty(value))
             {
+                if (precacheHashCode)
+                {
+                    _flags |= _SmallFlags.HasHashCode;
+                    _cachedHashCode = value.GetHashCode();
+                }
+
                 long numValue;
                 if (long.TryParse(value, System.Globalization.NumberStyles.None, null, out numValue))
                 {
-                    _isInt64 = true;
-                    _utf8String = BitConverter.GetBytes(numValue);
+                    _flags |= _SmallFlags.IsInt64;
+                    _encodedBytes = BitConverter.GetBytes(numValue);
+
+                    // It's possible that this doesn't round trip with full fidelity.
+                    // If this assert ever gets hit, consider adding an overload that opts
+                    // out of this optimization. 
+                    // (Note that the parameters are not evaluated on retail builds)
+                    Assert.AreEqual(this.GetString(), value);
+                    
                     return;
                 }
 
-                _isInt64 = false;
-                _utf8String = s_Encoder.GetBytes(value);
-                Assert.IsNotNull(_utf8String);
+                _encodedBytes = s_Encoder.GetBytes(value);
+                Assert.IsNotNull(_encodedBytes);
             }
             else
             {
-                _isInt64 = false;
-                _utf8String = null;
+                _encodedBytes = null;
             }
+        }
+
+        private bool _IsInt64
+        {
+            get { return (_flags & _SmallFlags.IsInt64) == _SmallFlags.IsInt64; }
+        }
+
+        private bool _HasCachedHashCode
+        {
+            get { return (_flags & _SmallFlags.HasHashCode) == _SmallFlags.HasHashCode; }
         }
 
         #region Object Overrides
@@ -43,17 +77,19 @@ namespace Standard
 
         public override int GetHashCode()
         {
-            if (_utf8String == null)
+            if (_encodedBytes == null)
             {
                 return 0;
             }
 
-            // Intentionally hashes similarly to the expanded strings.
-            if (_isInt64)
+            if (!_HasCachedHashCode)
             {
-                return BitConverter.ToInt64(_utf8String, 0).GetHashCode();
+                // Intentionally hashes similarly to the expanded strings.
+                _cachedHashCode = GetString().GetHashCode();
+                _flags |= _SmallFlags.HasHashCode;
             }
-            return GetString().GetHashCode();
+
+            return _cachedHashCode;
         }
 
         public override bool Equals(object obj)
@@ -74,52 +110,61 @@ namespace Standard
 
         public bool Equals(SmallString other)
         {
-            if (_isInt64 != other._isInt64)
+            if (_encodedBytes == null)
+            {
+                return other._encodedBytes == null;
+            }
+
+            if (other._encodedBytes == null)
             {
                 return false;
             }
 
-            if (_utf8String == null)
-            {
-                return other._utf8String == null;
-            }
-
-            if (other._utf8String == null)
+            if (_encodedBytes.Length != other._encodedBytes.Length)
             {
                 return false;
             }
 
-            if (_utf8String.Length != other._utf8String.Length)
+            // If only one is a number, then they're not equal.
+            if (((_flags ^ other._flags) & _SmallFlags.IsInt64) == _SmallFlags.IsInt64)
             {
                 return false;
             }
 
-            if (_isInt64)
+            if (_HasCachedHashCode && other._HasCachedHashCode)
             {
-                return BitConverter.ToInt64(_utf8String, 0) == BitConverter.ToInt64(other._utf8String, 0);
+                if (_cachedHashCode != other._cachedHashCode)
+                {
+                    return false;
+                }
+            }
+
+            if (_IsInt64)
+            {
+                return BitConverter.ToInt64(_encodedBytes, 0) == BitConverter.ToInt64(other._encodedBytes, 0);
             }
 
             // Note that this is doing a literal binary comparison of the two strings.
             // It's possible for two real strings to compare equally even though they
             // can be encoded in different ways with UTF8.
-            return Utility.MemCmp(_utf8String, other._utf8String, _utf8String.Length);
+            return Utility.MemCmp(_encodedBytes, other._encodedBytes, _encodedBytes.Length);
         }
 
         #endregion
 
         public string GetString()
         {
-            if (_utf8String == null)
+            if (_encodedBytes == null)
             {
                 return "";
             }
 
-            if (_isInt64)
+            if (_IsInt64)
             {
-                return BitConverter.ToInt64(_utf8String, 0).ToString();
+                return BitConverter.ToInt64(_encodedBytes, 0).ToString();
             }
 
-            return s_Encoder.GetString(_utf8String);
+            return s_Encoder.GetString(_encodedBytes);
         }
 
         public static bool operator==(SmallString left, SmallString right)
@@ -142,29 +187,29 @@ namespace Standard
             // Opportunistically, we're going to assume that the strings are
             // ASCII compatible until we find out they aren't.
 
-            if (_utf8String == null)
+            if (_encodedBytes == null)
             {
-                if (other._utf8String == null)
+                if (other._encodedBytes == null)
                 {
                     return 0;
                 }
-                Assert.AreNotEqual(0, other._utf8String.Length);
+                Assert.AreNotEqual(0, other._encodedBytes.Length);
                 return -1;
             }
-            else if (other._utf8String == null)
+            else if (other._encodedBytes == null)
             {
-                Assert.AreNotEqual(0, _utf8String.Length);
+                Assert.AreNotEqual(0, _encodedBytes.Length);
                 return 1;
             }
 
             bool? isThisStringShorter = null;
-            int cb = _utf8String.Length;
-            int cbDiffernce = other._utf8String.Length - cb;
+            int cb = _encodedBytes.Length;
+            int cbDiffernce = other._encodedBytes.Length - cb;
 
             if (cbDiffernce < 0)
             {
                 isThisStringShorter = false;
-                cb = other._utf8String.Length; 
+                cb = other._encodedBytes.Length; 
             }
             else if (cbDiffernce > 0)
             {
@@ -173,7 +218,7 @@ namespace Standard
 
             for (int i = 0; i < cb; ++i)
             {
-                bool isEitherHighBitSet = ((_utf8String[i] | other._utf8String[i]) & 0x80) != 0;
+                bool isEitherHighBitSet = ((_encodedBytes[i] | other._encodedBytes[i]) & 0x80) != 0;
                 // If the byte array contains multibyte characters
                 // we need to do a real string comparison.
                 if (isEitherHighBitSet)
@@ -184,9 +229,9 @@ namespace Standard
                     return left.CompareTo(right);
                 }
 
-                if (_utf8String[i] != other._utf8String[i])
+                if (_encodedBytes[i] != other._encodedBytes[i])
                 {
-                    return _utf8String[i] - other._utf8String[i];
+                    return _encodedBytes[i] - other._encodedBytes[i];
                 }
             }
 
