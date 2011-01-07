@@ -165,7 +165,10 @@ namespace Contigo
                 }
                 catch (Exception e)
                 {
-                    ETWLogger.EventWriteUnhandledDispatcherPoolExceptionEvent(e.Message, e.StackTrace);
+                    // Don't use this as-is.  The ETW functions used don't work on XP.
+                    // Either need to update this or re-enable once XP is no longer a supported OS.
+                    //ETWLogger.EventWriteUnhandledDispatcherPoolExceptionEvent(e.Message, e.StackTrace);
+
                     // Don't let exceptions propagate outside the dispatcher.
                     // The Actions should be blocking this from ever happening.
                     Assert.Fail(e.Message);
