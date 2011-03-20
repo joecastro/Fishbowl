@@ -16,7 +16,8 @@ namespace Contigo
     /// </summary>
     /// <remarks>
     /// According to facebook some of these are supersets of of others.  This relationship isn't reflected in the enum values.
-    /// Last updated 5/27/2010 from http://developers.facebook.com/docs/authentication/permissions
+    /// Last major update 5/27/2010 from http://developers.facebook.com/docs/authentication/permissions
+    /// Minor update 3/19/2011 because despite SMS still being listed as a permission on the above page, the APIs are returning that it is invalid.
     /// </remarks>
     // There are actually so many nuanced flags now that they aren't flaggable with an Int32!
     // Possible that it will be augmented to have too many for an Int64, so not even bothering with making it flaggable.
@@ -29,7 +30,6 @@ namespace Contigo
         PublishStream,
         CreateEvent,
         RsvpEvent,
-        Sms,
         OfflineAccess,
 
         Email,

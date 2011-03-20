@@ -119,7 +119,6 @@ namespace Contigo
             { Permissions.ReadRequests, "read_requests" },
             { Permissions.ReadStream, "read_stream" },
             { Permissions.RsvpEvent, "rsvp_event" },
-            { Permissions.Sms, "sms" },
             { Permissions.UserAboutMe, "user_about_me" },
             { Permissions.UserActivities, "user_activities" },
             { Permissions.UserBirthday, "user_birthday" },
