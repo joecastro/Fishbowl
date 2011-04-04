@@ -186,19 +186,29 @@ namespace Contigo
                 return false;
             }
 
-            XDocument xdoc = XDocument.Load(sessionPath);
-
-            if (1 != (int)xdoc.Root.Attribute("v"))
+            try
             {
-                return false;
+                XDocument xdoc = XDocument.Load(sessionPath);
+
+                if (1 != (int)xdoc.Root.Attribute("v"))
+                {
+                    return false;
+                }
+
+                XElement sessionInfoElement = xdoc.Root.Element("sessionInfo");
+                if (sessionInfoElement != null)
+                {
+                    SessionKey = (string)sessionInfoElement.Element("sessionKey");
+                    SessionSecret = (string)sessionInfoElement.Element("sessionSecret");
+                    _user.UserId = new FacebookObjectId((string)sessionInfoElement.Element("userId"));
+                }
             }
-
-            XElement sessionInfoElement = xdoc.Root.Element("sessionInfo");
-            if (sessionInfoElement != null)
+            // The XML file can be corrupted in various ways.
+            // Just treat it as though we don't have settings saved.
+            catch
             {
-                SessionKey = (string)sessionInfoElement.Element("sessionKey");
-                SessionSecret = (string)sessionInfoElement.Element("sessionSecret");
-                _user.UserId = new FacebookObjectId((string)sessionInfoElement.Element("userId"));
+                _ClearUserInfo();
+                return false;
             }
 
             return HasSessionInfo;
