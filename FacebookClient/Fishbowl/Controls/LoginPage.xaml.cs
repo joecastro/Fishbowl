@@ -98,7 +98,9 @@ namespace FacebookClient
         // If trying to use FBConnect, the connect URL must be specified through the application settings
         // or Facebook will redirect the user to an error page.
         private const string _GrantedPermissionUri = "http://www.facebook.com/connect/login_success.html";
+        private const string _GrantedPermissionSearchString = "login_success.html";
         private const string _DeniedPermissionUri = "http://www.facebook.com/connect/login_failure.html";
+        private const string _DeniedPermissionSearchString = "login_failure.html";
 
         public LoginPage(string appId, string appKey, Navigator next)
         {
@@ -267,7 +269,7 @@ namespace FacebookClient
             if (!_isLoggedIn)
             {
                 // This will be contained in the page once the user has accepted the app.
-                if (e.Uri.ToString().StartsWith(_GrantedPermissionUri))
+                if (e.Uri.ToString().Contains(_GrantedPermissionUri))
                 {
                     _service.InitiateNewSession(e.Uri);
                     try
@@ -280,7 +282,7 @@ namespace FacebookClient
                     }
                     return;
                 }
-                else if (e.Uri.ToString().StartsWith(_DeniedPermissionUri))
+                else if (e.Uri.ToString().Contains(_DeniedPermissionSearchString))
                 {
                     _SwitchToErrorPage("You didn't authorize the application.", true, true);
                     return;
