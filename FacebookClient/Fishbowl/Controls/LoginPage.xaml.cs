@@ -287,6 +287,10 @@ namespace FacebookClient
                 }
             }
 
+            // Facebook has been changing things recently so this list is no longer reliable.
+            // I'm simply going to stop attempting to catch bad navigations.
+
+            /*
             // This list is getting unruly and has potential to need to be added to without actually pushing an app update.
             // Consider making this list augmentable through an external file.
             if (e.Uri.PathAndQuery.Contains(_service.ApplicationKey)
@@ -309,6 +313,9 @@ namespace FacebookClient
                 _SwitchToErrorPage("An attempt was made to navigate to an unexpected URL.  Please restart Fishbowl to login", false, false);
                 return;
             }
+            */
+
+            return;
         }
 
         private void _OnTryAgain(object sender, RoutedEventArgs e)
