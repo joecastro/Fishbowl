@@ -269,7 +269,7 @@ namespace FacebookClient
             if (!_isLoggedIn)
             {
                 // This will be contained in the page once the user has accepted the app.
-                if (e.Uri.ToString().Contains(_GrantedPermissionUri))
+                if (e.Uri.ToString().Contains(_GrantedPermissionSearchString))
                 {
                     _service.InitiateNewSession(e.Uri);
                     try
