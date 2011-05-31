@@ -76,14 +76,18 @@ namespace Standard
                 Brushes.Pink,
                 (d,e) => _OnHwndBackgroundBrushChanged(d)));
 
-        public static SolidColorBrush GetHwndBackgroundBrush(Window window)
+        public static SolidColorBrush GetHwndBackgroundBrush(FrameworkElement window)
         {
             Verify.IsNotNull(window, "window");
             return (SolidColorBrush)window.GetValue(HwndBackgroundBrushProperty);
         }
 
-        public static void SetHwndBackgroundBrush(Window window, SolidColorBrush value)
+        public static void SetHwndBackgroundBrush(FrameworkElement window, SolidColorBrush value)
         {
+			if (!(window is Window))
+			{
+				return;
+			}
             Verify.IsNotNull(window, "window");
             window.SetValue(HwndBackgroundBrushProperty, value);
         }
@@ -106,12 +110,12 @@ namespace Standard
                 return;
             }
 
-            SolidColorBrush backgroundBrush = GetHwndBackgroundBrush(window);
-            if (backgroundBrush == null)
-            {
+			SolidColorBrush backgroundBrush = (SolidColorBrush)window.GetValue(HwndBackgroundBrushProperty);
+            //if (backgroundBrush == null)
+            //{
                 // Nothing to change.
-                return;
-            }
+            //    return;
+            //}
 
             Color backgroundColor = backgroundBrush.Color;
 

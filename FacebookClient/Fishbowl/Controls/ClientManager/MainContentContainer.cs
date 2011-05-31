@@ -17,6 +17,7 @@ namespace ClientManager.Controls
     using System.Windows.Navigation;
     using System.Windows.Threading;
     using ClientManager.View;
+    using Standard;
 
     public class ContentChangedEventArgs : EventArgs
     {
@@ -47,6 +48,10 @@ namespace ClientManager.Controls
 
         private void OnLoaded()
         {
+			if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+			{
+				return;
+			}
             ServiceProvider.ViewManager.Navigated += this.OnViewManagerNavigated;
             NavigationService navigationService = NavigationService.GetNavigationService(this);
             if (navigationService != null)
@@ -62,7 +67,12 @@ namespace ClientManager.Controls
 
         private void OnUnloaded()
         {
-            ServiceProvider.ViewManager.Navigated -= this.OnViewManagerNavigated;
+			if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+			{
+				return;
+			}
+			
+			ServiceProvider.ViewManager.Navigated -= this.OnViewManagerNavigated;
             NavigationService navigationService = NavigationService.GetNavigationService(this);
             if (navigationService != null)
             {
