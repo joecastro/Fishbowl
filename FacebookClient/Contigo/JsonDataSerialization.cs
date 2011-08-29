@@ -698,10 +698,14 @@ namespace Contigo
                 Rank = _SafeGetInt32(jsonFilter, "rank") ?? Int32.MaxValue,
                 // Facebook gives us an image map of both selected and not versions of the icon.
                 // The right half is the selected state, so just return that as the image.
+                // Update: Except they don't do it consistently.  It's not a matter of just being for hidden filters,
+                // They just have the split images for 4 of them right now.  I have no idea what they're going to change it to in the future.
+                // I'm going to predict that they'll stay square-ish, so I'm changing the FacebookImage to optionally check for the aspect ratio,
+                // and then it can do the right thing if it looks too rectangular.
                 Icon = new FacebookImage(
                     _service, 
                     _SafeGetUri(jsonFilter, "icon_url"),
-                    new Thickness(.5, 0, 0, 0)),
+                    true),
                 IsVisible = _SafeGetBoolean(jsonFilter, "is_visible") ?? true,
                 FilterType = _SafeGetString(jsonFilter, "type"),
             };

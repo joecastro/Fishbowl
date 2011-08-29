@@ -54,7 +54,7 @@ namespace Contigo
             throw new ArgumentException("Invalid enum value", "dimensions");
         }
 
-        private Thickness? _margin;
+        private bool _isSquarish;
         private SmallUri? _normal;
         private SmallUri? _big;
         private SmallUri? _small;
@@ -64,21 +64,17 @@ namespace Contigo
         private WeakReference _smallWR;
         private WeakReference _squareWR;
 
-        internal FacebookImage(FacebookService service, Uri uri, Thickness marginPercent)
-            : this(service, uri, (Thickness?)marginPercent)
-        {}
-
-        internal FacebookImage(FacebookService service, Uri uri)
-            : this(service, uri, null)
-        {}
-
         private FacebookImage(FacebookService service)
         {
             Assert.IsNotNull(service);
             SourceService = service;
         }
 
-        private FacebookImage(FacebookService service, Uri uri, Thickness? marginPercent)
+        internal FacebookImage(FacebookService service, Uri uri)
+            : this(service, uri, false)
+        {}
+
+        internal FacebookImage(FacebookService service, Uri uri, bool shouldBeSquarish)
         {
             Assert.IsNotNull(service);
             SourceService = service;
@@ -87,7 +83,7 @@ namespace Contigo
             {
                 _normal = new SmallUri(uri.OriginalString);
                 SourceService.WebGetter.QueueImageRequest(_normal.Value);
-                _margin = marginPercent;
+                _isSquarish = shouldBeSquarish;
             }
         }
 
@@ -183,10 +179,25 @@ namespace Contigo
             }
 
             var bs = (BitmapSource)e.ImageSource;
-            if (_margin.HasValue)
+            if (_isSquarish)
             {
-                Thickness margin = _margin.Value;
-                bs = new CroppedBitmap(bs, new Int32Rect((int)(margin.Left * bs.Width), (int)(margin.Top * bs.Height), (int)(bs.Width - (margin.Left + margin.Right) * bs.Width), (int)(bs.Height - (margin.Top + margin.Bottom) * bs.Height)));
+                if (e.ImageSource.Height == 0)
+                {
+                    return;
+                }
+
+                double aspectRatio = e.ImageSource.Width / e.ImageSource.Height;
+                // Allow for some flexibility.  This is really a special case for newsfeed filter icons and I can't really predict how Facebook is going to break things in the future.
+                if (aspectRatio > 1.8 && aspectRatio < 2.5)
+                {
+                    // Take the right half of the image.
+                    bs = new CroppedBitmap(bs, new Int32Rect((int)(.5 * bs.Width), 0, (int)(bs.Width *.5), (int)bs.Height));
+                }
+                else
+                {
+                    // If we didn't need to do cropping then we won't in the future, so just short circuit this next time.
+                    _isSquarish = false;
+                }
             }
 
             var userState = (_ImageCallbackState)e.UserState;
@@ -384,9 +395,9 @@ namespace Contigo
         public FacebookImage Clone()
         {
             var img = new FacebookImage(SourceService);
+            img._isSquarish = _isSquarish;
             img._big = _big;
             img._bigWR = _bigWR;
-            img._margin = _margin;
             img._normal = _normal;
             img._normalWR = _normalWR;
             img._small = _small;
