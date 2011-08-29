@@ -23,9 +23,6 @@
       </StackPanel>
       <DockPanel DockPanel.Dock="Bottom">
         <Button DockPanel.Dock="Right" Margin="5" Height="28" Style="{DynamicResource StandardButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Close" Click="_OnClose" />
-        <TextBlock Margin="5" FontSize="{DynamicResource SmallFontSize1}" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" FontFamily="{DynamicResource SansSerifFont}" FontWeight="Light">
-          <Hyperlink Click="_OnPrivacyWebsiteClicked" Foreground="{DynamicResource SettingsDialogForeground}">Privacy statement</Hyperlink>
-        </TextBlock>
       </DockPanel>
       <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource MainScrollViewerStyle}">
         <StackPanel Margin="10" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top">

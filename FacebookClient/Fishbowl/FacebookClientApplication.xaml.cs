@@ -47,8 +47,9 @@ namespace FacebookClient
         internal const string FacebookApiKey = "f6310ebf42d462b20050f62bea75d7d2";
         internal const string BingApiKey = "63F02036684DE7BEA0FDE713C0D1653056727276";
 
-        private static readonly Uri _SupportUri = new Uri("http://www.fishbowlclient.com");
-        private static readonly Uri _PrivacyUri = new Uri("http://go.microsoft.com/fwlink/?LinkId=167928");
+        private static readonly Uri _SupportUri = new Uri("http://fishbowl.codeplex.com");
+        // This isn't pointing at anything right now.
+        //private static readonly Uri _PrivacyUri = new Uri("http://go.microsoft.com/fwlink/?LinkId=167928");
 
         private static readonly Dictionary<string, _ThemeInfo> _ThemeLookup = new Dictionary<string, _ThemeInfo>
         {
@@ -97,7 +98,7 @@ namespace FacebookClient
 
         public Uri SupportWebsite { get { return _SupportUri; } }
 
-        public Uri PrivacyWebsite { get { return _PrivacyUri; } }
+        //public Uri PrivacyWebsite { get { return _PrivacyUri; } }
 
         public bool IsFirstRun
         {

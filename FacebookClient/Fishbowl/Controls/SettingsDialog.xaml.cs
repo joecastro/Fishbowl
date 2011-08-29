@@ -73,12 +73,12 @@
             e.Handled = true;
         }
 
-        private void _OnPrivacyWebsiteClicked(object sender, RoutedEventArgs e)
-        {
-            // Don't open these within the app.  Always open external.
-            Process.Start(new ProcessStartInfo(FacebookClientApplication.Current2.PrivacyWebsite.OriginalString));
-            e.Handled = true;
-        }
+        //private void _OnPrivacyWebsiteClicked(object sender, RoutedEventArgs e)
+        //{
+        //    // Don't open these within the app.  Always open external.
+        //    Process.Start(new ProcessStartInfo(FacebookClientApplication.Current2.PrivacyWebsite.OriginalString));
+        //    e.Handled = true;
+        //}
 
         private void _OnClearCacheButtonClicked(object sender, RoutedEventArgs e)
         {
