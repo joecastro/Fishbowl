@@ -18,6 +18,7 @@ namespace Contigo
     /// According to facebook some of these are supersets of of others.  This relationship isn't reflected in the enum values.
     /// Last major update 5/27/2010 from http://developers.facebook.com/docs/authentication/permissions
     /// Minor update 3/19/2011 because despite SMS still being listed as a permission on the above page, the APIs are returning that it is invalid.
+    /// Minor update 8/29/2011 because Facebook deprecated friend_photo_video_tags.  I haven't scrubbed the list to verify that there haven't been other changes.
     /// </remarks>
     // There are actually so many nuanced flags now that they aren't flaggable with an Int32!
     // Possible that it will be augmented to have too many for an Int64, so not even bothering with making it flaggable.
@@ -60,8 +61,6 @@ namespace Contigo
         FriendsNotes,
         UserOnlinePresence,
         FriendsOnlinePresence,
-        UserPhotoVideoTags,
-        FriendsPhotoVideoTags,
         UserPhotos,
         FriendsPhotos,
         UserRelationships,
