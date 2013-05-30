@@ -1,0 +1,120 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell">
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <!-- Keeping DWM enabled for the window when possible because it provides a drop shadow
+       and it significantly improves resizing behavior from the top left corner. -->
+  <shell:WindowChrome x:Key="ApplicationWindowChrome" GlassFrameThickness="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" CornerRadius="10" CaptionHeight="82" UseAeroCaptionButtons="False" />
+
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+  <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
+    <GradientStop Offset="1" Color="#2B426F" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ContentChromeBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
+    <GradientStop Offset="1" Color="#2B426F" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ContentChromeBorderBrush" Color="#0c1d40" />
+
+  <LinearGradientBrush x:Key="InactiveApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#5677ae" />
+    <GradientStop Offset="1" Color="#476195" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#0000" />
+    <GradientStop Offset=".9" Color="#4000" />
+    <GradientStop Offset="1" Color="#7000" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ApplicationBarFooterShadowBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#5000"/>
+    <GradientStop Offset=".3" Color="#3000" />
+    <GradientStop Offset="1" Color="#0000" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#0c1d40" />
+
+  <SolidColorBrush x:Key="ApplicationBarForeground" Color="#3A5896" />
+
+  <SolidColorBrush x:Key="FooterBackground" Color="{DynamicResource FacebookBlue}" />
+
+  <SolidColorBrush x:Key="InactiveFooterBackground" Color="#5677ae" />
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
+      <GradientStop Offset="1" Color="#2B426F" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+  
+  <Color x:Key="ModernContactFrameColor">#3b5998</Color>
+
+  <SolidColorBrush x:Key="ModernPopupTopBrush" Color="#6077ab"/>
+
+  <LinearGradientBrush x:Key="ModernPopupBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#6077ab" Offset="0" />
+    <GradientStop Color="#3b5896" Offset="1" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="PhotoStripOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
+
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent"/>
+
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}">
+    <Setter Property="Margin" Value="0"/>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
+        <Setter Property="Margin" Value="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}"/>
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+  <Thickness x:Key="MainContentMargin" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush" Color="#e3e7f0" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush" Color="#3b5998" />
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsHoveredBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBrush" Color="#b3c4e9" />
+
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="FilterBorderBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterButtonHoverBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#35528c" />
+
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
+
+  <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
+    <GradientStop Offset="0.25" Color="#DF35528C" />
+    <GradientStop Offset="1" Color="#8F35528C" />
+  </LinearGradientBrush>
+
+</ResourceDictionary>

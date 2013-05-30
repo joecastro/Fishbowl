@@ -1,0 +1,172 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFacebookDataResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <LinearGradientBrush x:Key="ApplicationBarBackground" EndPoint="1,0" StartPoint="0,0">
+    <GradientStop Color="Red" Offset="0.1" />
+    <GradientStop Color="DarkRed" Offset="0.644" />
+    <GradientStop Color="Red" Offset="0.998" />
+  </LinearGradientBrush>
+  
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="Firebrick"/>
+
+  <LinearGradientBrush x:Key="ContentChromeBackground" EndPoint="1,0" StartPoint="0,0">
+    <GradientStop Color="Red" Offset="0.1" />
+    <GradientStop Color="DarkRed" Offset="0.644" />
+    <GradientStop Color="Red" Offset="0.998" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ContentChromeBorderBrush" Color="Firebrick"/>
+
+  <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ApplicationBarFooterShadowBrush" Color="Transparent" />
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="Orange" Offset="0"/>
+      <GradientStop Color="Firebrick" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="Orange" Offset="0"/>
+      <GradientStop Color="Firebrick" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="SearchTextBoxBrush"
+                     Color="DarkRed" />
+
+  <SolidColorBrush x:Key="StatusTextBoxBrush"
+                     Color="DarkRed" />
+
+  <SolidColorBrush x:Key="HeaderStatusForegroundBrush"
+                     Color="White" />
+
+  <SolidColorBrush x:Key="ButtonHoverBrush" Color="OrangeRed" />
+
+  <LinearGradientBrush x:Key="ButtonHoverBorderBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#AF4E6AA2" Offset="0"/>
+    <GradientStop Color="#804E6AA2" Offset=".5"/>
+    <GradientStop Color="#004E6AA2" Offset=".6"/>
+    <GradientStop Color="#00698FDD" Offset="1"/>
+  </LinearGradientBrush>
+
+
+  <SolidColorBrush x:Key="UpdateStatusControlBrush"
+                     Color="DarkRed" Opacity="0" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush"
+                     Color="#FFFFB2B2"  />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush"
+                     Color="#FFCF2221"  />
+
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush"
+                     Color="#FFF0E6E3"  />
+
+  <SolidColorBrush x:Key="FilterControlBorderBrush"
+                     Color="#b3c4e9"  />
+
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush"
+                     Color="#FF963729"  />
+
+  <SolidColorBrush x:Key="FilterBorderBrush"
+                     Color="#3b5998"  />
+
+  <SolidColorBrush x:Key="FilterButtonHoverBrush"
+                     Color="#FF963729"  />
+
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush"
+                     Color="#FFCF2221"  />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush"
+                     Color="#FFCF2221"  />
+
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff"
+                     Color="#FFCF2221" />
+
+  <SolidColorBrush x:Key="CentralPartsBorderBrush"
+                     Color="#FFCF2221" />
+
+  <LinearGradientBrush x:Key="ApplicationBarSeparationBackgroundBrush"
+                         EndPoint="0.5,1"
+                         StartPoint="0.5,0">
+    <GradientStop Color="#FF363636"
+                      Offset="0" />
+    <GradientStop Color="#FF626262"
+                      Offset="1" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" 
+             EndPoint="0.5,1" StartPoint="0.5,0">
+    <GradientStop Color="#FFD02B1D" Offset="0"/>
+    <GradientStop Color="#FFDC7C73" Offset="1"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ApplicationBarSeparationBorderBrush"
+                         EndPoint="0.5,1"
+                         StartPoint="0.5,0">
+    <GradientStop Color="#FF262930"
+                      Offset="0" />
+    <GradientStop Color="#FF000000"
+                      Offset="1" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ProfilePictureBackgroundBrush"
+                     Color="White" />
+
+  <SolidColorBrush x:Key="ProfilePictureBorderBrush"
+                     Color="Black" />
+
+  <SolidColorBrush x:Key="FriendsButtonHeadBackgroundBrush"
+                     Color="#FF707175" />
+
+  <LinearGradientBrush x:Key="PhotoStripOpacityMask" StartPoint="0,.5" EndPoint="1,.5">
+    <GradientStop Offset="0" Color="Transparent"/>
+    <GradientStop Offset=".05" Color="#88000000"/>
+    <GradientStop Offset=".15" Color="Black"/>
+    <GradientStop Offset=".85" Color="Black"/>
+    <GradientStop Offset=".95" Color="#88000000"/>
+    <GradientStop Offset="1" Color="Transparent"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="FriendBarOpacityMask" StartPoint="0,.5" EndPoint="1,.5">
+    <GradientStop Offset="0" Color="Transparent"/>
+    <GradientStop Offset=".05" Color="#88000000"/>
+    <GradientStop Offset=".15" Color="Black"/>
+    <GradientStop Offset=".85" Color="Black"/>
+    <GradientStop Offset=".95" Color="#88000000"/>
+    <GradientStop Offset="1" Color="Transparent"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ScrollViewerOpacityMask" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="Transparent" Offset="0" />
+    <GradientStop Color="White" Offset=".04" />
+    <GradientStop Color="White" Offset=".96" />
+    <GradientStop Color="Transparent" Offset="1" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ContentHeaderShadowBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#88000000" Offset="0" />
+    <GradientStop Color="Transparent" Offset="1" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ContentFooterShadowBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="Transparent" Offset="0" />
+    <GradientStop Color="#88000000" Offset="1" />
+  </LinearGradientBrush>
+
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}"/>
+  <Thickness x:Key="MainContentMargin" />
+
+</ResourceDictionary>

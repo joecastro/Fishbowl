@@ -1,0 +1,26 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Common theme agnostic styles. -->
+  
+  <Style x:Key="SimpleButtonBaseStyle" TargetType="{x:Type ButtonBase}">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Focusable" Value="False" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ButtonBase}">
+          <ContentPresenter />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="IsEnabled" Value="True">
+        <Setter Property="Cursor" Value="Hand" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="SimpleButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource SimpleButtonBaseStyle}"/>
+  
+</ResourceDictionary>
