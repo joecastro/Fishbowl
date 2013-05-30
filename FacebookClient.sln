@@ -22,6 +22,42 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackBox", "BlackBoxReporting\BlackBox.csproj", "{420F77E7-0AFD-44D5-A918-17E8291740DD}"
 EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 11
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs03
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Fishbowl\\Fishbowl.csproj
+		SccProjectName1 = Fishbowl
+		SccLocalPath1 = Fishbowl
+		SccProjectUniqueName2 = TransitionEffects\\TransitionEffects.csproj
+		SccProjectName2 = TransitionEffects
+		SccLocalPath2 = TransitionEffects
+		SccProjectUniqueName3 = EffectLibrary\\EffectLibrary.csproj
+		SccProjectName3 = EffectLibrary
+		SccLocalPath3 = EffectLibrary
+		SccProjectUniqueName4 = Contigo\\Contigo.csproj
+		SccProjectName4 = Contigo
+		SccLocalPath4 = Contigo
+		SccProjectUniqueName5 = Standard\\Standard.csproj
+		SccProjectName5 = Standard
+		SccLocalPath5 = Standard
+		SccProjectUniqueName6 = Microsoft.Json\\Microsoft.Json\\Microsoft.Json.csproj
+		SccProjectName6 = Microsoft.Json/Microsoft.Json
+		SccLocalPath6 = Microsoft.Json\\Microsoft.Json
+		SccProjectUniqueName7 = Microsoft.Bing\\Microsoft.Bing.csproj
+		SccProjectName7 = Microsoft.Bing
+		SccLocalPath7 = Microsoft.Bing
+		SccProjectUniqueName8 = StandardTests\\StandardTests.csproj
+		SccProjectName8 = StandardTests
+		SccLocalPath8 = StandardTests
+		SccProjectUniqueName9 = Microsoft.Windows.Shell\\Microsoft.Windows.Shell.csproj
+		SccProjectName9 = Microsoft.Windows.Shell
+		SccLocalPath9 = Microsoft.Windows.Shell
+		SccProjectUniqueName10 = BlackBoxReporting\\BlackBox.csproj
+		SccProjectName10 = BlackBoxReporting
+		SccLocalPath10 = BlackBoxReporting
+	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = FacebookClient.vsmdi
 	EndGlobalSection
