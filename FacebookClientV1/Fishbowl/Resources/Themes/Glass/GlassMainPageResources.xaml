@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <SolidColorBrush x:Key="PhotoStripOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
+
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent"/>
+
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}">
+    <Setter Property="Margin" Value="8,0"/>
+  </Style>
+
+  <system:Boolean x:Key="UseGlass">False</system:Boolean>
+
+</ResourceDictionary>

@@ -1,0 +1,89 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell">
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <LinearGradientBrush x:Key="ApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#585858" />
+    <GradientStop Offset="1" Color="#383838" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="InactiveApplicationBarBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#888888" />
+    <GradientStop Offset="1" Color="#6e6e6e" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ApplicationBarShadowBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#0000" />
+    <GradientStop Offset=".9" Color="#4000" />
+    <GradientStop Offset="1" Color="#7000" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="#202020" />
+
+  <SolidColorBrush x:Key="ApplicationBarForeground" Color="#303030" />
+
+  <SolidColorBrush x:Key="FooterBackground" Color="#404040" />
+
+  <SolidColorBrush x:Key="InactiveFooterBackground" Color="#888888" />
+
+  <SolidColorBrush x:Key="PhotoStripOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
+
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent" />
+
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}">
+    <Setter Property="Margin" Value="0" />
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
+        <Setter Property="Margin" Value="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <system:Boolean x:Key="UseGlass">False</system:Boolean>
+
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+  <SolidColorBrush x:Key="ActivityPostMessageTextBlockForeground" Color="Black" />
+  <SolidColorBrush x:Key="Foreground_ContentElement" Color="#383838"/>
+
+  <SolidColorBrush Color="#20000000" x:Key="AnimatedSwoosh1" />
+  <SolidColorBrush Color="#18000000" x:Key="AnimatedSwoosh2" />
+
+  <Color x:Key="ModernContactFrameColor">Silver</Color>
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="#585858" />
+      <GradientStop Offset=".4" Color="#585858" />
+      <GradientStop Offset="1" Color="#383838" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="#585858" />
+      <GradientStop Offset=".4" Color="#585858" />
+      <GradientStop Offset="1" Color="#383838" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ModernPopupTopBrush" Color="#787878"/>
+
+  <LinearGradientBrush x:Key="ModernPopupBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#787878" Offset="0" />
+    <GradientStop Color="#585858" Offset="1" />
+  </LinearGradientBrush>
+</ResourceDictionary>

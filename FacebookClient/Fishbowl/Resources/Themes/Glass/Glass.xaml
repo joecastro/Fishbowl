@@ -1,0 +1,111 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+  <!-- An alternative way to do this would be to tint the glass with a translucent background
+       to make things darker so the content on the glass could still be colored white.
+       If this was done then a transparent rect should be punched out over the caption buttons
+       so they don't look disabled. -->
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/ModernFacebookDataResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/Glass/GlassApplicationBarResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <SolidColorBrush x:Key="ModernPopupTopBrush" Color="#787878"/>
+
+  <LinearGradientBrush x:Key="ModernPopupBrush" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#787878" Offset="0" />
+    <GradientStop Color="#585858" Offset="1" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="PhotoStripOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="ScrollViewerOpacityMask" Color="Black" />
+  <SolidColorBrush x:Key="FriendBarOpacityMask" Color="Black" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsBrush" Color="#e3e7f0" />
+
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedBrush" Color="#3b5998" />
+  <SolidColorBrush x:Key="FriendViewerCategoryTabsHoveredBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBackgroundBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="FilterControlBorderBrush" Color="#b3c4e9" />
+
+  <SolidColorBrush x:Key="FilterButtonSelectedBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="FilterBorderBrush" Color="#3b5998" />
+
+  <SolidColorBrush x:Key="FilterButtonHoverBrush" Color="#6d84b4" />
+
+  <SolidColorBrush x:Key="PhotoViewerToolbarButtonSelectedBrush" Color="#253b5998" />
+
+  <SolidColorBrush x:Key="MainScrollViewerThumbBrush" Color="#35528c" />
+
+  <SolidColorBrush x:Key="CentralPartsBackgroundBrushOff" Color="#7FA7B4BD" />
+
+  <SolidColorBrush x:Key="CentralPartsBorderBrush" Color="#FF868F98" />
+
+  <LinearGradientBrush x:Key="TooltipBackgroundBrush" StartPoint="0,1" EndPoint="0,0">
+    <GradientStop Offset="0.25" Color="#DF35528C" />
+    <GradientStop Offset="1" Color="#8F35528C" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ContentHeaderShadowBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="ContentFooterShadowBrush" Color="Transparent"/>
+
+  <Style x:Key="MainWindowAdornerDecoratorStyle" TargetType="{x:Type AdornerDecorator}">
+    <Setter Property="Margin" Value="0"/>
+  </Style>
+
+  <Thickness x:Key="MainContentMargin" Left="8" Right="8"/>
+
+  <LinearGradientBrush x:Key="ContentChromeBackground" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#585858" />
+    <GradientStop Offset="1" Color="#383838" />
+  </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ContentChromeBorderBrush" Color="#202020" />
+
+  <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
+
+  <shell:WindowChrome 
+    x:Key="ApplicationWindowChrome" 
+    GlassFrameThickness="8,90,8,32" 
+    CaptionHeight="82"
+    UseAeroCaptionButtons="True"
+    SacrificialEdge="Right"
+    />
+
+  <!-- Sacrificing the top 8 (usually) pixels to the window manager, so we can't color them.
+       Instead fade in a gradient based on what the DWM will render. -->
+  <LinearGradientBrush x:Key="MainWindowBackgroundBrush" StartPoint="0,.5" EndPoint="1,.5" MappingMode="RelativeToBoundingBox">
+    <GradientStop Offset="0" Color="Transparent"/>
+    <GradientStop Offset=".1" Color="#4000"/>
+    <GradientStop Offset=".85" Color="#4000" />
+    <GradientStop Offset="1" Color="Transparent" />
+  </LinearGradientBrush>
+  <SolidColorBrush x:Key="ApplicationBarBackground" Color="Transparent"/>
+
+  <SolidColorBrush x:Key="ApplicationBarShadowBrush" Color="Transparent"/>
+  <SolidColorBrush x:Key="ApplicationBarFooterShadowBrush" Color="Transparent" />
+
+  <SolidColorBrush x:Key="ApplicationBarBorderBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="ApplicationBarForeground" Color="#3A5896" />
+
+  <SolidColorBrush x:Key="FooterBackground" Color="Transparent" />
+
+  <LinearGradientBrush x:Key="HyperlinkForegroundBrush" StartPoint="0,0" EndPoint="0,1">
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Offset="0" Color="{DynamicResource FacebookBlue}" />
+      <GradientStop Offset="1" Color="#2B426F" />
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+
+</ResourceDictionary>

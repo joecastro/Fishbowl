@@ -1,0 +1,480 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/DrawingResources.xaml" />
+    <ResourceDictionary Source="pack://application:,,,/Resources/Themes/CommonFontResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <SolidColorBrush x:Key="ActivityPostCommentDividerBrush" Color="White" />
+  <SolidColorBrush x:Key="Foreground_ContentElement" Color="#FF3B5998"/>
+
+  <RotateTransform x:Key="FriendRenderTransform" Angle="-6"/>
+  <RotateTransform x:Key="CommentRenderTransform" Angle="4.5"/>
+
+  <LinearGradientBrush x:Key="ToolbarIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+    <LinearGradientBrush.GradientStops>
+      <GradientStop Color="#6A9FE9" Offset="0"/>
+      <GradientStop Color="#3F60A0" Offset="1"/>
+    </LinearGradientBrush.GradientStops>
+  </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="ToolbarLightIconForegroundBrush" StartPoint="0,0" EndPoint="0,1" >
+      <LinearGradientBrush.GradientStops>
+        <GradientStop Color="White" Offset="0"/>
+        <GradientStop Color="White" Offset=".2"/>
+        <GradientStop Color="Silver" Offset="1"/>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+  <SolidColorBrush x:Key="ToolbarTextBlockForegroundBrush" Color="#3F60A0"/>
+  <SolidColorBrush x:Key="ToolbarLightTextBlockForegroundBrush" Color="White"/>
+
+    <SolidColorBrush x:Key="UploadWizardPrimaryBrush" Color="#FF7489B6" />
+    <SolidColorBrush x:Key="InterestLevelTextForeground" Color="#3b5998"/>
+    <SolidColorBrush x:Key="LikeSliderTickBrush" Color="#87AcF9" />
+    <SolidColorBrush x:Key="LikeSliderBackground" Color="White" />
+    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="LikeSliderThumbBrushHover">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#C9F1FC" Offset="0"/>
+            <GradientStop Color="#3F5F9F" Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="LikeSliderThumbBrushUp">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#6A9FE9" Offset="0"/>
+            <GradientStop Color="#3F60A0" Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="LikeSliderThumbBrushDown">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop Color="#3B5998" Offset="0"/>
+            <GradientStop Color="#3B5998" Offset="1"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+
+    <SolidColorBrush x:Key="PhotoViewerAlbumTimeStampForeground" Color="Black" Opacity=".56" />
+    <SolidColorBrush x:Key="PhotoViewerAlbumNameForeground" Color="Black" />
+    <SolidColorBrush x:Key="NotificationMessageTextForeground" Color="Black" />
+    <SolidColorBrush x:Key="SmallButtonHoverBorder" Color="#553b5998" />
+    <SolidColorBrush x:Key="SmallButtonHoverBackground" Color="#253b5998" />
+
+    <SolidColorBrush x:Key="CommentTextBoxForeground" Color="#35528c" />
+    <SolidColorBrush x:Key="PhotoCaptionForeground" Color="Gray" />
+    <SolidColorBrush x:Key="SpinnerBrush" Color="#35528c"/>
+    <SolidColorBrush x:Key="SpinnerTextForeground" Color="{DynamicResource FacebookBlue}"/>
+
+    <SolidColorBrush x:Key="FriendViewerInformationalTextBlockForeground" Color="#C0000000"/>
+
+    <SolidColorBrush x:Key="FriendBarBorderBrush" Color="#353b5998" />
+    <SolidColorBrush x:Key="FriendBarBackgroundBrush" Color="#103b5998" />
+
+    <SolidColorBrush x:Key="PopupListControlBackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="PopupListControlDeleteItemBrush" Color="{DynamicResource FacebookBlue}" />
+    <SolidColorBrush x:Key="AlbumNavigationTextForeground" Color="Black" />
+    <SolidColorBrush x:Key="ScrollBarArrowBrush" Color="#35528c" />
+
+    <SolidColorBrush x:Key="FriendViewerNameForeground" Color="#C0000000"/>
+    <SolidColorBrush x:Key="PeopleWhoLikeThisForeground" Color="Black"/>
+    <!-- or black for photo albums?-->
+    <SolidColorBrush x:Key="PageNavigationTextForeground" Color="{DynamicResource FacebookBlue}"/>
+
+    <!--<SolidColorBrush x:Key="IconForegroundBrush" Color="#3B5998" />-->
+
+    <SolidColorBrush x:Key="AlbumInfoForeground" Color="#FF393939"/>
+    <SolidColorBrush x:Key="AlbumTitleForeground" Color="#FF393939"/>
+
+    <SolidColorBrush x:Key="AttachmentTitleTextBlockForeground" Color="Black"/>
+    <SolidColorBrush x:Key="AttachmentCaptionTextBlockForeground" Color="Black"/>
+    <SolidColorBrush x:Key="AttachmentDescriptionTextBlockForeground" Color="Black"/>
+
+    <SolidColorBrush x:Key="ActivityPostUserNameForeground" Color="Black"/>
+    <SolidColorBrush x:Key="ActivityActionButtonForeground" Color="#3B5998"/>
+
+    <SolidColorBrush Color="#253b5998" x:Key="NewsFeedCommentBackgroundBrush" />
+
+    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" x:Key="NewsFeedItemDividerBrush">
+        <GradientStop Offset="0" Color="Transparent" />
+        <GradientStop Offset=".05" Color="#d9e2f8" />
+        <GradientStop Offset=".9" Color="#d9e2f8" />
+        <GradientStop Offset="1" Color="#d9e2f8" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" x:Key="VerticalDividerBrush">
+        <GradientStop Offset="0" Color="Transparent" />
+        <GradientStop Offset=".05" Color="#d9e2f8" />
+        <GradientStop Offset=".9" Color="#d9e2f8" />
+        <GradientStop Offset="1" Color="Transparent" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush Color="Black" x:Key="ActivityPostMessageTextBlockForeground"/>
+    <SolidColorBrush Color="#1C317ADD" x:Key="AnimatedSwoosh1"/>
+    <SolidColorBrush Color="#1C317ADD" x:Key="AnimatedSwoosh2"/>
+
+    <SolidColorBrush Color="White" x:Key="MainContentBackgroundBrush" />
+    <SolidColorBrush x:Key="TooltipBorderBrush"
+                     Color="#FF7494C0" />
+
+    <SolidColorBrush x:Key="FilterTabItemBottomColor" Color="#b3c4e9"/>
+    <SolidColorBrush x:Key="FilterTabItemTopColor" Color="#b3c4e9"/>
+
+    <SolidColorBrush x:Key="FilterTabItemForeground1" Color="#4b4b4b"/>
+    <SolidColorBrush x:Key="FilterTabItemForeground2" Color="#4b4b4b"/>
+
+    <SolidColorBrush x:Key="FilterTabItemForegroundSelected1" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="FilterTabItemForegroundSelected2" Color="#FFFFFFFF"/>
+
+  <LinearGradientBrush x:Key="StandardButtonChromeNormalBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#EEF3FE" Offset="0"/>
+    <GradientStop Color="#C1D3FB" Offset="1"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="StandardButtonChromePressedBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#A1B3DB" Offset="0"/>
+    <GradientStop Color="#00B9CEFB" Offset=".3"/>
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="StandardButtonChromeHoverBrush" StartPoint=".5,0" EndPoint=".5,1">
+    <GradientStop Color="#F9F9F9" Offset="0"/>
+    <GradientStop Color="#C8D8FB" Offset="1"/>
+  </LinearGradientBrush>
+
+  <ControlTemplate x:Key="StandardButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+      <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1" Stroke="White" Fill="{DynamicResource StandardButtonChromeNormalBrush}" />
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardButtonChromePressedControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1">
+        <Rectangle.Fill>
+          <LinearGradientBrush StartPoint="0,.5" EndPoint="10,.5" MappingMode="Absolute">
+            <GradientStop Color="#A1B3DB" Offset="0"/>
+            <GradientStop Color="#B9CEFB" Offset=".3"/>
+          </LinearGradientBrush>
+        </Rectangle.Fill>
+      </Rectangle>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1" Fill="{DynamicResource StandardButtonChromePressedBrush}"/>
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardButtonChromeHoverControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+      <Rectangle RadiusX="5" RadiusY="5" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+      <Rectangle RadiusX="4" RadiusY="4" Stroke="White" StrokeThickness="1" Fill="{DynamicResource StandardButtonChromeHoverBrush}"/>
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardPhotoChromeContentControlTemplate" TargetType="{x:Type ContentControl}">
+    <Grid Margin="{TemplateBinding Margin}">
+      <Rectangle Margin="2,4,-2,-4" Fill="#11000000"/>
+      <Rectangle Margin="4,2,-4,-2" Fill="#11000000"/>
+      <Rectangle Margin="-2" Fill="#11000000"/>
+      <Rectangle Fill="White" />
+      <ContentPresenter x:Name="Content"
+          Content="{TemplateBinding Content}" 
+          Margin="{TemplateBinding Padding}" 
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+    </Grid>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="StandardTextBoxChromeControlTemplate" TargetType="{x:Type Control}">
+    <Grid>
+            <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1">
+                <Rectangle.Stroke>
+                    <LinearGradientBrush StartPoint="0,.5" EndPoint="3,.5" MappingMode="Absolute">
+                        <GradientStop Color="#979797" Offset="0"/>
+                        <GradientStop Color="#00979797" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Stroke>
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,.5" EndPoint="5,.5" MappingMode="Absolute">
+                        <GradientStop Color="#DBDBDB" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Rectangle RadiusX="4" RadiusY="4" StrokeThickness="1">
+                <Rectangle.Stroke>
+                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,3" MappingMode="Absolute">
+                        <GradientStop Color="#979797" Offset="0"/>
+                        <GradientStop Color="#00979797" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Stroke>
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,5" MappingMode="Absolute">
+                        <GradientStop Color="#DBDBDB" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="StandardRoundButtonChromeNormalControlTemplate" TargetType="{x:Type Control}">
+        <Grid>
+            <Rectangle RadiusX="5" RadiusY="16" Margin="-.25,0,-.25,-1" Fill="#22000000"/>
+            <Rectangle RadiusX="5" RadiusY="16" Margin="-.5,-.25,-.5,-2" Fill="#11000000"/>
+            <Rectangle RadiusX="4" RadiusY="15" StrokeThickness="1" Stroke="White" >
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
+                        <GradientStop Color="#EEF3FE" Offset="0"/>
+                        <GradientStop Color="#C1D3FB" Offset="1"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="StandardToggleButtonControlTemplate">
+        <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True">
+            <Control x:Name="up" Template="{StaticResource StandardButtonChromeNormalControlTemplate}"/>
+            <Control x:Name="hover" Opacity="0" Template="{StaticResource StandardButtonChromeHoverControlTemplate}"/>
+            <Control x:Name="down" Opacity="0" Template="{StaticResource StandardButtonChromePressedControlTemplate}"/>
+            <ContentPresenter x:Name="Content"
+          Content="{TemplateBinding Content}" 
+          Margin="{TemplateBinding Padding}" 
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                            <!--<DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                            <!--<DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />-->
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="{x:Type Button}" x:Key="StandardButtonControlTemplate">
+        <Grid x:Name="Root" Background="Transparent" SnapsToDevicePixels="True">
+            <Control x:Name="up" Template="{StaticResource StandardButtonChromeNormalControlTemplate}"/>
+            <Control x:Name="hover" Opacity="0" Template="{StaticResource StandardButtonChromeHoverControlTemplate}"/>
+            <Control x:Name="down" Opacity="0" Template="{StaticResource StandardButtonChromePressedControlTemplate}"/>
+            <ContentPresenter x:Name="Content"
+                Content="{TemplateBinding Content}" 
+                Margin="{TemplateBinding Padding}" 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To=".6" Duration="0:0:0.4" Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation To="0" Duration="0:0:0.4" Storyboard.TargetName="down" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.ExitActions>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="SimpleUnderlineFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Control}">
+                    <Rectangle 
+              SnapsToDevicePixels="True" 
+              VerticalAlignment="Bottom" 
+              StrokeDashArray="1 3" 
+              Height="1" 
+              StrokeThickness="1" 
+              Stroke="#60FFFFFF" 
+              Margin="10,0,10,0" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="StandardButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="15,0,15,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="41" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Foreground" Value="#3b5998" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource SimpleUnderlineFocusVisual}" />
+        <Setter Property="Template" Value="{DynamicResource StandardButtonControlTemplate}"/>
+    </Style>
+
+    <Style x:Key="StandardToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Padding" Value="15,0,15,0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="41" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Foreground" Value="#3b5998" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource SimpleUnderlineFocusVisual}" />
+        <Setter Property="Template" Value="{DynamicResource StandardToggleButtonControlTemplate}"/>
+    </Style>
+
+    <SolidColorBrush x:Key="FriendViewerCategoryTabsSelectedTextBrush" Color="#FFFFFFFF"  />
+
+    <SolidColorBrush x:Key="FriendViewerCategoryTabsUnSelectedTextBrush" Color="#3f3f3f"  />
+
+    <SolidColorBrush x:Key="FriendViewerCategoryTabsBevel1" Color="#caced6"  />
+    <SolidColorBrush x:Key="FriendViewerCategoryTabsBevel2" Color="#e9edf3"  />
+
+    <SolidColorBrush x:Key="SettingsDialogForeground" Color="Black"/>
+
+    <LinearGradientBrush x:Key="SeparatorBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="Transparent" Offset="0" />
+        <GradientStop Color="#2E4171" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- BaseResources -->
+    <SolidColorBrush x:Key="IconBackgroundBrush" Color="#404040" />
+    <SolidColorBrush x:Key="IconForegroundBrush" Color="#FFFFFF" />
+    <Color x:Key="IconDropShadowColor">#3B5998</Color>
+
+    <!-- SearchAndFilterControl-->
+    <SolidColorBrush x:Key="FilterTabItemForegroundSelected" Color="#FF4b4b4b"/>
+    <SolidColorBrush x:Key="FilterTabItemForegroundUnSelected" Color="#FF4b4b4b"/>
+
+    <SolidColorBrush x:Key="FilterButtonDivider1" Color="#ffb3c4e9" />
+    <SolidColorBrush x:Key="FilterButtonDivider2" Color="#ffb3c4e9" />
+
+    <SolidColorBrush x:Key="SearchAndFilterHeader" Color="#4b4b4b"/>
+
+    <SolidColorBrush x:Key="FilterItemTextBrush" Color="#4b4b4b"/>
+
+    <!-- Explorer Colors -->
+    <Pen x:Key="Pen_ExplorerNodes" Brush="#403b5998" Thickness="1"/>
+    <SolidColorBrush x:Key="Background_ExplorerNode" Color="#3b5998" />
+    <SolidColorBrush x:Key="Border_ExplorerNode" Color="#666666" />
+    <SolidColorBrush x:Key="Background_ExplorerNodeEnabled" Color="#BBBBBB" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeEnabled" Color="#333333" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeDefault" Color="#666666" />
+    <SolidColorBrush x:Key="Foreground_ExplorerNodeMouse" Color="#3b5998" />
+    <Color x:Key="DropShadow_ExplorerNode">#FF3B5998</Color>
+    <SolidColorBrush x:Key="Border_CommentNode" Color="#A03b5998" />
+
+    <!-- Search Colors -->
+    <SolidColorBrush x:Key="Foreground_PromptText" Color="Black" />
+    <SolidColorBrush x:Key="Foreground_PromptAlternateText" Color="DimGray" />
+
+</ResourceDictionary>

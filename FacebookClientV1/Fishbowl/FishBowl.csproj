@@ -1,0 +1,795 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{77308CBC-E2FF-4224-B115-FD28D80B3B38}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RootNamespace>FacebookClient</RootNamespace>
+    <AssemblyName>Fishbowl</AssemblyName>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>winexe</OutputType>
+    <SignManifests>false</SignManifests>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <GenerateManifests>true</GenerateManifests>
+    <ApplicationExtension>.application</ApplicationExtension>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <SignAssembly>false</SignAssembly>
+    <ApplicationIcon>Resources\Images\Fishbowl.ico</ApplicationIcon>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetZone>LocalIntranet</TargetZone>
+    <ManifestCertificateThumbprint>355EF39F2A89A96CB5722BFC0AA701268393AB7D</ManifestCertificateThumbprint>
+    <ManifestKeyFile>FishBowl_TemporaryKey.pfx</ManifestKeyFile>
+    <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <DesignTime Condition="'$(SolutionPath)'!='' AND Exists('$(SolutionPath)')">true</DesignTime>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation />
+    <Utf8Output>true</Utf8Output>
+    <ExpressionBlendVersion>4.0.20525.0</ExpressionBlendVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://www.fishbowlclient.com/</InstallUrl>
+    <UpdateUrl>http://www.fishbowlclient.com/</UpdateUrl>
+    <ProductName>Fishbowl</ProductName>
+    <PublisherName>Fishbowl</PublisherName>
+    <WebPage>publish.htm</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>240</ApplicationRevision>
+    <ApplicationVersion>1.6.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DebugType>pdbonly</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Interop.WIA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Interop.WIA.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="mscorlib" />
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UIAutomationProvider, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Miramo.ttf" />
+    <Resource Include="Resources\Fonts\Miramob.ttf" />
+    <Resource Include="Resources\Fonts\Linds.ttf" />
+    <Resource Include="Resources\Fonts\OCRAExt.TTF" />
+    <Resource Include="Resources\Fonts\JingJing.ttf" />
+    <Resource Include="Resources\Fonts\Pescab.ttf" />
+    <Resource Include="Resources\Fonts\QuartzMS.ttf" />
+    <Resource Include="Resources\Fonts\Pesca.ttf" />
+    <Page Include="Controls\PhotoUploadInformationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\UpdateStatusControlModern.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FacebookClientApplication.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="..\Standard\ComGuids.cs">
+      <Link>Standard\ComGuids.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Debug.cs">
+      <Link>Standard\Debug.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\DoubleUtil.cs">
+      <Link>Standard\DoubleUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\DpiHelper.cs">
+      <Link>Standard\DpiHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Enumerable2.cs">
+      <Link>Standard\Enumerable2.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\ErrorCodes.cs">
+      <Link>Standard\ErrorCodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\FileWalker.cs">
+      <Link>Standard\FileWalker.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\MessageWindow.cs">
+      <Link>Standard\MessageWindow.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\MshtmlProvider.cs">
+      <Link>Standard\MshtmlProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\NativeMethods.cs">
+      <Link>Standard\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\NotifyingList.cs">
+      <Link>Standard\NotifyingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\ShellProvider.cs">
+      <Link>Standard\ShellProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\SplashScreen.cs">
+      <Link>Standard\SplashScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\StreamHelper.cs">
+      <Link>Standard\StreamHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Utilities.cs">
+      <Link>Standard\Utilities.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Verify.cs">
+      <Link>Standard\Verify.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\WicProvider.cs">
+      <Link>Standard\WicProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\WindowExtensions.cs">
+      <Link>Standard\WindowExtensions.cs</Link>
+    </Compile>
+    <Compile Include="ChatWindow.xaml.cs">
+      <DependentUpon>ChatWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ActivityPostControl.cs" />
+    <Compile Include="Controls\AlbumThumbnailButton.cs" />
+    <Compile Include="Controls\ClientManager\AnimatedSwooshes.xaml.cs">
+      <DependentUpon>AnimatedSwooshes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClientManager\DragContainer.cs" />
+    <Compile Include="Controls\AnimationHelper.cs" />
+    <Compile Include="Controls\BuddyListControl.xaml.cs">
+      <DependentUpon>BuddyListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ClientManager\FacebookImageControl.cs" />
+    <Compile Include="Controls\ClientManager\LargePhotoThumbnailControl.cs" />
+    <Compile Include="Controls\ClientManager\MainContentContainer.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerAlbumNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerBaseNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerCommentNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerContactNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerControl.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerPhotoNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerPostNode.cs" />
+    <Compile Include="Controls\ClientManager\PhotoExplorerTagNode.cs" />
+    <Compile Include="Controls\ClientManager\SizeTemplateControl.cs" />
+    <Compile Include="Controls\ClientManager\Spinner.xaml.cs">
+      <DependentUpon>Spinner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ContactNameDisplayControl.cs" />
+    <Compile Include="Controls\DelayedResizeDecorator.cs" />
+    <Compile Include="Controls\EmbeddedBrowserControl.xaml.cs">
+      <DependentUpon>EmbeddedBrowserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FacebookPhotoTagControl.xaml.cs">
+      <DependentUpon>FacebookPhotoTagControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FooterControl.cs" />
+    <Compile Include="Controls\FriendButton.cs" />
+    <Compile Include="Controls\FriendSummaryControl.cs" />
+    <Compile Include="Controls\IncrementalLoadListBox.cs" />
+    <Compile Include="Controls\MainHeaderControl.cs" />
+    <Compile Include="Controls\MessageNotificationsControl.xaml.cs">
+      <DependentUpon>MessageNotificationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NotificationCountControl.cs" />
+    <Compile Include="Controls\NotificationsControl.xaml.cs">
+      <DependentUpon>NotificationsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PhotoButton.cs" />
+    <Compile Include="Controls\PhotoTaggerControl.xaml.cs">
+      <DependentUpon>PhotoTaggerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PhotoUploadInformationPage.xaml.cs">
+      <DependentUpon>PhotoUploadInformationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PhotoUploadWizard.xaml.cs">
+      <DependentUpon>PhotoUploadWizard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PopupToggle.cs" />
+    <Compile Include="Controls\ScaleScrollViewer.cs" />
+    <Compile Include="Controls\SearchTextBlock.cs" />
+    <Compile Include="Controls\SettingsDialog.xaml.cs">
+      <DependentUpon>SettingsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ShinyImageControl.cs" />
+    <Compile Include="Controls\SortControl.xaml.cs">
+      <DependentUpon>SortControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UpdateStatusControl.xaml.cs">
+      <DependentUpon>UpdateStatusControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UpdateStatusControlModern.xaml.cs">
+      <DependentUpon>UpdateStatusControlModern.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZapCommandItem.cs" />
+    <Compile Include="Controls\ZapDecorator.cs" />
+    <Compile Include="Controls\ZapPanel.cs" />
+    <Compile Include="Controls\ZapScroller.cs" />
+    <Compile Include="Converters\AddConverter.cs" />
+    <Compile Include="Converters\CityStateConverter.cs" />
+    <Compile Include="Converters\CollapseWhenZeroConverter.cs" />
+    <Compile Include="Converters\ContentVisibilityConverter.cs" />
+    <Compile Include="Converters\IsStringNullOrWhitespaceConverter.cs" />
+    <Compile Include="Converters\NotConverter.cs" />
+    <Compile Include="Converters\RandomAngleToTransformConverter.cs" />
+    <Compile Include="Converters\SexPronounConverter.cs" />
+    <Compile Include="Converters\ShouldShowCommentBoxConverter.cs" />
+    <Compile Include="Converters\TranslateConverter.cs" />
+    <Compile Include="DeploymentManager.cs" />
+    <Compile Include="DragDropLib.cs" />
+    <Compile Include="HyperlinkTextContent.cs" />
+    <Compile Include="Controls\AnimatingTilePanel.cs" />
+    <Compile Include="BindableRun.cs" />
+    <Compile Include="ListPager.cs" />
+    <Compile Include="MainWindowCommands.cs" />
+    <Compile Include="Controls\GalleryHomeControl.cs" />
+    <Compile Include="Controls\PaginatedItemsControl.cs" />
+    <Compile Include="Controls\SearchAndFilterControl.xaml.cs">
+      <DependentUpon>SearchAndFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FriendBarControl.xaml.cs">
+      <DependentUpon>FriendBarControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FriendViewerControl.cs" />
+    <Compile Include="Controls\TagTarget.xaml.cs">
+      <DependentUpon>TagTarget.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\AgeOfPostConverter.cs" />
+    <Compile Include="Converters\MultiValueAggregator.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="Controls\CommandTextBox.cs" />
+    <Compile Include="Controls\PhotoSlideShowControl.cs" />
+    <Compile Include="Controls\FilmStripControl.cs" />
+    <Compile Include="Controls\FilmStripPanel.cs" />
+    <Compile Include="Controls\PhotoDisplayControl.cs" />
+    <Compile Include="Controls\PhotoAlbumControl.cs" />
+    <Compile Include="Controls\FriendInfoDescriptionViewer.cs" />
+    <Compile Include="Controls\PhotoViewerControl.cs" />
+    <Compile Include="Controls\PhotoViewerToolbarControl.cs" />
+    <Compile Include="Controls\SearchViewControl.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>SearchViewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\RotationAngleToSimplePositiveAngleConverter.cs" />
+    <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
+    <Compile Include="Standard\HighlightAdorner.cs" />
+    <Compile Include="Standard\PhysicalCharInfo.cs" />
+    <Compile Include="Standard\PhysicalLineInfo.cs" />
+    <Compile Include="Standard\SelectionRange.cs" />
+    <Compile Include="Standard\TextPointerOperations.cs" />
+    <Compile Include="Standard\TextSelection.cs" />
+    <Compile Include="Standard\TextSelectionSettings.cs" />
+    <Compile Include="Standard\TextView.cs" />
+    <Compile Include="View\ActionCommands.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FacebookClientApplication.xaml.cs">
+      <DependentUpon>FacebookClientApplication.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MiniModeWindow.xaml.cs">
+      <DependentUpon>MiniModeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MissingItemError.cs" />
+    <Compile Include="PeopleWhoLikeThisSpan.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationInputHandler.cs" />
+    <Compile Include="ServiceProvider.cs" />
+    <Compile Include="SingleInstance.cs" />
+    <Compile Include="SlideShowWindow.xaml.cs">
+      <DependentUpon>SlideShowWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SplashScreenOverlay.cs" />
+    <Compile Include="Standard\SendMouseInput.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UIListPager.cs" />
+    <Compile Include="View\EventResourceDictionary.cs" />
+    <Compile Include="View\HomePage.cs" />
+    <Compile Include="Controls\LoginPage.xaml.cs">
+      <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LoadingPage.xaml.cs">
+      <DependentUpon>LoadingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MasterNavigator.cs" />
+    <Compile Include="View\NavigationCommands.cs" />
+    <Compile Include="View\Navigator.cs" />
+    <Compile Include="View\ViewCommand.cs" />
+    <Compile Include="View\ViewManager.cs" />
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\app.manifest" />
+    <Page Include="Properties\DesignTimeResources.xaml" Condition="'$(DesignTime)'=='true' OR ('$(SolutionPath)'!='' AND Exists('$(SolutionPath)') AND '$(BuildingInsideVisualStudio)'!='true' AND '$(BuildingInsideExpressionBlend)'!='true')">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
+    </Page>
+    <Page Include="Resources\Themes\CommonFontResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\CommonFacebookDataResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\ContactNameDisplayResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\Glass\Glass.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Glass\GlassApplicationBarResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Glass\GlassMainPageResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ModernDark\ModernDark.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ModernFacebookDataResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Themes\Modern\Modern.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ModernApplicationBarResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ChatWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\BuddyListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ClientManager\AnimatedSwooshes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ClientManager\Spinner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\EmbeddedBrowserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\FacebookPhotoTagControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\MessageNotificationsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\NotificationsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PhotoTaggerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchAndFilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\FriendBarControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SearchViewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SettingsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SortControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TagTarget.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PhotoUploadWizard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\UpdateStatusControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MiniModeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ActivityPostResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\All.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ApplicationBaseResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Charcoal\Charcoal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Charcoal\ExpressionDark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\DrawingResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\CommonApplicationBarResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\BaseResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Blue\Blue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Dark\Dark.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\FBBlue\FBBlue.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\PhotoUploadWizardResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\FlowViewerResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\FriendSummaryResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\FriendViewerResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\GalleryHomeResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\MainPageResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\MainScrollViewerResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\NewsFeedResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\PhotoAlbumResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\PhotoViewerResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Red\Red.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\SearchResultsResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\ShellResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\SlideShowResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Themes\Zap.Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SlideShowWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\LoginPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Contigo2\Contigo2.csproj">
+      <Project>{92EF4985-F377-4707-B156-10A8D197B666}</Project>
+      <Name>Contigo2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EffectLibrary\EffectLibrary.csproj">
+      <Project>{66271E3C-0725-4B49-B62B-910562AF4954}</Project>
+      <Name>EffectLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
+      <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
+      <Name>Microsoft.Bing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
+      <Project>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</Project>
+      <Name>Microsoft.Windows.Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TransitionEffects\TransitionEffects.csproj">
+      <Project>{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}</Project>
+      <Name>TransitionEffects</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\Icons\comment_icon.png" />
+    <Resource Include="Resources\Images\Fishbowl.ico" />
+    <Resource Include="Resources\Images\splash.png" />
+    <Resource Include="Resources\Images\logo.png" />
+    <Resource Include="Resources\Images\Controls\text_box_left.png" />
+    <Resource Include="Resources\Images\Controls\text_box_right.png" />
+    <Resource Include="Resources\Images\avatar_background.png" />
+    <Resource Include="Resources\Images\Icons\like_icon.png" />
+    <Resource Include="Resources\Images\photo_background.png" />
+    <Resource Include="Resources\Images\Icons\feed_icon.png" />
+    <Resource Include="Resources\Images\Icons\links_icon.png" />
+    <Resource Include="Resources\Images\Icons\network_icon.png" />
+    <Resource Include="Resources\Images\Icons\photos_icon.png" />
+    <Resource Include="Resources\Images\Icons\status_icon.png" />
+    <Resource Include="Resources\Images\Icons\notes_icon.png" />
+    <Resource Include="Resources\Images\Icons\video_icon.png" />
+    <Resource Include="Resources\Images\Icons\generic_icon.png" />
+    <Resource Include="Resources\Images\Controls\text_box_bottom.png" />
+    <Resource Include="Resources\Images\Controls\text_box_bottom_left.png" />
+    <Resource Include="Resources\Images\Controls\text_box_bottom_right.png" />
+    <Resource Include="Resources\Images\Controls\text_box_top.png" />
+    <Resource Include="Resources\Images\Controls\text_box_top_left.png" />
+    <Resource Include="Resources\Images\Controls\text_box_top_right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\black_placeholder.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

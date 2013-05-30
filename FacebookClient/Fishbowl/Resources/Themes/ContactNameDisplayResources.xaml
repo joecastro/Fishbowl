@@ -1,0 +1,117 @@
+﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.ContactNameDisplayResourcesDictionary"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View">
+
+  <ControlTemplate x:Key="ContactNameDisplayTargetedTemplate" TargetType="{x:Type FacebookClient:ContactNameDisplayControl}">
+    <TextBlock
+        TextWrapping="Wrap" 
+        FontFamily="{DynamicResource SansSerifFont}" 
+        FontWeight="SemiBold" 
+        FontSize="{DynamicResource LargeFontSize2}"
+        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+        Foreground="{TemplateBinding Foreground}">
+      <Hyperlink 
+          Foreground="{TemplateBinding Foreground}"
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact}">
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name, Mode=OneWay}" />
+      </Hyperlink>
+      <InlineUIContainer>
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Center" Width="14" Height="14">
+          <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Setter Property="Background" Value="Red"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.OnlinePresence}" Value="Active">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusOnlineDrawingBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.OnlinePresence}" Value="Idle">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusAwayDrawingBrush}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
+        </Grid>
+      </InlineUIContainer>
+      <Run FontFamily="Webdings">4</Run>
+      <Hyperlink 
+          Foreground="{TemplateBinding Foreground}"
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact}">
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact.Name, Mode=OneWay}" />
+      </Hyperlink>
+      <InlineUIContainer>
+        <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14">
+          <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Setter Property="Background" Value="Red"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact.OnlinePresence}" Value="Active">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusOnlineDrawingBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TargetFacebookContact.OnlinePresence}" Value="Idle">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusAwayDrawingBrush}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
+        </Grid>
+      </InlineUIContainer>
+      <Run>:</Run>
+    </TextBlock>
+  </ControlTemplate>
+
+  <ControlTemplate x:Key="ContactNameDisplaySingleTemplate" TargetType="{x:Type FacebookClient:ContactNameDisplayControl}">
+    <TextBlock
+        TextWrapping="Wrap" 
+        FontFamily="{DynamicResource SansSerifFont}" 
+        FontWeight="SemiBold" 
+        FontSize="{DynamicResource LargeFontSize2}"
+        Foreground="{DynamicResource ActivityPostUserNameForeground}">
+      <Hyperlink 
+          Foreground="{TemplateBinding Foreground}"
+          Click="OnNavigateToContentButtonClicked" 
+          ClientManagerView:ViewManager.NavigationContent="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact}">
+        <Run Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.Name, Mode=OneWay}" />
+      </Hyperlink>
+      <InlineUIContainer>
+        <Grid HorizontalAlignment="Left" Margin="6,0,0,0" VerticalAlignment="Center" Width="14" Height="14">
+          <Grid.Style>
+            <Style TargetType="{x:Type Grid}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Setter Property="Background" Value="Red"/>
+              <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.OnlinePresence}" Value="Active">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusOnlineDrawingBrush}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FacebookContact.OnlinePresence}" Value="Idle">
+                  <Setter Property="Visibility" Value="Visible"/>
+                  <Setter Property="Background" Value="{DynamicResource StatusAwayDrawingBrush}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Grid.Style>
+        </Grid>
+      </InlineUIContainer>
+    </TextBlock>
+  </ControlTemplate>
+
+  <Style TargetType="{x:Type FacebookClient:ContactNameDisplayControl}">
+    <Setter Property="Template" Value="{StaticResource ContactNameDisplayTargetedTemplate}"/>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=TargetFacebookContact}" Value="{x:Null}">
+        <Setter Property="Template" Value="{StaticResource ContactNameDisplaySingleTemplate}"/>
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+</ClientManagerView:EventResourceDictionary>

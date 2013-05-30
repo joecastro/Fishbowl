@@ -1,0 +1,142 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
+                    xmlns:ClientManager="clr-namespace:ClientManager"
+                    xmlns:FacebookClient="clr-namespace:FacebookClient">
+
+  <FacebookClient:DateTimeToStringConverter x:Key="DateTimeConverter" />
+
+  <!-- SimplePhotoViewerControl Template -->
+    <Style x:Key="SimpleSlideShowImageControlStyle" TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+        <Setter Property="FacebookImageDimensions" Value="Big"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ClientManagerControls:FacebookImageControl}">
+                    <Viewbox>
+                        <!-- The following Grid acts as a "photo padding" for the images. Since the facebook images can be of
+                             various sizes, without padding them the transition from one image to the next won't be smooth and images
+                             can be "squished" during the transition (since texture sizes won't match). Wrapping them inside a control
+                             of fixed size and then taking that control as the texture will keep all texture sizes the same. Although
+                             this Grid has a fixed size of 800x600, since it is placed inside a Viewbox, the Viewbox will resize it to
+                             best fit the screen, so the final size of the Grid will depend on the resolution/DPI of the machine. -->
+                        <Grid Width="800" Height="600" Background="Transparent">
+                            <Image Source="{TemplateBinding ImageSource}" Stretch="Uniform" RenderOptions.BitmapScalingMode="Linear"/>
+                        </Grid>
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+  <!-- SlideShowControl template -->
+  <ControlTemplate x:Key="PhotoSlideShowTemplate" TargetType="{x:Type FacebookClient:PhotoSlideShowControl}">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#161616">
+      <Decorator x:Name="PART_PhotoHost" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+      <Border x:Name="PART_MenuBorder"
+          Padding="5"
+          Margin="5,10" 
+          SnapsToDevicePixels="True"
+          VerticalAlignment="Top"
+          HorizontalAlignment="Center"
+          Background="#66000000"
+          CornerRadius="6"
+          Opacity="0.0">
+        <StackPanel Orientation="Horizontal">
+          <Button Width="65" Height="30"
+              Margin="5"
+              Style="{DynamicResource StandardButtonStyle}"
+              Command="MediaCommands.Stop" 
+              VerticalAlignment="Center"
+              ToolTip="Stop slide show">
+            <TextBlock Foreground="{DynamicResource ToolbarIconForegroundBrush}">Exit</TextBlock>
+          </Button>
+          <ToggleButton Width="40" Height="30"
+              Style="{DynamicResource StandardToggleButtonStyle}"
+              Command="FacebookClient:PhotoSlideShowControl.ToggleShuffleCommand" 
+              CommandTarget="{Binding}"
+              Padding="5,2"
+              IsChecked="{Binding IsShuffled}"
+              VerticalAlignment="Center"
+              ToolTip="Shuffle">
+            <Rectangle VerticalAlignment="Center" HorizontalAlignment="Center"  Width="30" Height="26" Fill="{DynamicResource ShuffleToolbarDrawingBrush}"/>
+          </ToggleButton>
+          <Button Width="40" Height="30"
+              Style="{DynamicResource StandardButtonStyle}"
+              Margin="5"
+              Padding="5,0"
+              Command="MediaCommands.PreviousTrack" 
+              VerticalAlignment="Center"
+              ToolTip="Previous slide">
+            <Rectangle Width="30" Height="30" Fill="{DynamicResource LeftArrowToolbarDrawingBrush}"/>
+          </Button>
+          <Button Width="50" Height="50"
+              x:Name="PlayPauseButton"
+              Style="{DynamicResource StandardButtonStyle}"
+              Command="MediaCommands.Pause" 
+              VerticalAlignment="Center"
+              ToolTip="Pause slide show"
+              Padding="5">
+            <Rectangle x:Name="PlayPauseRectangle" Width="40" Height="40" Fill="{DynamicResource PauseToolbarDrawingBrush}"/>
+          </Button>
+          <Button Width="40" Height="30"
+              Style="{DynamicResource StandardButtonStyle}"
+              Margin="5"
+              Padding="5,0"
+              Command="MediaCommands.NextTrack" 
+              VerticalAlignment="Center"
+              ToolTip="Next slide">
+            <Rectangle Width="30" Height="30" Fill="{DynamicResource RightArrowToolbarDrawingBrush}"/>
+          </Button>
+        </StackPanel>
+      </Border>
+
+      <StackPanel x:Name="PART_AlbumInfo" Margin="0,8,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Grid Margin="0,0,0,4">
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
+                               FontFamily="{DynamicResource SansSerifFont}" Opacity="1" FontSize="{DynamicResource LargeFontSize2}" VerticalAlignment="Top" HorizontalAlignment="Right"
+                               Foreground="White" FontWeight="Medium" TextWrapping="Wrap">
+            <TextBlock.Effect>
+                <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Title}"
+                               FontFamily="{DynamicResource SansSerifFont}" Opacity=".8" FontSize="{DynamicResource LargeFontSize2}" VerticalAlignment="Top" HorizontalAlignment="Right"
+                               Foreground="White" FontWeight="Medium" TextWrapping="Wrap"/>
+        </Grid>
+        <Grid Margin="0,0,0,4">
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
+                               FontFamily="{DynamicResource SansSerifFont}" HorizontalAlignment="Right" FontSize="{DynamicResource MiddleFontSize}" VerticalAlignment="Top"
+                               Foreground="White" Opacity="1" FontWeight="Light" TextWrapping="Wrap">
+            <TextBlock.Effect>
+              <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Owner}"
+                               FontFamily="{DynamicResource SansSerifFont}" HorizontalAlignment="Right" FontSize="{DynamicResource MiddleFontSize}" VerticalAlignment="Top"
+                               Foreground="White" Opacity=".7" FontWeight="Light" TextWrapping="Wrap"/>
+        </Grid>
+        <Grid>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
+                               FontFamily="{DynamicResource SansSerifFont}" HorizontalAlignment="Right" FontSize="{DynamicResource SmallFontSize1}" Opacity="1" FontWeight="Light"
+                               Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap">
+            <TextBlock.Effect>
+              <BlurEffect KernelType="Gaussian" Radius="15" />
+            </TextBlock.Effect>
+          </TextBlock>
+          <TextBlock Text="{Binding Source={x:Static ClientManager:ServiceProvider.ViewManager}, Path=ActivePhotoAlbum.Created, Converter={StaticResource DateTimeConverter}}"
+                               FontFamily="{DynamicResource SansSerifFont}" HorizontalAlignment="Right" FontSize="{DynamicResource SmallFontSize1}" Opacity=".5" FontWeight="Light"
+                               Foreground="White" VerticalAlignment="Top" TextWrapping="Wrap"/>
+        </Grid>
+      </StackPanel>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Paused}" Value="True">
+        <Setter TargetName="PlayPauseButton" Property="Command" Value="MediaCommands.Play" />
+        <Setter TargetName="PlayPauseButton" Property="ToolTip" Value="Resume slide show" />
+        <Setter TargetName="PlayPauseRectangle" Property="Fill" Value="{DynamicResource PlayArrowToolbarDrawingBrush}"/>
+      </DataTrigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+</ResourceDictionary>

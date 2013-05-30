@@ -1,0 +1,231 @@
+﻿<ClientManagerView:EventResourceDictionary x:Class="FacebookClient.BaseResourcesDictionary"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Facebook="clr-namespace:Contigo;assembly=Contigo"
+    xmlns:FacebookClient="clr-namespace:FacebookClient"
+    xmlns:ClientManager="clr-namespace:ClientManager" 
+    xmlns:ClientManagerData="clr-namespace:ClientManager.Data"
+    xmlns:ClientManagerView="clr-namespace:ClientManager.View"
+    xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls">
+
+  <Style x:Key="ToolbarTextBlockStyle" TargetType="{x:Type TextBlock}">
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+    <Setter Property="Foreground" Value="{DynamicResource ToolbarTextBlockForegroundBrush}" />
+    <Setter Property="FontFamily" Value="{DynamicResource SansSerifFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource MiddleFontSize}" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+  </Style>
+
+  <!-- Animated Item -->
+  <Style x:Key="AnimatedItemButton" TargetType="{x:Type Button}">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Panel.ZIndex" Value="1"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid>
+            <Border x:Name="EffectTarget" Background="#FFFFFFFF" CornerRadius="3" BorderThickness="0" Visibility="Collapsed" Margin="5">
+              <Border.Effect>
+                <DropShadowEffect BlurRadius="0" ShadowDepth="0" Color="{DynamicResource IconDropShadowColor}" Opacity=".8" />
+              </Border.Effect>
+            </Border>
+            <Border x:Name="ButtonBorder">
+              <ContentPresenter Focusable="False" />
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <EventTrigger RoutedEvent="Mouse.MouseEnter" SourceName="ButtonBorder">
+              <BeginStoryboard>
+                <Storyboard >
+                  <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Visibility)">
+                    <DiscreteObjectKeyFrame KeyTime="00:00:00" Value="{x:Static Visibility.Visible}" />
+                  </ObjectAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="0"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0000000" Value="0"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="8"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="8"/>
+                  </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+              </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Mouse.MouseLeave" SourceName="ButtonBorder">
+              <BeginStoryboard>
+                <Storyboard >
+                  <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Visibility)">
+                    <DiscreteObjectKeyFrame KeyTime="00:00:00.22" Value="{x:Static Visibility.Collapsed}" />
+                  </ObjectAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="8"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00" Value="8"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.0900000" Value="3"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="0"/>
+                  </DoubleAnimationUsingKeyFrames>
+                  <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="EffectTarget" Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.ShadowDepth)">
+                    <SplineDoubleKeyFrame KeyTime="00:00:00.2200000" Value="0"/>
+                  </DoubleAnimationUsingKeyFrames>
+                </Storyboard>
+              </BeginStoryboard>
+            </EventTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Animated Item -->
+  <Style x:Key="AnimatedAlbumItemButton" TargetType="{x:Type Button}">
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Panel.ZIndex" Value="1"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Border x:Name="ButtonBorder" RenderTransformOrigin="0.5,0.5" CornerRadius="3" BorderThickness="0">
+            <Border.RenderTransform>
+              <TransformGroup>
+                <ScaleTransform ScaleX="1" ScaleY="1" />
+              </TransformGroup>
+            </Border.RenderTransform>
+            <ContentPresenter Focusable="False" />
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Large Photo Thumbnail Template -->
+  <Style TargetType="{x:Type ClientManagerControls:LargePhotoThumbnailControl}">
+    <Setter Property="FacebookImageDimensions" Value="Big"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ClientManagerControls:LargePhotoThumbnailControl}">
+          <Viewbox Stretch="UniformToFill"
+              DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}"
+              Height="{TemplateBinding Height}"
+              Width="{TemplateBinding Width}">
+            <Grid>
+              <Image Source="{Binding Path=ImageSource}" Name="ThumbnailTransform" />
+              <Image Name="PlaceholderImage" Visibility="Collapsed"/>
+            </Grid>
+          </Viewbox>
+          <ControlTemplate.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ImageSource}" Value="{x:Null}">
+              <Setter TargetName="ThumbnailTransform" Property="Visibility" Value="Collapsed"/>
+              <Setter TargetName="PlaceholderImage" Property="Source" Value="pack://application:,,,/Resources/Images/black_placeholder.png"/>
+              <Setter TargetName="PlaceholderImage" Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- SlideShowControl default style -->
+  <Style TargetType="{x:Type FacebookClient:PhotoSlideShowControl}">
+    <Setter Property="Template" Value="{DynamicResource PhotoSlideShowTemplate}" />
+  </Style>
+
+  <!-- Photo Album Base Template -->
+  <DataTemplate DataType="{x:Type Facebook:FacebookPhotoAlbum}">
+    <FacebookClient:PhotoAlbumControl x:Name="PhotoAlbumControl" PhotoAlbum="{Binding}" FocusVisualStyle="{x:Null}" />
+  </DataTemplate>
+
+  <!-- Photo Viewer Base Template -->
+  <DataTemplate DataType="{x:Type Facebook:FacebookPhoto}">
+    <FacebookClient:PhotoViewerControl FacebookPhoto="{Binding}" />
+  </DataTemplate>
+
+  <!-- Friend viewer template -->
+  <DataTemplate DataType="{x:Type Facebook:FacebookContact}">
+    <FacebookClient:FriendViewerControl FacebookContact="{Binding}" />
+  </DataTemplate>
+
+  <DataTemplate DataType="{x:Type Facebook:SearchResults}">
+    <FacebookClient:SearchViewControl DataContext="{Binding}"/>
+  </DataTemplate>
+
+  <Style x:Key="{x:Type ToolTip}" TargetType="ToolTip">
+    <Setter Property="OverridesDefaultStyle" Value="true"/>
+    <Setter Property="FontFamily" Value="{DynamicResource SerifFont}" />
+    <Setter Property="FontSize" Value="{DynamicResource SmallFontSize1}"/>
+    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ToolTip">
+          <Border 
+              CornerRadius="3"
+              Background="{DynamicResource TooltipBackgroundBrush}" 
+              BorderThickness="1" 
+              Padding="10,3" 
+              BorderBrush="{DynamicResource TooltipBorderBrush}" 
+              SnapsToDevicePixels="True" >
+            <ContentPresenter 
+                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="ZoomInOutButtons" TargetType="{x:Type Button}">
+    <Setter Property="Width" Value="24" />
+    <Setter Property="Height" Value="20" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
+    <Setter Property="OverridesDefaultStyle" Value="True" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Button}">
+          <Grid>
+            <Border x:Name="hover" CornerRadius="3" Background="{DynamicResource SmallButtonHoverBackground}" Opacity="0" BorderBrush="{DynamicResource SmallButtonHoverBorder}" BorderThickness="1" />
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="1" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimation To="0" Duration="0:0:0.3" Storyboard.TargetName="hover" Storyboard.TargetProperty="Opacity" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </Trigger.ExitActions>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ClientManagerView:EventResourceDictionary>

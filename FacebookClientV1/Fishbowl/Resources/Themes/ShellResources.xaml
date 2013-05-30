@@ -1,0 +1,26 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell">
+  
+  <shell:JumpList x:Key="MainModeJumpList">
+    <shell:JumpTask Title="Switch to mini-mode" IconResourceIndex="-1" Arguments="-minimode" />
+    <shell:JumpTask Title="Chat with friends" IconResourceIndex="-1" Arguments="-chat" />
+    <shell:JumpTask Title="Go to Facebook.com" ApplicationPath="%SYSTEMROOT%\explorer.exe" Arguments="http://facebook.com" IconResourceIndex="-1" />
+  </shell:JumpList>
+
+  <shell:JumpList x:Key="MiniModeJumpList">
+    <shell:JumpTask Title="Switch to Fishbowl" IconResourceIndex="-1" Arguments="-exitminimode" />
+    <shell:JumpTask Title="Go to Facebook.com" ApplicationPath="%SYSTEMROOT%\explorer.exe" Arguments="http://facebook.com" IconResourceIndex="-1" />
+  </shell:JumpList>
+
+  <shell:JumpList x:Key="SignedOutJumpList">
+    <shell:JumpTask Title="See what people are up to" IconResourceIndex="-1" Arguments="-newsfeed" />
+    <shell:JumpTask Title="Check out your friends" IconResourceIndex="-1" Arguments="-friends" />
+    <shell:JumpTask Title="See your wall" IconResourceIndex="-1" Arguments="-profile" />
+    <shell:JumpTask Title="Check out photos from Facebook" IconResourceIndex="-1" Arguments="-albums" />
+    <shell:JumpTask />
+    <shell:JumpTask Title="Go to Facebook.com" ApplicationPath="%SYSTEMROOT%\explorer.exe" Arguments="http://facebook.com" IconResourceIndex="-1" />
+  </shell:JumpList>
+
+</ResourceDictionary>
