@@ -744,10 +744,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\wpf-shell\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
-      <Project>{55d5297c-f1df-4b76-a3c1-d82cc294eebb}</Project>
-      <Name>Microsoft.Windows.Shell</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BlackBoxReporting\BlackBox.csproj">
       <Project>{420F77E7-0AFD-44D5-A918-17E8291740DD}</Project>
       <Name>BlackBox</Name>
@@ -767,6 +763,10 @@
     <ProjectReference Include="..\TransitionEffects\TransitionEffects.csproj">
       <Project>{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}</Project>
       <Name>TransitionEffects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\wpf-shell\Microsoft.Windows.Shell\Microsoft.Windows.Shell.v4.csproj">
+      <Project>{55d5297c-f1df-4b76-a3c1-d82cc294eebb}</Project>
+      <Name>Microsoft.Windows.Shell.v4</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
