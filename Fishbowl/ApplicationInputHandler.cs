@@ -149,11 +149,11 @@ namespace FacebookClient
                     ))
 
                 {
-                    if (DoubleUtilities.LessThan(e.Delta, 0))
+                    if (DoubleUtilities.IsStrictlyLessThan(e.Delta, 0))
                     {
                         _SafeExecuteCommand(ServiceProvider.ViewManager.NavigationCommands.NavigateToNextCommand);
                     }
-                    else if (DoubleUtilities.GreaterThan(e.Delta, 0))
+                    else if (DoubleUtilities.IsStrictlyGreaterThan(e.Delta, 0))
                     {
                         _SafeExecuteCommand(ServiceProvider.ViewManager.NavigationCommands.NavigateToPriorCommand);
                     }

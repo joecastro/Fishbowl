@@ -290,7 +290,7 @@ namespace Contigo
         /// <returns>The results of the FQL query.</returns>
         private string _SendQuery(string query)
         {
-            Assert.IsNotOnMainThread();
+            //Assert.IsNotOnMainThread();
 
             Assert.IsNeitherNullNorEmpty(query);
 
@@ -308,7 +308,7 @@ namespace Contigo
 
         private string _SendMultiQuery(IList<string> names, IList<string> queries)
         {
-            Assert.IsNotOnMainThread();
+            //Assert.IsNotOnMainThread();
 
             _Verify();
 
@@ -343,7 +343,7 @@ namespace Contigo
         /// </remarks>
         private string _SendRequest(IDictionary<string, string> requestPairs)
         {
-            Assert.IsNotOnMainThread();
+            //Assert.IsNotOnMainThread();
 
             _Verify();
 
@@ -364,7 +364,7 @@ namespace Contigo
 
         private string _SendFileRequest(IDictionary<string, string> requestPairs, string filePath)
         {
-            Assert.IsNotOnMainThread();
+            //Assert.IsNotOnMainThread();
 
             _Verify();
 
@@ -450,7 +450,7 @@ namespace Contigo
 
         private static string _SendRequest(IDictionary<string, string> requestPairs, string secret)
         {
-            Assert.IsNotOnMainThread();
+            //Assert.IsNotOnMainThread();
 
             string requestData = _GenerateRequestData(requestPairs, secret);
 

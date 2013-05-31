@@ -14,13 +14,8 @@
     <GenerateManifests>true</GenerateManifests>
     <ApplicationExtension>.application</ApplicationExtension>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <SignAssembly>false</SignAssembly>
     <ApplicationIcon>Resources\Images\Fishbowl.ico</ApplicationIcon>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
     <TargetZone>LocalIntranet</TargetZone>
     <ManifestCertificateThumbprint>355EF39F2A89A96CB5722BFC0AA701268393AB7D</ManifestCertificateThumbprint>
     <ManifestKeyFile>FishBowl_TemporaryKey.pfx</ManifestKeyFile>
@@ -29,9 +24,6 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <DesignTime Condition="'$(SolutionPath)'!='' AND Exists('$(SolutionPath)')">true</DesignTime>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation />
     <Utf8Output>true</Utf8Output>
     <ExpressionBlendVersion>4.0.20525.0</ExpressionBlendVersion>
     <PublishUrl>\publish\</PublishUrl>
@@ -131,47 +123,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\Standard\ComGuids.cs">
-      <Link>Standard\ComGuids.cs</Link>
-    </Compile>
     <Compile Include="..\Standard\Debug.cs">
       <Link>Standard\Debug.cs</Link>
     </Compile>
     <Compile Include="..\Standard\DoubleUtil.cs">
       <Link>Standard\DoubleUtil.cs</Link>
     </Compile>
-    <Compile Include="..\Standard\DpiHelper.cs">
-      <Link>Standard\DpiHelper.cs</Link>
-    </Compile>
     <Compile Include="..\Standard\Enumerable2.cs">
       <Link>Standard\Enumerable2.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\ErrorCodes.cs">
-      <Link>Standard\ErrorCodes.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\FileWalker.cs">
-      <Link>Standard\FileWalker.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\MessageWindow.cs">
-      <Link>Standard\MessageWindow.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\MshtmlProvider.cs">
-      <Link>Standard\MshtmlProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\NativeMethods.cs">
-      <Link>Standard\NativeMethods.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\NotifyingList.cs">
-      <Link>Standard\NotifyingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\ShellProvider.cs">
-      <Link>Standard\ShellProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\SplashScreen.cs">
-      <Link>Standard\SplashScreen.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\StreamHelper.cs">
-      <Link>Standard\StreamHelper.cs</Link>
     </Compile>
     <Compile Include="..\Standard\Utilities.cs">
       <Link>Standard\Utilities.cs</Link>
@@ -179,10 +138,55 @@
     <Compile Include="..\Standard\Verify.cs">
       <Link>Standard\Verify.cs</Link>
     </Compile>
-    <Compile Include="..\Standard\WicProvider.cs">
+    <Compile Include="..\Standard\Windows\ComGuids.cs">
+      <Link>Standard\ComGuids.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\ErrorCodes.cs">
+      <Link>Standard\ErrorCodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\FileWalker.cs">
+      <Link>Standard\FileWalker.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\NativeMethods.cs">
+      <Link>Standard\NativeMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\ShellProvider.cs">
+      <Link>Standard\ShellProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\StreamHelper.cs">
+      <Link>Standard\StreamHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\Utilities.Windows.cs">
+      <Link>Standard\Utilities.Windows.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Windows\WicProvider.cs">
       <Link>Standard\WicProvider.cs</Link>
     </Compile>
-    <Compile Include="..\Standard\WindowExtensions.cs">
+    <Compile Include="..\Standard\Wpf\CornerRadiusAnimation.cs">
+      <Link>Standard\CornerRadiusAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\CornerRadiusAnimationBase.cs">
+      <Link>Standard\CornerRadiusAnimationBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\DpiHelper.cs">
+      <Link>Standard\DpiHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\GlassHelper.cs">
+      <Link>Standard\GlassHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\MessageWindow.cs">
+      <Link>Standard\MessageWindow.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\MshtmlProvider.cs">
+      <Link>Standard\MshtmlProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\SplashScreen.cs">
+      <Link>Standard\SplashScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\Utilities.Wpf.cs">
+      <Link>Standard\Utilities.Wpf.cs</Link>
+    </Compile>
+    <Compile Include="..\Standard\Wpf\WindowExtensions.cs">
       <Link>Standard\WindowExtensions.cs</Link>
     </Compile>
     <Compile Include="ChatWindow.xaml.cs">
@@ -312,6 +316,7 @@
     <Compile Include="Converters\RotationAngleToSimplePositiveAngleConverter.cs" />
     <Compile Include="Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Standard\HighlightAdorner.cs" />
+    <Compile Include="Standard\NotifyingList.cs" />
     <Compile Include="Standard\PhysicalCharInfo.cs" />
     <Compile Include="Standard\PhysicalLineInfo.cs" />
     <Compile Include="Standard\SelectionRange.cs" />
@@ -739,6 +744,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\wpf-shell\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
+      <Project>{55d5297c-f1df-4b76-a3c1-d82cc294eebb}</Project>
+      <Name>Microsoft.Windows.Shell</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BlackBoxReporting\BlackBox.csproj">
       <Project>{420F77E7-0AFD-44D5-A918-17E8291740DD}</Project>
       <Name>BlackBox</Name>
@@ -754,10 +763,6 @@
     <ProjectReference Include="..\Microsoft.Bing\Microsoft.Bing.csproj">
       <Project>{95D464E5-A6B2-4C93-A11B-B23581E3DA8E}</Project>
       <Name>Microsoft.Bing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Microsoft.Windows.Shell\Microsoft.Windows.Shell.csproj">
-      <Project>{55D5297C-F1DF-4B76-A3C1-D82CC294EEBB}</Project>
-      <Name>Microsoft.Windows.Shell</Name>
     </ProjectReference>
     <ProjectReference Include="..\TransitionEffects\TransitionEffects.csproj">
       <Project>{C044C5A8-5694-4311-AB9B-FE1E122AEFE2}</Project>

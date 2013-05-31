@@ -12,14 +12,6 @@
     <AssemblyName>Microsoft.Bing</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -109,26 +101,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Standard\ComGuids.cs">
-      <Link>Standard\ComGuids.cs</Link>
-    </Compile>
     <Compile Include="..\Standard\Debug.cs">
       <Link>Standard\Debug.cs</Link>
     </Compile>
     <Compile Include="..\Standard\Enumerable2.cs">
       <Link>Standard\Enumerable2.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\ErrorCodes.cs">
-      <Link>Standard\ErrorCodes.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\NativeMethods.cs">
-      <Link>Standard\NativeMethods.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\ShellProvider.cs">
-      <Link>Standard\ShellProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\Standard\StreamHelper.cs">
-      <Link>Standard\StreamHelper.cs</Link>
     </Compile>
     <Compile Include="..\Standard\Utilities.cs">
       <Link>Standard\Utilities.cs</Link>

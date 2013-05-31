@@ -243,10 +243,10 @@ namespace ClientManager.Controls
         /// <returns>Whether the ControlTemplate can be selected for the specified size.</returns>
         public bool IsSelectable(Size size)
         {
-            return DoubleUtilities.LessThanOrClose(this.minWidth, size.Width) &&
-                   DoubleUtilities.GreaterThanOrClose(this.maxWidth, size.Width) &&
-                   DoubleUtilities.LessThanOrClose(this.minHeight, size.Height) &&
-                   DoubleUtilities.GreaterThanOrClose(this.maxHeight, size.Height);
+            return DoubleUtilities.IsLessThanOrCloseTo(this.minWidth, size.Width) &&
+                   DoubleUtilities.IsGreaterThanOrCloseTo(this.maxWidth, size.Width) &&
+                   DoubleUtilities.IsLessThanOrCloseTo(this.minHeight, size.Height) &&
+                   DoubleUtilities.IsGreaterThanOrCloseTo(this.maxHeight, size.Height);
         }
         #endregion
     }

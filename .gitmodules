@@ -1,0 +1,6 @@
+[submodule "Standard"]
+	path = Standard
+	url = git@github.com:joecastro/standard.net.git
+[submodule "wpf-shell"]
+	path = wpf-shell
+	url = git@github.com:joecastro/wpf-shell.git
