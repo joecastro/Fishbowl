@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell"
     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <!-- An alternative way to do this would be to tint the glass with a translucent background
@@ -74,12 +73,12 @@
   <RotateTransform x:Key="FriendRenderTransform" Angle="0"/>
   <RotateTransform x:Key="CommentRenderTransform" Angle="0"/>
 
-  <shell:WindowChrome 
+  <WindowChrome 
     x:Key="ApplicationWindowChrome" 
     GlassFrameThickness="8,90,8,32" 
     CaptionHeight="82"
     UseAeroCaptionButtons="True"
-    SacrificialEdge="Right"
+    NonClientFrameEdges="Right"
     />
 
   <!-- Sacrificing the top 8 (usually) pixels to the window manager, so we can't color them.

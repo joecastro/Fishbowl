@@ -22,7 +22,6 @@ namespace FacebookClient
     using ClientManager.View;
     using Contigo;
     using Standard;
-    using Microsoft.Windows.Shell;
 
     /// <summary>
     /// The ScePhoto view mode; regular or full-screen with options.

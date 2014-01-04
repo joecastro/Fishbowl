@@ -3,8 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ClientManagerControls="clr-namespace:ClientManager.Controls"
     xmlns:FacebookClient="clr-namespace:FacebookClient"
-    xmlns:system="clr-namespace:System;assembly=mscorlib"
-    xmlns:shell="clr-namespace:Microsoft.Windows.Shell;assembly=Microsoft.Windows.Shell">
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="pack://application:,,,/Resources/Themes/All.xaml" />
@@ -14,7 +13,7 @@
 
   <!-- Keeping DWM enabled for the window when possible because it provides a drop shadow
        and it significantly improves resizing behavior from the top left corner. -->
-  <shell:WindowChrome x:Key="ApplicationWindowChrome" GlassFrameThickness="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" CornerRadius="10" CaptionHeight="82" UseAeroCaptionButtons="False" />
+  <WindowChrome x:Key="ApplicationWindowChrome" GlassFrameThickness="8" CornerRadius="10" CaptionHeight="82" UseAeroCaptionButtons="False" />
 
   <LinearGradientBrush x:Key="ContentChromeBackground" StartPoint="0,0" EndPoint="0,1">
     <GradientStop Offset="0" Color="#585858" />
@@ -64,7 +63,7 @@
     <Setter Property="Margin" Value="0" />
     <Style.Triggers>
       <DataTrigger Binding="{Binding Path=WindowState, RelativeSource={RelativeSource AncestorType={x:Type FacebookClient:MainWindow}}}" Value="Maximized">
-        <Setter Property="Margin" Value="{Binding Source={x:Static shell:SystemParameters2.Current}, Path=WindowResizeBorderThickness}" />
+        <Setter Property="Margin" Value="8" />
       </DataTrigger>
     </Style.Triggers>
   </Style>

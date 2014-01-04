@@ -10,7 +10,6 @@
     using System.Windows.Interop;
     using Contigo;
     using Microsoft.Communications.Contacts;
-    using Microsoft.Windows.Shell;
     using Standard;
     using FacebookClient;
 

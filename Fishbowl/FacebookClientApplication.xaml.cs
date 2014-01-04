@@ -11,7 +11,6 @@ namespace FacebookClient
     using System.Windows.Shell;
     using Contigo;
     using FacebookClient.Properties;
-    using Microsoft.Windows.Shell;
     using Standard;
 
     /// <summary>
@@ -86,7 +85,7 @@ namespace FacebookClient
         { 
             get 
             {
-                if (SystemParameters2.Current.IsGlassEnabled)
+                if (SystemParameters.IsGlassEnabled)
                 {
                     return _ThemeNames.AsReadOnly();
                 }
@@ -287,7 +286,7 @@ namespace FacebookClient
 
             SwitchTheme(Settings.Default.ThemeName);
 
-            SystemParameters2.Current.PropertyChanged += _OnSystemParameterChanged;
+            SystemParameters.StaticPropertyChanged += _OnSystemParameterChanged;
             _mainWindow = new MainWindow();
             _minimodeWindow = new MiniModeWindow();
 
